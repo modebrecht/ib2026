@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="de" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A2: Das EVA-Prinzip • Arbeitsblatt</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        onedrive: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#0078d4',
+                            600: '#106ebe',
+                            700: '#005a9e',
+                            800: '#004578',
+                            900: '#00335c'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Segoe UI', 'Inter', 'system-ui', '-apple-system', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.5); border-radius: 4px; }
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white !important; color: black !important; font-size: 11pt; }
+            .print-card { border: 1px solid #cbd5e1 !important; box-shadow: none !important; break-inside: avoid; page-break-inside: avoid; }
+            input, textarea, select { border: 1px solid #94a3b8 !important; background: #fff !important; color: #000 !important; }
+        }
+    </style>
+</head>
+<body class="bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-full flex flex-col font-sans antialiased">
+
+    <!-- Header -->
+    <header class="sticky top-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-2.5 flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3 min-w-0">
+                <div class="w-9 h-9 rounded-lg bg-onedrive-500 text-white flex items-center justify-center font-bold shadow-md shadow-onedrive-500/20 shrink-0">
+                    <i class="fa-solid fa-bolt text-lg"></i>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div>
+                        <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Fortschritt</span>
+                        <span id="headerPercentText" class="text-sm font-extrabold text-onedrive-600 dark:text-onedrive-400">0% erledigt</span>
+                    </div>
+                    <div class="w-28 sm:w-44 bg-slate-200 dark:bg-slate-800 h-2.5 rounded-full overflow-hidden shrink-0 border border-slate-300/50 dark:border-slate-700/50">
+                        <div id="headerProgressBar" class="bg-onedrive-500 h-full transition-all duration-300 rounded-full" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2 shrink-0">
+                <button onclick="toggleDarkMode()" title="Dunkelmodus umschalten" class="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+                    <i id="themeIcon" class="fa-solid fa-moon text-sm"></i>
+                </button>
+                <button onclick="saveProgressToStorage()" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-onedrive-500 hover:bg-onedrive-600 text-white transition shadow-sm flex items-center gap-1.5">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    <span class="hidden sm:inline">Speichern</span>
+                </button>
+                <button onclick="handlePrint()" id="printBtn" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-400 dark:bg-slate-700 text-white transition shadow-sm flex items-center gap-1.5 cursor-not-allowed opacity-75" title="Drucken erst bei 100% Ausfüllung möglich">
+                    <i id="printIcon" class="fa-solid fa-lock"></i>
+                    <span class="hidden sm:inline">PDF / Drucken</span>
+                </button>
+                <button onclick="confirmReset()" title="Zurücksetzen" class="p-2 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/50 rounded-lg border border-rose-200 dark:border-rose-900/50">
+                    <i class="fa-solid fa-rotate-right text-sm"></i>
+                </button>
+            </div>
+        </div>
+        <div class="w-full bg-slate-200 dark:bg-slate-800 h-1">
+            <div id="progressBar" class="bg-onedrive-500 h-1 transition-all duration-300" style="width: 0%"></div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto w-full px-4 sm:px-6 py-6 space-y-6 flex-grow">
+
+        <!-- Title & Metadata -->
+        <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 print-card">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-slate-800">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-xl bg-onedrive-50 dark:bg-onedrive-900/40 text-onedrive-600 dark:text-onedrive-400 flex items-center justify-center text-xl font-bold border border-onedrive-100 dark:border-onedrive-800/50">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-900 dark:text-slate-100">Aufgabe A2: Das EVA-Prinzip</h2>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">8. Sekundarschule • Informatische Bildung • IT-Hardware Grundlagen</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="text-right">
+                        <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Bearbeitungsstand</span>
+                        <span id="completionBadge" class="text-sm font-bold text-onedrive-600 dark:text-onedrive-400">0% erledigt</span>
+                    </div>
+                    <div class="w-12 h-12 rounded-full border-4 border-slate-200 dark:border-slate-800 flex items-center justify-center font-bold text-xs text-slate-700 dark:text-slate-200 relative">
+                        <span id="completionPercentNumber">0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Student Metadata -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-500 dark:text-slate-400 mb-1">
+                        <i class="fa-solid fa-user mr-1 text-onedrive-500"></i> Name / Vorname
+                    </label>
+                    <input type="text" id="studentName" oninput="updateProgress()" placeholder="Name eingeben..." class="w-full px-3.5 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-500 dark:text-slate-400 mb-1">
+                        <i class="fa-solid fa-users mr-1 text-onedrive-500"></i> Klasse
+                    </label>
+                    <input type="text" id="studentClass" oninput="updateProgress()" placeholder="Klasse eingeben..." class="w-full px-3.5 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-500 dark:text-slate-400 mb-1">
+                        <i class="fa-solid fa-calendar mr-1 text-onedrive-500"></i> Datum
+                    </label>
+                    <input type="date" id="studentDate" onchange="updateProgress()" class="w-full px-3.5 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100">
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 1: Overview & Diagram -->
+        <section class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 print-card space-y-6">
+            <div>
+                <span class="inline-flex items-center gap-1.5 bg-onedrive-50 dark:bg-onedrive-950 text-onedrive-700 dark:text-onedrive-300 text-xs font-bold px-3 py-1 rounded-full border border-onedrive-200 dark:border-onedrive-800 uppercase mb-2">
+                    <i class="fa-solid fa-sitemap"></i> Grundmodell
+                </span>
+                <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100">Das EVA-Prinzip (Eingabe • Verarbeitung • Ausgabe)</h3>
+                <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                    Jedes datenverarbeitende System (vom Taschenrechner bis zum Supercomputer) arbeitet nach dem EVA-Prinzip.
+                </p>
+            </div>
+
+            <!-- 5-Column Grid with Dual Arrows -->
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-3 items-center text-center">
+                <!-- Eingabe -->
+                <div class="p-4 bg-sky-50 dark:bg-sky-950/50 rounded-xl border border-sky-200 dark:border-sky-800/60">
+                    <div class="w-10 h-10 rounded-lg bg-sky-500 text-white flex items-center justify-center font-bold text-lg mx-auto mb-2">E</div>
+                    <h4 class="font-bold text-sky-900 dark:text-sky-200 text-sm">Eingabe</h4>
+                    <p class="text-xs text-sky-700 dark:text-sky-300 mt-1">Daten / Befehle eingeben (z. B. Tastatur, Maus, Touch)</p>
+                </div>
+
+                <!-- Arrow 1 -->
+                <div class="text-slate-400 dark:text-slate-600 text-2xl font-bold hidden md:block">➔</div>
+
+                <!-- Verarbeitung -->
+                <div class="p-4 bg-onedrive-50 dark:bg-onedrive-950/50 rounded-xl border border-onedrive-200 dark:border-onedrive-800/60">
+                    <div class="w-10 h-10 rounded-lg bg-onedrive-500 text-white flex items-center justify-center font-bold text-lg mx-auto mb-2">V</div>
+                    <h4 class="font-bold text-onedrive-900 dark:text-onedrive-200 text-sm">Verarbeitung</h4>
+                    <p class="text-xs text-onedrive-700 dark:text-onedrive-300 mt-1">Rechnen &amp; Verarbeiten (CPU, Speicher)</p>
+                </div>
+
+                <!-- Arrow 2 -->
+                <div class="text-slate-400 dark:text-slate-600 text-2xl font-bold hidden md:block">➔</div>
+
+                <!-- Ausgabe -->
+                <div class="p-4 bg-emerald-50 dark:bg-emerald-950/50 rounded-xl border border-emerald-200 dark:border-emerald-800/60">
+                    <div class="w-10 h-10 rounded-lg bg-emerald-500 text-white flex items-center justify-center font-bold text-lg mx-auto mb-2">A</div>
+                    <h4 class="font-bold text-emerald-900 dark:text-emerald-200 text-sm">Ausgabe</h4>
+                    <p class="text-xs text-emerald-700 dark:text-emerald-300 mt-1">Ergebnisse anzeigen / ausgeben (Bildschirm, Drucker)</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Video & Notes -->
+        <section class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 print-card space-y-4">
+            <div>
+                <span class="inline-flex items-center gap-1.5 bg-onedrive-50 dark:bg-onedrive-950 text-onedrive-700 dark:text-onedrive-300 text-xs font-bold px-3 py-1 rounded-full border border-onedrive-200 dark:border-onedrive-800 uppercase mb-2">
+                    <i class="fa-solid fa-play"></i> Erklärvideo
+                </span>
+                <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100">Video: Das EVA-Prinzip einfach erklärt</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Schau dir das Video an und mache dir Notizen zum Grundprinzip im Alltag.</p>
+            </div>
+
+            <div class="aspect-video w-full rounded-xl overflow-hidden shadow-md bg-slate-900">
+                <iframe class="w-full h-full" src="https://www.youtube-nocookie.com/embed/Y3Tj9iWd0aY" title="EVA Prinzip Erklärvideo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold uppercase text-slate-700 dark:text-slate-300 mb-1.5">
+                    Notizen &amp; Erkenntnisse aus dem Video:
+                </label>
+                <textarea id="videoNotes" oninput="updateProgress()" rows="3" placeholder="Antwort eingeben..." class="w-full p-3 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100"></textarea>
+            </div>
+        </section>
+
+        <!-- Section 3: Theory & Everyday Examples -->
+        <section class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 print-card space-y-6">
+            <div>
+                <span class="inline-flex items-center gap-1.5 bg-onedrive-50 dark:bg-onedrive-950 text-onedrive-700 dark:text-onedrive-300 text-xs font-bold px-3 py-1 rounded-full border border-onedrive-200 dark:border-onedrive-800 uppercase mb-2">
+                    <i class="fa-solid fa-pen-to-square"></i> Praxis &amp; Alltagsbeispiele
+                </span>
+                <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100">5 Beispiele aus deinem Alltag</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                    Wo begegnet dir das EVA-Prinzip im Alltag? (z. B. Smartphone, Getränkeautomat, Taschenrechner, Ampel, Mikrowelle). Bestimme jeweils Eingabe, Verarbeitung und Ausgabe.
+                </p>
+            </div>
+
+            <!-- Theory Question -->
+            <div class="p-4 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700">
+                <label class="block text-xs font-bold text-slate-900 dark:text-slate-100 mb-1.5">
+                    Frage: Warum spricht man beim Speicher (RAM / Festplatte) oft von einem "Ergänzungselement" des EVA-Prinzips?
+                </label>
+                <textarea id="theoryAnswer" oninput="updateProgress()" rows="2" placeholder="Antwort eingeben..." class="w-full p-3 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100"></textarea>
+            </div>
+
+            <!-- 5 Everyday Example Cards -->
+            <div class="space-y-4">
+
+                <div class="p-4 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 space-y-3">
+                    <h4 class="font-bold text-sm text-onedrive-600 dark:text-onedrive-400 flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-full bg-onedrive-500 text-white flex items-center justify-center text-xs">1</span>
+                        Beispiel 1 aus dem Alltag
+                    </h4>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1">System / Gerät:</label>
+                            <input type="text" id="ex1_name" oninput="updateProgress()" placeholder="Gerät / System eingeben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-sky-600 dark:text-sky-400 mb-1">Eingabe (E):</label>
+                            <input type="text" id="ex1_in" oninput="updateProgress()" placeholder="Eingabe beschreiben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-onedrive-600 dark:text-onedrive-400 mb-1">Verarbeitung (V):</label>
+                            <input type="text" id="ex1_proc" oninput="updateProgress()" placeholder="Verarbeitung beschreiben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-emerald-600 dark:text-emerald-400 mb-1">Ausgabe (A):</label>
+                            <input type="text" id="ex1_out" oninput="updateProgress()" placeholder="Ausgabe beschreiben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 space-y-3">
+                    <h4 class="font-bold text-sm text-onedrive-600 dark:text-onedrive-400 flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-full bg-onedrive-500 text-white flex items-center justify-center text-xs">2</span>
+                        Beispiel 2 aus dem Alltag
+                    </h4>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1">System / Gerät:</label>
+                            <input type="text" id="ex2_name" oninput="updateProgress()" placeholder="Gerät / System eingeben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-sky-600 dark:text-sky-400 mb-1">Eingabe (E):</label>
+                            <input type="text" id="ex2_in" oninput="updateProgress()" placeholder="Eingabe beschreiben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-onedrive-600 dark:text-onedrive-400 mb-1">Verarbeitung (V):</label>
+                            <input type="text" id="ex2_proc" oninput="updateProgress()" placeholder="Verarbeitung beschreiben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-emerald-600 dark:text-emerald-400 mb-1">Ausgabe (A):</label>
+                            <input type="text" id="ex2_out" oninput="updateProgress()" placeholder="Ausgabe beschreiben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 space-y-3">
+                    <h4 class="font-bold text-sm text-onedrive-600 dark:text-onedrive-400 flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-full bg-onedrive-500 text-white flex items-center justify-center text-xs">3</span>
+                        Beispiel 3 aus dem Alltag
+                    </h4>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1">System / Gerät:</label>
+                            <input type="text" id="ex3_name" oninput="updateProgress()" placeholder="Gerät / System eingeben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-sky-600 dark:text-sky-400 mb-1">Eingabe (E):</label>
+                            <input type="text" id="ex3_in" oninput="updateProgress()" placeholder="Eingabe beschreiben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-onedrive-600 dark:text-onedrive-400 mb-1">Verarbeitung (V):</label>
+                            <input type="text" id="ex3_proc" oninput="updateProgress()" placeholder="Verarbeitung beschreiben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-emerald-600 dark:text-emerald-400 mb-1">Ausgabe (A):</label>
+                            <input type="text" id="ex3_out" oninput="updateProgress()" placeholder="Ausgabe beschreiben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 space-y-3">
+                    <h4 class="font-bold text-sm text-onedrive-600 dark:text-onedrive-400 flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-full bg-onedrive-500 text-white flex items-center justify-center text-xs">4</span>
+                        Beispiel 4 aus dem Alltag
+                    </h4>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1">System / Gerät:</label>
+                            <input type="text" id="ex4_name" oninput="updateProgress()" placeholder="Gerät / System eingeben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-sky-600 dark:text-sky-400 mb-1">Eingabe (E):</label>
+                            <input type="text" id="ex4_in" oninput="updateProgress()" placeholder="Eingabe beschreiben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-onedrive-600 dark:text-onedrive-400 mb-1">Verarbeitung (V):</label>
+                            <input type="text" id="ex4_proc" oninput="updateProgress()" placeholder="Verarbeitung beschreiben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-emerald-600 dark:text-emerald-400 mb-1">Ausgabe (A):</label>
+                            <input type="text" id="ex4_out" oninput="updateProgress()" placeholder="Ausgabe beschreiben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 space-y-3">
+                    <h4 class="font-bold text-sm text-onedrive-600 dark:text-onedrive-400 flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-full bg-onedrive-500 text-white flex items-center justify-center text-xs">5</span>
+                        Beispiel 5 aus dem Alltag
+                    </h4>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1">System / Gerät:</label>
+                            <input type="text" id="ex5_name" oninput="updateProgress()" placeholder="Gerät / System eingeben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-sky-600 dark:text-sky-400 mb-1">Eingabe (E):</label>
+                            <input type="text" id="ex5_in" oninput="updateProgress()" placeholder="Eingabe beschreiben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-onedrive-600 dark:text-onedrive-400 mb-1">Verarbeitung (V):</label>
+                            <input type="text" id="ex5_proc" oninput="updateProgress()" placeholder="Verarbeitung beschreiben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-emerald-600 dark:text-emerald-400 mb-1">Ausgabe (A):</label>
+                            <input type="text" id="ex5_out" oninput="updateProgress()" placeholder="Ausgabe beschreiben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            loadProgressFromStorage();
+            updateProgress();
+        });
+
+        function initTheme() {
+            const savedTheme = localStorage.getItem('onedrive_theme');
+            if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+                updateThemeIcon(true);
+            } else {
+                document.documentElement.classList.remove('dark');
+                updateThemeIcon(false);
+            }
+        }
+
+        function toggleDarkMode() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('onedrive_theme', isDark ? 'dark' : 'light');
+            updateThemeIcon(isDark);
+        }
+
+        function updateThemeIcon(isDark) {
+            const icon = document.getElementById('themeIcon');
+            if (icon) {
+                icon.className = isDark ? 'fa-solid fa-sun text-amber-400 text-sm' : 'fa-solid fa-moon text-sm';
+            }
+        }
+
+        function updateProgress() {
+            const inputsToTrack = ['studentName', 'studentClass', 'studentDate', 'videoNotes', 'theoryAnswer'];
+            for (let i = 1; i <= 5; i++) {
+                inputsToTrack.push(`ex${i}_name`, `ex${i}_in`, `ex${i}_proc`, `ex${i}_out`);
+            }
+
+            let filled = 0;
+            inputsToTrack.forEach(id => {
+                const el = document.getElementById(id);
+                if (el && el.value.trim().length > 0) filled++;
+            });
+
+            const total = inputsToTrack.length;
+            const percent = Math.min(100, Math.round((filled / total) * 100));
+
+            document.getElementById('headerPercentText').innerText = `${percent}% erledigt`;
+            document.getElementById('headerProgressBar').style.width = `${percent}%`;
+            document.getElementById('progressBar').style.width = `${percent}%`;
+            document.getElementById('completionBadge').innerText = `${percent}% erledigt`;
+            document.getElementById('completionPercentNumber').innerText = `${percent}%`;
+
+            const printBtn = document.getElementById('printBtn');
+            const printIcon = document.getElementById('printIcon');
+            if (percent === 100) {
+                printBtn.classList.remove('bg-slate-400', 'dark:bg-slate-700', 'cursor-not-allowed', 'opacity-75');
+                printBtn.classList.add('bg-emerald-600', 'hover:bg-emerald-700', 'cursor-pointer');
+                printBtn.title = "Dokument als PDF exportieren oder drucken";
+                printIcon.className = "fa-solid fa-print";
+            } else {
+                printBtn.classList.remove('bg-emerald-600', 'hover:bg-emerald-700', 'cursor-pointer');
+                printBtn.classList.add('bg-slate-400', 'dark:bg-slate-700', 'cursor-not-allowed', 'opacity-75');
+                printBtn.title = "Drucken erst bei 100% Ausfüllung möglich";
+                printIcon.className = "fa-solid fa-lock";
+            }
+
+            saveProgressToStorage(false);
+        }
+
+        function handlePrint() {
+            const percentText = document.getElementById('headerPercentText').innerText;
+            if (percentText.includes('100%')) {
+                window.print();
+            } else {
+                showToast('Fülle bitte zuerst alle Felder aus (100%), um das Dokument zu drucken.');
+            }
+        }
+
+        function saveProgressToStorage(notify = true) {
+            const data = { form: {} };
+            document.querySelectorAll('input[type="text"], input[type="date"], textarea').forEach(el => {
+                if (el.id) data.form[el.id] = el.value;
+            });
+            localStorage.setItem('onedrive_a2_eva_worksheet_8sek', JSON.stringify(data));
+            if (notify) showToast('Fortschritt erfolgreich gespeichert!');
+        }
+
+        function loadProgressFromStorage() {
+            const saved = localStorage.getItem('onedrive_a2_eva_worksheet_8sek');
+            if (!saved) return;
+            try {
+                const data = JSON.parse(saved);
+                if (data.form) {
+                    Object.keys(data.form).forEach(id => {
+                        const el = document.getElementById(id);
+                        if (el) el.value = data.form[id];
+                    });
+                }
+            } catch (e) {
+                console.error("Fehler beim Laden des Speicherstands", e);
+            }
+        }
+
+        function confirmReset() {
+            showConfirmModal('Möchtest du wirklich alle Eingaben auf diesem Arbeitsblatt zurücksetzen?', () => {
+                localStorage.removeItem('onedrive_a2_eva_worksheet_8sek');
+                document.querySelectorAll('input[type="text"], input[type="date"], textarea').forEach(i => i.value = '');
+                updateProgress();
+                showToast('Arbeitsblatt wurde zurückgesetzt.');
+            });
+        }
+
+        function showToast(message) {
+            let toast = document.getElementById('customToast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'customToast';
+                toast.className = 'fixed bottom-5 right-5 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl z-50 transition-all duration-300 transform translate-y-10 opacity-0 flex items-center gap-2.5 text-xs font-semibold border border-slate-700 max-w-md';
+                document.body.appendChild(toast);
+            }
+            toast.innerHTML = `<i class="fa-solid fa-circle-info text-onedrive-400 text-base shrink-0"></i> <span>${message}</span>`;
+            toast.classList.remove('translate-y-10', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-10', 'opacity-0');
+            }, 3500);
+        }
+
+        function showConfirmModal(message, onConfirm) {
+            let modal = document.getElementById('customModal');
+            if (!modal) {
+                modal = document.createElement('div');
+                modal.id = 'customModal';
+                modal.className = 'fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4';
+                document.body.appendChild(modal);
+            }
+            modal.innerHTML = `
+                <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 max-w-sm w-full p-6 space-y-4">
+                    <div class="flex items-center gap-3 text-rose-600 dark:text-rose-400 font-bold text-base">
+                        <i class="fa-solid fa-triangle-exclamation text-xl"></i>
+                        <span>Aktion bestätigen</span>
+                    </div>
+                    <p class="text-xs text-slate-600 dark:text-slate-300">${message}</p>
+                    <div class="flex justify-end gap-2 pt-2">
+                        <button id="modalCancelBtn" class="px-3.5 py-1.5 text-xs font-semibold rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200">
+                            Abbrechen
+                        </button>
+                        <button id="modalConfirmBtn" class="px-3.5 py-1.5 text-xs font-semibold rounded-xl bg-rose-600 hover:bg-rose-700 text-white">
+                            Zurücksetzen
+                        </button>
+                    </div>
+                </div>
+            `;
+            modal.style.display = 'flex';
+            document.getElementById('modalCancelBtn').onclick = () => { modal.style.display = 'none'; };
+            document.getElementById('modalConfirmBtn').onclick = () => { modal.style.display = 'none'; onConfirm(); };
+        }
+    </script>
+</body>
+</html>

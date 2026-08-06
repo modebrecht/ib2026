@@ -1,0 +1,1063 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Informatische Bildung | Klasse B24 & B25</title>
+  <style>
+    :root {
+      --bg: #f5f5f5;
+      --card: #ffffff;
+      --card-soft: #fafafa;
+      --line: #e5e5e5;
+      --text: #1f1f1f;
+      --muted: #616161;
+      --yellow: #f9c642;
+      --yellow-dark: #d59b00;
+      --blue: #2563eb;
+      --blue-soft: #eef4ff;
+      --selected: #e8f0fb;
+      --shadow: 0 2px 8px rgba(0,0,0,.04);
+      --shadow-strong: 0 10px 24px rgba(0,0,0,.08);
+      --font-scale: 1;
+      
+      --google-red: #ea4335;
+      --google-blue: #4285f4;
+      --google-green: #34a853;
+      --google-yellow: #fbbc05;
+      --ms-red: #f25022;
+      --ms-green: #7fba00;
+      --ms-blue: #00a4ef;
+      --ms-yellow: #ffb900;
+    }
+
+    body[data-theme="dark"] {
+      --bg: #111418;
+      --card: #1a1f26;
+      --card-soft: #20262e;
+      --line: #303846;
+      --text: #f2f4f8;
+      --muted: #b4bdca;
+      --yellow: #f5c84f;
+      --yellow-dark: #c89200;
+      --blue: #66a1ff;
+      --blue-soft: #23324e;
+      --selected: #22314b;
+      --shadow: 0 2px 12px rgba(0,0,0,.25);
+      --shadow-strong: 0 12px 28px rgba(0,0,0,.35);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 16px;
+      transition: background .2s ease, color .2s ease;
+      min-height: 100vh;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      position: relative;
+    }
+
+    .site-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--blue), #1d4ed8);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .brand-title {
+      font-size: calc(22px * var(--font-scale));
+      font-weight: 700;
+      margin: 0;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-subtitle {
+      font-size: calc(13px * var(--font-scale));
+      color: var(--muted);
+      margin: 2px 0 0 0;
+    }
+
+    .gear-btn {
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--card);
+      color: var(--text);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: transform .15s ease, background .2s ease, border-color .2s ease;
+    }
+
+    .gear-btn:hover { transform: rotate(20deg); }
+
+    .gear-svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+
+    .settings-panel {
+      position: absolute;
+      right: 0;
+      top: 52px;
+      width: 280px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      box-shadow: var(--shadow-strong);
+      padding: 16px;
+      display: none;
+      z-index: 20;
+    }
+
+    .settings-panel.open { display: block; }
+
+    .settings-title {
+      font-size: 13px;
+      font-weight: 700;
+      margin: 0 0 12px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+
+    .settings-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .settings-row:first-of-type { border-top: 0; }
+
+    .settings-label {
+      font-size: calc(15px * var(--font-scale));
+      font-weight: 600;
+    }
+
+    .font-size-row {
+      display: block;
+    }
+
+    .font-size-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .font-size-value {
+      color: var(--muted);
+      font-size: calc(14px * var(--font-scale));
+      font-variant-numeric: tabular-nums;
+      font-weight: 700;
+    }
+
+    .font-size-range {
+      width: 100%;
+      margin: 0;
+      accent-color: var(--blue);
+      cursor: pointer;
+    }
+
+    .font-size-limits {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: calc(12px * var(--font-scale));
+    }
+
+    .switch {
+      position: relative;
+      width: 50px;
+      height: 28px;
+      display: inline-block;
+    }
+
+    .switch input { display: none; }
+
+    .slider {
+      position: absolute;
+      inset: 0;
+      background: #b8b8b8;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: .2s ease;
+    }
+
+    .slider::before {
+      content: "";
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      left: 3px;
+      top: 3px;
+      border-radius: 50%;
+      background: white;
+      transition: .2s ease;
+      box-shadow: 0 2px 6px rgba(0,0,0,.15);
+    }
+
+    .switch input:checked + .slider {
+      background: var(--blue);
+    }
+
+    .switch input:checked + .slider::before {
+      transform: translateX(22px);
+    }
+
+    /* Grid Layout for Classes */
+    .columns-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .column-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--line);
+    }
+
+    .class-badge {
+      background: var(--blue-soft);
+      color: var(--blue);
+      font-size: calc(14px * var(--font-scale));
+      font-weight: 800;
+      padding: 4px 12px;
+      border-radius: 999px;
+      letter-spacing: 0.05em;
+    }
+
+    .column-title {
+      font-size: calc(18px * var(--font-scale));
+      font-weight: 700;
+      margin: 0;
+    }
+
+    /* Kachel / Tile Styles */
+    .kachel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      margin-bottom: 16px;
+      overflow: hidden;
+      transition: box-shadow .2s ease, border-color .2s ease;
+    }
+
+    .kachel:hover {
+      box-shadow: var(--shadow-strong);
+      border-color: rgba(37, 99, 235, 0.3);
+    }
+
+    .kachel-header {
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      user-select: none;
+      background: var(--card);
+    }
+
+    .kachel-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .kachel-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--card-soft);
+      border: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--blue);
+      flex-shrink: 0;
+    }
+
+    .kachel-title {
+      font-size: calc(17px * var(--font-scale));
+      font-weight: 700;
+      margin: 0;
+      color: var(--text);
+    }
+
+    .kachel-subtitle {
+      font-size: calc(13px * var(--font-scale));
+      color: var(--muted);
+      margin: 2px 0 0 0;
+    }
+
+    .toggle-arrow {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--card-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      transition: transform .25s ease;
+      flex-shrink: 0;
+    }
+
+    .kachel.open .toggle-arrow {
+      transform: rotate(180deg);
+      color: var(--blue);
+      background: var(--blue-soft);
+    }
+
+    .kachel-body {
+      display: none;
+      padding: 0 20px 20px;
+      border-top: 1px solid var(--line);
+      background: var(--card-soft);
+    }
+
+    .kachel.open .kachel-body {
+      display: block;
+    }
+
+    /* Sub-tiles / Unterkacheln */
+    .unterkacheln {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .unterkachel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .unterkachel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .unterkachel-title {
+      font-size: calc(15px * var(--font-scale));
+      font-weight: 700;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--blue);
+      color: white;
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: calc(14px * var(--font-scale));
+      font-weight: 600;
+      transition: background .15s ease, transform .15s ease;
+      box-shadow: 0 2px 6px rgba(37,99,235,.25);
+    }
+
+    .btn-link:hover {
+      background: #1d4ed8;
+      transform: translateY(-1px);
+    }
+
+    /* OneDrive Folder Preview (from i.html) */
+    .path {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--muted);
+      font-size: calc(13px * var(--font-scale));
+      margin-bottom: 10px;
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 36px 1fr auto;
+      align-items: center;
+      min-height: 42px;
+      padding: 0 12px;
+      border-bottom: 1px solid var(--line);
+      gap: 8px;
+    }
+
+    .row:last-child { border-bottom: 0; }
+
+    .row.header {
+      min-height: 34px;
+      font-size: calc(12px * var(--font-scale));
+      font-weight: 600;
+      color: var(--muted);
+      background: var(--card-soft);
+    }
+
+    .folder {
+      width: 22px;
+      height: 15px;
+      border-radius: 2px 3px 3px 3px;
+      background: linear-gradient(#ffd96a, var(--yellow));
+      position: relative;
+      box-shadow: inset 0 -1px 0 rgba(0,0,0,.12);
+    }
+
+    .folder::before {
+      content: "";
+      position: absolute;
+      left: 2px;
+      top: -4px;
+      width: 9px;
+      height: 5px;
+      border-radius: 2px 2px 0 0;
+      background: var(--yellow-dark);
+    }
+
+    .name {
+      font-size: calc(14px * var(--font-scale));
+      font-weight: 500;
+    }
+
+    .count {
+      color: var(--muted);
+      font-size: calc(13px * var(--font-scale));
+    }
+
+    /* ACCOUNTS Graphic */
+    .accounts-graphic {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .account-card {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 14px;
+      background: var(--card-soft);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+      transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+    }
+
+    .account-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+
+    .account-card.google {
+      border-top: 3px solid var(--google-blue);
+    }
+
+    .account-card.microsoft {
+      border-top: 3px solid var(--ms-blue);
+    }
+
+    .account-logo {
+      width: 44px;
+      height: 44px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .account-title {
+      font-size: calc(15px * var(--font-scale));
+      font-weight: 700;
+      margin: 0 0 4px 0;
+    }
+
+    .account-desc {
+      font-size: calc(12px * var(--font-scale));
+      color: var(--muted);
+      line-height: 1.35;
+      margin: 0 0 10px 0;
+    }
+
+    .account-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      justify-content: center;
+    }
+
+    .badge {
+      font-size: calc(11px * var(--font-scale));
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      font-weight: 600;
+    }
+
+    .badge-link {
+      font-size: calc(12px * var(--font-scale));
+      padding: 5px 10px;
+      border-radius: 8px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: background .15s ease, border-color .15s ease, transform .15s ease, color .15s ease;
+    }
+
+    .badge-link:hover {
+      background: var(--blue-soft);
+      border-color: var(--blue);
+      color: var(--blue);
+      transform: translateY(-1px);
+    }
+
+    /* IT Hardware Grid */
+    .hardware-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .hw-item {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .hw-icon {
+      font-size: 24px;
+      margin-bottom: 6px;
+    }
+
+    .hw-title {
+      font-size: calc(13px * var(--font-scale));
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .hw-sub {
+      font-size: calc(11px * var(--font-scale));
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    @media (max-width: 768px) {
+      .columns-grid { grid-template-columns: 1fr; }
+      .accounts-graphic { grid-template-columns: 1fr; }
+    }
+
+    .site-footer {
+      margin-top: 60px;
+      padding: 32px 20px 48px 20px;
+      border-top: 1px solid var(--line);
+      text-align: center;
+    }
+
+    .footer-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .copyright {
+      font-size: calc(13px * var(--font-scale));
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: 0.3px;
+    }
+
+    .footer-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: calc(13px * var(--font-scale));
+      font-weight: 600;
+      color: var(--blue);
+      text-decoration: none;
+      padding: 6px 16px;
+      border-radius: 20px;
+      background: var(--blue-soft);
+      border: 1px solid rgba(0, 120, 212, 0.15);
+      transition: all 0.2s ease;
+    }
+
+    .footer-link:hover {
+      background: var(--blue);
+      color: #ffffff;
+      border-color: var(--blue);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 120, 212, 0.25);
+    }
+  </style>
+</head>
+<body data-theme="light">
+  <main>
+    <!-- Topbar & Settings -->
+    <div class="topbar">
+      <div class="site-brand">
+        <div class="brand-icon">IB</div>
+        <div>
+          <h1 class="brand-title">Informatische Bildung</h1>
+          <p class="brand-subtitle">Klassenübersicht &amp; Kurse 2026</p>
+        </div>
+      </div>
+
+      <button class="gear-btn" id="gearBtn" aria-label="Einstellungen öffnen">
+        <svg class="gear-svg" viewBox="0 0 24 24">
+          <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+        </svg>
+      </button>
+
+      <div class="settings-panel" id="settingsPanel">
+        <p class="settings-title">Einstellungen</p>
+
+        <div class="settings-row">
+          <span class="settings-label">Dunkles Design</span>
+          <label class="switch">
+            <input type="checkbox" id="themeToggle" />
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="settings-row font-size-row">
+          <div class="font-size-heading">
+            <label class="settings-label" for="fontSizeRange">Schriftgrösse</label>
+            <output class="font-size-value" id="fontSizeValue" for="fontSizeRange">100%</output>
+          </div>
+          <input class="font-size-range" id="fontSizeRange" type="range" min="80" max="250" value="100" step="5" />
+          <div class="font-size-limits" aria-hidden="true"><span>80%</span><span>250%</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content: Two Columns -->
+    <div class="columns-grid">
+      
+      <!-- LEFT COLUMN: B24 -->
+      <section aria-label="Klasse B24">
+        <div class="column-header">
+          <span class="class-badge">B24</span>
+          <h2 class="column-title">Klasse B24</h2>
+        </div>
+
+        <!-- Tile: IT Hardware -->
+        <div class="kachel">
+          <div class="kachel-header" onclick="toggleKachel(this)">
+            <div class="kachel-title-wrap">
+              <div class="kachel-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              </div>
+              <div>
+                <h3 class="kachel-title">IT Hardware</h3>
+                <p class="kachel-subtitle">Projekt 1: Computeraufbau &amp; Komponenten</p>
+              </div>
+            </div>
+            <div class="toggle-arrow">▼</div>
+          </div>
+          <div class="kachel-body">
+            <div class="unterkacheln">
+              <!-- Unterkachel: A1 IT-Hardware Memory -->
+              <div class="unterkachel">
+                <div class="unterkachel-head">
+                  <h4 class="unterkachel-title">
+                    <span>🧩</span> Aufgabe A1: IT-Hardware Memory
+                  </h4>
+                  <a href="hw/A1.html" target="_blank" rel="noopener" class="btn-link">
+                    <span>Öffnen</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                  </a>
+                </div>
+                <p style="font-size: calc(13px * var(--font-scale)); color: var(--muted); margin: 0 0 8px 0;">
+                  Einstieg: Begriffe &amp; Komponenten spielerisch entdecken
+                </p>
+              </div>
+
+              <!-- Unterkachel: A2 EVA Prinzip -->
+              <div class="unterkachel">
+                <div class="unterkachel-head">
+                  <h4 class="unterkachel-title">
+                    <span>⚡</span> Aufgabe A2: Das EVA-Prinzip
+                  </h4>
+                  <a href="hw/A2.html" target="_blank" rel="noopener" class="btn-link">
+                    <span>Öffnen</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                  </a>
+                </div>
+                <p style="font-size: calc(13px * var(--font-scale)); color: var(--muted); margin: 0 0 8px 0;">
+                  Eingabe - Verarbeitung - Ausgabe im Alltag &amp; Beispiele
+                </p>
+              </div>
+
+              <!-- Unterkachel: A3 Hardware -->
+              <div class="unterkachel">
+                <div class="unterkachel-head">
+                  <h4 class="unterkachel-title">
+                    <span>🖥️</span> Aufgabe A3: Computeraufbau
+                  </h4>
+                  <a href="hw/A3.html" target="_blank" rel="noopener" class="btn-link">
+                    <span>Öffnen</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                  </a>
+                </div>
+                <p style="font-size: calc(13px * var(--font-scale)); color: var(--muted); margin: 0 0 8px 0;">
+                  Aufbau eines Computers &amp; 10 Kernkomponenten im Detail
+                </p>
+              </div>
+
+              <!-- Unterkachel: A4 Anschlüsse & Kabel -->
+              <div class="unterkachel">
+                <div class="unterkachel-head">
+                  <h4 class="unterkachel-title">
+                    <span>🔌</span> Aufgabe A4: Anschlüsse &amp; PC-Kabel
+                  </h4>
+                  <a href="hw/A4.html" target="_blank" rel="noopener" class="btn-link">
+                    <span>Öffnen</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                  </a>
+                </div>
+                <p style="font-size: calc(13px * var(--font-scale)); color: var(--muted); margin: 0 0 8px 0;">
+                  Schnittstellen, Monitor-Kabel &amp; Datenübertragung
+                </p>
+              </div>
+
+              <!-- Unterkachel: A5 Mainboard-Anschlüsse -->
+              <div class="unterkachel">
+                <div class="unterkachel-head">
+                  <h4 class="unterkachel-title">
+                    <span>🏷️</span> Aufgabe A5: Mainboard-Anschlüsse
+                  </h4>
+                  <a href="hw/A5.html" target="_blank" rel="noopener" class="btn-link">
+                    <span>Öffnen</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                  </a>
+                </div>
+                <p style="font-size: calc(13px * var(--font-scale)); color: var(--muted); margin: 0 0 8px 0;">
+                  Anschlüsse &amp; Schnittstellen auf dem Mainboard bestimmen
+                </p>
+              </div>
+
+              <!-- Unterkachel: A6 TROUBLESHOOTER -->
+              <div class="unterkachel">
+                <div class="unterkachel-head">
+                  <h4 class="unterkachel-title">
+                    <span>🛠️</span> Aufgabe A6: TROUBLESHOOTER
+                  </h4>
+                  <a href="hw/A6.html" target="_blank" rel="noopener" class="btn-link">
+                    <span>Öffnen</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                  </a>
+                </div>
+                <p style="font-size: calc(13px * var(--font-scale)); color: var(--muted); margin: 0 0 8px 0;">
+                  Hardware-Probleme &amp; Störungen im Troubleshooter lösen
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- RIGHT COLUMN: B25 -->
+      <section aria-label="Klasse B25">
+        <div class="column-header">
+          <span class="class-badge">B25</span>
+          <h2 class="column-title">Klasse B25</h2>
+        </div>
+
+        <!-- Tile 1: Berufsorientierung -->
+        <div class="kachel" id="boKachel">
+          <div class="kachel-header" onclick="toggleKachel(this)">
+            <div class="kachel-title-wrap">
+              <div class="kachel-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+              </div>
+              <div>
+                <h3 class="kachel-title">Berufsorientierung</h3>
+                <p class="kachel-subtitle">Bewerbungsdossier</p>
+              </div>
+            </div>
+            <div class="toggle-arrow">▼</div>
+          </div>
+
+          <div class="kachel-body">
+            <div class="unterkacheln">
+              
+              <!-- Unterkachel: Ordnerstruktur BO -->
+              <div class="unterkachel">
+                <div class="unterkachel-head">
+                  <h4 class="unterkachel-title">
+                    <span>📁</span> Ordnerstruktur BO
+                  </h4>
+                  <a href="https://ib-onedrive.vercel.app" target="_blank" rel="noopener" class="btn-link">
+                    <span>ib-onedrive.vercel.app</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                  </a>
+                </div>
+
+                <div class="path">
+                  <span>OneDrive</span> › <strong>Berufsorientierung</strong>
+                </div>
+
+                <div class="panel">
+                  <div class="row header">
+                    <div></div>
+                    <div>Name</div>
+                    <div class="count">Inhalt</div>
+                  </div>
+                  <div class="row">
+                    <div class="folder"></div>
+                    <div class="name">Bestätigungen &amp; Nachweise</div>
+                    <div class="count">0 Elemente</div>
+                  </div>
+                  <div class="row">
+                    <div class="folder"></div>
+                    <div class="name">Bewerbungen komplett</div>
+                    <div class="count">0 Elemente</div>
+                  </div>
+                  <div class="row">
+                    <div class="folder"></div>
+                    <div class="name">Lebenslauf</div>
+                    <div class="count">0 Elemente</div>
+                  </div>
+                  <div class="row">
+                    <div class="folder"></div>
+                    <div class="name">Motivationsschreiben</div>
+                    <div class="count">0 Elemente</div>
+                  </div>
+                  <div class="row">
+                    <div class="folder"></div>
+                    <div class="name">Resultate Check S2 &amp; S3</div>
+                    <div class="count">0 Elemente</div>
+                  </div>
+                  <div class="row">
+                    <div class="folder"></div>
+                    <div class="name">Rückmeldungen Betriebe</div>
+                    <div class="count">0 Elemente</div>
+                  </div>
+                  <div class="row">
+                    <div class="folder"></div>
+                    <div class="name">Titelblätter</div>
+                    <div class="count">0 Elemente</div>
+                  </div>
+                  <div class="row">
+                    <div class="folder"></div>
+                    <div class="name">Zeugnisse</div>
+                    <div class="count">0 Elemente</div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- Tile 2: Accounts (Eigenständige Kachel) -->
+        <div class="kachel" id="accountsKachel">
+          <div class="kachel-header" onclick="toggleKachel(this)">
+            <div class="kachel-title-wrap">
+              <div class="kachel-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              </div>
+              <div>
+                <h3 class="kachel-title">Accounts</h3>
+                <p class="kachel-subtitle">Microsoft und Google Account</p>
+              </div>
+            </div>
+            <div class="toggle-arrow">▼</div>
+          </div>
+
+          <div class="kachel-body">
+            <div class="accounts-graphic">
+              <!-- Microsoft Account (1st) -->
+              <div class="account-card microsoft">
+                <div class="account-logo">
+                  <svg width="34" height="34" viewBox="0 0 22 22">
+                    <rect x="0" y="0" width="10.2" height="10.2" fill="#F25022"/>
+                    <rect x="11.8" y="0" width="10.2" height="10.2" fill="#7FBA00"/>
+                    <rect x="0" y="11.8" width="10.2" height="10.2" fill="#00A4EF"/>
+                    <rect x="11.8" y="11.8" width="10.2" height="10.2" fill="#FFB900"/>
+                  </svg>
+                </div>
+                <h5 class="account-title">Microsoft Account</h5>
+                <p class="account-desc">vorname.nachname@sus.gsu-so.ch</p>
+                <div class="account-badges">
+                  <a href="https://portal.office.com" target="_blank" rel="noopener" class="badge-link">
+                    Office 365 ↗
+                  </a>
+                  <a href="https://gsusoch-my.sharepoint.com" target="_blank" rel="noopener" class="badge-link">
+                    OneDrive ↗
+                  </a>
+                  <a href="https://teams.microsoft.com" target="_blank" rel="noopener" class="badge-link">
+                    Teams ↗
+                  </a>
+                </div>
+              </div>
+
+              <!-- Google Account (2nd) -->
+              <div class="account-card google">
+                <div class="account-logo">
+                  <svg width="34" height="34" viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.1c-.22-.66-.35-1.36-.35-2.1s.13-1.44.35-2.1V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.62z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                  </svg>
+                </div>
+                <h5 class="account-title">Google Account</h5>
+                <p class="account-desc">vorname.nachname@gsu-schule.ch</p>
+                <div class="account-badges">
+                  <a href="https://gemini.google.com" target="_blank" rel="noopener" class="badge-link">
+                    Gemini ↗
+                  </a>
+                  <a href="https://drive.google.com" target="_blank" rel="noopener" class="badge-link">
+                    Drive ↗
+                  </a>
+                  <a href="https://mail.google.com" target="_blank" rel="noopener" class="badge-link">
+                    Gmail ↗
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+
+    <footer class="site-footer">
+      <div class="footer-container">
+        <div class="copyright">&copy; 2026 GSU</div>
+        <div>
+          <a href="https://WAH2026.vercel.app" target="_blank" rel="noopener" class="footer-link">
+            <span>Planung WAH 2026</span>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+          </a>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <script>
+    const gearBtn = document.getElementById('gearBtn');
+    const settingsPanel = document.getElementById('settingsPanel');
+    const themeToggle = document.getElementById('themeToggle');
+    const fontSizeRange = document.getElementById('fontSizeRange');
+    const fontSizeValue = document.getElementById('fontSizeValue');
+
+    function toggleKachel(headerEl) {
+      const kachel = headerEl.parentElement;
+      kachel.classList.toggle('open');
+    }
+
+    function setTheme(theme) {
+      document.body.setAttribute('data-theme', theme);
+      themeToggle.checked = theme === 'dark';
+      localStorage.setItem('ib-theme', theme);
+    }
+
+    function setFontSize(percent) {
+      const value = Math.min(250, Math.max(80, Number(percent) || 100));
+      document.documentElement.style.setProperty('--font-scale', value / 100);
+      fontSizeRange.value = value;
+      fontSizeValue.value = `${value}%`;
+      fontSizeValue.textContent = `${value}%`;
+      localStorage.setItem('ib-font-size', value);
+    }
+
+    gearBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      settingsPanel.classList.toggle('open');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!settingsPanel.contains(e.target) && !gearBtn.contains(e.target)) {
+        settingsPanel.classList.remove('open');
+      }
+    });
+
+    themeToggle.addEventListener('change', () => {
+      setTheme(themeToggle.checked ? 'dark' : 'light');
+    });
+
+    fontSizeRange.addEventListener('input', () => setFontSize(fontSizeRange.value));
+
+    // Initialize
+    setTheme(localStorage.getItem('ib-theme') || 'light');
+    setFontSize(localStorage.getItem('ib-font-size') || 100);
+  </script>
+</body>
+</html>

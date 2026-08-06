@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="de" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A6: TROUBLESHOOTER • Arbeitsblatt</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        onedrive: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#0078d4',
+                            600: '#106ebe',
+                            700: '#005a9e',
+                            800: '#004578',
+                            900: '#00335c'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Segoe UI', 'Inter', 'system-ui', '-apple-system', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.5); border-radius: 4px; }
+    </style>
+</head>
+<body class="bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-full flex flex-col font-sans antialiased">
+
+    <!-- Header -->
+    <header class="sticky top-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-lg bg-onedrive-500 text-white flex items-center justify-center font-bold shadow-md shadow-onedrive-500/20 shrink-0">
+                    <i class="fa-solid fa-wrench text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="text-base font-bold text-slate-900 dark:text-slate-100">Aufgabe A6: TROUBLESHOOTER</h1>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Informatische Bildung • IT-Hardware</p>
+                </div>
+            </div>
+
+            <button onclick="toggleDarkMode()" title="Dunkelmodus umschalten" class="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+                <i id="themeIcon" class="fa-solid fa-moon text-sm"></i>
+            </button>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto w-full px-4 sm:px-6 py-10 space-y-6 flex-grow flex flex-col justify-center">
+
+        <!-- Card -->
+        <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-8 space-y-6 text-center">
+            
+            <div class="w-16 h-16 rounded-2xl bg-onedrive-50 dark:bg-onedrive-900/40 text-onedrive-600 dark:text-onedrive-400 flex items-center justify-center text-3xl font-bold border border-onedrive-100 dark:border-onedrive-800/50 mx-auto">
+                <i class="fa-solid fa-screwdrivers-wrench"></i>
+            </div>
+
+            <div class="max-w-xl mx-auto space-y-2">
+                <span class="inline-flex items-center gap-1.5 bg-onedrive-50 dark:bg-onedrive-950 text-onedrive-700 dark:text-onedrive-300 text-xs font-bold px-3 py-1 rounded-full border border-onedrive-200 dark:border-onedrive-800 uppercase">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i> Interaktives Tool
+                </span>
+                <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-100">Aufgabe A6: TROUBLESHOOTER</h2>
+                <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed pt-2">
+                    Löse typische Hardware-Probleme und Fehlerfälle interaktiv im Troubleshooter-Tool. Klicke auf den Button, um die Anwendung zu starten.
+                </p>
+            </div>
+
+            <div class="pt-4">
+                <a href="https://ib-ts.vercel.app" target="_blank" rel="noopener" class="inline-flex items-center gap-3 px-8 py-4 rounded-xl bg-onedrive-500 hover:bg-onedrive-600 text-white font-bold text-base transition shadow-lg shadow-onedrive-500/25">
+                    <span>Troubleshooter öffnen</span>
+                    <i class="fa-solid fa-arrow-right text-lg"></i>
+                </a>
+                <p class="text-xs text-slate-400 dark:text-slate-500 mt-3">
+                    Öffnet <strong>ib-ts.vercel.app</strong> in einem neuen Tab
+                </p>
+            </div>
+
+        </div>
+
+        <!-- Abgabe Info Card -->
+        <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 space-y-4">
+            <div class="flex items-center gap-3 text-onedrive-600 dark:text-onedrive-400 font-bold text-base border-b border-slate-100 dark:border-slate-800 pb-3">
+                <div class="w-8 h-8 rounded-lg bg-onedrive-50 dark:bg-onedrive-950 flex items-center justify-center text-onedrive-500">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                </div>
+                <span>Abgabe der Aufgabe A6</span>
+            </div>
+
+            <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                Mache nach Erreichen deines Endergebnisses im Troubleshooter einen <strong>Screenshot</strong> und lade die Datei in deinen Ordner hoch. Gültige Dateinamen für die Abgabe:
+            </p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                <!-- Option 1: PNG -->
+                <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex items-start gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold text-base shrink-0 mt-0.5">
+                        <i class="fa-solid fa-file-image"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider mb-0.5">Option 1: Direktes Bild (PNG)</h4>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Speichere den Screenshot als Bilddatei ab: <code class="bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded font-mono text-slate-800 dark:text-slate-200 font-semibold">A6.png</code></p>
+                    </div>
+                </div>
+
+                <!-- Option 2: PDF -->
+                <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex items-start gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center font-bold text-base shrink-0 mt-0.5">
+                        <i class="fa-solid fa-file-pdf"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider mb-0.5">Option 2: PDF mit Screenshot</h4>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Füge den Screenshot in eine Seite ein und exportiere als: <code class="bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded font-mono text-slate-800 dark:text-slate-200 font-semibold">A6.pdf</code></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+        });
+
+        function initTheme() {
+            const savedTheme = localStorage.getItem('onedrive_theme');
+            if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+                updateThemeIcon(true);
+            } else {
+                document.documentElement.classList.remove('dark');
+                updateThemeIcon(false);
+            }
+        }
+
+        function toggleDarkMode() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('onedrive_theme', isDark ? 'dark' : 'light');
+            updateThemeIcon(isDark);
+        }
+
+        function updateThemeIcon(isDark) {
+            const icon = document.getElementById('themeIcon');
+            if (icon) {
+                icon.className = isDark ? 'fa-solid fa-sun text-amber-400 text-sm' : 'fa-solid fa-moon text-sm';
+            }
+        }
+    </script>
+</body>
+</html>
