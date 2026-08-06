@@ -308,20 +308,20 @@
                 
                 <!-- Action Buttons & Difficulty Select (Without 'Modus:' label) -->
                 <div class="flex flex-wrap items-center justify-center md:justify-start gap-2">
-                    <select id="difficulty" class="px-3 py-2 text-sm font-extrabold bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-onedrive-500 text-slate-800 dark:text-slate-100 cursor-pointer shadow-xs">
-                        <option value="einfach" selected>Einfach – 8 Karten</option>
-                        <option value="mittel">Mittel – 16 Karten</option>
-                        <option value="schwer">Schwer – 20 Karten</option>
-                        <option value="ultra">Ultra – 24 Karten</option>
-                    </select>
+                    <div id="diffBtnGroup" class="flex gap-1 p-1 bg-slate-100 dark:bg-slate-800/80 rounded-xl border border-slate-200 dark:border-slate-700 shadow-inner overflow-x-auto max-w-full">
+                        <button onclick="setDifficulty('einfach')" data-diff="einfach" class="diff-btn whitespace-nowrap px-3 py-1.5 text-xs sm:text-sm font-bold rounded-lg transition-all text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700">Einfach</button>
+                        <button onclick="setDifficulty('mittel')" data-diff="mittel" class="diff-btn whitespace-nowrap px-3 py-1.5 text-xs sm:text-sm font-bold rounded-lg transition-all text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700">Mittel</button>
+                        <button onclick="setDifficulty('schwer')" data-diff="schwer" class="diff-btn whitespace-nowrap px-3 py-1.5 text-xs sm:text-sm font-bold rounded-lg transition-all text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700">Schwer</button>
+                        <button onclick="setDifficulty('ultra')" data-diff="ultra" class="diff-btn whitespace-nowrap px-3 py-1.5 text-xs sm:text-sm font-bold rounded-lg transition-all text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700">Ultra</button>
+                    </div>
 
-                    <button id="restartBtn" class="px-4 py-2 text-sm font-extrabold rounded-xl bg-onedrive-500 hover:bg-onedrive-600 text-white transition shadow-sm flex items-center gap-1.5">
-                        <i class="fa-solid fa-rotate-right"></i> Neu mischen
+                    <button id="restartBtn" class="px-3 sm:px-4 py-2 text-sm font-extrabold rounded-xl bg-onedrive-500 hover:bg-onedrive-600 text-white shadow-[0_4px_12px_rgba(2,132,199,0.3)] transition-all flex items-center gap-1.5 hover:-translate-y-1 group shrink-0">
+                        <i class="fa-solid fa-rotate-right group-hover:-rotate-90 transition-transform duration-300"></i> <span class="hidden sm:inline">Neues Spiel</span>
                     </button>
-                    <button id="leaderBtn" class="px-3 py-2 text-sm font-bold rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition flex items-center gap-1.5 border border-slate-200 dark:border-slate-700">
-                        <i class="fa-solid fa-trophy text-amber-500 text-sm"></i> Bestenliste
+                    <button id="leaderBtn" class="px-3 py-2 text-sm font-bold rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition flex items-center gap-1.5 border border-slate-200 dark:border-slate-700 shrink-0">
+                        <i class="fa-solid fa-trophy text-amber-500 text-sm"></i> <span class="hidden sm:inline">Rekorde</span>
                     </button>
-                    <button id="settingsToggleBtn" onclick="document.getElementById('extendedSettingsPanel').classList.toggle('hidden')" class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition flex items-center justify-center border border-slate-200 dark:border-slate-700" title="Erweiterte Einstellungen">
+                    <button id="settingsToggleBtn" onclick="document.getElementById('extendedSettingsPanel').classList.toggle('hidden')" class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition flex items-center justify-center border border-slate-200 dark:border-slate-700 shrink-0" title="Erweiterte Einstellungen">
                         <i class="fa-solid fa-sliders text-onedrive-500 text-sm"></i>
                     </button>
                 </div>
@@ -512,12 +512,12 @@
           {id:'ram', emoji:'⚡', term:'RAM', desc:'Schneller Arbeitsspeicher für laufende Programme.'},
           {id:'mb',  emoji:'🔌', term:'Mainboard', desc:'Zentrale Hauptplatine, verbindet alle Teile.'},
           {id:'ssd', emoji:'🚀', term:'SSD', desc:'Nicht-mechanischer Flash-Speicher.'},
-          {id:'gpu', emoji:'🎨', term:'GPU', desc:'Zuständig für Bild- & Videoberechnung.'},
-          {id:'psu', emoji:'🔋', term:'Netzteil', desc:'Versorgt das System zuverlässig mit Strom.'}
+          {id:'gpu', emoji:'🎨', term:'GPU (Grafikkarte)', desc:'Zuständig für Bild- & Videoberechnung.'},
+          {id:'psu', emoji:'🔋', term:'PSU (Netzteil)', desc:'Versorgt das System zuverlässig mit Strom.'}
         ];
 
         var SET_MEDIUM = [
-          {id:'hdd', emoji:'💽', term:'HDD', desc:'Klassische Festplatte mit rotierenden Scheiben.'},
+          {id:'hdd', emoji:'💽', term:'HDD (Harddisk)', desc:'Klassische Festplatte mit rotierenden Scheiben.'},
           {id:'case',emoji:'🖥️', term:'Gehäuse', desc:'Schützt Hardware & sorgt für Luftstrom.'}
         ];
 
@@ -528,7 +528,7 @@
 
         var SET_ULTRA = [
           {id:'lan', emoji:'🌐', term:'Netzwerk', desc:'LAN-Anschluss / Ethernet-Verbindung.'},
-          {id:'hdmi',emoji:'📺', term:'HDMI / DP', desc:'Digitale Bild- & Ton-Schnittstelle zum Monitor.'}
+          {id:'hdmi',emoji:'📺', term:'HDMI / DisplayPort', desc:'Digitale Bild- & Ton-Schnittstelle zum Monitor.'}
         ];
 
         var ALL_MODES = ['einfach', 'mittel', 'schwer', 'ultra'];
@@ -540,7 +540,6 @@
         var timeEl   = document.getElementById('time');
         var startBtn = document.getElementById('startBtn');
         var restartBtn = document.getElementById('restartBtn');
-        var diffSel  = document.getElementById('difficulty');
         var modalEl  = document.getElementById('modal');
         var summaryEl= document.getElementById('summary');
         var starsEl  = document.getElementById('stars');
@@ -576,7 +575,7 @@
         function createDeck(difficulty){
           var pool = [];
           var pairCount = 4;
-          if (!difficulty) difficulty = (diffSel && diffSel.value) || 'einfach';
+          if (!difficulty) difficulty = localStorage.getItem('memDifficulty') || 'einfach';
 
           if (difficulty === 'einfach') {
             pool = SET_EASY.slice();
@@ -760,10 +759,27 @@
         function recomputePoints(){ var p=diffParams(); var eff = state.moves ? (state.hits / state.moves) : 0; var core = Math.round(p.max * Math.pow(eff, p.exp)); state.points = Math.max(0, core + (state.comboBonus||0)); setStats(); }
         function timeBonus(elapsed){ if(elapsed < 120000) return 10; if(elapsed < 180000) return 0; return -10; }
 
+        function updateDiffButtons(activeDiff) {
+            document.querySelectorAll('.diff-btn').forEach(function(b) {
+                if (b.dataset.diff === activeDiff) {
+                    b.className = 'diff-btn whitespace-nowrap px-3 py-1.5 text-xs sm:text-sm font-bold rounded-lg transition-all bg-onedrive-500 text-white shadow-md animate-pulse cursor-default';
+                } else {
+                    b.className = 'diff-btn whitespace-nowrap px-3 py-1.5 text-xs sm:text-sm font-bold rounded-lg transition-all text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer hover:-translate-y-0.5';
+                }
+            });
+        }
+        
+        function setDifficulty(diff) {
+            localStorage.setItem('memDifficulty', diff);
+            startGame();
+        }
+
         function startGame(){
+          var diff = localStorage.getItem('memDifficulty') || 'einfach';
           state = resetState();
-          var diff = (diffSel && diffSel.value) || 'einfach';
           state.difficulty = diff; localStorage.setItem('memDifficulty', diff);
+          updateDiffButtons(diff);
+          
           if(flipSlider){ state.flipDelay=Number(flipSlider.value); localStorage.setItem('memFlipDelay', state.flipDelay); }
           if(sizeSlider){ state.cardMin=Number(sizeSlider.value); localStorage.setItem('memCardMin', state.cardMin); document.documentElement.style.setProperty('--card-min', state.cardMin+'px'); }
           if(textSlider){ state.textSize=Number(textSlider.value); localStorage.setItem('memTextSize', state.textSize); document.documentElement.style.setProperty('--card-text', state.textSize+'px'); }
@@ -1118,7 +1134,6 @@
         }
 
         if(restartBtn) restartBtn.addEventListener('click', restartGame);
-        if(diffSel) diffSel.addEventListener('change', function(){ startGame(); });
         if(againBtn) againBtn.addEventListener('click', function(){ modalEl.classList.add('hidden'); restartGame(); });
         if(changeBtn) changeBtn.addEventListener('click', function(){ modalEl.classList.add('hidden'); startGame(); });
         if(leaderBtn) leaderBtn.addEventListener('click', openLeaderboard);
