@@ -5,7 +5,70 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Schnittstellen & PC-Kabel Arbeitsblatt • Sekundarschule</title>
     <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com">
+        function setupUniversalAutoSave() {
+            var pageKey = 'hw_autosave_' + location.pathname.split('/').pop();
+            
+            function saveAll() {
+                var data = {};
+                document.querySelectorAll('input, textarea, select').forEach(function(el) {
+                    if (el.id) {
+                        if (el.type === 'checkbox') {
+                            data[el.id] = el.checked;
+                        } else if (el.type === 'radio') {
+                            if (el.checked) data[el.name] = el.value;
+                        } else {
+                            data[el.id] = el.value;
+                        }
+                    } else if (el.name && el.type === 'radio') {
+                        if (el.checked) data[el.name] = el.value;
+                    }
+                });
+                localStorage.setItem(pageKey, JSON.stringify(data));
+            }
+
+            try {
+                var saved = localStorage.getItem(pageKey);
+                if (saved) {
+                    var data = JSON.parse(saved);
+                    Object.keys(data).forEach(function(key) {
+                        var el = document.getElementById(key);
+                        if (el) {
+                            if (el.type === 'checkbox') {
+                                el.checked = !!data[key];
+                            } else if (el.type === 'radio') {
+                                if (el.value === data[key]) el.checked = true;
+                            } else {
+                                el.value = data[key];
+                            }
+                        } else {
+                            var radio = document.querySelector('input[name="' + key + '"][value="' + data[key] + '"]');
+                            if (radio) radio.checked = true;
+                        }
+                    });
+                }
+            } catch(e) {}
+
+            document.querySelectorAll('input, textarea, select').forEach(function(el) {
+                el.addEventListener('input', saveAll);
+                el.addEventListener('change', saveAll);
+            });
+        }
+
+        function applyDefaultClassAndDate() {
+            var classInput = document.getElementById('studentClass');
+            var dateInput = document.getElementById('studentDate');
+            
+            if (classInput && !classInput.value.trim()) {
+                classInput.value = 'B24';
+            }
+            if (dateInput && !dateInput.value) {
+                var today = new Date().toISOString().split('T')[0];
+                dateInput.value = today;
+            }
+        }
+
+    </script>
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -28,6 +91,69 @@
                 }
             }
         }
+    
+        function setupUniversalAutoSave() {
+            var pageKey = 'hw_autosave_' + location.pathname.split('/').pop();
+            
+            function saveAll() {
+                var data = {};
+                document.querySelectorAll('input, textarea, select').forEach(function(el) {
+                    if (el.id) {
+                        if (el.type === 'checkbox') {
+                            data[el.id] = el.checked;
+                        } else if (el.type === 'radio') {
+                            if (el.checked) data[el.name] = el.value;
+                        } else {
+                            data[el.id] = el.value;
+                        }
+                    } else if (el.name && el.type === 'radio') {
+                        if (el.checked) data[el.name] = el.value;
+                    }
+                });
+                localStorage.setItem(pageKey, JSON.stringify(data));
+            }
+
+            try {
+                var saved = localStorage.getItem(pageKey);
+                if (saved) {
+                    var data = JSON.parse(saved);
+                    Object.keys(data).forEach(function(key) {
+                        var el = document.getElementById(key);
+                        if (el) {
+                            if (el.type === 'checkbox') {
+                                el.checked = !!data[key];
+                            } else if (el.type === 'radio') {
+                                if (el.value === data[key]) el.checked = true;
+                            } else {
+                                el.value = data[key];
+                            }
+                        } else {
+                            var radio = document.querySelector('input[name="' + key + '"][value="' + data[key] + '"]');
+                            if (radio) radio.checked = true;
+                        }
+                    });
+                }
+            } catch(e) {}
+
+            document.querySelectorAll('input, textarea, select').forEach(function(el) {
+                el.addEventListener('input', saveAll);
+                el.addEventListener('change', saveAll);
+            });
+        }
+
+        function applyDefaultClassAndDate() {
+            var classInput = document.getElementById('studentClass');
+            var dateInput = document.getElementById('studentDate');
+            
+            if (classInput && !classInput.value.trim()) {
+                classInput.value = 'B24';
+            }
+            if (dateInput && !dateInput.value) {
+                var today = new Date().toISOString().split('T')[0];
+                dateInput.value = today;
+            }
+        }
+
     </script>
     <!-- FontAwesome icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -886,16 +1012,12 @@
         /* On page load initialization */
         window.addEventListener('DOMContentLoaded', () => {
             initDarkMode();
+            loadProgress();
+            applyDefaultClassAndDate();
+            setupUniversalAutoSave();
             initCables();
             setupDropZones();
-            loadProgress();
             updateProgress();
-
-            // Set default date if empty
-            const dateInput = document.getElementById('studentDate');
-            if (!dateInput.value) {
-                dateInput.value = new Date().toISOString().split('T')[0];
-            }
         });
 
         /* Dark Mode Handling */
@@ -1366,6 +1488,69 @@
                 onConfirm();
             };
         }
+    
+        function setupUniversalAutoSave() {
+            var pageKey = 'hw_autosave_' + location.pathname.split('/').pop();
+            
+            function saveAll() {
+                var data = {};
+                document.querySelectorAll('input, textarea, select').forEach(function(el) {
+                    if (el.id) {
+                        if (el.type === 'checkbox') {
+                            data[el.id] = el.checked;
+                        } else if (el.type === 'radio') {
+                            if (el.checked) data[el.name] = el.value;
+                        } else {
+                            data[el.id] = el.value;
+                        }
+                    } else if (el.name && el.type === 'radio') {
+                        if (el.checked) data[el.name] = el.value;
+                    }
+                });
+                localStorage.setItem(pageKey, JSON.stringify(data));
+            }
+
+            try {
+                var saved = localStorage.getItem(pageKey);
+                if (saved) {
+                    var data = JSON.parse(saved);
+                    Object.keys(data).forEach(function(key) {
+                        var el = document.getElementById(key);
+                        if (el) {
+                            if (el.type === 'checkbox') {
+                                el.checked = !!data[key];
+                            } else if (el.type === 'radio') {
+                                if (el.value === data[key]) el.checked = true;
+                            } else {
+                                el.value = data[key];
+                            }
+                        } else {
+                            var radio = document.querySelector('input[name="' + key + '"][value="' + data[key] + '"]');
+                            if (radio) radio.checked = true;
+                        }
+                    });
+                }
+            } catch(e) {}
+
+            document.querySelectorAll('input, textarea, select').forEach(function(el) {
+                el.addEventListener('input', saveAll);
+                el.addEventListener('change', saveAll);
+            });
+        }
+
+        function applyDefaultClassAndDate() {
+            var classInput = document.getElementById('studentClass');
+            var dateInput = document.getElementById('studentDate');
+            
+            if (classInput && !classInput.value.trim()) {
+                classInput.value = 'B24';
+            }
+            if (dateInput && !dateInput.value) {
+                var today = new Date().toISOString().split('T')[0];
+                dateInput.value = today;
+            }
+        }
+
     </script>
 </body>
 </html>

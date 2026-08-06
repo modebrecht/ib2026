@@ -353,13 +353,8 @@
 
     <script>
         
-        function applyDefaultClassAndDate() {
-            var classInput = document.getElementById('studentClass');
-            var dateInput = document.getElementById('studentDate');
-            
-            if (classInput && !classInput.value.trim()) {
-                classInput.value = 'B24';
-            }
+        
+        
             if (dateInput && !dateInput.value) {
                 var today = new Date().toISOString().split('T')[0];
                 dateInput.value = today;
@@ -368,12 +363,71 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             initTheme();
+            loadProgressFromStorage();
             applyDefaultClassAndDate();
-            loadProgressFromStorage(); applyDefaultClassAndDate();
+            setupUniversalAutoSave();
             updateProgress();
         });
 
         
+        
+        
+            if (dateInput && !dateInput.value) {
+                var today = new Date().toISOString().split('T')[0];
+                dateInput.value = today;
+            }
+        }
+
+        
+        function setupUniversalAutoSave() {
+            var pageKey = 'hw_autosave_' + location.pathname.split('/').pop();
+            
+            function saveAll() {
+                var data = {};
+                document.querySelectorAll('input, textarea, select').forEach(function(el) {
+                    if (el.id) {
+                        if (el.type === 'checkbox') {
+                            data[el.id] = el.checked;
+                        } else if (el.type === 'radio') {
+                            if (el.checked) data[el.name] = el.value;
+                        } else {
+                            data[el.id] = el.value;
+                        }
+                    } else if (el.name && el.type === 'radio') {
+                        if (el.checked) data[el.name] = el.value;
+                    }
+                });
+                localStorage.setItem(pageKey, JSON.stringify(data));
+            }
+
+            try {
+                var saved = localStorage.getItem(pageKey);
+                if (saved) {
+                    var data = JSON.parse(saved);
+                    Object.keys(data).forEach(function(key) {
+                        var el = document.getElementById(key);
+                        if (el) {
+                            if (el.type === 'checkbox') {
+                                el.checked = !!data[key];
+                            } else if (el.type === 'radio') {
+                                if (el.value === data[key]) el.checked = true;
+                            } else {
+                                el.value = data[key];
+                            }
+                        } else {
+                            var radio = document.querySelector('input[name="' + key + '"][value="' + data[key] + '"]');
+                            if (radio) radio.checked = true;
+                        }
+                    });
+                }
+            } catch(e) {}
+
+            document.querySelectorAll('input, textarea, select').forEach(function(el) {
+                el.addEventListener('input', saveAll);
+                el.addEventListener('change', saveAll);
+            });
+        }
+
         function applyDefaultClassAndDate() {
             var classInput = document.getElementById('studentClass');
             var dateInput = document.getElementById('studentDate');
