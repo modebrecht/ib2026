@@ -35,6 +35,22 @@
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.5); border-radius: 4px; }
+        @keyframes ytPulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.45); }
+            50% { transform: scale(1.12); box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        .yt-pulse {
+            transform-origin: center;
+            animation: ytPulse 1.8s ease-in-out infinite;
+        }
+
+        .yt-pulse.replay {
+            animation: ytPulse 1.8s ease-in-out 1;
+            animation-fill-mode: both;
+        }
+
         @media print {
             .no-print { display: none !important; }
             body { background: white !important; color: black !important; font-size: 11pt; }
@@ -183,19 +199,21 @@
                     <i class="fa-solid fa-play"></i> Erklärvideo
                 </span>
                 <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100">Video: Das EVA-Prinzip einfach erklärt</h3>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Schau dir das Video an und mache dir Notizen zum Grundprinzip im Alltag.</p>
             </div>
 
-            <div class="aspect-video w-full rounded-xl overflow-hidden shadow-md bg-slate-900">
-                <iframe class="w-full h-full" src="https://www.youtube-nocookie.com/embed/Y3Tj9iWd0aY" title="EVA Prinzip Erklärvideo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <div class="space-y-2">
+                <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 p-6 text-center">
+                    <a id="ytButton" href="https://www.youtube.com/watch?v=p-kMnyitkHo" target="_blank" rel="noopener" class="yt-pulse group inline-flex items-center justify-center w-28 h-28 rounded-2xl bg-red-600 text-white shadow-lg border-4 border-red-400 hover:scale-110 transition-transform">
+                        <i class="fa-brands fa-youtube text-6xl"></i>
+                    </a>
+                    <div class="mt-3">
+                        <a href="https://www.youtube.com/watch?v=p-kMnyitkHo" target="_blank" rel="noopener" class="text-sm font-semibold text-red-600 dark:text-red-400 hover:underline">
+                            Youtube öffnen
+                        </a>
+                    </div>
+                </div>
             </div>
 
-            <div>
-                <label class="block text-xs font-bold uppercase text-slate-700 dark:text-slate-300 mb-1.5">
-                    Notizen &amp; Erkenntnisse aus dem Video:
-                </label>
-                <textarea id="videoNotes" oninput="updateProgress()" rows="3" placeholder="Antwort eingeben..." class="w-full p-3 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100"></textarea>
-            </div>
         </section>
 
         <!-- Section 3: Theory & Everyday Examples -->
@@ -206,43 +224,35 @@
                 </span>
                 <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100">5 Beispiele aus deinem Alltag</h3>
                 <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                    Wo begegnet dir das EVA-Prinzip im Alltag? (z. B. Smartphone, Getränkeautomat, Taschenrechner, Ampel, Mikrowelle). Bestimme jeweils Eingabe, Verarbeitung und Ausgabe.
+                    Wo begegnet dir das EVA-Prinzip im Alltag? Fülle die folgende Tabelle aus.
                 </p>
             </div>
 
-            <!-- Theory Question -->
-            <div class="p-4 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700">
-                <label class="block text-xs font-bold text-slate-900 dark:text-slate-100 mb-1.5">
-                    Frage: Warum spricht man beim Speicher (RAM / Festplatte) oft von einem "Ergänzungselement" des EVA-Prinzips?
-                </label>
-                <textarea id="theoryAnswer" oninput="updateProgress()" rows="2" placeholder="Antwort eingeben..." class="w-full p-3 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100"></textarea>
-            </div>
-
-            <!-- 5 Everyday Example Cards -->
-            <div class="space-y-4">
+            <!-- 6 Everyday Example Cards -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
                 <div class="p-4 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 space-y-3">
                     <h4 class="font-bold text-sm text-onedrive-600 dark:text-onedrive-400 flex items-center gap-2">
                         <span class="w-6 h-6 rounded-full bg-onedrive-500 text-white flex items-center justify-center text-xs">1</span>
-                        Beispiel 1 aus dem Alltag
+                        Beispiel 1: Kaffeemaschine
                     </h4>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                    <div class="space-y-3">
                         <div>
                             <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1">System / Gerät:</label>
-                            <input type="text" id="ex1_name" oninput="updateProgress()" placeholder="Gerät / System eingeben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
+                            <input type="text" id="ex1_name" oninput="updateProgress()" value="Kaffeemaschine" placeholder="Gerät / System eingeben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
                         </div>
                         <div>
                             <label class="block text-[11px] font-bold text-sky-600 dark:text-sky-400 mb-1">Eingabe (E):</label>
-                            <input type="text" id="ex1_in" oninput="updateProgress()" placeholder="Eingabe beschreiben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
+                            <input type="text" id="ex1_in" oninput="updateProgress()" value="Wasser & Kaffee hineingeben, Taste drücken" placeholder="Eingabe beschreiben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
                         </div>
                         <div>
                             <label class="block text-[11px] font-bold text-onedrive-600 dark:text-onedrive-400 mb-1">Verarbeitung (V):</label>
-                            <input type="text" id="ex1_proc" oninput="updateProgress()" placeholder="Verarbeitung beschreiben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
+                            <input type="text" id="ex1_proc" oninput="updateProgress()" value="Die Maschine erhitzt das Wasser und brüht den Kaffee" placeholder="Verarbeitung beschreiben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
                         </div>
                         <div>
                             <label class="block text-[11px] font-bold text-emerald-600 dark:text-emerald-400 mb-1">Ausgabe (A):</label>
-                            <input type="text" id="ex1_out" oninput="updateProgress()" placeholder="Ausgabe beschreiben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
+                            <input type="text" id="ex1_out" oninput="updateProgress()" value="Frischer Kaffee wird ausgegeben" placeholder="Ausgabe beschreiben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
                         </div>
                     </div>
                 </div>
@@ -252,22 +262,22 @@
                         Beispiel 2 aus dem Alltag
                     </h4>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                    <div class="space-y-3">
                         <div>
                             <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1">System / Gerät:</label>
-                            <input type="text" id="ex2_name" oninput="updateProgress()" placeholder="Gerät / System eingeben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
+                            <input type="text" id="ex2_name" oninput="updateProgress()" value="Ampel" placeholder="Gerät / System eingeben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
                         </div>
                         <div>
                             <label class="block text-[11px] font-bold text-sky-600 dark:text-sky-400 mb-1">Eingabe (E):</label>
-                            <input type="text" id="ex2_in" oninput="updateProgress()" placeholder="Eingabe beschreiben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
+                            <input type="text" id="ex2_in" oninput="updateProgress()" value="Grün, Gelb oder Rot wird erkannt" placeholder="Eingabe beschreiben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
                         </div>
                         <div>
                             <label class="block text-[11px] font-bold text-onedrive-600 dark:text-onedrive-400 mb-1">Verarbeitung (V):</label>
-                            <input type="text" id="ex2_proc" oninput="updateProgress()" placeholder="Verarbeitung beschreiben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
+                            <input type="text" id="ex2_proc" oninput="updateProgress()" value="Die Ampel steuert die Fahrweise über die Lichtsignale" placeholder="Verarbeitung beschreiben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
                         </div>
                         <div>
                             <label class="block text-[11px] font-bold text-emerald-600 dark:text-emerald-400 mb-1">Ausgabe (A):</label>
-                            <input type="text" id="ex2_out" oninput="updateProgress()" placeholder="Ausgabe beschreiben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
+                            <input type="text" id="ex2_out" oninput="updateProgress()" value="Fahrer bekommen ein Signal für Halt, Fahren oder Vorsicht" placeholder="Ausgabe beschreiben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
                         </div>
                     </div>
                 </div>
@@ -277,7 +287,7 @@
                         Beispiel 3 aus dem Alltag
                     </h4>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                    <div class="space-y-3">
                         <div>
                             <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1">System / Gerät:</label>
                             <input type="text" id="ex3_name" oninput="updateProgress()" placeholder="Gerät / System eingeben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
@@ -302,7 +312,7 @@
                         Beispiel 4 aus dem Alltag
                     </h4>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                    <div class="space-y-3">
                         <div>
                             <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1">System / Gerät:</label>
                             <input type="text" id="ex4_name" oninput="updateProgress()" placeholder="Gerät / System eingeben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
@@ -327,7 +337,7 @@
                         Beispiel 5 aus dem Alltag
                     </h4>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                    <div class="space-y-3">
                         <div>
                             <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1">System / Gerät:</label>
                             <input type="text" id="ex5_name" oninput="updateProgress()" placeholder="Gerät / System eingeben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
@@ -343,6 +353,31 @@
                         <div>
                             <label class="block text-[11px] font-bold text-emerald-600 dark:text-emerald-400 mb-1">Ausgabe (A):</label>
                             <input type="text" id="ex5_out" oninput="updateProgress()" placeholder="Ausgabe beschreiben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 space-y-3">
+                    <h4 class="font-bold text-sm text-onedrive-600 dark:text-onedrive-400 flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-full bg-onedrive-500 text-white flex items-center justify-center text-xs">6</span>
+                        Beispiel 6 aus dem Alltag
+                    </h4>
+                    
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1">System / Gerät:</label>
+                            <input type="text" id="ex6_name" oninput="updateProgress()" placeholder="Gerät / System eingeben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-sky-600 dark:text-sky-400 mb-1">Eingabe (E):</label>
+                            <input type="text" id="ex6_in" oninput="updateProgress()" placeholder="Eingabe beschreiben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-onedrive-600 dark:text-onedrive-400 mb-1">Verarbeitung (V):</label>
+                            <input type="text" id="ex6_proc" oninput="updateProgress()" placeholder="Verarbeitung beschreiben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-emerald-600 dark:text-emerald-400 mb-1">Ausgabe (A):</label>
+                            <input type="text" id="ex6_out" oninput="updateProgress()" placeholder="Ausgabe beschreiben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
                         </div>
                     </div>
                 </div>
@@ -598,6 +633,25 @@ function applyDefaultClassAndDate() {
             document.getElementById('modalCancelBtn').onclick = () => { modal.style.display = 'none'; };
             document.getElementById('modalConfirmBtn').onclick = () => { modal.style.display = 'none'; onConfirm(); };
         }
+
+        function replayYtButtonAnimation() {
+            const btn = document.getElementById('ytButton');
+            if (!btn) return;
+            btn.classList.remove('replay');
+            void btn.offsetWidth;
+            btn.classList.add('replay');
+        }
+
+        window.addEventListener('load', () => {
+            setTimeout(replayYtButtonAnimation, 3000);
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const btn = document.getElementById('ytButton');
+            if (btn) {
+                btn.addEventListener('click', replayYtButtonAnimation);
+            }
+        });
     </script>
 </body>
 </html>
