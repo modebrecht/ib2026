@@ -772,6 +772,11 @@
           state.totalPairs = state.deck.length / 2;
 
           setStats(); timeEl.textContent='00:00'; state.running=true; state.lock=false; state.flipped=[]; renderBoard(); if(restartBtn) restartBtn.disabled=false;
+          
+          setTimeout(function() {
+              var brd = document.getElementById('board');
+              if(brd) brd.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }, 500);
         }
         function restartGame(){ startGame(); }
 
