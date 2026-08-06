@@ -713,7 +713,7 @@
           <h2 class="column-title">Klasse B24</h2>
         </div>
 
-        <!-- Tile: IT Hardware -->
+        <!-- Tile 1: IT Hardware -->
         <div class="kachel">
           <div class="kachel-header" onclick="toggleKachel(this)">
             <div class="kachel-title-wrap">
@@ -727,6 +727,7 @@
             </div>
             <div class="toggle-arrow">▼</div>
           </div>
+
           <div class="kachel-body">
             <div class="unterkacheln">
               <!-- Unterkachel: A1 IT-Hardware Memory -->
@@ -828,9 +829,101 @@
           </div>
         </div>
 
+                <!-- Tile 2: Vortrag & Präsentation -->
+        <div class="kachel">
+          <div class="kachel-header" onclick="toggleKachel(this)">
+            <div class="kachel-title-wrap">
+              <div class="kachel-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+              </div>
+              <div>
+                <h3 class="kachel-title">Vortrag Hardware Komponente</h3>
+                <p class="kachel-subtitle">Auftrag, Anforderungen &amp; Themenpools</p>
+              </div>
+            </div>
+            <div class="toggle-arrow">▼</div>
+          </div>
+
+          <div class="kachel-body">
+            <div style="display: flex; flex-direction: column; gap: 14px; margin-top: 14px;">
+
+              <!-- Header Bar with Quick Specs -->
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; padding: 12px; background: var(--card); border: 1px solid var(--line); border-radius: 10px;">
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                  <span class="badge" style="background: var(--blue-soft); color: var(--blue);">⏱️ Solo: mind. 5 Min</span>
+                  <span class="badge" style="background: var(--blue-soft); color: var(--blue);">⏱️ 2er-Team: mind. 8 Min</span>
+                  <span class="badge" style="background: #eefaf2; color: #107c41; border-color: #bde7cf;">📁 Abgabe: PPTX oder HTML</span>
+                </div>
+              </div>
+
+              <!-- Content Checklist -->
+              <div style="background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px;">
+                <h4 style="font-size: calc(14px * var(--font-scale)); font-weight: 700; margin: 0 0 8px 0; color: var(--text);">
+                  🎤 Inhaltliche Fragen (Checkliste):
+                </h4>
+                <ul style="margin: 0; padding-left: 18px; font-size: calc(13px * var(--font-scale)); color: var(--text); line-height: 1.5;">
+                  <li><strong>Was ist das Hardware-Teil?</strong> (Genaue Bezeichnung &amp; Funktion)</li>
+                  <li><strong>Wichtige Fachbegriffe:</strong> Welche Begriffe muss man kennen?</li>
+                  <li><strong>Verwendungszweck:</strong> Wofür braucht man es im Computer?</li>
+                  <li><strong>Wichtigkeit:</strong> Warum ist dieses Teil unverzichtbar?</li>
+                  <li><strong>Funktionsweise:</strong> Wie funktioniert es grob?</li>
+                  <li><strong>Klassen-Erklärung:</strong> So erklären, dass alle es verstehen!</li>
+                </ul>
+              </div>
+
+              <!-- Solo Topics -->
+              <div style="background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px;">
+                <h4 style="font-size: calc(14px * var(--font-scale)); font-weight: 700; margin: 0 0 8px 0; color: var(--text);">
+                  👤 Mögliche Solo-Themen (Einzelarbeit):
+                </h4>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px;">
+                  <div class="badge" style="text-align: center; padding: 8px;">🧠 CPU / Prozessor</div>
+                  <div class="badge" style="text-align: center; padding: 8px;">🎨 Grafikkarte (GPU)</div>
+                  <div class="badge" style="text-align: center; padding: 8px;">🔌 Mainboard</div>
+                  <div class="badge" style="text-align: center; padding: 8px;">⚡ RAM (Arbeitsspeicher)</div>
+                  <div class="badge" style="text-align: center; padding: 8px;">🚀 SSD / HDD Speicher</div>
+                  <div class="badge" style="text-align: center; padding: 8px;">🔋 Netzteil (PSU)</div>
+                </div>
+              </div>
+
+              <!-- 2-Person Team Topics -->
+              <div style="background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px;">
+                <h4 style="font-size: calc(14px * var(--font-scale)); font-weight: 700; margin: 0 0 8px 0; color: var(--text);">
+                  👥 Mögliche 2er-Team-Themen:
+                </h4>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px; font-size: calc(12px * var(--font-scale));">
+                  <div style="padding: 8px; background: var(--card-soft); border: 1px solid var(--line); border-radius: 8px;">
+                    <strong>🎮 GPU + Monitor-Anschlüsse</strong><br><span style="color: var(--muted);">HDMI, DisplayPort, DVI, VGA</span>
+                  </div>
+                  <div style="padding: 8px; background: var(--card-soft); border: 1px solid var(--line); border-radius: 8px;">
+                    <strong>🔌 Mainboard + Anschlüsse</strong><br><span style="color: var(--muted);">Sockel, PCIe, SATA, M.2, Strom</span>
+                  </div>
+                  <div style="padding: 8px; background: var(--card-soft); border: 1px solid var(--line); border-radius: 8px;">
+                    <strong>📏 RAM + SSD/HDD</strong><br><span style="color: var(--muted);">Arbeitsspeicher vs. Massenspeicher</span>
+                  </div>
+                  <div style="padding: 8px; background: var(--card-soft); border: 1px solid var(--line); border-radius: 8px;">
+                    <strong>⚡ Netzteil + Stromversorgung</strong><br><span style="color: var(--muted);">Watt, Effizienz, Kabel management</span>
+                  </div>
+                  <div style="padding: 8px; background: var(--card-soft); border: 1px solid var(--line); border-radius: 8px;">
+                    <strong>🌬️ Gehäuse + Airflow/Kühlung</strong><br><span style="color: var(--muted);">Lüfter, Luftstrom, Staubfilter</span>
+                  </div>
+                  <div style="padding: 8px; background: var(--card-soft); border: 1px solid var(--line); border-radius: 8px;">
+                    <strong>❄️ CPU-Kühlung + Paste</strong><br><span style="color: var(--muted);">Luftkühlung vs. Wasserkühlung (AIO)</span>
+                  </div>
+                  <div style="padding: 8px; background: var(--card-soft); border: 1px solid var(--line); border-radius: 8px;">
+                    <strong>💻 Laptop vs. Desktop-PC</strong><br><span style="color: var(--muted);">Unterschiede, Leistung, Akku</span>
+                  </div>
+                  <div style="padding: 8px; background: var(--card-soft); border: 1px solid var(--line); border-radius: 8px;">
+                    <strong>📱 Smartphone vs. PC-Hardware</strong><br><span style="color: var(--muted);">SoC, Kamera vs. CPU/GPU/RAM</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
       </section>
 
-      <!-- RIGHT COLUMN: B25 -->
       <section aria-label="Klasse B25">
         <div class="column-header">
           <span class="class-badge">B25</span>
