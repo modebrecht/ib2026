@@ -42,6 +42,21 @@
             --card-text: 15px;
         }
 
+        @keyframes flyInCard {
+            0% {
+                opacity: 0;
+                transform: translateY(60px) scale(0.8) rotateX(-20deg);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1) rotateX(0deg);
+            }
+        }
+        
+        .card-fly-in {
+            animation: flyInCard 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+        }
+
         .mem-board {
             display: grid;
             gap: 8px;
@@ -665,7 +680,8 @@
             (function(idx){
               var c = state.deck[idx];
               var el = document.createElement('div');
-              el.className = 'mem-card';
+              el.className = 'mem-card card-fly-in';
+              el.style.animationDelay = (idx * 0.04) + 's';
               el.dataset.index = String(idx);
               
               var back = document.createElement('div');
@@ -716,6 +732,13 @@
               boardEl.appendChild(el);
             })(k);
           }
+          
+          setTimeout(function() {
+              document.querySelectorAll('.card-fly-in').forEach(function(card) {
+                  card.classList.remove('card-fly-in');
+                  card.style.animationDelay = '';
+              });
+          }, 2500);
         }
 
         function setStats(){ pointsEl.textContent=String(state.points); movesEl.textContent=String(state.moves); hitsEl.textContent=String(state.hits); }
