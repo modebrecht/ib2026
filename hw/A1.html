@@ -604,6 +604,7 @@
 
           var bestCols = 4;
           var bestFitW = 0;
+          var bestScore = 0;
 
           for (var i = 0; i < validCols.length; i++) {
               var testCols = validCols[i];
@@ -612,11 +613,22 @@
               var maxW = (boardWidth - (gap * (testCols - 1))) / testCols;
               var maxH = (availHeight - (gap * (testRows - 1))) / testRows;
               
-              // On Mobile, strictly fit to 1 screen. On Desktop, allow cards to grow up to 1.7x screen height to fill margins!
-              var allowedH = (window.innerWidth < 768) ? maxH : (maxH * 1.7);
-              var possibleFitW = Math.min(maxW, allowedH / 1.25);
+              var possibleFitW;
+              var score;
               
-              if (possibleFitW > bestFitW) {
+              if (window.innerWidth >= 768) {
+                  // Desktop: Prefer wider layouts that utilize screen width nicely
+                  possibleFitW = Math.min(maxW, 220); // Cap max size so cards aren't huge
+                  possibleFitW = Math.min(possibleFitW, (maxH * 1.5) / 1.25); // Allow some vertical scrolling
+                  score = possibleFitW * testCols; // Maximize horizontal space utilization!
+              } else {
+                  // Mobile: Strictly fit to 1 screen, maximize absolute card size
+                  possibleFitW = Math.min(maxW, maxH / 1.25);
+                  score = possibleFitW;
+              }
+              
+              if (score > bestScore) {
+                  bestScore = score;
                   bestFitW = possibleFitW;
                   bestCols = testCols;
               }
@@ -624,8 +636,13 @@
 
           var cols = bestCols;
           var fitCardW = bestFitW;
-          var minW = window.innerWidth < 768 ? 75 : 180;
+          var absoluteMaxW = (boardWidth - (gap * (cols - 1))) / cols;
+          var minW = window.innerWidth < 768 ? 75 : 120; // lower min width for desktop slightly to allow wider grids
+          
           fitCardW = Math.max(minW, fitCardW); 
+          // CRITICAL: Never exceed the available horizontal space, otherwise we get horizontal scrolling!
+          fitCardW = Math.min(fitCardW, absoluteMaxW);
+          
           var fitCardH = fitCardW * 1.25;
 
           boardEl.style.gridTemplateColumns = 'repeat(' + cols + ', ' + Math.floor(fitCardW) + 'px)';
