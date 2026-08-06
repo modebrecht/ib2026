@@ -38,77 +38,164 @@
         ::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.5); border-radius: 4px; }
         
         :root {
-            --card-min: 150px;
-            --card-text: 13px;
+            --card-min: 160px;
+            --card-text: 15px;
         }
 
         .mem-board {
             display: grid;
-            gap: 12px;
-            grid-template-columns: repeat(auto-fit, minmax(var(--card-min), 1fr));
-            transition: grid-template-columns 0.2s ease;
+            gap: 8px;
+            width: 100%;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .mem-card {
             width: 100%;
             aspect-ratio: 4 / 5;
             perspective: 1000px;
+            transform-style: preserve-3d;
             position: relative;
             cursor: pointer;
             user-select: none;
+            box-sizing: border-box;
+            transition: transform 0.25s ease;
+        }
+
+        .mem-card:hover {
+            transform: scale(1.02);
         }
 
         .mem-face {
             position: absolute;
             inset: 0;
-            border-radius: 1rem;
-            border: 1px solid rgba(226, 232, 240, 0.8);
+            width: 100%;
+            height: 100%;
+            border-radius: 1.25rem;
+            border: 2px solid rgba(226, 232, 240, 0.9);
+            box-sizing: border-box !important;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 10px;
-            backface-visibility: hidden;
-            -webkit-backface-visibility: hidden;
+            padding: 8px;
+            backface-visibility: hidden !important;
+            -webkit-backface-visibility: hidden !important;
             transform-style: preserve-3d;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            transition: transform 0.35s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.07);
+            transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.2s ease, box-shadow 0.2s ease;
         }
 
         .dark .mem-face {
-            border-color: rgba(30, 41, 59, 0.8);
+            border-color: rgba(51, 65, 85, 0.8);
+        }
+
+        .mem-term-emoji {
+            font-size: calc(var(--card-text, 15px) * 2.6);
+            line-height: 1;
+            margin-bottom: 0.35rem;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+
+        .mem-term-label {
+            font-size: calc(var(--card-text, 15px) * 1.15);
+            font-weight: 900;
+            line-height: 1.25;
+            text-align: center;
+        }
+
+        .mem-desc-text {
+            font-size: var(--card-text, 15px);
+            font-weight: 700;
+            line-height: 1.35;
+            text-align: center;
+            padding: 0 6px;
         }
 
         .mem-front {
-            background: #ffffff;
+            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
             color: #0f172a;
             transform: rotateY(180deg);
         }
 
         .dark .mem-front {
-            background: #0f172a;
+            background: linear-gradient(180deg, #334155 0%, #1e293b 100%);
             color: #f8fafc;
         }
 
         .mem-back {
-            background: linear-gradient(135deg, #0078d4, #004578);
+            background-image: 
+                url("data:image/svg+xml,%3Csvg width='18' height='18' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M 9 0 L 18 9 L 9 18 L 0 9 Z' fill='none' stroke='rgba(251,191,36,0.18)' stroke-width='1.2'/%3E%3Ccircle cx='9' cy='9' r='1.8' fill='rgba(251,191,36,0.24)'/%3E%3C/svg%3E"),
+                radial-gradient(ellipse at center, #1e1b4b 0%, #090d16 100%);
             color: #ffffff;
             font-weight: 700;
+            border: 2px solid #f59e0b !important;
+            box-shadow: inset 0 0 0 1px rgba(251, 191, 36, 0.4), inset 0 0 24px rgba(245, 158, 11, 0.3), 0 8px 25px rgba(0,0,0,0.4);
+            transform: rotateY(0deg);
         }
 
         .dark .mem-back {
-            background: linear-gradient(135deg, #005a9e, #001f3f);
+            background-image: 
+                url("data:image/svg+xml,%3Csvg width='18' height='18' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M 9 0 L 18 9 L 9 18 L 0 9 Z' fill='none' stroke='rgba(251,191,36,0.18)' stroke-width='1.2'/%3E%3Ccircle cx='9' cy='9' r='1.8' fill='rgba(251,191,36,0.24)'/%3E%3C/svg%3E"),
+                radial-gradient(ellipse at center, #172554 0%, #020617 100%);
+            border: 2px solid #f59e0b !important;
+            box-shadow: inset 0 0 0 1px rgba(251, 191, 36, 0.5), inset 0 0 28px rgba(245, 158, 11, 0.35), 0 8px 30px rgba(0,0,0,0.6);
         }
 
-        .mem-card.flipped .mem-front { transform: rotateY(0deg); }
-        .mem-card.flipped .mem-back { transform: rotateY(180deg); }
+        .mem-card:not(.flipped) .mem-front,
+        .mem-card:not(.flipped) .mem-front * {
+            opacity: 0 !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
+        }
+
+        .mem-card:not(.flipped) .mem-back {
+            transform: rotateY(0deg);
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+
+        .mem-card.flipped .mem-front { 
+            transform: rotateY(0deg);
+            opacity: 1 !important;
+            visibility: visible !important;
+            z-index: 2;
+        }
+
+        .mem-card.flipped .mem-front * {
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+
+        .mem-card.flipped .mem-back,
+        .mem-card.flipped .mem-back * { 
+            transform: rotateY(180deg);
+            opacity: 0 !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
+            z-index: 1;
+        }
 
         .mem-card.matched .mem-front {
-            border-color: #10b981 !important;
-            box-shadow: 0 0 0 2px #10b981, 0 4px 12px rgba(16, 185, 129, 0.2) !important;
+            border: 2px solid #10b981 !important;
+            box-shadow: 0 0 0 2px #10b981, 0 10px 25px rgba(16, 185, 129, 0.4) !important;
+            background: linear-gradient(180deg, #ecfdf5 0%, #d1fae5 100%) !important;
+        }
+        .dark .mem-card.matched .mem-front {
+            background: linear-gradient(180deg, #047857 0%, #064e3b 100%) !important;
+            color: #ecfdf5 !important;
         }
 
         .mem-card.shake { animation: memShake 0.4s linear; }
+        .mem-card.shake .mem-front {
+            border: 2px solid #ef4444 !important;
+            box-shadow: 0 0 0 2px #ef4444, 0 10px 25px rgba(239, 68, 68, 0.4) !important;
+            background: linear-gradient(180deg, #fef2f2 0%, #fee2e2 100%) !important;
+            color: #7f1d1d !important;
+        }
+        .dark .mem-card.shake .mem-front {
+            background: linear-gradient(180deg, #991b1b 0%, #7f1d1d 100%) !important;
+            color: #fef2f2 !important;
+        }
         @keyframes memShake {
             20% { transform: translateX(-4px); }
             40% { transform: translateX(4px); }
@@ -161,11 +248,11 @@
         </div>
     </header>
 
-    <main class="max-w-[1920px] w-full mx-auto px-4 sm:px-8 py-6 space-y-6 flex-grow">
+    <main class="max-w-[1920px] w-full mx-auto px-2 sm:px-6 py-2 space-y-3 flex-grow">
 
         <!-- Title & Metadata Card -->
-        <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 print-card">
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-slate-800">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-3 sm:p-4 print-card">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3 border-b border-slate-100 dark:border-slate-800">
                 <div class="flex items-center gap-3">
                     <div class="w-12 h-12 rounded-xl bg-onedrive-50 dark:bg-onedrive-900/40 text-onedrive-600 dark:text-onedrive-400 flex items-center justify-center text-xl font-bold border border-onedrive-100 dark:border-onedrive-800/50">
                         <i class="fa-solid fa-gamepad"></i>
@@ -210,60 +297,53 @@
         </div>
 
         <!-- Controls & Live Stats Card -->
-        <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 space-y-5 no-print">
-            <div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-2 sm:p-3 space-y-2 no-print">
+            <div class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
                 
-                <!-- Left: Mode Selector & Action Buttons -->
-                <div class="flex flex-wrap items-center gap-3">
-                    <div class="flex items-center gap-2">
-                        <label for="difficulty" class="text-xs font-bold uppercase text-slate-500 dark:text-slate-400">Modus:</label>
-                        <select id="difficulty" class="px-3.5 py-2 text-xs font-bold bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
-                            <option value="einfach" selected>Einfach – 8 Karten</option>
-                            <option value="mittel">Mittel – 16 Karten</option>
-                            <option value="schwer">Schwer – 20 Karten</option>
-                            <option value="ultra">Ultra – 24 Karten</option>
-                        </select>
-                    </div>
+                <!-- Action Buttons & Difficulty Select (Without 'Modus:' label) -->
+                <div class="flex flex-wrap items-center justify-center md:justify-start gap-2">
+                    <select id="difficulty" class="px-3 py-2 text-sm font-extrabold bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-onedrive-500 text-slate-800 dark:text-slate-100 cursor-pointer shadow-xs">
+                        <option value="einfach" selected>Einfach – 8 Karten</option>
+                        <option value="mittel">Mittel – 16 Karten</option>
+                        <option value="schwer">Schwer – 20 Karten</option>
+                        <option value="ultra">Ultra – 24 Karten</option>
+                    </select>
 
-                    <button id="startBtn" class="px-5 py-2 text-xs font-bold rounded-xl bg-onedrive-500 hover:bg-onedrive-600 text-white transition shadow-md shadow-onedrive-500/20 flex items-center gap-1.5">
-                        <i class="fa-solid fa-play"></i> Start
+                    <button id="restartBtn" class="px-4 py-2 text-sm font-extrabold rounded-xl bg-onedrive-500 hover:bg-onedrive-600 text-white transition shadow-sm flex items-center gap-1.5">
+                        <i class="fa-solid fa-rotate-right"></i> Neu mischen
                     </button>
-                    <button id="restartBtn" disabled class="px-4 py-2 text-xs font-semibold rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition disabled:opacity-50 disabled:cursor-not-allowed">
-                        Neu mischen
+                    <button id="leaderBtn" class="px-3 py-2 text-sm font-bold rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition flex items-center gap-1.5 border border-slate-200 dark:border-slate-700">
+                        <i class="fa-solid fa-trophy text-amber-500 text-sm"></i> Bestenliste
                     </button>
-                    <button id="leaderBtn" class="px-4 py-2 text-xs font-semibold rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition flex items-center gap-1.5">
-                        <i class="fa-solid fa-trophy text-amber-500"></i> Bestenliste
+                    <button id="settingsToggleBtn" onclick="document.getElementById('extendedSettingsPanel').classList.toggle('hidden')" class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition flex items-center justify-center border border-slate-200 dark:border-slate-700" title="Erweiterte Einstellungen">
+                        <i class="fa-solid fa-sliders text-onedrive-500 text-sm"></i>
                     </button>
                 </div>
 
                 <!-- Right: Stats Bar -->
-                <div class="grid grid-cols-4 gap-2 sm:gap-3 text-center">
-                    <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60">
-                        <span class="block text-[10px] font-bold uppercase text-slate-400">Punkte</span>
-                        <span id="points" class="text-sm sm:text-base font-extrabold text-onedrive-600 dark:text-onedrive-400">0</span>
+                <div class="grid grid-cols-4 gap-2 text-center flex-grow max-w-lg">
+                    <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 shadow-xs">
+                        <span class="block text-[9px] font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500">Punkte</span>
+                        <span id="points" class="text-sm sm:text-base font-black text-onedrive-600 dark:text-onedrive-400">0</span>
                     </div>
-                    <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60">
-                        <span class="block text-[10px] font-bold uppercase text-slate-400">Züge</span>
-                        <span id="moves" class="text-sm sm:text-base font-extrabold text-slate-700 dark:text-slate-200">0</span>
+                    <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 shadow-xs">
+                        <span class="block text-[9px] font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500">Züge</span>
+                        <span id="moves" class="text-sm sm:text-base font-black text-slate-700 dark:text-slate-200">0</span>
                     </div>
-                    <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60">
-                        <span class="block text-[10px] font-bold uppercase text-slate-400">Treffer</span>
-                        <span id="hits" class="text-sm sm:text-base font-extrabold text-emerald-600 dark:text-emerald-400">0</span>
+                    <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 shadow-xs">
+                        <span class="block text-[9px] font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500">Treffer</span>
+                        <span id="hits" class="text-sm sm:text-base font-black text-emerald-600 dark:text-emerald-400">0</span>
                     </div>
-                    <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60">
-                        <span class="block text-[10px] font-bold uppercase text-slate-400">Zeit</span>
-                        <span id="time" class="text-sm sm:text-base font-extrabold text-slate-700 dark:text-slate-200">00:00</span>
+                    <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 shadow-xs">
+                        <span class="block text-[9px] font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500">Zeit</span>
+                        <span id="time" class="text-sm sm:text-base font-black text-slate-700 dark:text-slate-200 font-mono">00:00</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Settings Sliders Collapsible -->
-            <details class="pt-2 border-t border-slate-100 dark:border-slate-800 group">
-                <summary class="text-xs font-semibold text-slate-500 dark:text-slate-400 cursor-pointer hover:text-onedrive-500 flex items-center gap-1.5">
-                    <i class="fa-solid fa-sliders text-onedrive-500"></i>
-                    <span>Erweiterte Einstellungen (Verzögerung &amp; Kartengröße)</span>
-                </summary>
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
+            <!-- Extended Settings Panel (Toggled via button) -->
+            <div id="extendedSettingsPanel" class="hidden pt-3 border-t border-slate-100 dark:border-slate-800">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
                         <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-1">
                             Umdreh-Verzögerung: <span id="flipVal" class="text-onedrive-500">1.1s</span>
@@ -283,15 +363,11 @@
                         <input id="textSize" type="range" min="10" max="32" step="1" value="13" class="w-full">
                     </div>
                 </div>
-            </details>
+            </div>
         </div>
 
-        <!-- Board Section Card -->
-        <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 print-card space-y-3">
-            <p class="text-xs text-slate-500 dark:text-slate-400 no-print">
-                Wähle einen Modus (Einfach, Mittel, Schwer, Ultra) und klicke <strong>Start</strong>. Absolviere 3 Modi, um den PDF-Druck freizuschalten.
-            </p>
-
+        <!-- Board Section (No Container) -->
+        <div class="print-card w-full">
             <section id="board" class="mem-board" aria-live="polite">
                 <div class="col-span-full text-center text-slate-400 dark:text-slate-500 py-12 text-sm font-semibold">
                     Wähle einen Modus und klicke <b>Start</b>, um das Memory-Spiel zu beginnen.
@@ -482,7 +558,7 @@
             combo:0, maxCombo:0, comboBonus:0, totalPairs:0,
             timer:null, startTime:null,
             flipDelay: Number(localStorage.getItem('memFlipDelay')) || 1100,
-            cardMin: Number(localStorage.getItem('memCardMin')) || 150,
+            cardMin: Number(localStorage.getItem('memCardMin')) || 170,
             textSize: Number(localStorage.getItem('memTextSize')) || 13
           };
         }
@@ -493,7 +569,8 @@
 
         function createDeck(difficulty){
           var pool = [];
-          var pairCount = 8;
+          var pairCount = 4;
+          if (!difficulty) difficulty = (diffSel && diffSel.value) || 'einfach';
 
           if (difficulty === 'einfach') {
             pool = SET_EASY.slice();
@@ -509,7 +586,7 @@
             pairCount = 12;
           }
 
-          var chosen = shuffle(pool).slice(0, pairCount);
+          var chosen = shuffle(pool.slice()).slice(0, pairCount);
           var deck = [];
           for(var i=0; i<chosen.length; i++){
             var p = chosen[i];
@@ -520,19 +597,57 @@
         }
 
         function updateDynamicCardDimensions() {
-          var count = state.deck.length;
-          var cols = 4;
-          if (count === 8) cols = 4;
-          else if (count === 16) cols = 8;
-          else if (count === 20) cols = 10;
-          else if (count === 24) cols = 12;
-
-          var boardWidth = boardEl.clientWidth || (window.innerWidth - 64);
-          var gap = 12;
-          var calculatedMin = Math.floor((boardWidth - (gap * (cols - 1))) / cols);
-          var minWidth = Math.max(110, Math.min(220, calculatedMin));
+          var count = (state.deck && state.deck.length) || 8;
+          var boardWidth = boardEl.clientWidth || (window.innerWidth - 48);
           
-          document.documentElement.style.setProperty('--card-min', minWidth + 'px');
+          var reservedHeight = window.innerWidth < 768 ? 260 : 190;
+          var availHeight = window.innerHeight - reservedHeight;
+          availHeight = Math.max(300, availHeight);
+          var gap = (boardWidth < 480) ? 6 : 10;
+
+          var validCols = [4];
+          if (count === 8) validCols = [2, 4];
+          if (count === 16) validCols = [4, 8];
+          if (count === 20) validCols = [4, 5, 10];
+          if (count === 24) validCols = [4, 6, 8];
+
+          var bestCols = 4;
+          var bestFitW = 0;
+
+          for (var i = 0; i < validCols.length; i++) {
+              var testCols = validCols[i];
+              var testRows = count / testCols;
+              
+              var maxW = (boardWidth - (gap * (testCols - 1))) / testCols;
+              var maxH = (availHeight - (gap * (testRows - 1))) / testRows;
+              
+              // On Mobile, strictly fit to 1 screen. On Desktop, allow cards to grow up to 1.7x screen height to fill margins!
+              var allowedH = (window.innerWidth < 768) ? maxH : (maxH * 1.7);
+              var possibleFitW = Math.min(maxW, allowedH / 1.25);
+              
+              if (possibleFitW > bestFitW) {
+                  bestFitW = possibleFitW;
+                  bestCols = testCols;
+              }
+          }
+
+          var cols = bestCols;
+          var fitCardW = bestFitW;
+          var minW = window.innerWidth < 768 ? 75 : 180;
+          fitCardW = Math.max(minW, fitCardW); 
+          var fitCardH = fitCardW * 1.25;
+
+          boardEl.style.gridTemplateColumns = 'repeat(' + cols + ', ' + Math.floor(fitCardW) + 'px)';
+          boardEl.style.justifyContent = 'center';
+          boardEl.style.gap = gap + 'px';
+
+          var dynamicFontSize = Math.max(12, Math.min(28, Math.round(fitCardW * 0.115)));
+          document.documentElement.style.setProperty('--card-text', dynamicFontSize + 'px');
+
+          document.querySelectorAll('.mem-card').forEach(function(card) {
+            card.style.height = Math.floor(fitCardH) + 'px';
+            card.style.width = Math.floor(fitCardW) + 'px';
+          });
         }
 
         function renderBoard(){
@@ -546,26 +661,44 @@
               el.dataset.index = String(idx);
               
               var back = document.createElement('div');
-              back.className = 'mem-face mem-back';
-              back.innerHTML = '<i class="fa-solid fa-microchip text-2xl opacity-70"></i>';
+              back.className = 'mem-face mem-back relative overflow-hidden group';
+              back.innerHTML = '<div class="relative z-10 flex w-full h-full items-center justify-center pointer-events-none group-hover:scale-110 transition-transform duration-300">' +
+                '<svg viewBox="0 0 100 100" class="w-14 h-14 sm:w-20 sm:h-20 drop-shadow-[0_4px_12px_rgba(245,158,11,0.8)]" aria-hidden="true">' +
+                  '<defs>' +
+                    '<linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">' +
+                      '<stop offset="0%" stop-color="#FEF08A"/>' +
+                      '<stop offset="50%" stop-color="#F59E0B"/>' +
+                      '<stop offset="100%" stop-color="#B45309"/>' +
+                    '</linearGradient>' +
+                  '</defs>' +
+                  '<path d="M 50 12 C 34 26 14 20 6 36 C 16 38 28 45 38 50 C 44 42 56 42 62 50 C 72 45 84 38 94 36 C 86 20 66 26 50 12 Z" fill="url(#goldGrad)"/>' +
+                  '<circle cx="6" cy="36" r="4.5" fill="#FEF08A"/>' +
+                  '<circle cx="50" cy="12" r="4.5" fill="#FEF08A"/>' +
+                  '<circle cx="94" cy="36" r="4.5" fill="#FEF08A"/>' +
+                  '<path d="M 28 54 Q 50 48 72 54 Q 66 84 50 92 Q 34 84 28 54 Z" fill="url(#goldGrad)" opacity="0.95"/>' +
+                  '<path d="M 38 64 Q 44 60 47 64" stroke="#451A03" stroke-width="3" fill="none" stroke-linecap="round"/>' +
+                  '<path d="M 53 64 Q 56 60 62 64" stroke="#451A03" stroke-width="3" fill="none" stroke-linecap="round"/>' +
+                  '<path d="M 40 76 Q 50 84 60 76" stroke="#451A03" stroke-width="3.5" fill="none" stroke-linecap="round"/>' +
+                '</svg>' +
+              '</div>';
               
               var front = document.createElement('div');
               front.className = 'mem-face mem-front';
               
               if(c.type === 'term'){
                 var wrap = document.createElement('div');
-                wrap.className = 'flex flex-col items-center justify-center text-center';
+                wrap.className = 'flex flex-col items-center justify-center text-center w-full h-full p-3';
                 var em = document.createElement('div');
-                em.className = 'text-2xl mb-1';
+                em.className = 'mem-term-emoji';
                 em.textContent = c.content.split(' ')[0];
                 var lab = document.createElement('div');
-                lab.className = 'text-xs font-bold text-center';
+                lab.className = 'mem-term-label text-slate-800 dark:text-slate-100';
                 var parts = c.content.split(' '); parts.shift();
                 lab.textContent = parts.join(' ');
                 wrap.appendChild(em); wrap.appendChild(lab); front.appendChild(wrap);
               } else {
                 var d = document.createElement('div');
-                d.className = 'text-xs text-center px-1 font-medium';
+                d.className = 'mem-desc-text text-slate-800 dark:text-slate-100 w-full h-full flex items-center justify-center';
                 d.textContent = c.content;
                 front.appendChild(d);
               }
@@ -598,8 +731,7 @@
 
         function startGame(){
           state = resetState();
-          var diff = diffSel && diffSel.value || 'einfach';
-          if(ALL_MODES.indexOf(diff)===-1) diff='einfach';
+          var diff = (diffSel && diffSel.value) || 'einfach';
           state.difficulty = diff; localStorage.setItem('memDifficulty', diff);
           if(flipSlider){ state.flipDelay=Number(flipSlider.value); localStorage.setItem('memFlipDelay', state.flipDelay); }
           if(sizeSlider){ state.cardMin=Number(sizeSlider.value); localStorage.setItem('memCardMin', state.cardMin); document.documentElement.style.setProperty('--card-min', state.cardMin+'px'); }
@@ -608,7 +740,7 @@
           state.deck = createDeck(diff);
           state.totalPairs = state.deck.length / 2;
 
-          setStats(); timeEl.textContent='00:00'; state.running=true; state.lock=false; state.flipped=[]; renderBoard(); startBtn.disabled=true; restartBtn.disabled=false;
+          setStats(); timeEl.textContent='00:00'; state.running=true; state.lock=false; state.flipped=[]; renderBoard(); if(restartBtn) restartBtn.disabled=false;
         }
         function restartGame(){ startGame(); }
 
@@ -934,14 +1066,13 @@
             }
         }
 
-        if(startBtn) startBtn.addEventListener('click', startGame);
         if(restartBtn) restartBtn.addEventListener('click', restartGame);
-        if(diffSel) diffSel.addEventListener('change', function(){ if(state.running) restartGame(); });
+        if(diffSel) diffSel.addEventListener('change', function(){ startGame(); });
         if(againBtn) againBtn.addEventListener('click', function(){ modalEl.classList.add('hidden'); restartGame(); });
-        if(changeBtn) changeBtn.addEventListener('click', function(){ modalEl.classList.add('hidden'); startBtn.disabled=false; state.running=false; stopTimer(); });
+        if(changeBtn) changeBtn.addEventListener('click', function(){ modalEl.classList.add('hidden'); startGame(); });
         if(leaderBtn) leaderBtn.addEventListener('click', openLeaderboard);
         if(closeLeader) closeLeader.addEventListener('click', function(){ leaderModal.classList.add('hidden'); });
-        window.addEventListener('resize', function(){ if(state.running && state.deck.length) updateDynamicCardDimensions(); });
+        window.addEventListener('resize', function(){ if(state && state.deck && state.deck.length) updateDynamicCardDimensions(); });
 
         (function init(){
             initTheme();
@@ -962,11 +1093,12 @@
 
             setupUniversalAutoSave();
             updatePdfButtonState();
-            var saved = localStorage.getItem('memDifficulty')||'einfach';
-            if(diffSel){ diffSel.value = (ALL_MODES.indexOf(saved)>-1)?saved:'einfach'; }
             if(flipSlider){ flipSlider.value = state.flipDelay; flipVal.textContent = (state.flipDelay/1000).toFixed(1)+'s'; flipSlider.addEventListener('input', function(){ state.flipDelay = Number(flipSlider.value); flipVal.textContent = (state.flipDelay/1000).toFixed(1)+'s'; localStorage.setItem('memFlipDelay', state.flipDelay); }); }
             if(sizeSlider){ sizeSlider.value = state.cardMin; sizeVal.textContent = state.cardMin+'px'; document.documentElement.style.setProperty('--card-min', state.cardMin+'px'); sizeSlider.addEventListener('input', function(){ state.cardMin = Number(sizeSlider.value); sizeVal.textContent = state.cardMin+'px'; document.documentElement.style.setProperty('--card-min', state.cardMin+'px'); localStorage.setItem('memCardMin', state.cardMin); }); }
             if(textSlider){ textSlider.value = state.textSize; textSizeVal.textContent = state.textSize+'px'; document.documentElement.style.setProperty('--card-text', state.textSize+'px'); textSlider.addEventListener('input', function(){ state.textSize = Number(textSlider.value); textSizeVal.textContent = state.textSize+'px'; document.documentElement.style.setProperty('--card-text', state.textSize+'px'); localStorage.setItem('memTextSize', state.textSize); }); }
+            
+            // Auto-start Memory game immediately on page load
+            startGame();
         })();
     </script>
 
