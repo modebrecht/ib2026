@@ -95,15 +95,31 @@
             setupUniversalAutoSave();
         });
 
-        
-        
-        
-            if (dateInput && !dateInput.value) {
-                dateInput.value = new Date().toISOString().split('T')[0];
+function applyDefaultClassAndDate() {
+            var classInput = document.getElementById('studentClass');
+            var dateInput = document.getElementById('studentDate');
+            
+            var d = new Date();
+            var yyyy = d.getFullYear();
+            var mm = String(d.getMonth() + 1).padStart(2, '0');
+            var dd = String(d.getDate()).padStart(2, '0');
+            var todayStr = yyyy + '-' + mm + '-' + dd;
+            
+            if (classInput && (!classInput.value || !classInput.value.trim())) {
+                classInput.value = 'B24';
+            }
+            if (dateInput) {
+                var isAuto = dateInput.getAttribute('data-autodate') === 'true';
+                if (!dateInput.value || isAuto) {
+                    dateInput.value = todayStr;
+                    dateInput.setAttribute('data-autodate', 'true');
+                }
+                dateInput.addEventListener('change', function() {
+                    dateInput.removeAttribute('data-autodate');
+                });
             }
         }
 
-        
         function setupUniversalAutoSave() {
             var pageKey = 'hw_autosave_' + location.pathname.split('/').pop();
             
@@ -137,7 +153,9 @@
                             } else if (el.type === 'radio') {
                                 if (el.value === data[key]) el.checked = true;
                             } else {
-                                el.value = data[key];
+                                if (data[key] !== undefined && data[key] !== null && data[key] !== '') {
+                                    el.value = data[key];
+                                }
                             }
                         } else {
                             var radio = document.querySelector('input[name="' + key + '"][value="' + data[key] + '"]');
@@ -147,23 +165,13 @@
                 }
             } catch(e) {}
 
+            applyDefaultClassAndDate();
+            saveAll();
+
             document.querySelectorAll('input, textarea, select').forEach(function(el) {
                 el.addEventListener('input', saveAll);
                 el.addEventListener('change', saveAll);
             });
-        }
-
-        function applyDefaultClassAndDate() {
-            var classInput = document.getElementById('studentClass');
-            var dateInput = document.getElementById('studentDate');
-            
-            if (classInput && !classInput.value.trim()) {
-                classInput.value = 'B24';
-            }
-            if (dateInput && !dateInput.value) {
-                var today = new Date().toISOString().split('T')[0];
-                dateInput.value = today;
-            }
         }
 
         function initTheme() {

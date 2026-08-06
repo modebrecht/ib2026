@@ -122,13 +122,13 @@
                     <label class="block text-xs font-bold uppercase text-slate-500 dark:text-slate-400 mb-1">
                         <i class="fa-solid fa-users mr-1 text-onedrive-500"></i> Klasse
                     </label>
-                    <input type="text" id="studentClass" oninput="updateProgress()" placeholder="Klasse eingeben..." class="w-full px-3.5 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100">
+                    <input type="text" id="studentClass" oninput="updateProgress()" placeholder="Klasse eingeben..." class="w-full px-3.5 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100" value="B24">
                 </div>
                 <div>
                     <label class="block text-xs font-bold uppercase text-slate-500 dark:text-slate-400 mb-1">
                         <i class="fa-solid fa-calendar mr-1 text-onedrive-500"></i> Datum
                     </label>
-                    <input type="date" id="studentDate" onchange="updateProgress()" class="w-full px-3.5 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100">
+                    <input type="date" id="studentDate" onchange="updateProgress()" class="w-full px-3.5 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100" >
                 </div>
             </div>
         </div>
@@ -355,10 +355,7 @@
         
         
         
-            if (dateInput && !dateInput.value) {
-                var today = new Date().toISOString().split('T')[0];
-                dateInput.value = today;
-            }
+            
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -369,16 +366,31 @@
             updateProgress();
         });
 
-        
-        
-        
-            if (dateInput && !dateInput.value) {
-                var today = new Date().toISOString().split('T')[0];
-                dateInput.value = today;
+function applyDefaultClassAndDate() {
+            var classInput = document.getElementById('studentClass');
+            var dateInput = document.getElementById('studentDate');
+            
+            var d = new Date();
+            var yyyy = d.getFullYear();
+            var mm = String(d.getMonth() + 1).padStart(2, '0');
+            var dd = String(d.getDate()).padStart(2, '0');
+            var todayStr = yyyy + '-' + mm + '-' + dd;
+            
+            if (classInput && (!classInput.value || !classInput.value.trim())) {
+                classInput.value = 'B24';
+            }
+            if (dateInput) {
+                var isAuto = dateInput.getAttribute('data-autodate') === 'true';
+                if (!dateInput.value || isAuto) {
+                    dateInput.value = todayStr;
+                    dateInput.setAttribute('data-autodate', 'true');
+                }
+                dateInput.addEventListener('change', function() {
+                    dateInput.removeAttribute('data-autodate');
+                });
             }
         }
 
-        
         function setupUniversalAutoSave() {
             var pageKey = 'hw_autosave_' + location.pathname.split('/').pop();
             
@@ -412,7 +424,9 @@
                             } else if (el.type === 'radio') {
                                 if (el.value === data[key]) el.checked = true;
                             } else {
-                                el.value = data[key];
+                                if (data[key] !== undefined && data[key] !== null && data[key] !== '') {
+                                    el.value = data[key];
+                                }
                             }
                         } else {
                             var radio = document.querySelector('input[name="' + key + '"][value="' + data[key] + '"]');
@@ -422,23 +436,13 @@
                 }
             } catch(e) {}
 
+            applyDefaultClassAndDate();
+            saveAll();
+
             document.querySelectorAll('input, textarea, select').forEach(function(el) {
                 el.addEventListener('input', saveAll);
                 el.addEventListener('change', saveAll);
             });
-        }
-
-        function applyDefaultClassAndDate() {
-            var classInput = document.getElementById('studentClass');
-            var dateInput = document.getElementById('studentDate');
-            
-            if (classInput && !classInput.value.trim()) {
-                classInput.value = 'B24';
-            }
-            if (dateInput && !dateInput.value) {
-                var today = new Date().toISOString().split('T')[0];
-                dateInput.value = today;
-            }
         }
 
         function initTheme() {
@@ -529,7 +533,11 @@
                 if (data.form) {
                     Object.keys(data.form).forEach(id => {
                         const el = document.getElementById(id);
-                        if (el) el.value = data.form[id];
+                        if (el) {
+                            if (id === 'studentClass' && (!data.form[id] || !data.form[id].trim())) el.value = 'B24';
+                            else if (id === 'studentDate' && !data.form[id]) el.value = new Date().toISOString().split('T')[0];
+                            else if (data.form[id]) el.value = data.form[id];
+                        }
                     });
                 }
             } catch (e) {
