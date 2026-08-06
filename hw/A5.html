@@ -92,6 +92,19 @@
         document.addEventListener('DOMContentLoaded', () => {
             initTheme();
             applyDefaultClassAndDate();
+
+            // Sync global Vorname
+            var globalVorname = localStorage.getItem('studentVorname') || localStorage.getItem('student_vorname');
+            var nameEl = document.getElementById('studentName');
+            if (nameEl) {
+                if (!nameEl.value && globalVorname) {
+                    nameEl.value = globalVorname;
+                } else if (nameEl.value && nameEl.value.trim()) {
+                    localStorage.setItem('studentVorname', nameEl.value.trim());
+                    localStorage.setItem('student_vorname', nameEl.value.trim());
+                }
+            }
+
             setupUniversalAutoSave();
         });
 
@@ -166,6 +179,19 @@ function applyDefaultClassAndDate() {
             } catch(e) {}
 
             applyDefaultClassAndDate();
+
+            // Sync global Vorname
+            var globalVorname = localStorage.getItem('studentVorname') || localStorage.getItem('student_vorname');
+            var nameEl = document.getElementById('studentName');
+            if (nameEl) {
+                if (!nameEl.value && globalVorname) {
+                    nameEl.value = globalVorname;
+                } else if (nameEl.value && nameEl.value.trim()) {
+                    localStorage.setItem('studentVorname', nameEl.value.trim());
+                    localStorage.setItem('student_vorname', nameEl.value.trim());
+                }
+            }
+
             saveAll();
 
             document.querySelectorAll('input, textarea, select').forEach(function(el) {
@@ -198,5 +224,198 @@ function applyDefaultClassAndDate() {
             }
         }
     </script>
+
+    <!-- Global Unified Student Vorname Sync & First-Time Prompt -->
+    <script>
+      (function() {
+        function getSavedVorname() {
+          return localStorage.getItem('studentVorname') || localStorage.getItem('student_vorname') || '';
+        }
+
+        function setSavedVorname(name) {
+          if (name && name.trim()) {
+            var clean = name.trim();
+            localStorage.setItem('studentVorname', clean);
+            localStorage.setItem('student_vorname', clean);
+            syncVornameInputs(clean);
+          }
+        }
+
+        function syncVornameInputs(name) {
+          var el = document.getElementById('studentName');
+          if (el && name) {
+            el.value = name;
+          }
+        }
+
+        function checkAndPromptVorname() {
+          var name = getSavedVorname();
+          var el = document.getElementById('studentName');
+          if (el && el.value && el.value.trim()) {
+            name = el.value.trim();
+            setSavedVorname(name);
+          }
+          if (!name) {
+            setTimeout(function() {
+              var entered = prompt("Willkommen! Wie lautet dein Vorname?");
+              if (entered && entered.trim()) {
+                setSavedVorname(entered);
+              }
+            }, 300);
+          } else {
+            syncVornameInputs(name);
+          }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+          var el = document.getElementById('studentName');
+          if (el) {
+            var existing = getSavedVorname();
+            if (existing) el.value = existing;
+            el.addEventListener('input', function() {
+              setSavedVorname(el.value);
+            });
+            el.addEventListener('change', function() {
+              setSavedVorname(el.value);
+            });
+          }
+          checkAndPromptVorname();
+        });
+
+        window.addEventListener('storage', function(e) {
+          if (e.key === 'studentVorname' || e.key === 'student_vorname') {
+            if (e.newValue) syncVornameInputs(e.newValue);
+          }
+        });
+      })();
+    </script><!-- Global Unified Theme & Font Size Storage & Sync -->
+    <script>
+      (function() {
+        const THEME_KEY = 'ib-theme';
+        const FONT_KEY = 'ib-font-size';
+
+        // 1. Theme Management
+        function applyTheme(theme) {
+          const isDark = (theme === 'dark');
+          if (isDark) {
+            document.documentElement.classList.add('dark');
+            document.body.setAttribute('data-theme', 'dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+            document.body.setAttribute('data-theme', 'light');
+          }
+          const themeToggle = document.getElementById('themeToggle');
+          if (themeToggle) themeToggle.checked = isDark;
+          const themeIcon = document.getElementById('themeIcon');
+          if (themeIcon) themeIcon.className = isDark ? 'fa-solid fa-sun text-amber-400 text-sm' : 'fa-solid fa-moon text-sm';
+        }
+
+        function saveTheme(theme) {
+          localStorage.setItem(THEME_KEY, theme);
+          localStorage.setItem('onedrive_theme', theme);
+          applyTheme(theme);
+        }
+
+        function initTheme() {
+          const saved = localStorage.getItem(THEME_KEY) || localStorage.getItem('onedrive_theme');
+          if (saved) {
+            applyTheme(saved);
+          } else {
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            applyTheme(prefersDark ? 'dark' : 'light');
+          }
+        }
+
+        // 2. Font Size Management
+        function applyFontSize(sizeVal) {
+          const val = Number(sizeVal) || 100;
+          const scale = val / 100;
+          document.documentElement.style.setProperty('--font-scale', scale);
+          document.documentElement.style.fontSize = val + '%';
+          const slider = document.getElementById('fontSizeRange');
+          if (slider) slider.value = val;
+        }
+
+        function saveFontSize(sizeVal) {
+          const val = Number(sizeVal) || 100;
+          localStorage.setItem(FONT_KEY, val);
+          localStorage.setItem('onedrive_font_size', val);
+          applyFontSize(val);
+        }
+
+        function initFontSize() {
+          const saved = localStorage.getItem(FONT_KEY) || localStorage.getItem('onedrive_font_size') || 100;
+          applyFontSize(saved);
+        }
+
+        window.toggleDarkMode = function() {
+          const isCurrentlyDark = document.documentElement.classList.contains('dark') || document.body.getAttribute('data-theme') === 'dark';
+          saveTheme(isCurrentlyDark ? 'light' : 'dark');
+        };
+
+        window.setTheme = function(theme) {
+          saveTheme(theme);
+        };
+
+        window.setFontSize = function(val) {
+          saveFontSize(val);
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+          initTheme();
+          initFontSize();
+          
+          const themeToggle = document.getElementById('themeToggle');
+          if (themeToggle) {
+            themeToggle.addEventListener('change', function() {
+              saveTheme(themeToggle.checked ? 'dark' : 'light');
+            });
+          }
+
+          const fontSlider = document.getElementById('fontSizeRange');
+          if (fontSlider) {
+            fontSlider.addEventListener('input', function() {
+              saveFontSize(fontSlider.value);
+            });
+          }
+        });
+
+        window.addEventListener('storage', function(e) {
+          if (e.key === THEME_KEY || e.key === 'onedrive_theme') {
+            if (e.newValue) applyTheme(e.newValue);
+          }
+          if (e.key === FONT_KEY || e.key === 'onedrive_font_size') {
+            if (e.newValue) applyFontSize(e.newValue);
+          }
+        });
+      })();
+    </script>
+
+
+    <!-- Readonly Date Enforcer -->
+    <script>
+      (function enforceMobileReadonlyDate() {
+        function setToday() {
+          var el = document.getElementById('studentDate');
+          if (el) {
+            var d = new Date();
+            var dd = String(d.getDate()).padStart(2, '0');
+            var mm = String(d.getMonth() + 1).padStart(2, '0');
+            var yyyy = d.getFullYear();
+            var formattedDate = dd + '.' + mm + '.' + yyyy;
+            el.value = formattedDate;
+            el.readOnly = true;
+            el.setAttribute('tabindex', '-1');
+            el.style.pointerEvents = 'none';
+          }
+        }
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', setToday);
+        } else {
+          setToday();
+        }
+      })();
+    </script>
+
 </body>
 </html>

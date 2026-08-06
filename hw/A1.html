@@ -204,7 +204,7 @@
                     <label class="block text-xs font-bold uppercase text-slate-500 dark:text-slate-400 mb-1">
                         <i class="fa-solid fa-calendar mr-1 text-onedrive-500"></i> Datum
                     </label>
-                    <input type="date" id="studentDate" onchange="saveStudentInfo()" class="w-full px-3.5 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100" >
+                    <input type="text" id="studentDate" readonly tabindex="-1" style="pointer-events: none;" class="w-full px-3.5 py-2 text-sm bg-slate-100 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl font-medium text-slate-500 dark:text-slate-400 opacity-90 cursor-not-allowed">
                 </div>
             </div>
         </div>
@@ -218,8 +218,8 @@
                     <div class="flex items-center gap-2">
                         <label for="difficulty" class="text-xs font-bold uppercase text-slate-500 dark:text-slate-400">Modus:</label>
                         <select id="difficulty" class="px-3.5 py-2 text-xs font-bold bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
-                            <option value="einfach">Einfach – 8 Karten</option>
-                            <option value="mittel" selected>Mittel – 16 Karten</option>
+                            <option value="einfach" selected>Einfach – 8 Karten</option>
+                            <option value="mittel">Mittel – 16 Karten</option>
                             <option value="schwer">Schwer – 20 Karten</option>
                             <option value="ultra">Ultra – 24 Karten</option>
                         </select>
@@ -476,7 +476,7 @@
 
         function resetState(){
           return {
-            running:false, difficulty:'mittel',
+            running:false, difficulty:'einfach',
             deck:[], flipped:[], lock:false,
             points:0, moves:0, hits:0, misses:0,
             combo:0, maxCombo:0, comboBonus:0, totalPairs:0,
@@ -598,8 +598,8 @@
 
         function startGame(){
           state = resetState();
-          var diff = diffSel && diffSel.value || 'mittel';
-          if(ALL_MODES.indexOf(diff)===-1) diff='mittel';
+          var diff = diffSel && diffSel.value || 'einfach';
+          if(ALL_MODES.indexOf(diff)===-1) diff='einfach';
           state.difficulty = diff; localStorage.setItem('memDifficulty', diff);
           if(flipSlider){ state.flipDelay=Number(flipSlider.value); localStorage.setItem('memFlipDelay', state.flipDelay); }
           if(sizeSlider){ state.cardMin=Number(sizeSlider.value); localStorage.setItem('memCardMin', state.cardMin); document.documentElement.style.setProperty('--card-min', state.cardMin+'px'); }
@@ -800,7 +800,6 @@
               var info = JSON.parse(raw);
               if (info.name) document.getElementById('studentName').value = info.name;
               if (info.sClass) document.getElementById('studentClass').value = info.sClass;
-              if (info.date) document.getElementById('studentDate').value = info.date;
             }
           } catch(e) {}
         }
@@ -815,102 +814,6 @@
             updatePdfButtonState();
             alert('Highscores & Fortschritt wurden zurückgesetzt.');
           }
-        }
-
-        
-        
-        
-            
-        }
-
-        
-        
-            
-        }
-
-        
-        
-
-         else if (el.name && el.type === 'radio') {
-                        if (el.checked) data[el.name] = el.value;
-                    }
-                });
-                localStorage.setItem(pageKey, JSON.stringify(data));
-            }
-
-            try {
-                var saved = localStorage.getItem(pageKey);
-                if (saved) {
-                    var data = JSON.parse(saved);
-                    Object.keys(data).forEach(function(key) {
-                        var el = document.getElementById(key);
-                        if (el) {
-                            if (el.type === 'checkbox') {
-                                el.checked = !!data[key];
-                            } else if (el.type === 'radio') {
-                                if (el.value === data[key]) el.checked = true;
-                            } else {
-                                if (key === 'studentClass' && (!data[key] || !data[key].trim())) { el.value = 'B24'; }
-                                else if (key === 'studentDate' && (!data[key] || el.getAttribute('data-autodate') === 'true')) { var d=new Date(); var todayStr=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); el.value = todayStr; }
-                                else if (data[key] !== undefined && data[key] !== null && data[key] !== '') { el.value = data[key]; }
-                            }
-                        } else {
-                            var radio = document.querySelector('input[name="' + key + '"][value="' + data[key] + '"]');
-                            if (radio) radio.checked = true;
-                        }
-                    });
-                }
-            } catch(e) {}
-
-            // Enforce default Class & Date if empty
-            applyDefaultClassAndDate();
-            saveAll();
-
-            document.querySelectorAll('input, textarea, select').forEach(function(el) {
-                el.addEventListener('input', saveAll);
-                el.addEventListener('change', saveAll);
-            });
-        }
-
-        
-         else if (el.name && el.type === 'radio') {
-                        if (el.checked) data[el.name] = el.value;
-                    }
-                });
-                localStorage.setItem(pageKey, JSON.stringify(data));
-            }
-
-            try {
-                var saved = localStorage.getItem(pageKey);
-                if (saved) {
-                    var data = JSON.parse(saved);
-                    Object.keys(data).forEach(function(key) {
-                        var el = document.getElementById(key);
-                        if (el) {
-                            if (el.type === 'checkbox') {
-                                el.checked = !!data[key];
-                            } else if (el.type === 'radio') {
-                                if (el.value === data[key]) el.checked = true;
-                            } else {
-                                if (key === 'studentClass' && (!data[key] || !data[key].trim())) { el.value = 'B24'; }
-                                else if (key === 'studentDate' && (!data[key] || el.getAttribute('data-autodate') === 'true')) { var d=new Date(); var todayStr=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); el.value = todayStr; }
-                                else if (data[key] !== undefined && data[key] !== null && data[key] !== '') { el.value = data[key]; }
-                            }
-                        } else {
-                            var radio = document.querySelector('input[name="' + key + '"][value="' + data[key] + '"]');
-                            if (radio) radio.checked = true;
-                        }
-                    });
-                }
-            } catch(e) {}
-
-            applyDefaultClassAndDate();
-            saveAll();
-
-            document.querySelectorAll('input, textarea, select').forEach(function(el) {
-                el.addEventListener('input', saveAll);
-                el.addEventListener('change', saveAll);
-            });
         }
 
         
@@ -986,6 +889,19 @@
             } catch(e) {}
 
             applyDefaultClassAndDate();
+
+            // Sync global Vorname
+            var globalVorname = localStorage.getItem('studentVorname') || localStorage.getItem('student_vorname');
+            var nameEl = document.getElementById('studentName');
+            if (nameEl) {
+                if (!nameEl.value && globalVorname) {
+                    nameEl.value = globalVorname;
+                } else if (nameEl.value && nameEl.value.trim()) {
+                    localStorage.setItem('studentVorname', nameEl.value.trim());
+                    localStorage.setItem('student_vorname', nameEl.value.trim());
+                }
+            }
+
             saveAll();
 
             document.querySelectorAll('input, textarea, select').forEach(function(el) {
@@ -1031,14 +947,220 @@
             initTheme();
             loadStudentInfo();
             applyDefaultClassAndDate();
+
+            // Sync global Vorname
+            var globalVorname = localStorage.getItem('studentVorname') || localStorage.getItem('student_vorname');
+            var nameEl = document.getElementById('studentName');
+            if (nameEl) {
+                if (!nameEl.value && globalVorname) {
+                    nameEl.value = globalVorname;
+                } else if (nameEl.value && nameEl.value.trim()) {
+                    localStorage.setItem('studentVorname', nameEl.value.trim());
+                    localStorage.setItem('student_vorname', nameEl.value.trim());
+                }
+            }
+
             setupUniversalAutoSave();
             updatePdfButtonState();
-            var saved = localStorage.getItem('memDifficulty')||'mittel';
-            if(diffSel){ diffSel.value = (ALL_MODES.indexOf(saved)>-1)?saved:'mittel'; }
+            var saved = localStorage.getItem('memDifficulty')||'einfach';
+            if(diffSel){ diffSel.value = (ALL_MODES.indexOf(saved)>-1)?saved:'einfach'; }
             if(flipSlider){ flipSlider.value = state.flipDelay; flipVal.textContent = (state.flipDelay/1000).toFixed(1)+'s'; flipSlider.addEventListener('input', function(){ state.flipDelay = Number(flipSlider.value); flipVal.textContent = (state.flipDelay/1000).toFixed(1)+'s'; localStorage.setItem('memFlipDelay', state.flipDelay); }); }
             if(sizeSlider){ sizeSlider.value = state.cardMin; sizeVal.textContent = state.cardMin+'px'; document.documentElement.style.setProperty('--card-min', state.cardMin+'px'); sizeSlider.addEventListener('input', function(){ state.cardMin = Number(sizeSlider.value); sizeVal.textContent = state.cardMin+'px'; document.documentElement.style.setProperty('--card-min', state.cardMin+'px'); localStorage.setItem('memCardMin', state.cardMin); }); }
             if(textSlider){ textSlider.value = state.textSize; textSizeVal.textContent = state.textSize+'px'; document.documentElement.style.setProperty('--card-text', state.textSize+'px'); textSlider.addEventListener('input', function(){ state.textSize = Number(textSlider.value); textSizeVal.textContent = state.textSize+'px'; document.documentElement.style.setProperty('--card-text', state.textSize+'px'); localStorage.setItem('memTextSize', state.textSize); }); }
         })();
     </script>
+
+    <!-- Global Unified Student Vorname Sync & First-Time Prompt -->
+    <script>
+      (function() {
+        function getSavedVorname() {
+          return localStorage.getItem('studentVorname') || localStorage.getItem('student_vorname') || '';
+        }
+
+        function setSavedVorname(name) {
+          if (name && name.trim()) {
+            var clean = name.trim();
+            localStorage.setItem('studentVorname', clean);
+            localStorage.setItem('student_vorname', clean);
+            syncVornameInputs(clean);
+          }
+        }
+
+        function syncVornameInputs(name) {
+          var el = document.getElementById('studentName');
+          if (el && name) {
+            el.value = name;
+          }
+        }
+
+        function checkAndPromptVorname() {
+          var name = getSavedVorname();
+          var el = document.getElementById('studentName');
+          if (el && el.value && el.value.trim()) {
+            name = el.value.trim();
+            setSavedVorname(name);
+          }
+          if (!name) {
+            setTimeout(function() {
+              var entered = prompt("Willkommen! Wie lautet dein Vorname?");
+              if (entered && entered.trim()) {
+                setSavedVorname(entered);
+              }
+            }, 300);
+          } else {
+            syncVornameInputs(name);
+          }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+          var el = document.getElementById('studentName');
+          if (el) {
+            var existing = getSavedVorname();
+            if (existing) el.value = existing;
+            el.addEventListener('input', function() {
+              setSavedVorname(el.value);
+            });
+            el.addEventListener('change', function() {
+              setSavedVorname(el.value);
+            });
+          }
+          checkAndPromptVorname();
+        });
+
+        window.addEventListener('storage', function(e) {
+          if (e.key === 'studentVorname' || e.key === 'student_vorname') {
+            if (e.newValue) syncVornameInputs(e.newValue);
+          }
+        });
+      })();
+    </script><!-- Global Unified Theme & Font Size Storage & Sync -->
+    <script>
+      (function() {
+        const THEME_KEY = 'ib-theme';
+        const FONT_KEY = 'ib-font-size';
+
+        // 1. Theme Management
+        function applyTheme(theme) {
+          const isDark = (theme === 'dark');
+          if (isDark) {
+            document.documentElement.classList.add('dark');
+            document.body.setAttribute('data-theme', 'dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+            document.body.setAttribute('data-theme', 'light');
+          }
+          const themeToggle = document.getElementById('themeToggle');
+          if (themeToggle) themeToggle.checked = isDark;
+          const themeIcon = document.getElementById('themeIcon');
+          if (themeIcon) themeIcon.className = isDark ? 'fa-solid fa-sun text-amber-400 text-sm' : 'fa-solid fa-moon text-sm';
+        }
+
+        function saveTheme(theme) {
+          localStorage.setItem(THEME_KEY, theme);
+          localStorage.setItem('onedrive_theme', theme);
+          applyTheme(theme);
+        }
+
+        function initTheme() {
+          const saved = localStorage.getItem(THEME_KEY) || localStorage.getItem('onedrive_theme');
+          if (saved) {
+            applyTheme(saved);
+          } else {
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            applyTheme(prefersDark ? 'dark' : 'light');
+          }
+        }
+
+        // 2. Font Size Management
+        function applyFontSize(sizeVal) {
+          const val = Number(sizeVal) || 100;
+          const scale = val / 100;
+          document.documentElement.style.setProperty('--font-scale', scale);
+          document.documentElement.style.fontSize = val + '%';
+          const slider = document.getElementById('fontSizeRange');
+          if (slider) slider.value = val;
+        }
+
+        function saveFontSize(sizeVal) {
+          const val = Number(sizeVal) || 100;
+          localStorage.setItem(FONT_KEY, val);
+          localStorage.setItem('onedrive_font_size', val);
+          applyFontSize(val);
+        }
+
+        function initFontSize() {
+          const saved = localStorage.getItem(FONT_KEY) || localStorage.getItem('onedrive_font_size') || 100;
+          applyFontSize(saved);
+        }
+
+        window.toggleDarkMode = function() {
+          const isCurrentlyDark = document.documentElement.classList.contains('dark') || document.body.getAttribute('data-theme') === 'dark';
+          saveTheme(isCurrentlyDark ? 'light' : 'dark');
+        };
+
+        window.setTheme = function(theme) {
+          saveTheme(theme);
+        };
+
+        window.setFontSize = function(val) {
+          saveFontSize(val);
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+          initTheme();
+          initFontSize();
+          
+          const themeToggle = document.getElementById('themeToggle');
+          if (themeToggle) {
+            themeToggle.addEventListener('change', function() {
+              saveTheme(themeToggle.checked ? 'dark' : 'light');
+            });
+          }
+
+          const fontSlider = document.getElementById('fontSizeRange');
+          if (fontSlider) {
+            fontSlider.addEventListener('input', function() {
+              saveFontSize(fontSlider.value);
+            });
+          }
+        });
+
+        window.addEventListener('storage', function(e) {
+          if (e.key === THEME_KEY || e.key === 'onedrive_theme') {
+            if (e.newValue) applyTheme(e.newValue);
+          }
+          if (e.key === FONT_KEY || e.key === 'onedrive_font_size') {
+            if (e.newValue) applyFontSize(e.newValue);
+          }
+        });
+      })();
+    </script>
+
+
+    <!-- Readonly Date Enforcer -->
+    <script>
+      (function enforceMobileReadonlyDate() {
+        function setToday() {
+          var el = document.getElementById('studentDate');
+          if (el) {
+            var d = new Date();
+            var dd = String(d.getDate()).padStart(2, '0');
+            var mm = String(d.getMonth() + 1).padStart(2, '0');
+            var yyyy = d.getFullYear();
+            var formattedDate = dd + '.' + mm + '.' + yyyy;
+            el.value = formattedDate;
+            el.readOnly = true;
+            el.setAttribute('tabindex', '-1');
+            el.style.pointerEvents = 'none';
+          }
+        }
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', setToday);
+        } else {
+          setToday();
+        }
+      })();
+    </script>
+
 </body>
 </html>

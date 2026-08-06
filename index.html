@@ -260,13 +260,22 @@
     }
 
     .class-badge {
-      background: var(--blue-soft);
-      color: var(--blue);
-      font-size: calc(14px * var(--font-scale));
+      background: #e0eafe;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+      font-size: calc(13px * var(--font-scale));
       font-weight: 800;
       padding: 4px 12px;
       border-radius: 999px;
       letter-spacing: 0.05em;
+      box-shadow: 0 1px 3px rgba(37, 99, 235, 0.1);
+    }
+
+    body[data-theme="dark"] .class-badge {
+      background: var(--blue-soft);
+      color: var(--blue);
+      border: 1px solid rgba(102, 161, 255, 0.35);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
     }
 
     .column-title {
@@ -414,21 +423,22 @@
     .btn-link {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
       background: var(--blue);
       color: white;
       text-decoration: none;
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-size: calc(14px * var(--font-scale));
-      font-weight: 600;
-      transition: background .15s ease, transform .15s ease;
+      transition: all .18s cubic-bezier(0.4, 0, 0.2, 1);
       box-shadow: 0 2px 6px rgba(37,99,235,.25);
+      flex-shrink: 0;
     }
 
     .btn-link:hover {
       background: #1d4ed8;
-      transform: translateY(-1px);
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 4px 12px rgba(37,99,235,.35);
     }
 
     /* OneDrive Folder Preview (from i.html) */
@@ -748,12 +758,9 @@
               <div class="unterkachel">
                 <div class="unterkachel-head">
                   <h4 class="unterkachel-title">
-                    <span>🧩</span> Aufgabe A1: IT-Hardware Memory
+                    <span>🧩</span> A1: IT-Hardware Memory
                   </h4>
-                  <a href="hw/A1.html" target="_blank" rel="noopener" class="btn-link">
-                    <span>Öffnen</span>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                  </a>
+                  <a href="hw/A1.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
                 </div>
                 <p style="font-size: calc(13px * var(--font-scale)); color: var(--muted); margin: 0 0 8px 0;">
                   Einstieg: Begriffe &amp; Komponenten spielerisch entdecken
@@ -764,12 +771,9 @@
               <div class="unterkachel">
                 <div class="unterkachel-head">
                   <h4 class="unterkachel-title">
-                    <span>🔄</span> Aufgabe A2: Das EVA-Prinzip
+                    <span>🔄</span> A2: Das EVA-Prinzip
                   </h4>
-                  <a href="hw/A2.html" target="_blank" rel="noopener" class="btn-link">
-                    <span>Öffnen</span>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                  </a>
+                  <a href="hw/A2.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
                 </div>
                 <p style="font-size: calc(13px * var(--font-scale)); color: var(--muted); margin: 0 0 8px 0;">
                   Eingabe - Verarbeitung - Ausgabe im Alltag &amp; Beispiele
@@ -780,12 +784,9 @@
               <div class="unterkachel">
                 <div class="unterkachel-head">
                   <h4 class="unterkachel-title">
-                    <span>🖥️</span> Aufgabe A3: Computeraufbau
+                    <span>🖥️</span> A3: Computeraufbau
                   </h4>
-                  <a href="hw/A3.html" target="_blank" rel="noopener" class="btn-link">
-                    <span>Öffnen</span>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                  </a>
+                  <a href="hw/A3.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
                 </div>
                 <p style="font-size: calc(13px * var(--font-scale)); color: var(--muted); margin: 0 0 8px 0;">
                   Aufbau eines Computers &amp; 10 Kernkomponenten im Detail
@@ -796,12 +797,9 @@
               <div class="unterkachel">
                 <div class="unterkachel-head">
                   <h4 class="unterkachel-title">
-                    <span>🔌</span> Aufgabe A4: Anschlüsse &amp; PC-Kabel
+                    <span>🔌</span> A4: Anschlüsse &amp; PC-Kabel
                   </h4>
-                  <a href="hw/A4.html" target="_blank" rel="noopener" class="btn-link">
-                    <span>Öffnen</span>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                  </a>
+                  <a href="hw/A4.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
                 </div>
                 <p style="font-size: calc(13px * var(--font-scale)); color: var(--muted); margin: 0 0 8px 0;">
                   Schnittstellen, Monitor-Kabel &amp; Datenübertragung
@@ -812,12 +810,9 @@
               <div class="unterkachel">
                 <div class="unterkachel-head">
                   <h4 class="unterkachel-title">
-                    <span>🏷️</span> Aufgabe A5: Mainboard-Anschlüsse
+                    <span>🏷️</span> A5: Mainboard-Anschlüsse
                   </h4>
-                  <a href="hw/A5.html" target="_blank" rel="noopener" class="btn-link">
-                    <span>Öffnen</span>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                  </a>
+                  <a href="hw/A5.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
                 </div>
                 <p style="font-size: calc(13px * var(--font-scale)); color: var(--muted); margin: 0 0 8px 0;">
                   Anschlüsse &amp; Schnittstellen auf dem Mainboard bestimmen
@@ -828,12 +823,9 @@
               <div class="unterkachel">
                 <div class="unterkachel-head">
                   <h4 class="unterkachel-title">
-                    <span>🛠️</span> Aufgabe A6: TROUBLESHOOTER
+                    <span>🛠️</span> A6: TROUBLESHOOTER
                   </h4>
-                  <a href="hw/A6.html" target="_blank" rel="noopener" class="btn-link">
-                    <span>Öffnen</span>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                  </a>
+                  <a href="hw/A6.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
                 </div>
                 <p style="font-size: calc(13px * var(--font-scale)); color: var(--muted); margin: 0 0 8px 0;">
                   Hardware-Probleme &amp; Störungen im Troubleshooter lösen
@@ -1038,10 +1030,7 @@
                   <h4 class="unterkachel-title">
                     <span>📁</span> Ordnerstruktur BO
                   </h4>
-                  <a href="https://ib-onedrive.vercel.app" target="_blank" rel="noopener" class="btn-link">
-                    <span>Öffnen</span>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                  </a>
+                  <a href="https://ib-onedrive.vercel.app" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
                 </div>
 
                 <div class="path">
@@ -1137,8 +1126,8 @@
                   <a href="https://gsusoch-my.sharepoint.com" target="_blank" rel="noopener" class="badge-link">
                     OneDrive ↗
                   </a>
-                  <a href="https://teams.microsoft.com" target="_blank" rel="noopener" class="badge-link">
-                    Teams ↗
+                  <a href="https://outlook.office.com/" target="_blank" rel="noopener" class="badge-link">
+                    Outlook ↗
                   </a>
                 </div>
               </div>
@@ -1236,5 +1225,113 @@
     setTheme(localStorage.getItem('ib-theme') || 'light');
     setFontSize(localStorage.getItem('ib-font-size') || 100);
   </script>
+
+
+    
+
+
+    <!-- Global Unified Theme & Font Size Storage & Sync -->
+    <script>
+      (function() {
+        const THEME_KEY = 'ib-theme';
+        const FONT_KEY = 'ib-font-size';
+
+        // 1. Theme Management
+        function applyTheme(theme) {
+          const isDark = (theme === 'dark');
+          if (isDark) {
+            document.documentElement.classList.add('dark');
+            document.body.setAttribute('data-theme', 'dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+            document.body.setAttribute('data-theme', 'light');
+          }
+          const themeToggle = document.getElementById('themeToggle');
+          if (themeToggle) themeToggle.checked = isDark;
+          const themeIcon = document.getElementById('themeIcon');
+          if (themeIcon) themeIcon.className = isDark ? 'fa-solid fa-sun text-amber-400 text-sm' : 'fa-solid fa-moon text-sm';
+        }
+
+        function saveTheme(theme) {
+          localStorage.setItem(THEME_KEY, theme);
+          localStorage.setItem('onedrive_theme', theme);
+          applyTheme(theme);
+        }
+
+        function initTheme() {
+          const saved = localStorage.getItem(THEME_KEY) || localStorage.getItem('onedrive_theme');
+          if (saved) {
+            applyTheme(saved);
+          } else {
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            applyTheme(prefersDark ? 'dark' : 'light');
+          }
+        }
+
+        // 2. Font Size Management
+        function applyFontSize(sizeVal) {
+          const val = Number(sizeVal) || 100;
+          const scale = val / 100;
+          document.documentElement.style.setProperty('--font-scale', scale);
+          document.documentElement.style.fontSize = val + '%';
+          const slider = document.getElementById('fontSizeRange');
+          if (slider) slider.value = val;
+        }
+
+        function saveFontSize(sizeVal) {
+          const val = Number(sizeVal) || 100;
+          localStorage.setItem(FONT_KEY, val);
+          localStorage.setItem('onedrive_font_size', val);
+          applyFontSize(val);
+        }
+
+        function initFontSize() {
+          const saved = localStorage.getItem(FONT_KEY) || localStorage.getItem('onedrive_font_size') || 100;
+          applyFontSize(saved);
+        }
+
+        window.toggleDarkMode = function() {
+          const isCurrentlyDark = document.documentElement.classList.contains('dark') || document.body.getAttribute('data-theme') === 'dark';
+          saveTheme(isCurrentlyDark ? 'light' : 'dark');
+        };
+
+        window.setTheme = function(theme) {
+          saveTheme(theme);
+        };
+
+        window.setFontSize = function(val) {
+          saveFontSize(val);
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+          initTheme();
+          initFontSize();
+          
+          const themeToggle = document.getElementById('themeToggle');
+          if (themeToggle) {
+            themeToggle.addEventListener('change', function() {
+              saveTheme(themeToggle.checked ? 'dark' : 'light');
+            });
+          }
+
+          const fontSlider = document.getElementById('fontSizeRange');
+          if (fontSlider) {
+            fontSlider.addEventListener('input', function() {
+              saveFontSize(fontSlider.value);
+            });
+          }
+        });
+
+        window.addEventListener('storage', function(e) {
+          if (e.key === THEME_KEY || e.key === 'onedrive_theme') {
+            if (e.newValue) applyTheme(e.newValue);
+          }
+          if (e.key === FONT_KEY || e.key === 'onedrive_font_size') {
+            if (e.newValue) applyFontSize(e.newValue);
+          }
+        });
+      })();
+    </script>
+
 </body>
 </html>
