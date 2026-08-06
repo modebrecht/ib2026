@@ -200,8 +200,12 @@
                         <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Fortschritt</span>
                         <span id="headerPercentText" class="text-sm font-extrabold text-onedrive-600 dark:text-onedrive-400">0 / 3 Modi erledigt</span>
                     </div>
-                    <div class="w-28 sm:w-44 bg-slate-200 dark:bg-slate-800 h-2.5 rounded-full overflow-hidden shrink-0 border border-slate-300/50 dark:border-slate-700/50">
-                        <div id="headerProgressBar" class="bg-onedrive-500 h-full transition-all duration-300 rounded-full" style="width: 0%"></div>
+                    <div class="relative w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center font-bold text-[10px] sm:text-xs text-slate-700 dark:text-slate-200 shrink-0 ml-1">
+                        <svg class="absolute inset-0 w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                            <circle cx="18" cy="18" r="16" fill="none" class="stroke-slate-200 dark:stroke-slate-800" stroke-width="4"></circle>
+                            <circle id="headerSvgCircle" cx="18" cy="18" r="16" fill="none" class="stroke-emerald-500 transition-all duration-500 ease-out" stroke-width="4" stroke-dasharray="100.53" stroke-dashoffset="100.53" stroke-linecap="round"></circle>
+                        </svg>
+                        <span id="headerPercentNumber" class="relative z-10">0%</span>
                     </div>
                 </div>
             </div>
@@ -242,8 +246,12 @@
                         <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Fortschritt</span>
                         <span id="completionBadge" class="text-sm font-bold text-onedrive-600 dark:text-onedrive-400">0 / 3 erledigt</span>
                     </div>
-                    <div class="w-12 h-12 rounded-full border-4 border-slate-200 dark:border-slate-800 flex items-center justify-center font-bold text-xs text-slate-700 dark:text-slate-200 relative">
-                        <span id="completionPercentNumber">0%</span>
+                    <div class="relative w-12 h-12 flex items-center justify-center font-bold text-xs text-slate-700 dark:text-slate-200">
+                        <svg class="absolute inset-0 w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                            <circle cx="18" cy="18" r="16" fill="none" class="stroke-slate-200 dark:stroke-slate-800" stroke-width="4"></circle>
+                            <circle id="completionSvgCircle" cx="18" cy="18" r="16" fill="none" class="stroke-emerald-500 transition-all duration-500 ease-out" stroke-width="4" stroke-dasharray="100.53" stroke-dashoffset="100.53" stroke-linecap="round"></circle>
+                        </svg>
+                        <span id="completionPercentNumber" class="relative z-10">0%</span>
                     </div>
                 </div>
             </div>
@@ -485,7 +493,7 @@
 
     <script>
         var SET_EASY = [
-          {id:'cpu', emoji:'🧠', term:'CPU', desc:'Prozessor & Gehirn des Computers.'},
+          {id:'cpu', emoji:'🧠', term:'CPU', desc:'Das Gehirn des Computers.'},
           {id:'ram', emoji:'⚡', term:'RAM', desc:'Schneller Arbeitsspeicher für laufende Programme.'},
           {id:'mb',  emoji:'🔌', term:'Mainboard', desc:'Zentrale Hauptplatine, verbindet alle Teile.'},
           {id:'ssd', emoji:'🚀', term:'SSD', desc:'Nicht-mechanischer Flash-Speicher.'},
@@ -799,10 +807,25 @@
           var percent = Math.min(100, Math.round((count / 3) * 100));
 
           document.getElementById('headerPercentText').innerText = count + ' / 3 Modi erledigt';
-          document.getElementById('headerProgressBar').style.width = percent + '%';
+          
+          var hdrSvgCircle = document.getElementById('headerSvgCircle');
+          if (hdrSvgCircle) {
+              var offset = 100.53 - (100.53 * percent / 100);
+              hdrSvgCircle.style.strokeDashoffset = offset;
+          }
+          var hdrPercentNum = document.getElementById('headerPercentNumber');
+          if (hdrPercentNum) {
+              hdrPercentNum.innerText = percent + '%';
+          }
           document.getElementById('progressBar').style.width = percent + '%';
           document.getElementById('completionBadge').innerText = count + ' / 3 erledigt';
           document.getElementById('completionPercentNumber').innerText = percent + '%';
+          
+          var svgCircle = document.getElementById('completionSvgCircle');
+          if (svgCircle) {
+              var offset = 100.53 - (100.53 * percent / 100);
+              svgCircle.style.strokeDashoffset = offset;
+          }
 
           if (modalBtn) {
             modalBtn.innerHTML = isUnlocked ? '<i class="fa-solid fa-print"></i> Als PDF drucken (' + count + '/3)' : ('<i class="fa-solid fa-lock"></i> PDF Export (' + count + '/3)');
