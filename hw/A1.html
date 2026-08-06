@@ -32,7 +32,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-        * { transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease; }
+        * { transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease; -webkit-tap-highlight-color: transparent; }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.5); border-radius: 4px; }
@@ -141,37 +141,13 @@
             box-shadow: inset 0 0 0 1px rgba(251, 191, 36, 0.5), inset 0 0 28px rgba(245, 158, 11, 0.35), 0 8px 30px rgba(0,0,0,0.6);
         }
 
-        .mem-card:not(.flipped) .mem-front,
-        .mem-card:not(.flipped) .mem-front * {
-            opacity: 0 !important;
-            visibility: hidden !important;
-            pointer-events: none !important;
-        }
-
-        .mem-card:not(.flipped) .mem-back {
-            transform: rotateY(0deg);
-            opacity: 1 !important;
-            visibility: visible !important;
-        }
-
         .mem-card.flipped .mem-front { 
             transform: rotateY(0deg);
-            opacity: 1 !important;
-            visibility: visible !important;
             z-index: 2;
         }
 
-        .mem-card.flipped .mem-front * {
-            opacity: 1 !important;
-            visibility: visible !important;
-        }
-
-        .mem-card.flipped .mem-back,
-        .mem-card.flipped .mem-back * { 
+        .mem-card.flipped .mem-back { 
             transform: rotateY(180deg);
-            opacity: 0 !important;
-            visibility: hidden !important;
-            pointer-events: none !important;
             z-index: 1;
         }
 
@@ -512,8 +488,8 @@
           {id:'cpu', emoji:'🧠', term:'CPU', desc:'Prozessor & Gehirn des Computers.'},
           {id:'ram', emoji:'⚡', term:'RAM', desc:'Schneller Arbeitsspeicher für laufende Programme.'},
           {id:'mb',  emoji:'🔌', term:'Mainboard', desc:'Zentrale Hauptplatine, verbindet alle Teile.'},
-          {id:'ssd', emoji:'🚀', term:'SSD', desc:'Sehr schneller Massenspeicher ohne Mechanik.'},
-          {id:'gpu', emoji:'🎨', term:'GPU', desc:'Grafikkarte für Bild- & Videoberechnung.'},
+          {id:'ssd', emoji:'🚀', term:'SSD', desc:'Nicht-mechanischer Flash-Speicher.'},
+          {id:'gpu', emoji:'🎨', term:'GPU', desc:'Zuständig für Bild- & Videoberechnung.'},
           {id:'psu', emoji:'🔋', term:'Netzteil', desc:'Versorgt das System zuverlässig mit Strom.'}
         ];
 
@@ -523,8 +499,8 @@
         ];
 
         var SET_HARD = [
-          {id:'cool',emoji:'🥶', term:'CPU-Kühler', desc:'Leitet Hitze von der CPU ab.'},
-          {id:'nvme',emoji:'🏎️', term:'NVMe SSD', desc:'Höchstgeschwindigkeits-SSD über PCIe.'}
+          {id:'cool',emoji:'🥶', term:'CPU-Kühler', desc:'Leitet Hitze vom Prozessor ab.'},
+          {id:'nvme',emoji:'🏎️', term:'NVMe SSD', desc:'Schnellster Flash-Speicher.'}
         ];
 
         var SET_ULTRA = [
