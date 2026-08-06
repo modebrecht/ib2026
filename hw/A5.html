@@ -93,6 +93,18 @@
             initTheme();
         });
 
+        
+        function applyDefaultClassAndDate() {
+            var classInput = document.getElementById('studentClass');
+            var dateInput = document.getElementById('studentDate');
+            if (classInput && !classInput.value.trim()) {
+                classInput.value = 'B24';
+            }
+            if (dateInput && !dateInput.value) {
+                dateInput.value = new Date().toISOString().split('T')[0];
+            }
+        }
+
         function initTheme() {
             const savedTheme = localStorage.getItem('onedrive_theme');
             if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
