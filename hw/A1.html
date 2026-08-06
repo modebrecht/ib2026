@@ -234,9 +234,8 @@
                 <button onclick="toggleDarkMode()" title="Dunkelmodus umschalten" class="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
                     <i id="themeIcon" class="fa-solid fa-moon text-sm"></i>
                 </button>
-                <button id="hdrPdfBtn" onclick="handlePdfPrint()" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 transition shadow-sm flex items-center gap-1.5 opacity-60 cursor-not-allowed" title="Erst bei 3 gelösten Modi freigeschaltet">
-                    <i class="fa-solid fa-lock"></i>
-                    <span id="hdrPdfText" class="hidden sm:inline">PDF Export (0/3)</span>
+                <button id="hdrPdfBtn" onclick="handlePdfPrint()" class="p-2 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 transition border border-slate-200 dark:border-slate-700 opacity-60 cursor-not-allowed" title="Erst bei 3 gelösten Modi freigeschaltet">
+                    <i class="fa-solid fa-file-pdf text-sm"></i>
                 </button>
                 <button onclick="confirmReset()" title="Zurücksetzen" class="p-2 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/50 rounded-lg border border-rose-200 dark:border-rose-900/50">
                     <i class="fa-solid fa-rotate-right text-sm"></i>
@@ -258,7 +257,7 @@
                         <i class="fa-solid fa-gamepad"></i>
                     </div>
                     <div>
-                        <h2 class="text-lg font-bold text-slate-900 dark:text-slate-100">Aufgabe A1: IT-Hardware Memory</h2>
+                        <h2 class="text-lg font-bold text-slate-900 dark:text-slate-100">A1: IT-Hardware Memory</h2>
                         <p class="text-xs text-slate-500 dark:text-slate-400">8. Sekundarschule • Informatische Bildung • Spiel &amp; Begriffstraining</p>
                     </div>
                 </div>
@@ -274,7 +273,7 @@
             </div>
 
             <!-- Student Metadata -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4 no-print">
+            <div class="hidden sm:grid sm:grid-cols-3 gap-4 mt-4 no-print">
                 <div>
                     <label class="block text-xs font-bold uppercase text-slate-500 dark:text-slate-400 mb-1">
                         <i class="fa-solid fa-user mr-1 text-onedrive-500"></i> Vorname
@@ -293,6 +292,14 @@
                     </label>
                     <input type="text" id="studentDate" readonly tabindex="-1" style="pointer-events: none;" class="w-full px-3.5 py-2 text-sm bg-slate-100 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl font-medium text-slate-500 dark:text-slate-400 opacity-90 cursor-not-allowed">
                 </div>
+            </div>
+            <!-- Mobile Tiny Metadata Display (Visible only on mobile) -->
+            <div class="sm:hidden mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-semibold text-slate-500 dark:text-slate-400 no-print">
+                <div class="flex gap-4">
+                    <span><i class="fa-solid fa-user text-onedrive-500/80 mr-1"></i> <span id="mobName">Gast</span></span>
+                    <span><i class="fa-solid fa-users text-onedrive-500/80 mr-1"></i> <span id="mobClass">-</span></span>
+                </div>
+                <span><i class="fa-solid fa-calendar text-onedrive-500/80 mr-1"></i> <span id="mobDate"></span></span>
             </div>
         </div>
 
@@ -436,7 +443,7 @@
                 </div>
                 <div>
                     <h1 class="text-xl font-extrabold text-onedrive-600 uppercase tracking-wide">Leistungsnachweis • IT-Hardware Memory</h1>
-                    <p class="text-xs text-slate-500">Informatische Bildung • 8. Sekundarschule • Aufgabe A1</p>
+                    <p class="text-xs text-slate-500">Informatische Bildung • 8. Sekundarschule • A1</p>
                 </div>
             </div>
             <div class="text-right">
@@ -812,7 +819,6 @@
 
           var modalBtn = document.getElementById('modalPdfBtn');
           var hdrBtn = document.getElementById('hdrPdfBtn');
-          var hdrText = document.getElementById('hdrPdfText');
 
           var percent = Math.min(100, Math.round((count / 3) * 100));
 
@@ -827,10 +833,7 @@
             modalBtn.className = isUnlocked ? 'px-4 py-2 text-xs font-bold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white transition shadow-sm' : 'px-4 py-2 text-xs font-bold rounded-xl bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 transition opacity-60 cursor-not-allowed';
           }
           if (hdrBtn) {
-            hdrBtn.className = isUnlocked ? 'px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition shadow-sm flex items-center gap-1.5' : 'px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 transition shadow-sm flex items-center gap-1.5 opacity-60 cursor-not-allowed';
-          }
-          if (hdrText) {
-            hdrText.innerText = isUnlocked ? ('PDF Drucken (' + count + '/3)') : ('PDF (' + count + '/3)');
+            hdrBtn.className = isUnlocked ? 'p-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition shadow-sm' : 'p-2 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 transition border border-slate-200 dark:border-slate-700 opacity-60 cursor-not-allowed';
           }
         }
 
@@ -890,7 +893,7 @@
         function handlePdfPrint() {
           var completed = getCompletedModes();
           if (completed.length < 3) {
-            alert('🔒 PDF-Druck gesperrt!\n\nDu musst zuerst mindestens 3 beliebige Schwierigkeitsgrade durchspielen (bisher ' + completed.length + '/3 erledigt), um das Ergebnis als PDF zu speichern.');
+            alert('🔒 PDF-Druck gesperrt!\n\nDie PDF-Funktion wird freigeschaltet, wenn mindestens drei Modi gespielt wurden (bisher ' + completed.length + '/3 erledigt).');
           } else {
             preparePrintCertificate();
             window.print();
@@ -923,6 +926,9 @@
           var sClass = document.getElementById('studentClass').value;
           var sDate = document.getElementById('studentDate').value;
           localStorage.setItem('memStudentInfo', JSON.stringify({ name: sName, sClass: sClass, date: sDate }));
+          if(document.getElementById('mobName')) document.getElementById('mobName').textContent = sName || 'Gast';
+          if(document.getElementById('mobClass')) document.getElementById('mobClass').textContent = sClass || '-';
+          if(document.getElementById('mobDate')) document.getElementById('mobDate').textContent = sDate;
         }
 
         function loadStudentInfo() {
@@ -934,6 +940,7 @@
               if (info.sClass) document.getElementById('studentClass').value = info.sClass;
             }
           } catch(e) {}
+          saveStudentInfo();
         }
 
         function confirmReset() {
@@ -1284,6 +1291,7 @@
             el.readOnly = true;
             el.setAttribute('tabindex', '-1');
             el.style.pointerEvents = 'none';
+            if(document.getElementById('mobDate')) document.getElementById('mobDate').textContent = formattedDate;
           }
         }
         if (document.readyState === 'loading') {
