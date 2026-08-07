@@ -1368,6 +1368,50 @@
           saveFontSize(val);
         };
 
+        // 3. Class Filter Management
+        const CLASS_FILTER_KEY = 'ib-class-filter';
+
+        function applyClassFilter(val) {
+          const colB24 = document.getElementById('col-b24');
+          const colB25 = document.getElementById('col-b25');
+          const grid = document.querySelector('.columns-grid');
+          const filterBtns = document.querySelectorAll('.filter-btn');
+
+          if (!colB24 || !colB25) return;
+          
+          filterBtns.forEach(btn => {
+            if (btn.dataset.val === val) {
+              btn.classList.add('active');
+            } else {
+              btn.classList.remove('active');
+            }
+          });
+
+          if (val === 'b24') {
+            colB24.classList.remove('hidden-col');
+            colB25.classList.add('hidden-col');
+            if (grid) grid.classList.add('single-col');
+          } else if (val === 'b25') {
+            colB24.classList.add('hidden-col');
+            colB25.classList.remove('hidden-col');
+            if (grid) grid.classList.add('single-col');
+          } else {
+            colB24.classList.remove('hidden-col');
+            colB25.classList.remove('hidden-col');
+            if (grid) grid.classList.remove('single-col');
+          }
+        }
+
+        function saveClassFilter(val) {
+          localStorage.setItem(CLASS_FILTER_KEY, val);
+          applyClassFilter(val);
+        }
+
+        function initClassFilter() {
+          const saved = localStorage.getItem(CLASS_FILTER_KEY) || 'all';
+          applyClassFilter(saved);
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
           initTheme();
           initFontSize();
@@ -1380,48 +1424,7 @@
           }
 
           // --- Class Filter Logic ---
-          const CLASS_FILTER_KEY = 'ib-class-filter';
           const filterBtns = document.querySelectorAll('.filter-btn');
-          const colB24 = document.getElementById('col-b24');
-          const colB25 = document.getElementById('col-b25');
-          const grid = document.querySelector('.columns-grid');
-
-          function applyClassFilter(val) {
-            if (!colB24 || !colB25) return;
-            
-            filterBtns.forEach(btn => {
-              if (btn.dataset.val === val) {
-                btn.classList.add('active');
-              } else {
-                btn.classList.remove('active');
-              }
-            });
-
-            if (val === 'b24') {
-              colB24.classList.remove('hidden-col');
-              colB25.classList.add('hidden-col');
-              if (grid) grid.classList.add('single-col');
-            } else if (val === 'b25') {
-              colB24.classList.add('hidden-col');
-              colB25.classList.remove('hidden-col');
-              if (grid) grid.classList.add('single-col');
-            } else {
-              colB24.classList.remove('hidden-col');
-              colB25.classList.remove('hidden-col');
-              if (grid) grid.classList.remove('single-col');
-            }
-          }
-
-          function saveClassFilter(val) {
-            localStorage.setItem(CLASS_FILTER_KEY, val);
-            applyClassFilter(val);
-          }
-
-          function initClassFilter() {
-            const saved = localStorage.getItem(CLASS_FILTER_KEY) || 'all';
-            applyClassFilter(saved);
-          }
-
           filterBtns.forEach(btn => {
             btn.addEventListener('click', () => {
               saveClassFilter(btn.dataset.val);
