@@ -956,7 +956,10 @@
             alert('🔒 PDF-Druck gesperrt!\n\nDie PDF-Funktion wird freigeschaltet, wenn mindestens drei Modi gespielt wurden (bisher ' + completed.length + '/3 erledigt).');
           } else {
             preparePrintCertificate();
+            var originalTitle = document.title;
+            document.title = 'A1';
             window.print();
+            document.title = originalTitle;
           }
         }
 

@@ -1318,7 +1318,10 @@ function applyDefaultClassAndDate() {
             if (currentPercentage < 100) {
                 showToast(`🔒 Drucken gesperrt! Fülle das Arbeitsblatt zuerst zu 100% aus (aktuell ${currentPercentage}%).`);
             } else {
+                const originalTitle = document.title;
+                document.title = 'A4';
                 window.print();
+                document.title = originalTitle;
             }
         }
 

@@ -1318,6 +1318,18 @@ function applyDefaultClassAndDate() {
             }
         }
 
+        function handlePrint() {
+            const percentNum = document.getElementById('headerPercentNumber');
+            if (percentNum && percentNum.innerText === '100%') {
+                const originalTitle = document.title;
+                document.title = 'A3';
+                window.print();
+                document.title = originalTitle;
+            } else {
+                showToast('Fülle bitte zuerst alle Felder aus (100%), um das Dokument zu drucken.');
+            }
+        }
+
         function loadProgress() {
             const saved = localStorage.getItem('onedrive_hardware_worksheet_8sek');
             if (!saved) return;
