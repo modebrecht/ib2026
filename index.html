@@ -823,7 +823,7 @@
               <div class="unterkachel">
                 <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
                   <div>
-                    <h4 class="unterkachel-title" style="margin-bottom: 2px;">
+                    <h4 class="unterkachel-title" id="title-A1" style="margin-bottom: 2px;">
                        A1: IT-Hardware Memory
                     </h4>
                     <p style="font-size: calc(13px * var(--font-scale)); color: var(--muted); margin: 0;">
@@ -838,7 +838,7 @@
               <div class="unterkachel">
                 <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
                   <div>
-                    <h4 class="unterkachel-title" style="margin-bottom: 2px;">
+                    <h4 class="unterkachel-title" id="title-A2" style="margin-bottom: 2px;">
                        A2: Das EVA-Prinzip
                     </h4>
                     <p style="font-size: calc(13px * var(--font-scale)); color: var(--muted); margin: 0;">
@@ -853,7 +853,7 @@
               <div class="unterkachel">
                 <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
                   <div>
-                    <h4 class="unterkachel-title" style="margin-bottom: 2px;">
+                    <h4 class="unterkachel-title" id="title-A3" style="margin-bottom: 2px;">
                        A3: Computeraufbau
                     </h4>
                     <p style="font-size: calc(13px * var(--font-scale)); color: var(--muted); margin: 0;">
@@ -868,7 +868,7 @@
               <div class="unterkachel">
                 <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
                   <div>
-                    <h4 class="unterkachel-title" style="margin-bottom: 2px;">
+                    <h4 class="unterkachel-title" id="title-A4" style="margin-bottom: 2px;">
                        A4: Anschlüsse &amp; PC-Kabel
                     </h4>
                     <p style="font-size: calc(13px * var(--font-scale)); color: var(--muted); margin: 0;">
@@ -883,7 +883,7 @@
               <div class="unterkachel">
                 <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
                   <div>
-                    <h4 class="unterkachel-title" style="margin-bottom: 2px;">
+                    <h4 class="unterkachel-title" id="title-A5" style="margin-bottom: 2px;">
                        A5: Mainboard-Anschlüsse
                     </h4>
                     <p style="font-size: calc(13px * var(--font-scale)); color: var(--muted); margin: 0;">
@@ -898,7 +898,7 @@
               <div class="unterkachel">
                 <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
                   <div>
-                    <h4 class="unterkachel-title" style="margin-bottom: 2px;">
+                    <h4 class="unterkachel-title" id="title-A6" style="margin-bottom: 2px;">
                        A6: TROUBLESHOOTER
                     </h4>
                     <p style="font-size: calc(13px * var(--font-scale)); color: var(--muted); margin: 0;">
@@ -1469,5 +1469,95 @@
       })();
     </script>
 
+    <script>
+      function checkCompletionStatus() {
+        const checkSvgHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+
+        // Füge CSS für den hover-Effekt des erledigten Buttons hinzu
+        if (!document.getElementById('done-btn-style')) {
+           const style = document.createElement('style');
+           style.id = 'done-btn-style';
+           style.innerHTML = '.btn-link.btn-done { background: #10b981 !important; box-shadow: 0 2px 6px rgba(16, 185, 129, 0.25) !important; } .btn-link.btn-done:hover { background: #059669 !important; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35) !important; }';
+           document.head.appendChild(style);
+        }
+
+        function markDone(id) {
+          const titleEl = document.getElementById(id);
+          if (titleEl) {
+            const kachel = titleEl.closest('.unterkachel');
+            if (kachel) {
+              const btn = kachel.querySelector('.btn-link');
+              if (btn && !btn.classList.contains('btn-done')) {
+                btn.classList.add('btn-done');
+                btn.innerHTML = checkSvgHTML;
+                btn.title = 'Erfolgreich abgeschlossen! (Erneut öffnen)';
+              }
+            }
+          }
+        }
+
+        try {
+          // A1 check
+          const a1Data = localStorage.getItem('memCompletedModes');
+          if (a1Data) {
+            const parsed = JSON.parse(a1Data);
+            if (Array.isArray(parsed) && parsed.length >= 3) {
+              markDone('title-A1');
+            }
+          }
+
+          // A2 check
+          const a2Data = localStorage.getItem('onedrive_a2_eva_worksheet_8sek');
+          if (a2Data) {
+            const parsed = JSON.parse(a2Data);
+            if (parsed && parsed.percent === 100) markDone('title-A2');
+          }
+
+          // A3 check
+          const a3Data = localStorage.getItem('onedrive_hardware_worksheet_8sek');
+          if (a3Data) {
+            const parsed = JSON.parse(a3Data);
+            if (parsed && parsed.percent === 100) markDone('title-A3');
+          }
+
+          // A4 check
+          const a4Data = localStorage.getItem('onedrive_cables_worksheet_8sek');
+          if (a4Data) {
+            const parsed = JSON.parse(a4Data);
+            if (parsed && parsed.percent === 100) markDone('title-A4');
+          }
+
+          // A5 check
+          const a5Data = localStorage.getItem('hw_autosave_A5.html');
+          if (a5Data) {
+            const parsed = JSON.parse(a5Data);
+            if (parsed && parsed.manualDoneA5 === true) markDone('title-A5');
+          }
+          
+          // A6 check
+          const a6Data = localStorage.getItem('pctrouble_progress_v1');
+          if (a6Data) {
+            const parsed = JSON.parse(a6Data);
+            if (parsed && parsed.completed && parsed.completed['S4'] === true) markDone('title-A6');
+          }
+          
+        } catch (e) {
+          console.error("Fehler beim Überprüfen des Fortschritts:", e);
+        }
+      }
+
+      // Run on initial load
+      document.addEventListener('DOMContentLoaded', checkCompletionStatus);
+      
+      // Run when user comes back to the tab
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) {
+          checkCompletionStatus();
+        }
+      });
+      
+      // Also run when the window gets focus
+      window.addEventListener('focus', checkCompletionStatus);
+    </script>
 </body>
 </html>
