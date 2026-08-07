@@ -198,9 +198,26 @@
     .font-size-limits {
       display: flex;
       justify-content: space-between;
+      align-items: center;
       margin-top: 4px;
       color: var(--muted);
       font-size: calc(12px * var(--font-scale));
+    }
+
+    .reset-font-btn {
+      background: none;
+      border: none;
+      color: var(--blue);
+      cursor: pointer;
+      font-size: calc(12px * var(--font-scale));
+      padding: 0 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.2s ease;
+    }
+    .reset-font-btn:hover {
+      color: var(--text);
+      text-decoration: underline;
     }
 
     .switch {
@@ -787,7 +804,11 @@
             <output class="font-size-value" id="fontSizeValue" for="fontSizeRange">100%</output>
           </div>
           <input class="font-size-range" id="fontSizeRange" type="range" min="80" max="250" value="100" step="5" />
-          <div class="font-size-limits" aria-hidden="true"><span>80%</span><span>250%</span></div>
+          <div class="font-size-limits">
+            <span aria-hidden="true">80%</span>
+            <button type="button" id="resetFontSizeBtn" class="reset-font-btn" aria-label="Schriftgrösse auf 100% zurücksetzen">Reset</button>
+            <span aria-hidden="true">250%</span>
+          </div>
         </div>
       </div>
     </div>
@@ -1353,6 +1374,11 @@
           document.documentElement.style.fontSize = val + '%';
           const slider = document.getElementById('fontSizeRange');
           if (slider) slider.value = val;
+          const valDisplay = document.getElementById('fontSizeValue');
+          if (valDisplay) {
+            valDisplay.value = `${val}%`;
+            valDisplay.textContent = `${val}%`;
+          }
         }
 
         function saveFontSize(sizeVal) {
@@ -1451,6 +1477,13 @@
           if (fontSlider) {
             fontSlider.addEventListener('input', function() {
               saveFontSize(fontSlider.value);
+            });
+          }
+
+          const resetFontBtn = document.getElementById('resetFontSizeBtn');
+          if (resetFontBtn) {
+            resetFontBtn.addEventListener('click', function() {
+              saveFontSize(100);
             });
           }
         });
