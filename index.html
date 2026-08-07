@@ -249,6 +249,62 @@
       gap: 20px;
       align-items: start;
     }
+    .columns-grid.single-col {
+      grid-template-columns: 1fr;
+    }
+    .hidden-col {
+      display: none !important;
+    }
+
+    .class-filter-buttons {
+      display: flex;
+      gap: 4px;
+      margin-left: auto;
+      background: #f1f5f9;
+      padding: 4px;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      box-shadow: inset 0 2px 4px 0 rgba(0,0,0,0.05);
+    }
+    body[data-theme="dark"] .class-filter-buttons {
+      background: rgba(30, 41, 59, 0.8);
+      border-color: #334155;
+      box-shadow: inset 0 2px 4px 0 rgba(0,0,0,0.2);
+    }
+    .filter-btn {
+      background: transparent;
+      color: #475569;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: calc(13px * var(--font-scale));
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+      white-space: nowrap;
+    }
+    body[data-theme="dark"] .filter-btn {
+      color: #94a3b8;
+    }
+    .filter-btn:hover:not(.active) {
+      background: #e2e8f0;
+      color: #1e293b;
+    }
+    body[data-theme="dark"] .filter-btn:hover:not(.active) {
+      background: #334155;
+      color: #e2e8f0;
+    }
+    .filter-btn.active {
+      background: var(--blue);
+      color: white;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      cursor: default;
+    }
+    body[data-theme="dark"] .filter-btn.active {
+      color: white;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+    }
 
     .column-header {
       display: flex;
@@ -717,6 +773,15 @@
         </div>
 
         <div class="settings-row font-size-row">
+          <label class="settings-label">Klassen-Ansicht</label>
+          <div class="class-filter-buttons">
+            <button class="filter-btn active" data-val="all">Alle</button>
+            <button class="filter-btn" data-val="b24">B24</button>
+            <button class="filter-btn" data-val="b25">B25</button>
+          </div>
+        </div>
+
+        <div class="settings-row font-size-row">
           <div class="font-size-heading">
             <label class="settings-label" for="fontSizeRange">Schriftgrösse</label>
             <output class="font-size-value" id="fontSizeValue" for="fontSizeRange">100%</output>
@@ -731,7 +796,7 @@
     <div class="columns-grid">
       
       <!-- LEFT COLUMN: B24 -->
-      <section aria-label="Klasse B24">
+      <section aria-label="Klasse B24" id="col-b24">
         <div class="column-header">
           <span class="class-badge">B24</span>
           <h2 class="column-title">Klasse B24</h2>
@@ -1000,7 +1065,7 @@
         </div>
       </section>
 
-      <section aria-label="Klasse B25">
+      <section aria-label="Klasse B25" id="col-b25">
         <div class="column-header">
           <span class="class-badge">B25</span>
           <h2 class="column-title">Klasse B25</h2>
@@ -1314,6 +1379,59 @@
             });
           }
 
+          // --- Class Filter Logic ---
+          const CLASS_FILTER_KEY = 'ib-class-filter';
+          const filterBtns = document.querySelectorAll('.filter-btn');
+          const colB24 = document.getElementById('col-b24');
+          const colB25 = document.getElementById('col-b25');
+          const grid = document.querySelector('.columns-grid');
+
+          function applyClassFilter(val) {
+            if (!colB24 || !colB25) return;
+            
+            filterBtns.forEach(btn => {
+              if (btn.dataset.val === val) {
+                btn.classList.add('active');
+              } else {
+                btn.classList.remove('active');
+              }
+            });
+
+            if (val === 'b24') {
+              colB24.classList.remove('hidden-col');
+              colB25.classList.add('hidden-col');
+              if (grid) grid.classList.add('single-col');
+            } else if (val === 'b25') {
+              colB24.classList.add('hidden-col');
+              colB25.classList.remove('hidden-col');
+              if (grid) grid.classList.add('single-col');
+            } else {
+              colB24.classList.remove('hidden-col');
+              colB25.classList.remove('hidden-col');
+              if (grid) grid.classList.remove('single-col');
+            }
+          }
+
+          function saveClassFilter(val) {
+            localStorage.setItem(CLASS_FILTER_KEY, val);
+            applyClassFilter(val);
+          }
+
+          function initClassFilter() {
+            const saved = localStorage.getItem(CLASS_FILTER_KEY) || 'all';
+            applyClassFilter(saved);
+          }
+
+          filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+              saveClassFilter(btn.dataset.val);
+            });
+          });
+          
+          initClassFilter();
+          // ------------------------
+
+
           const fontSlider = document.getElementById('fontSizeRange');
           if (fontSlider) {
             fontSlider.addEventListener('input', function() {
@@ -1328,6 +1446,9 @@
           }
           if (e.key === FONT_KEY || e.key === 'onedrive_font_size') {
             if (e.newValue) applyFontSize(e.newValue);
+          }
+          if (e.key === 'ib-class-filter') {
+            if (e.newValue) applyClassFilter(e.newValue);
           }
         });
       })();
