@@ -109,27 +109,16 @@
         });
 
 function applyDefaultClassAndDate() {
-            var classInput = document.getElementById('studentClass');
             var dateInput = document.getElementById('studentDate');
             
             var d = new Date();
             var yyyy = d.getFullYear();
             var mm = String(d.getMonth() + 1).padStart(2, '0');
             var dd = String(d.getDate()).padStart(2, '0');
-            var todayStr = yyyy + '-' + mm + '-' + dd;
+            var todayStr = dd + '.' + mm + '.' + yyyy;
             
-            if (classInput && (!classInput.value || !classInput.value.trim())) {
-                classInput.value = 'B24';
-            }
             if (dateInput) {
-                var isAuto = dateInput.getAttribute('data-autodate') === 'true';
-                if (!dateInput.value || isAuto) {
-                    dateInput.value = todayStr;
-                    dateInput.setAttribute('data-autodate', 'true');
-                }
-                dateInput.addEventListener('change', function() {
-                    dateInput.removeAttribute('data-autodate');
-                });
+                dateInput.value = todayStr;
             }
         }
 

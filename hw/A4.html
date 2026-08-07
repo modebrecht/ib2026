@@ -153,13 +153,13 @@
                     <label class="block text-xs font-bold uppercase text-slate-500 dark:text-slate-400 mb-1">
                         <i class="fa-solid fa-user mr-1 text-onedrive-500"></i> Vorname
                     </label>
-                    <input type="text" id="studentName" oninput="updateProgress()" placeholder="Vorname eingeben..." class="w-full px-3.5 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100">
+                    <input type="text" id="studentName" readonly tabindex="-1" style="pointer-events: none;" class="w-full px-3.5 py-2 text-sm bg-slate-100 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl font-medium text-slate-500 dark:text-slate-400 opacity-90 cursor-not-allowed">
                 </div>
                 <div>
                     <label class="block text-xs font-bold uppercase text-slate-500 dark:text-slate-400 mb-1">
                         <i class="fa-solid fa-users mr-1 text-onedrive-500"></i> Klasse
                     </label>
-                    <input type="text" id="studentClass" oninput="updateProgress()" placeholder="Klasse eingeben..." class="w-full px-3.5 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100" value="B24">
+                    <input type="text" id="studentClass" readonly tabindex="-1" style="pointer-events: none;" class="w-full px-3.5 py-2 text-sm bg-slate-100 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl font-medium text-slate-500 dark:text-slate-400 opacity-90 cursor-not-allowed" value="B24">
                 </div>
                 <div>
                     <label class="block text-xs font-bold uppercase text-slate-500 dark:text-slate-400 mb-1">
@@ -926,27 +926,16 @@
         });
 
 function applyDefaultClassAndDate() {
-            var classInput = document.getElementById('studentClass');
             var dateInput = document.getElementById('studentDate');
             
             var d = new Date();
             var yyyy = d.getFullYear();
             var mm = String(d.getMonth() + 1).padStart(2, '0');
             var dd = String(d.getDate()).padStart(2, '0');
-            var todayStr = yyyy + '-' + mm + '-' + dd;
+            var todayStr = dd + '.' + mm + '.' + yyyy;
             
-            if (classInput && (!classInput.value || !classInput.value.trim())) {
-                classInput.value = 'B24';
-            }
             if (dateInput) {
-                var isAuto = dateInput.getAttribute('data-autodate') === 'true';
-                if (!dateInput.value || isAuto) {
-                    dateInput.value = todayStr;
-                    dateInput.setAttribute('data-autodate', 'true');
-                }
-                dateInput.addEventListener('change', function() {
-                    dateInput.removeAttribute('data-autodate');
-                });
+                dateInput.value = todayStr;
             }
         }
 
