@@ -11,6 +11,11 @@
             theme: {
                 extend: {
                     colors: {
+                        bgDark: '#050914',
+                        surface: '#0f172a',
+                        evaE: '#FF6B00',
+                        evaV: '#00F0FF',
+                        evaA: '#00FF66',
                         slate: {
                             50: '#fafafa', 100: '#f5f5f5', 200: '#e5e5e5', 300: '#d4d4d4',
                             400: '#b4bdca', 500: '#a3a3a3', 600: '#616161', 700: '#404040',
@@ -36,6 +41,13 @@
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.5); border-radius: 4px; }
+        
+        .eva-grid-bg {
+            background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
         @keyframes ytPulse {
             0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.45); }
             50% { transform: scale(1.12); box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); }
@@ -46,6 +58,15 @@
             transform-origin: center;
             animation: ytPulse 1.8s ease-in-out infinite;
         }
+
+        @keyframes btnScalePulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 15px rgba(0, 240, 255, 0.1); }
+            50% { transform: scale(1.08); box-shadow: 0 0 35px rgba(0, 240, 255, 0.4); }
+        }
+        .btn-scale-pulse {
+            animation: btnScalePulse 2s ease-in-out infinite;
+        }
+
 
                 /* Crispy Visual Animations (Premium) */
         @keyframes eva-pop {
@@ -197,6 +218,39 @@
             animation-fill-mode: both;
         }
 
+
+
+        /* --- Leuchtende Rahmen für die Titel (Pill Shapes) --- */
+        .title-frame { transition: all 0.4s ease; box-shadow: 0 0 15px rgba(0,0,0,0.5); }
+        .title-frame.active-e { box-shadow: 0 0 30px rgba(255,107,0,0.5), inset 0 0 15px rgba(255,107,0,0.2); transform: scale(1.05); border-color: rgba(255,107,0,0.8); }
+        .title-frame.active-v { box-shadow: 0 0 30px rgba(0,240,255,0.5), inset 0 0 15px rgba(0,240,255,0.2); transform: scale(1.05); border-color: rgba(0,240,255,0.8); }
+        .title-frame.active-a { box-shadow: 0 0 30px rgba(0,255,102,0.5), inset 0 0 15px rgba(0,255,102,0.2); transform: scale(1.05); border-color: rgba(0,255,102,0.8); }
+
+        /* --- Premium Glass Cards (Theorie) --- */
+        .glass-card { background: linear-gradient(145deg, rgba(15, 23, 42, 0.7) 0%, rgba(5, 9, 20, 0.8) 100%); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); border-top: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.05); transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease; }
+        .glass-card.active-e { border-color: rgba(255, 107, 0, 0.4); box-shadow: 0 0 40px rgba(255, 107, 0, 0.15), inset 0 0 20px rgba(255, 107, 0, 0.05); transform: translateY(-5px); }
+        .glass-card.active-v { border-color: rgba(0, 240, 255, 0.4); box-shadow: 0 0 40px rgba(0, 240, 255, 0.15), inset 0 0 20px rgba(0, 240, 255, 0.05); transform: translateY(-5px); }
+        .glass-card.active-a { border-color: rgba(0, 255, 102, 0.4); box-shadow: 0 0 40px rgba(0, 255, 102, 0.15), inset 0 0 20px rgba(0, 255, 102, 0.05); transform: translateY(-5px); }
+        .hardware-node { background: #0f172a; border: 2px solid #1e293b; box-shadow: 0 10px 25px rgba(0,0,0,0.5); transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .node-glow-e { border-color: #FF6B00; box-shadow: 0 0 30px rgba(255, 107, 0, 0.6), inset 0 0 15px rgba(255, 107, 0, 0.3); transform: scale(1.15); color: #FF6B00; }
+        .node-glow-v { border-color: #00F0FF; box-shadow: 0 0 30px rgba(0, 240, 255, 0.6), inset 0 0 15px rgba(0, 240, 255, 0.3); transform: scale(1.15); color: #00F0FF; }
+        .node-glow-a { border-color: #00FF66; box-shadow: 0 0 30px rgba(0, 255, 102, 0.6), inset 0 0 15px rgba(0, 255, 102, 0.3); transform: scale(1.15); color: #00FF66; }
+        .math-popup { background: linear-gradient(180deg, rgba(15, 23, 42, 0.95) 0%, rgba(5, 9, 20, 0.98) 100%); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.05); border-top: 2px solid; box-shadow: 0 20px 40px rgba(0,0,0,0.9); transform: translateY(20px) scale(0.95); opacity: 0; transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+        .math-popup.show { transform: translateY(0) scale(1); opacity: 1; }
+        .math-popup-e { border-top-color: #FF6B00; box-shadow: 0 15px 40px rgba(255, 107, 0, 0.15); }
+        .math-popup-v { border-top-color: #00F0FF; box-shadow: 0 15px 40px rgba(0, 240, 255, 0.15); }
+        .math-popup-a { border-top-color: #00FF66; box-shadow: 0 15px 40px rgba(0, 255, 102, 0.15); }
+        .neon-text-e { text-shadow: 0 0 10px rgba(255, 107, 0, 0.8), 0 0 25px rgba(255, 107, 0, 0.4); color: #fff; }
+        .neon-text-v { text-shadow: 0 0 10px rgba(0, 240, 255, 0.8), 0 0 25px rgba(0, 240, 255, 0.4); color: #fff; }
+        .neon-text-a { text-shadow: 0 0 10px rgba(0, 255, 102, 0.8), 0 0 25px rgba(0, 255, 102, 0.4); color: #fff; }
+        #data-particle { background: #fff; box-shadow: 0 0 20px #fff, 0 0 40px #fff; transition: left 1.5s cubic-bezier(0.4, 0, 0.2, 1), top 1.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s, opacity 0.3s; will-change: left, top, transform; z-index: 30; }
+        #data-particle.processing { animation: processParticle 0.5s ease-in-out infinite alternate; }
+        @keyframes processParticle { 0% { transform: scale(1) translate(-50%, -50%); box-shadow: 0 0 20px #00F0FF, 0 0 40px #00F0FF; background: #00F0FF; } 100% { transform: scale(1.5) translate(-33%, -33%); box-shadow: 0 0 40px #00F0FF, 0 0 80px #00F0FF; background: #fff; } }
+        @keyframes cpuWork { 0% { transform: scale(1.15) translate(1px, 1px); } 20% { transform: scale(1.15) translate(-2px, 0px); } 40% { transform: scale(1.15) translate(2px, -1px); } 60% { transform: scale(1.15) translate(-1px, 2px); } 80% { transform: scale(1.15) translate(1px, -2px); } 100% { transform: scale(1.15) translate(-1px, 1px); } }
+        .cpu-working { animation: cpuWork 0.1s infinite; filter: drop-shadow(0 0 20px #00F0FF); }
+        .cursor::after { content: '|'; animation: blink 1s step-end infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
+
         @media print {
             .no-print { display: none !important; }
             body { background: white !important; color: black !important; font-size: 11pt; }
@@ -262,7 +316,7 @@
                     </div>
                     <div>
                         <h2 class="text-lg font-bold text-slate-900 dark:text-slate-100">A2: Das EVA-Prinzip</h2>
-                        <p class="text-xs text-slate-500 dark:text-slate-400">8. Sekundarschule • Informatische Bildung • IT-Hardware Grundlagen</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Informatische Bildung • IT-Hardware Grundlagen</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-3">
@@ -303,80 +357,108 @@
             </div>
         </div>
 
-        <!-- Section 1: Overview & Diagram -->
-        <section class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 print-card space-y-6">
-            <div>
-                <span class="inline-flex items-center gap-1.5 bg-onedrive-50 dark:bg-onedrive-950 text-onedrive-700 dark:text-onedrive-300 text-xs font-bold px-3 py-1 rounded-full border border-onedrive-200 dark:border-onedrive-800 uppercase mb-2">
-                    <i class="fa-solid fa-sitemap"></i> Grundmodell
-                </span>
-                <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100">Das EVA-Prinzip (Eingabe • Verarbeitung • Ausgabe)</h3>
-                <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
-                    Jedes datenverarbeitende System (vom Taschenrechner bis zum Supercomputer) arbeitet nach dem EVA-Prinzip.
+        <!-- Section 1: Overview & Diagram (Ultra HD) -->
+        <section class="bg-[#050914] eva-grid-bg text-white rounded-2xl shadow-sm border border-slate-800 p-6 print-card space-y-6 relative overflow-hidden">
+            <!-- Statische Hintergrund-Glows -->
+            <div class="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-evaE/5 rounded-full blur-[150px] pointer-events-none z-0"></div>
+            <div class="absolute top-[30%] right-[-10%] w-[700px] h-[700px] bg-evaV/5 rounded-full blur-[150px] pointer-events-none z-0"></div>
+            <div class="absolute bottom-[-10%] left-[20%] w-[600px] h-[600px] bg-evaA/5 rounded-full blur-[150px] pointer-events-none z-0"></div>
+
+            <header class="text-center mb-16 px-4 z-10 relative">
+                <h1 class="text-5xl md:text-7xl font-black mb-4 tracking-tighter text-white drop-shadow-2xl">
+                    Das <span class="text-evaE drop-shadow-[0_0_15px_rgba(255,107,0,0.5)]">E</span>-<span class="text-evaV drop-shadow-[0_0_15px_rgba(0,240,255,0.5)]">V</span>-<span class="text-evaA drop-shadow-[0_0_15px_rgba(0,255,102,0.5)]">A</span> Prinzip
+                </h1>
+                <p class="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto font-medium">
+                    Theorie, Hardware und Aufgabe perfekt in Reihe.
                 </p>
-            </div>
+            </header>
 
-            <!-- 5-Column Grid with Dual Arrows -->
-                        <!-- 3-Column Visual Grid -->
-            <!-- 3-Column Visual Grid (Pure Concrete) -->
-            <div id="evaGrid" class="relative w-full mt-12 mb-16">
-                <!-- Traveling Data Packets -->
-                <div class="data-packet-1 absolute top-[55%] left-[16%] w-8 h-8 rounded-full flex items-center justify-center text-white text-[14px] font-bold opacity-0 z-20 hidden md:flex shadow-lg">
-                    <i class="fa-solid fa-bolt"></i>
-                </div>
-                <div class="data-packet-2 absolute top-[55%] left-[50%] w-8 h-8 rounded-full flex items-center justify-center text-white text-[14px] font-bold opacity-0 z-20 hidden md:flex shadow-lg">
-                    <i class="fa-solid fa-file-lines"></i>
-                </div>
+            <main id="anim-container" class="w-full relative z-10">
+                <div id="pipeline-track" class="absolute bg-slate-800 rounded-full z-0 hidden md:block" style="height: 4px;"></div>
+                <div id="pipeline-progress" class="absolute bg-gradient-to-r from-evaE via-evaV to-evaA rounded-full z-0 hidden md:block transition-all duration-[1500ms]" style="height: 4px; width: 0;"></div>
+                <div id="pipeline-track-mobile" class="absolute bg-slate-800 rounded-full z-0 md:hidden" style="width: 4px;"></div>
+                <div id="pipeline-progress-mobile" class="absolute bg-gradient-to-b from-evaE via-evaV to-evaA rounded-full z-0 md:hidden transition-all duration-[1500ms]" style="width: 4px; height: 0;"></div>
+                
+                <div id="data-particle" class="absolute w-4 h-4 md:w-5 md:h-5 rounded-full -translate-x-1/2 -translate-y-1/2 opacity-0 pointer-events-none"></div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-16 relative z-10">
-                    <!-- Connecting Line -->
-                    <div class="connecting-line hidden md:block absolute top-[55%] left-[16%] right-[16%] h-2 bg-slate-200 dark:bg-slate-700 -z-10 rounded-full mt-1"></div>
-
-                    <!-- 1. EINGABE -->
-                    <div class="eva-station-1 flex flex-col items-center gap-8">
-                        <div class="station-header eva-animated transform translate-y-4 opacity-0 transition-all duration-700">
-                            <h2 class="text-5xl font-black text-amber-500 tracking-wider">EINGABE</h2>
-                        </div>
-                        <div class="concrete-icon concrete-icon-1 w-56 h-56 rounded-3xl glass-icon flex items-center justify-center text-[8rem] text-slate-300 relative z-10 transition-all duration-700">
-                            <i class="fa-solid fa-keyboard"></i>
-                        </div>
-                        <div class="dynamic-text-1 w-full text-center mt-2 min-h-[3rem] flex justify-center">
-                            <p class="font-bold text-amber-500 text-lg bg-amber-50 dark:bg-amber-950/40 px-4 py-2 rounded-xl inline-block typing-effect opacity-0">Der User tippt 3 + 5 ein</p>
-                        </div>
-                    </div>
-
-                    <!-- 2. VERARBEITUNG -->
-                    <div class="eva-station-2 flex flex-col items-center gap-8">
-                        <div class="station-header eva-animated transform translate-y-4 opacity-0 transition-all duration-700">
-                            <h2 class="text-5xl font-black text-onedrive-500 tracking-wider">VERARBEITUNG</h2>
-                        </div>
-                        <div class="concrete-icon concrete-icon-2 w-56 h-56 rounded-3xl glass-icon flex items-center justify-center text-[8rem] text-slate-300 relative z-10 transition-all duration-700">
-                            <i class="fa-solid fa-microchip"></i>
-                        </div>
-                        <div class="dynamic-text-2 w-full text-center mt-2 min-h-[3rem] flex justify-center">
-                            <p class="font-bold text-onedrive-500 text-lg bg-onedrive-50 dark:bg-onedrive-950/40 px-4 py-2 rounded-xl inline-block typing-effect opacity-0">Der Computer berechnet das Resultat</p>
-                        </div>
-                    </div>
-
-                    <!-- 3. AUSGABE -->
-                    <div class="eva-station-3 flex flex-col items-center gap-8">
-                        <div class="station-header eva-animated transform translate-y-4 opacity-0 transition-all duration-700">
-                            <h2 class="text-5xl font-black text-emerald-500 tracking-wider">AUSGABE</h2>
-                        </div>
-                        <div class="concrete-icon concrete-icon-3 w-56 h-56 rounded-3xl glass-icon flex items-center justify-center text-[8rem] text-slate-300 relative z-10 transition-all duration-700">
-                            <i class="fa-solid fa-display relative z-0"></i>
-                            <div class="absolute inset-0 flex items-center justify-center z-10 pb-2">
-                                <span class="monitor-text text-[48px] font-bold text-emerald-500 opacity-0 font-mono">8</span>
+                <div class="flex flex-col md:flex-row justify-between w-full gap-10 md:gap-8 relative z-10">
+                    <!-- EINGABE -->
+                    <div class="flex-1 flex flex-col">
+                        <div class="h-20 flex items-center justify-center">
+                            <div id="card-e" class="title-frame border-2 border-evaE/60 bg-evaE/10 text-evaE font-black text-xl md:text-2xl uppercase tracking-widest px-8 py-3 rounded-xl flex items-center justify-center">
+                                EINGABE
                             </div>
                         </div>
-                        <div class="dynamic-text-3 w-full text-center mt-2 min-h-[3rem] flex justify-center">
-                            <p class="font-bold text-emerald-500 text-lg bg-emerald-50 dark:bg-emerald-950/40 px-4 py-2 rounded-xl inline-block typing-effect opacity-0">Der Monitor zeigt das Resultat</p>
+                        <div class="h-10 md:h-12 w-full"></div>
+                        <div class="flex justify-center relative z-20">
+                            <div id="node-e" class="hardware-node w-20 h-20 md:w-28 md:h-28 rounded-full flex items-center justify-center text-slate-500 bg-surface">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="md:w-12 md:h-12"><rect width="20" height="16" x="2" y="4" rx="2" ry="2"/><path d="M6 8h.001M10 8h.001M14 8h.001M18 8h.001M8 12h.001M12 12h.001M16 12h.001M7 16h10"/></svg>
+                            </div>
+                        </div>
+                        <div class="h-10 md:h-12 w-full"></div>
+                        <div class="w-full">
+                            <div id="math-e" class="math-popup math-popup-e rounded-2xl p-6 text-center w-full">
+                                <div id="typewriter-e" class="font-mono text-xl md:text-2xl font-bold neon-text-e min-h-[64px] flex items-center justify-center text-center leading-relaxed">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- VERARBEITUNG -->
+                    <div class="flex-1 flex flex-col">
+                        <div class="h-20 flex items-center justify-center">
+                            <div id="card-v" class="title-frame border-2 border-evaV/60 bg-evaV/10 text-evaV font-black text-xl md:text-2xl uppercase tracking-widest px-8 py-3 rounded-xl flex items-center justify-center">
+                                VERARBEITUNG
+                            </div>
+                        </div>
+                        <div class="h-10 md:h-12 w-full"></div>
+                        <div class="flex justify-center relative z-20">
+                            <div id="node-v" class="hardware-node w-20 h-20 md:w-28 md:h-28 rounded-full flex items-center justify-center text-slate-500 bg-surface">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="md:w-12 md:h-12"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+                            </div>
+                        </div>
+                        <div class="h-10 md:h-12 w-full"></div>
+                        <div class="w-full">
+                            <div id="math-v" class="math-popup math-popup-v rounded-2xl p-6 text-center w-full">
+                                <div id="typewriter-v" class="font-mono text-xl md:text-2xl font-bold neon-text-v min-h-[64px] flex justify-center items-center text-center leading-relaxed">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AUSGABE -->
+                    <div class="flex-1 flex flex-col">
+                        <div class="h-20 flex items-center justify-center">
+                            <div id="card-a" class="title-frame border-2 border-evaA/60 bg-evaA/10 text-evaA font-black text-xl md:text-2xl uppercase tracking-widest px-8 py-3 rounded-xl flex items-center justify-center">
+                                AUSGABE
+                            </div>
+                        </div>
+                        <div class="h-10 md:h-12 w-full"></div>
+                        <div class="flex justify-center relative z-20">
+                            <div id="node-a" class="hardware-node w-20 h-20 md:w-28 md:h-28 rounded-full flex items-center justify-center text-slate-500 bg-surface relative">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="md:w-12 md:h-12"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/>
+                                    <text class="monitor-text opacity-0 transition-opacity duration-500" x="12" y="10.5" font-size="10" font-family="monospace" font-weight="900" text-anchor="middle" dominant-baseline="middle" stroke="none" fill="currentColor">8</text>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="h-10 md:h-12 w-full"></div>
+                        <div class="w-full">
+                            <div id="math-a" class="math-popup math-popup-a rounded-2xl p-6 text-center w-full">
+                                <div id="typewriter-a" class="font-mono text-xl md:text-2xl font-black neon-text-a min-h-[64px] flex items-center justify-center text-center leading-relaxed">
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="mt-8 text-center">
-                <button id="playAnimBtn" onclick="playEvaAnimation()" class="px-6 py-2.5 bg-onedrive-600 hover:bg-onedrive-700 text-white rounded-2xl font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all">
-                    <i class="fa-solid fa-play mr-2"></i> Datenfluss starten
+            </main>
+
+            <div class="flex justify-center mt-2 mb-10 z-20 relative">
+                <button id="play-btn-hd" onclick="startHDAnimation()" class="btn-scale-pulse group relative inline-flex items-center justify-center gap-3 px-10 py-4 font-bold text-white bg-slate-800 border border-slate-700 rounded-full overflow-hidden transition-all duration-300 hover:bg-slate-700 hover:border-evaV/50 focus:outline-none focus:ring-4 focus:ring-evaV/40 active:scale-95">
+                    <div class="absolute inset-0 bg-gradient-to-r from-evaE/20 via-evaV/20 to-evaA/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="relative z-10 group-hover:text-evaV transition-colors duration-300">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                    <span id="btn-text-hd" class="relative z-10 text-base tracking-wide group-hover:text-white transition-colors duration-300">System starten</span>
                 </button>
             </div>
         </section>
@@ -392,7 +474,7 @@
 
             <div class="space-y-2">
                 <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 p-6 text-center">
-                    <a id="ytButton" onclick="revealPraxis()" href="https://www.youtube.com/watch?v=p-kMnyitkHo" target="_blank" rel="noopener" class="yt-pulse group inline-flex items-center justify-center w-28 h-28 rounded-2xl bg-red-600 text-white shadow-lg border-4 border-red-400 hover:scale-110 transition-transform">
+                    <a id="ytButton" onclick="revealPraxis()" href="https://www.youtube.com/watch?v=p-kMnyitkHo" target="_blank" rel="noopener" class="yt-pulse group inline-flex items-center justify-center w-28 h-28 rounded-2xl bg-red-600 text-white shadow-lg border-4 border-red-400 hover:bg-red-500 transition-colors">
                         <i class="fa-brands fa-youtube text-6xl"></i>
                     </a>
                     <div class="mt-3">
@@ -576,12 +658,6 @@
     </main>
 
     <script>
-        
-        
-        
-            
-        }
-
         document.addEventListener('DOMContentLoaded', () => {
             initTheme();
             loadProgressFromStorage();
@@ -857,24 +933,7 @@ function applyDefaultClassAndDate() {
             document.getElementById('modalConfirmBtn').onclick = () => { modal.style.display = 'none'; onConfirm(); };
         }
 
-        function replayYtButtonAnimation() {
-            const btn = document.getElementById('ytButton');
-            if (!btn) return;
-            btn.classList.remove('replay');
-            void btn.offsetWidth;
-            btn.classList.add('replay');
-        }
 
-        window.addEventListener('load', () => {
-            setTimeout(replayYtButtonAnimation, 3000);
-        });
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const btn = document.getElementById('ytButton');
-            if (btn) {
-                btn.addEventListener('click', replayYtButtonAnimation);
-            }
-        });
     </script>
 
     <!-- Global Unified Student Vorname Sync & First-Time Prompt -->
@@ -1069,38 +1128,244 @@ function applyDefaultClassAndDate() {
       })();
     </script>
 
+    
     <script>
-        function playEvaAnimation() {
-            const grid = document.getElementById('evaGrid');
-            const btn = document.getElementById('playAnimBtn');
+        const isMobile = () => window.innerWidth < 768;
+        
+        let container, cardE, cardV, cardA, nodeE, nodeV, nodeA, mathE, mathV, mathA;
+        let typewriterE, typewriterV, typewriterA;
+        let particle, trackDesktop, progressDesktop, trackMobile, progressMobile;
+        let playBtnHD, btnTextHD;
+        
+        let isAnimatingHD = false;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            container = document.getElementById('anim-container');
+            cardE = document.getElementById('card-e');
+            cardV = document.getElementById('card-v');
+            cardA = document.getElementById('card-a');
+            nodeE = document.getElementById('node-e');
+            nodeV = document.getElementById('node-v');
+            nodeA = document.getElementById('node-a');
+            mathE = document.getElementById('math-e');
+            mathV = document.getElementById('math-v');
+            mathA = document.getElementById('math-a');
+            typewriterE = document.getElementById('typewriter-e');
+            typewriterV = document.getElementById('typewriter-v');
+            typewriterA = document.getElementById('typewriter-a');
+            particle = document.getElementById('data-particle');
+            trackDesktop = document.getElementById('pipeline-track');
+            progressDesktop = document.getElementById('pipeline-progress');
+            trackMobile = document.getElementById('pipeline-track-mobile');
+            progressMobile = document.getElementById('pipeline-progress-mobile');
+            playBtnHD = document.getElementById('play-btn-hd');
+            btnTextHD = document.getElementById('btn-text-hd');
             
-            // Reset state
-            grid.classList.remove('is-finished');
-            grid.classList.remove('is-animating');
-            void grid.offsetWidth; // trigger reflow
-            
-            // Start
-            grid.classList.add('is-animating');
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Wird abgespielt...';
-            
-            // End sequence after 21.5s
-            setTimeout(() => {
-                grid.classList.remove('is-animating');
-                grid.classList.add('is-finished');
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fa-solid fa-rotate-right mr-2"></i> Erneut abspielen';
-                
-                const secVideo = document.getElementById('secVideo');
-                if (secVideo.classList.contains('hidden')) {
-                    secVideo.classList.remove('hidden');
-                    secVideo.classList.add('animate-fade-in-up');
-                    secVideo.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            }, 21500);
+            updatePipelines();
+        });
+
+        function getCenterRel(el) {
+            const rect = el.getBoundingClientRect();
+            const contRect = container.getBoundingClientRect();
+            return {
+                x: rect.left - contRect.left + rect.width / 2,
+                y: rect.top - contRect.top + rect.height / 2
+            };
         }
 
+        function updatePipelines() {
+            if(!container) return;
+            const cE = getCenterRel(nodeE);
+            const cV = getCenterRel(nodeV);
+            const cA = getCenterRel(nodeA);
+
+            if (!isMobile()) {
+                trackDesktop.style.top = (cE.y - 2) + 'px';
+                trackDesktop.style.left = cE.x + 'px';
+                trackDesktop.style.width = (cA.x - cE.x) + 'px';
+                
+                progressDesktop.style.top = (cE.y - 2) + 'px';
+                progressDesktop.style.left = cE.x + 'px';
+            } else {
+                trackMobile.style.left = (cE.x - 2) + 'px';
+                trackMobile.style.top = cE.y + 'px';
+                trackMobile.style.height = (cA.y - cE.y) + 'px';
+                
+                progressMobile.style.left = (cE.x - 2) + 'px';
+                progressMobile.style.top = cE.y + 'px';
+            }
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        async function typeWriter(element, text, speed = 60) {
+            let currentHTML = "";
+            for (let i = 0; i < text.length; i++) {
+                if (text.charAt(i) === '\n') {
+                    currentHTML += '<br>';
+                } else {
+                    currentHTML += text.charAt(i);
+                }
+                element.innerHTML = currentHTML + '<span class="cursor"></span>';
+                await sleep(speed);
+            }
+            await sleep(500);
+            element.innerHTML = currentHTML; 
+        }
+
+        function resetState() {
+            [cardE, cardV, cardA].forEach(el => el.classList.remove('active-e', 'active-v', 'active-a'));
+            [nodeE, nodeV, nodeA].forEach(el => el.classList.remove('node-glow-e', 'node-glow-v', 'node-glow-a', 'cpu-working'));
+            [mathE, mathV, mathA].forEach(el => el.classList.remove('show'));
+            
+            typewriterE.innerHTML = '';
+            typewriterV.innerHTML = '';
+            typewriterA.innerHTML = '';
+
+            particle.classList.remove('processing');
+            particle.style.transition = "none";
+            particle.style.opacity = "0";
+            particle.style.transform = "scale(1) translate(-50%, -50%)";
+            
+            const monitorText = document.querySelector('.monitor-text');
+            if (monitorText) monitorText.classList.add('opacity-0');
+            
+            progressDesktop.style.transition = "none";
+            progressDesktop.style.width = "0";
+            progressMobile.style.transition = "none";
+            progressMobile.style.height = "0";
+
+            void particle.offsetWidth;
+            void progressDesktop.offsetWidth;
+            void progressMobile.offsetWidth;
+
+            particle.style.transition = "left 1.5s cubic-bezier(0.4, 0, 0.2, 1), top 1.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s, opacity 0.3s";
+            progressDesktop.style.transition = "all 1500ms ease-in-out";
+            progressMobile.style.transition = "all 1500ms ease-in-out";
+        }
+
+        async function startHDAnimation() {
+            if (isAnimatingHD) return;
+            isAnimatingHD = true;
+            
+            playBtnHD.disabled = true;
+            playBtnHD.classList.remove('btn-scale-pulse');
+            playBtnHD.classList.add('opacity-50', 'cursor-wait');
+            btnTextHD.innerText = "System läuft...";
+
+            resetState();
+            updatePipelines(); 
+            await sleep(400);
+
+            const cE = getCenterRel(nodeE);
+            const cV = getCenterRel(nodeV);
+            const cA = getCenterRel(nodeA);
+
+            // PHASE 1: EINGABE
+            cardE.classList.add('active-e');
+            nodeE.classList.add('node-glow-e');
+            mathE.classList.add('show');
+            
+            particle.style.left = cE.x + 'px';
+            particle.style.top = cE.y + 'px';
+            particle.style.opacity = "0";
+
+            await typeWriter(typewriterE, "Benutzer tippt ...\n5 + 3", 70);
+            await sleep(300);
+
+            particle.style.opacity = "1";
+            await sleep(800);
+            
+            particle.style.left = cV.x + 'px';
+            particle.style.top = cV.y + 'px';
+            
+            if (!isMobile()) progressDesktop.style.width = (cV.x - cE.x) + 'px';
+            else progressMobile.style.height = (cV.y - cE.y) + 'px';
+
+            await sleep(1500); 
+
+            cardE.classList.remove('active-e');
+            nodeE.classList.remove('node-glow-e');
+
+            // PHASE 2: VERARBEITUNG
+            cardV.classList.add('active-v');
+            nodeV.classList.add('node-glow-v', 'cpu-working'); 
+            mathV.classList.add('show');
+            
+            particle.classList.add('processing');
+            
+            await typeWriter(typewriterV, "Prozessor berechnet\n5 + 3 = 8", 60);
+            await sleep(1000); 
+
+            particle.classList.remove('processing');
+            nodeV.classList.remove('cpu-working'); 
+
+            await sleep(400); 
+
+            particle.style.left = cA.x + 'px';
+            particle.style.top = cA.y + 'px';
+
+            if (!isMobile()) progressDesktop.style.width = (cA.x - cE.x) + 'px';
+            else progressMobile.style.height = (cA.y - cE.y) + 'px';
+
+            cardV.classList.remove('active-v');
+            nodeV.classList.remove('node-glow-v');
+
+            await sleep(1500); 
+
+            // PHASE 3: AUSGABE
+            cardA.classList.add('active-a');
+            nodeA.classList.add('node-glow-a');
+            mathA.classList.add('show');
+            
+            particle.style.opacity = "0";
+            particle.style.transform = "scale(0) translate(-50%, -50%)";
+
+            await typeWriter(typewriterA, "Monitor zeigt Ergebnis: 8", 70);
+            
+            const monitorText = document.querySelector('.monitor-text');
+            if (monitorText) monitorText.classList.remove('opacity-0');
+            
+            await sleep(2000); 
+
+            cardA.classList.remove('active-a');
+            nodeA.classList.remove('node-glow-a');
+            
+            isAnimatingHD = false;
+            playBtnHD.disabled = false;
+            playBtnHD.classList.remove('opacity-50', 'cursor-wait');
+            btnTextHD.innerText = "Neu starten";
+            
+            // Reveal Video Section
+            const secVideo = document.getElementById('secVideo');
+            if (secVideo && secVideo.classList.contains('hidden')) {
+                secVideo.classList.remove('hidden');
+                secVideo.classList.add('animate-fade-in-up');
+                secVideo.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+                // Workaround for some browsers pausing animations on hidden elements
+                const ytBtn = document.getElementById('ytButton');
+                if (ytBtn) {
+                    ytBtn.style.animation = 'none';
+                    void ytBtn.offsetWidth; // trigger reflow
+                    ytBtn.style.animation = '';
+                }
+            }
+        }
+
+        window.addEventListener('resize', () => {
+            updatePipelines();
+            if (!isAnimatingHD) resetState();
+        });
+    </script>
+
+    <script>
         function revealPraxis() {
+            const ytBtn = document.getElementById('ytButton');
+            if (ytBtn) ytBtn.classList.remove('yt-pulse');
+            
             const secPraxis = document.getElementById('secPraxis');
             if (secPraxis.classList.contains('hidden')) {
                 secPraxis.classList.remove('hidden');
