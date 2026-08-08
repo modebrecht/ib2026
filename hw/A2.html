@@ -47,6 +47,151 @@
             animation: ytPulse 1.8s ease-in-out infinite;
         }
 
+                /* Crispy Visual Animations (Premium) */
+        @keyframes eva-pop {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 transparent; filter: grayscale(100%) opacity(0.6); }
+            40% { transform: scale(1.05); box-shadow: 0 0 40px 8px var(--glow-color); filter: grayscale(0%) opacity(1); }
+            100% { transform: scale(1); box-shadow: 0 0 15px 2px var(--glow-color); filter: grayscale(0%) opacity(1); }
+        }
+        
+        @keyframes packet-travel-1 {
+            0% { left: 16%; opacity: 0; transform: translateY(-50%) scale(0.2);  box-shadow: 0 0 0 rgba(245,158,11,0); }
+            15% { opacity: 1; transform: translateY(-50%) scale(1.3); box-shadow: -12px 0 20px rgba(245,158,11,0.8), 0 0 35px rgba(245,158,11,1); }
+            85% { left: 50%; opacity: 1; transform: translateY(-50%) scale(1.3); box-shadow: -12px 0 20px rgba(245,158,11,0.8), 0 0 35px rgba(245,158,11,1); }
+            100% { left: 50%; opacity: 0; transform: translateY(-50%) scale(0.2); box-shadow: 0 0 0 rgba(245,158,11,0); }
+        }
+        
+        @keyframes packet-travel-2 {
+            0% { left: 50%; opacity: 0; transform: translateY(-50%) scale(0.2);  box-shadow: 0 0 0 rgba(0,120,212,0); }
+            15% { opacity: 1; transform: translateY(-50%) scale(1.3); box-shadow: -12px 0 20px rgba(0,120,212,0.8), 0 0 35px rgba(0,120,212,1); }
+            85% { left: 83%; opacity: 1; transform: translateY(-50%) scale(1.3); box-shadow: -12px 0 20px rgba(0,120,212,0.8), 0 0 35px rgba(0,120,212,1); }
+            100% { left: 83%; opacity: 0; transform: translateY(-50%) scale(0.2); box-shadow: 0 0 0 rgba(0,120,212,0); }
+        }
+        
+        @keyframes gear-spin {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.2); color: #60a5fa; }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+        
+        @keyframes keyboard-press {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            20% { transform: scale(0.85) rotate(-5deg); color: #f59e0b; }
+            40% { transform: scale(0.95) rotate(5deg); color: #f59e0b; }
+            60% { transform: scale(0.85) rotate(-3deg); color: #f59e0b; }
+            80% { transform: scale(0.95) rotate(3deg); color: #f59e0b; }
+        }
+        
+        @keyframes pc-compute {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0 transparent); }
+            20%, 60% { transform: scale(1.2); color: #60a5fa; filter: drop-shadow(0 0 8px #60a5fa); }
+            40%, 80% { transform: scale(1.1); color: #3b82f6; filter: drop-shadow(0 0 12px #3b82f6); }
+        }
+        
+        @keyframes type-text {
+            0% { opacity: 0; transform: scale(0); }
+            60% { opacity: 1; transform: scale(1.4); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        
+        @keyframes line-glow {
+            0% { background-position: 100% 0; }
+            100% { background-position: -100% 0; }
+        }
+
+        .eva-animated { filter: grayscale(100%) opacity(0.6); transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .concrete-icon { transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        
+        /* Glassmorphism Premium Icons */
+        .glass-icon {
+            background: linear-gradient(135deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.3) 100%);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.5);
+            box-shadow: 
+                0 8px 32px 0 rgba(0, 0, 0, 0.1),
+                inset 0 2px 3px rgba(255,255,255,0.8),
+                inset 0 -2px 3px rgba(0,0,0,0.05);
+        }
+        .dark .glass-icon {
+            background: linear-gradient(135deg, rgba(30,41,59,0.8) 0%, rgba(15,23,42,0.6) 100%);
+            border: 1px solid rgba(255,255,255,0.15);
+            box-shadow: 
+                0 8px 32px 0 rgba(0, 0, 0, 0.6),
+                inset 0 1px 1px rgba(255,255,255,0.1),
+                inset 0 -1px 1px rgba(0,0,0,0.4);
+        }
+        /* Connecting Line Glow Effect */
+        .connecting-line { background: linear-gradient(90deg, #e2e8f0 40%, #94a3b8 50%, #e2e8f0 60%); background-size: 200% 100%; transition: background-color 0.5s; }
+        .dark .connecting-line { background: linear-gradient(90deg, #334155 40%, #64748b 50%, #334155 60%); background-size: 200% 100%; }
+        .is-animating .connecting-line { animation: line-glow 2s linear infinite; }
+        
+        /* Triggered States */
+        /* Slower and Premium Animations */
+        @keyframes typing-reveal {
+            0% { opacity: 1; clip-path: inset(0 100% 0 0); border-right: 3px solid currentColor; }
+            95% { opacity: 1; clip-path: inset(0 0 0 0); border-right: 3px solid currentColor; }
+            100% { opacity: 1; clip-path: inset(0 0 0 0); border-right: transparent; }
+        }
+        @keyframes typing-reveal-stay {
+            0% { opacity: 1; clip-path: inset(0 100% 0 0); border-right: 3px solid currentColor; }
+            95% { opacity: 1; clip-path: inset(0 0 0 0); border-right: 3px solid currentColor; }
+            100% { opacity: 1; clip-path: inset(0 0 0 0); border-right: transparent; }
+        }
+        
+        @keyframes header-pop {
+            0% { opacity: 0; transform: translateY(20px); filter: blur(5px); }
+            100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+        }
+
+        @keyframes packet-travel-1 {
+            0% { left: 16%; opacity: 0; transform: translateY(-50%) scale(0.2); background-color: #f59e0b; box-shadow: 0 0 0 rgba(245,158,11,0); }
+            10% { opacity: 1; transform: translateY(-50%) scale(1.4); box-shadow: -15px 0 25px rgba(245,158,11,0.8), 0 0 45px rgba(245,158,11,1); }
+            90% { left: 50%; opacity: 1; transform: translateY(-50%) scale(1.4); box-shadow: -15px 0 25px rgba(245,158,11,0.8), 0 0 45px rgba(245,158,11,1); }
+            100% { left: 50%; opacity: 0; transform: translateY(-50%) scale(0.2); box-shadow: 0 0 0 rgba(245,158,11,0); }
+        }
+        
+        @keyframes packet-travel-2 {
+            0% { left: 50%; opacity: 0; transform: translateY(-50%) scale(0.2); background-color: #0078d4; box-shadow: 0 0 0 rgba(0,120,212,0); }
+            10% { opacity: 1; transform: translateY(-50%) scale(1.4); box-shadow: -15px 0 25px rgba(0,120,212,0.8), 0 0 45px rgba(0,120,212,1); }
+            90% { left: 83%; opacity: 1; transform: translateY(-50%) scale(1.4); box-shadow: -15px 0 25px rgba(0,120,212,0.8), 0 0 45px rgba(0,120,212,1); }
+            100% { left: 83%; opacity: 0; transform: translateY(-50%) scale(0.2); box-shadow: 0 0 0 rgba(0,120,212,0); }
+        }
+        
+        /* Replace Triggered States for Slow Motion */
+        .is-animating .eva-station-1 .station-header { animation: header-pop 1.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; animation-delay: 0.2s; }
+        .is-animating .concrete-icon-1 { color: #f59e0b; border-color: rgba(245,158,11,0.5); box-shadow: 0 0 60px rgba(245,158,11,0.5), inset 0 2px 4px rgba(255,255,255,0.4); transform: translateY(-12px); animation-delay: 0.2s; }
+        .is-animating .concrete-icon-1 i { animation: keyboard-press 2.5s ease-in-out forwards; animation-delay: 1.5s; }
+        .is-animating .dynamic-text-1 p { animation: typing-reveal 3s steps(24, end) forwards; animation-delay: 2s; opacity: 1; clip-path: inset(0 100% 0 0); }
+        
+        .is-animating .data-packet-1 { animation: packet-travel-1 3s cubic-bezier(0.65, 0, 0.35, 1) forwards; animation-delay: 5.5s; display: flex !important; }
+        
+        .is-animating .eva-station-2 .station-header { animation: header-pop 1.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; animation-delay: 8.5s; }
+        .is-animating .concrete-icon-2 { color: #0078d4; border-color: rgba(0,120,212,0.5); box-shadow: 0 0 60px rgba(0,120,212,0.5), inset 0 2px 4px rgba(255,255,255,0.4); transform: translateY(-12px); animation-delay: 8.5s; }
+        .is-animating .concrete-icon-2 i { animation: pc-compute 3.5s ease-in-out forwards; animation-delay: 9.5s; }
+        .is-animating .dynamic-text-2 p { animation: typing-reveal 3s steps(35, end) forwards; animation-delay: 10s; opacity: 1; clip-path: inset(0 100% 0 0); }
+        
+        .is-animating .data-packet-2 { animation: packet-travel-2 3s cubic-bezier(0.65, 0, 0.35, 1) forwards; animation-delay: 13.5s; display: flex !important; }
+        
+        .is-animating .eva-station-3 .station-header { animation: header-pop 1.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; animation-delay: 16.5s; }
+        .is-animating .concrete-icon-3 { color: #10b981; border-color: rgba(16,185,129,0.5); box-shadow: 0 0 60px rgba(16,185,129,0.5), inset 0 2px 4px rgba(255,255,255,0.4); transform: translateY(-12px); animation-delay: 16.5s; }
+        .is-animating .monitor-text { animation: type-text 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; animation-delay: 20s; }
+        .is-animating .dynamic-text-3 p { animation: typing-reveal-stay 3s steps(30, end) forwards; animation-delay: 17.5s; opacity: 1; clip-path: inset(0 100% 0 0); }
+        
+        /* Finished states */
+        .is-finished .station-header { opacity: 1; transform: translateY(0); filter: blur(0); }
+        .is-finished .dynamic-text-3 p { opacity: 1; clip-path: inset(0 0 0 0); border-right: transparent; }
+        .is-finished .dynamic-text-3 p { opacity: 1; clip-path: inset(0 0 0 0); border-right: transparent; }
+        /* Finished state */
+        .is-finished .eva-station-1 .abstract-block { filter: grayscale(0%) opacity(1); box-shadow: 0 0 15px 2px rgba(245, 158, 11, 0.5); }
+        .is-finished .concrete-icon-1 { color: #f59e0b; border-color: rgba(245,158,11,0.5); box-shadow: 0 0 35px rgba(245,158,11,0.4), inset 0 2px 3px rgba(255,255,255,0.4);  }
+        .dark .is-finished .concrete-icon-1 {  }
+        .is-finished .eva-station-2 .abstract-block { filter: grayscale(0%) opacity(1); box-shadow: 0 0 15px 2px rgba(0, 120, 212, 0.5); }
+        .is-finished .concrete-icon-2 { color: #0078d4; border-color: rgba(0,120,212,0.5); box-shadow: 0 0 35px rgba(0,120,212,0.4), inset 0 2px 3px rgba(255,255,255,0.4);  }
+        .dark .is-finished .concrete-icon-2 {  }
+        .is-finished .eva-station-3 .abstract-block { filter: grayscale(0%) opacity(1); box-shadow: 0 0 15px 2px rgba(16, 185, 129, 0.5); }
+        .is-finished .concrete-icon-3 { color: #10b981; border-color: rgba(16,185,129,0.5); box-shadow: 0 0 35px rgba(16,185,129,0.4), inset 0 2px 3px rgba(255,255,255,0.4);  } .is-finished .monitor-text { opacity: 1; }
+        .dark .is-finished .concrete-icon-3 {  } .is-finished .monitor-text { opacity: 1; }
         .yt-pulse.replay {
             animation: ytPulse 1.8s ease-in-out 1;
             animation-fill-mode: both;
@@ -171,38 +316,73 @@
             </div>
 
             <!-- 5-Column Grid with Dual Arrows -->
-            <div class="grid grid-cols-1 md:grid-cols-5 gap-3 items-center text-center">
-                <!-- Eingabe -->
-                <div class="p-4 bg-sky-50 dark:bg-sky-950/50 rounded-xl border border-sky-200 dark:border-sky-800/60">
-                    <div class="w-10 h-10 rounded-lg bg-sky-500 text-white flex items-center justify-center font-bold text-lg mx-auto mb-2">E</div>
-                    <h4 class="font-bold text-sky-900 dark:text-sky-200 text-sm">Eingabe</h4>
-                    <p class="text-xs text-sky-700 dark:text-sky-300 mt-1">Daten / Befehle eingeben (z. B. Tastatur, Maus, Touch)</p>
+                        <!-- 3-Column Visual Grid -->
+            <!-- 3-Column Visual Grid (Pure Concrete) -->
+            <div id="evaGrid" class="relative w-full mt-12 mb-16">
+                <!-- Traveling Data Packets -->
+                <div class="data-packet-1 absolute top-[55%] left-[16%] w-8 h-8 rounded-full flex items-center justify-center text-white text-[14px] font-bold opacity-0 z-20 hidden md:flex shadow-lg">
+                    <i class="fa-solid fa-bolt"></i>
+                </div>
+                <div class="data-packet-2 absolute top-[55%] left-[50%] w-8 h-8 rounded-full flex items-center justify-center text-white text-[14px] font-bold opacity-0 z-20 hidden md:flex shadow-lg">
+                    <i class="fa-solid fa-file-lines"></i>
                 </div>
 
-                <!-- Arrow 1 -->
-                <div class="text-slate-400 dark:text-slate-600 text-2xl font-bold hidden md:block">➔</div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-16 relative z-10">
+                    <!-- Connecting Line -->
+                    <div class="connecting-line hidden md:block absolute top-[55%] left-[16%] right-[16%] h-2 bg-slate-200 dark:bg-slate-700 -z-10 rounded-full mt-1"></div>
 
-                <!-- Verarbeitung -->
-                <div class="p-4 bg-onedrive-50 dark:bg-onedrive-950/50 rounded-xl border border-onedrive-200 dark:border-onedrive-800/60">
-                    <div class="w-10 h-10 rounded-lg bg-onedrive-500 text-white flex items-center justify-center font-bold text-lg mx-auto mb-2">V</div>
-                    <h4 class="font-bold text-onedrive-900 dark:text-onedrive-200 text-sm">Verarbeitung</h4>
-                    <p class="text-xs text-onedrive-700 dark:text-onedrive-300 mt-1">Rechnen &amp; Verarbeiten (CPU, Speicher)</p>
+                    <!-- 1. EINGABE -->
+                    <div class="eva-station-1 flex flex-col items-center gap-8">
+                        <div class="station-header eva-animated transform translate-y-4 opacity-0 transition-all duration-700">
+                            <h2 class="text-5xl font-black text-amber-500 tracking-wider">EINGABE</h2>
+                        </div>
+                        <div class="concrete-icon concrete-icon-1 w-56 h-56 rounded-3xl glass-icon flex items-center justify-center text-[8rem] text-slate-300 relative z-10 transition-all duration-700">
+                            <i class="fa-solid fa-keyboard"></i>
+                        </div>
+                        <div class="dynamic-text-1 w-full text-center mt-2 min-h-[3rem] flex justify-center">
+                            <p class="font-bold text-amber-500 text-lg bg-amber-50 dark:bg-amber-950/40 px-4 py-2 rounded-xl inline-block typing-effect opacity-0">Der User tippt 3 + 5 ein</p>
+                        </div>
+                    </div>
+
+                    <!-- 2. VERARBEITUNG -->
+                    <div class="eva-station-2 flex flex-col items-center gap-8">
+                        <div class="station-header eva-animated transform translate-y-4 opacity-0 transition-all duration-700">
+                            <h2 class="text-5xl font-black text-onedrive-500 tracking-wider">VERARBEITUNG</h2>
+                        </div>
+                        <div class="concrete-icon concrete-icon-2 w-56 h-56 rounded-3xl glass-icon flex items-center justify-center text-[8rem] text-slate-300 relative z-10 transition-all duration-700">
+                            <i class="fa-solid fa-microchip"></i>
+                        </div>
+                        <div class="dynamic-text-2 w-full text-center mt-2 min-h-[3rem] flex justify-center">
+                            <p class="font-bold text-onedrive-500 text-lg bg-onedrive-50 dark:bg-onedrive-950/40 px-4 py-2 rounded-xl inline-block typing-effect opacity-0">Der Computer berechnet das Resultat</p>
+                        </div>
+                    </div>
+
+                    <!-- 3. AUSGABE -->
+                    <div class="eva-station-3 flex flex-col items-center gap-8">
+                        <div class="station-header eva-animated transform translate-y-4 opacity-0 transition-all duration-700">
+                            <h2 class="text-5xl font-black text-emerald-500 tracking-wider">AUSGABE</h2>
+                        </div>
+                        <div class="concrete-icon concrete-icon-3 w-56 h-56 rounded-3xl glass-icon flex items-center justify-center text-[8rem] text-slate-300 relative z-10 transition-all duration-700">
+                            <i class="fa-solid fa-display relative z-0"></i>
+                            <div class="absolute inset-0 flex items-center justify-center z-10 pb-2">
+                                <span class="monitor-text text-[48px] font-bold text-emerald-500 opacity-0 font-mono">8</span>
+                            </div>
+                        </div>
+                        <div class="dynamic-text-3 w-full text-center mt-2 min-h-[3rem] flex justify-center">
+                            <p class="font-bold text-emerald-500 text-lg bg-emerald-50 dark:bg-emerald-950/40 px-4 py-2 rounded-xl inline-block typing-effect opacity-0">Der Monitor zeigt das Resultat</p>
+                        </div>
+                    </div>
                 </div>
-
-                <!-- Arrow 2 -->
-                <div class="text-slate-400 dark:text-slate-600 text-2xl font-bold hidden md:block">➔</div>
-
-                <!-- Ausgabe -->
-                <div class="p-4 bg-emerald-50 dark:bg-emerald-950/50 rounded-xl border border-emerald-200 dark:border-emerald-800/60">
-                    <div class="w-10 h-10 rounded-lg bg-emerald-500 text-white flex items-center justify-center font-bold text-lg mx-auto mb-2">A</div>
-                    <h4 class="font-bold text-emerald-900 dark:text-emerald-200 text-sm">Ausgabe</h4>
-                    <p class="text-xs text-emerald-700 dark:text-emerald-300 mt-1">Ergebnisse anzeigen / ausgeben (Bildschirm, Drucker)</p>
-                </div>
+            </div>
+            <div class="mt-8 text-center">
+                <button id="playAnimBtn" onclick="playEvaAnimation()" class="px-6 py-2.5 bg-onedrive-600 hover:bg-onedrive-700 text-white rounded-2xl font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all">
+                    <i class="fa-solid fa-play mr-2"></i> Datenfluss starten
+                </button>
             </div>
         </section>
 
         <!-- Section 2: Video & Notes -->
-        <section class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 print-card space-y-4">
+        <section id="secVideo" class="hidden bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 print-card space-y-4">
             <div>
                 <span class="inline-flex items-center gap-1.5 bg-onedrive-50 dark:bg-onedrive-950 text-onedrive-700 dark:text-onedrive-300 text-xs font-bold px-3 py-1 rounded-full border border-onedrive-200 dark:border-onedrive-800 uppercase mb-2">
                     <i class="fa-solid fa-play"></i> Erklärvideo
@@ -212,11 +392,11 @@
 
             <div class="space-y-2">
                 <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 p-6 text-center">
-                    <a id="ytButton" href="https://www.youtube.com/watch?v=p-kMnyitkHo" target="_blank" rel="noopener" class="yt-pulse group inline-flex items-center justify-center w-28 h-28 rounded-2xl bg-red-600 text-white shadow-lg border-4 border-red-400 hover:scale-110 transition-transform">
+                    <a id="ytButton" onclick="revealPraxis()" href="https://www.youtube.com/watch?v=p-kMnyitkHo" target="_blank" rel="noopener" class="yt-pulse group inline-flex items-center justify-center w-28 h-28 rounded-2xl bg-red-600 text-white shadow-lg border-4 border-red-400 hover:scale-110 transition-transform">
                         <i class="fa-brands fa-youtube text-6xl"></i>
                     </a>
                     <div class="mt-3">
-                        <a href="https://www.youtube.com/watch?v=p-kMnyitkHo" target="_blank" rel="noopener" class="text-sm font-semibold text-red-600 dark:text-red-400 hover:underline">
+                        <a onclick="revealPraxis()" href="https://www.youtube.com/watch?v=p-kMnyitkHo" target="_blank" rel="noopener" class="text-sm font-semibold text-red-600 dark:text-red-400 hover:underline">
                             Youtube öffnen
                         </a>
                     </div>
@@ -226,7 +406,7 @@
         </section>
 
         <!-- Section 3: Theory & Everyday Examples -->
-        <section class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 print-card space-y-6">
+        <section id="secPraxis" class="hidden bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 print-card space-y-6">
             <div>
                 <span class="inline-flex items-center gap-1.5 bg-onedrive-50 dark:bg-onedrive-950 text-onedrive-700 dark:text-onedrive-300 text-xs font-bold px-3 py-1 rounded-full border border-onedrive-200 dark:border-onedrive-800 uppercase mb-2">
                     <i class="fa-solid fa-pen-to-square"></i> Praxis &amp; Alltagsbeispiele
@@ -249,19 +429,19 @@
                     <div class="space-y-3">
                         <div>
                             <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1">System / Gerät:</label>
-                            <input type="text" id="ex1_name" oninput="updateProgress()" value="Kaffeemaschine" placeholder="Gerät / System eingeben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
+                            <input type="text" id="ex1_name" oninput="updateProgress()" value="Kaffeemaschine" placeholder="Gerät / System eingeben..." readonly class="cursor-not-allowed opacity-90 w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
                         </div>
                         <div>
                             <label class="block text-[11px] font-bold text-sky-600 dark:text-sky-400 mb-1">Eingabe (E):</label>
-                            <input type="text" id="ex1_in" oninput="updateProgress()" value="Wasser & Kaffee hineingeben, Taste drücken" placeholder="Eingabe beschreiben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
+                            <input type="text" id="ex1_in" oninput="updateProgress()" value="Wasser & Kaffee hineingeben, Taste drücken" placeholder="Eingabe beschreiben..." readonly class="cursor-not-allowed opacity-90 w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
                         </div>
                         <div>
                             <label class="block text-[11px] font-bold text-onedrive-600 dark:text-onedrive-400 mb-1">Verarbeitung (V):</label>
-                            <input type="text" id="ex1_proc" oninput="updateProgress()" value="Die Maschine erhitzt das Wasser und brüht den Kaffee" placeholder="Verarbeitung beschreiben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
+                            <input type="text" id="ex1_proc" oninput="updateProgress()" value="Die Maschine erhitzt das Wasser und brüht den Kaffee" placeholder="Verarbeitung beschreiben..." readonly class="cursor-not-allowed opacity-90 w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
                         </div>
                         <div>
                             <label class="block text-[11px] font-bold text-emerald-600 dark:text-emerald-400 mb-1">Ausgabe (A):</label>
-                            <input type="text" id="ex1_out" oninput="updateProgress()" value="Frischer Kaffee wird ausgegeben" placeholder="Ausgabe beschreiben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
+                            <input type="text" id="ex1_out" oninput="updateProgress()" value="Frischer Kaffee wird ausgegeben" placeholder="Ausgabe beschreiben..." readonly class="cursor-not-allowed opacity-90 w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
                         </div>
                     </div>
                 </div>
@@ -274,19 +454,19 @@
                     <div class="space-y-3">
                         <div>
                             <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1">System / Gerät:</label>
-                            <input type="text" id="ex2_name" oninput="updateProgress()" value="Ampel" placeholder="Gerät / System eingeben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
+                            <input type="text" id="ex2_name" oninput="updateProgress()" value="Taschenrechner" placeholder="Gerät / System eingeben..." readonly class="cursor-not-allowed opacity-90 w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
                         </div>
                         <div>
                             <label class="block text-[11px] font-bold text-sky-600 dark:text-sky-400 mb-1">Eingabe (E):</label>
-                            <input type="text" id="ex2_in" oninput="updateProgress()" value="Grün, Gelb oder Rot wird erkannt" placeholder="Eingabe beschreiben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
+                            <input type="text" id="ex2_in" oninput="updateProgress()" value="Grün, Gelb oder Rot wird erkannt" placeholder="Eingabe beschreiben..." readonly class="cursor-not-allowed opacity-90 w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
                         </div>
                         <div>
                             <label class="block text-[11px] font-bold text-onedrive-600 dark:text-onedrive-400 mb-1">Verarbeitung (V):</label>
-                            <input type="text" id="ex2_proc" oninput="updateProgress()" value="Die Ampel steuert die Fahrweise über die Lichtsignale" placeholder="Verarbeitung beschreiben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
+                            <input type="text" id="ex2_proc" oninput="updateProgress()" value="Die Ampel steuert die Fahrweise über die Lichtsignale" placeholder="Verarbeitung beschreiben..." readonly class="cursor-not-allowed opacity-90 w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
                         </div>
                         <div>
                             <label class="block text-[11px] font-bold text-emerald-600 dark:text-emerald-400 mb-1">Ausgabe (A):</label>
-                            <input type="text" id="ex2_out" oninput="updateProgress()" value="Fahrer bekommen ein Signal für Halt, Fahren oder Vorsicht" placeholder="Ausgabe beschreiben..." class="w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
+                            <input type="text" id="ex2_out" oninput="updateProgress()" value="Fahrer bekommen ein Signal für Halt, Fahren oder Vorsicht" placeholder="Ausgabe beschreiben..." readonly class="cursor-not-allowed opacity-90 w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
                         </div>
                     </div>
                 </div>
@@ -889,5 +1069,56 @@ function applyDefaultClassAndDate() {
       })();
     </script>
 
+    <script>
+        function playEvaAnimation() {
+            const grid = document.getElementById('evaGrid');
+            const btn = document.getElementById('playAnimBtn');
+            
+            // Reset state
+            grid.classList.remove('is-finished');
+            grid.classList.remove('is-animating');
+            void grid.offsetWidth; // trigger reflow
+            
+            // Start
+            grid.classList.add('is-animating');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Wird abgespielt...';
+            
+            // End sequence after 21.5s
+            setTimeout(() => {
+                grid.classList.remove('is-animating');
+                grid.classList.add('is-finished');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-rotate-right mr-2"></i> Erneut abspielen';
+                
+                const secVideo = document.getElementById('secVideo');
+                if (secVideo.classList.contains('hidden')) {
+                    secVideo.classList.remove('hidden');
+                    secVideo.classList.add('animate-fade-in-up');
+                    secVideo.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 21500);
+        }
+
+        function revealPraxis() {
+            const secPraxis = document.getElementById('secPraxis');
+            if (secPraxis.classList.contains('hidden')) {
+                secPraxis.classList.remove('hidden');
+                secPraxis.classList.add('animate-fade-in-up');
+                setTimeout(() => {
+                    secPraxis.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 400);
+            }
+        }
+    </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
