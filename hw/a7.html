@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A7 - Kabel & Anschlüsse (Lern- & Testmodus)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: { 
+                extend: { 
+                    colors: { 
+                        onedrive: { 50: '#f0f6ff', 100: '#e0edff', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8' } 
+                    } 
+                } 
+            }
+        }
+    </script>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        
+        /* 3D Flip Card CSS */
+        .perspective { perspective: 1000px; }
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+        .flip-card-back {
+            transform: rotateY(180deg);
+        }
+
+        .wiggle { animation: wiggle 0.4s ease-in-out; }
+        @keyframes wiggle { 
+            0%, 100% {transform: translateX(0);} 
+            25% {transform: translateX(-5px);} 
+            75% {transform: translateX(5px);} 
+        }
+    </style>
+</head>
+<body class="bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200 min-h-screen flex flex-col transition-colors duration-300">
+
+    <!-- Header -->
+    <header class="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 shadow-sm sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-onedrive-500 to-onedrive-700 flex items-center justify-center text-white shadow-lg">
+                    <i class="fa-solid fa-graduation-cap text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight">A7: Kabel & Anschlüsse</h1>
+                    <div id="modeSubtitle" class="text-[11px] font-semibold text-onedrive-600 dark:text-onedrive-400 uppercase tracking-wider">Lern-Modus</div>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <div id="timerContainer" class="hidden items-center gap-3 bg-slate-100 dark:bg-slate-700/50 rounded-xl p-1 shadow-inner border border-slate-200 dark:border-slate-700">
+                    <div class="px-3 py-1 flex items-center gap-2">
+                        <i class="fa-solid fa-stopwatch text-slate-400"></i>
+                        <span id="timeDisplay" class="font-mono font-bold">00:00</span>
+                    </div>
+                </div>
+                <button onclick="toggleDarkMode()" class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition">
+                    <i id="themeIcon" class="fa-solid fa-moon text-sm"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-6xl mx-auto w-full p-4 md:p-6 flex flex-col gap-6 relative">
+        
+        <!-- Controls & Student Info -->
+        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-4 flex flex-wrap gap-4 items-end">
+            <div class="flex-1 min-w-[200px]">
+                <label class="block text-xs font-bold text-slate-500 mb-1">Dein Vorname</label>
+                <input type="text" id="studentName" class="w-full px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-900 border-none outline-none focus:ring-2 focus:ring-onedrive-500 font-semibold transition-colors" placeholder="Name eintragen...">
+            </div>
+        </div>
+
+        <!-- ==================== STUDY MODE ==================== -->
+        <div id="studyMode" class="flex flex-col gap-6 transition-opacity duration-300">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-2">
+                <div>
+                    <h2 class="text-2xl font-bold mb-1 flex items-center gap-2">
+                        <i class="fa-solid fa-book-open text-onedrive-500"></i> Lern-Modus (Karteikarten)
+                    </h2>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">Klicke auf die Bilder der Kabel, um den Namen und die Beschreibung zu lernen. Präge sie dir gut ein!</p>
+                </div>
+                <button onclick="startQuiz()" class="px-8 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold transition shadow-lg flex items-center gap-2 w-full md:w-auto justify-center">
+                    <i class="fa-solid fa-play"></i> Test Starten
+                </button>
+            </div>
+
+            <!-- Flashcard Grid -->
+            <div id="flashcardGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+
+        <!-- ==================== QUIZ MODE ==================== -->
+        <div id="quizMode" class="hidden flex-col gap-6 transition-opacity duration-300">
+            <div class="flex flex-col items-center justify-center text-center max-w-2xl mx-auto w-full">
+                <div class="flex items-center justify-between w-full mb-6">
+                    <button onclick="exitQuiz()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 font-semibold flex items-center gap-1 transition">
+                        <i class="fa-solid fa-arrow-left"></i> Zurück zum Lernen
+                    </button>
+                    <div class="text-sm font-bold bg-slate-200 dark:bg-slate-800 px-3 py-1 rounded-full shadow-inner">
+                        Frage <span id="qCurrent">1</span> von <span id="qTotal">11</span>
+                    </div>
+                </div>
+                
+                <h2 class="text-2xl font-bold mb-6">Welches Kabel ist das?</h2>
+
+                <!-- Quiz Image -->
+                <div class="w-64 h-64 md:w-80 md:h-80 rounded-2xl overflow-hidden shadow-xl border-4 border-white dark:border-slate-800 relative mb-8">
+                    <img id="quizImageEl" src="" alt="Mystery Cable" class="w-full h-full object-cover">
+                </div>
+
+                <!-- Quiz Options -->
+                <div id="quizOptions" class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
+                    <!-- Buttons injected via JS -->
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+        <div class="bg-white dark:bg-slate-800 rounded-3xl max-w-md w-full shadow-2xl overflow-hidden transform scale-95 transition-transform duration-300" id="modalContent">
+            <div class="p-8 text-center">
+                <div class="w-20 h-20 mx-auto bg-emerald-100 dark:bg-emerald-900/50 rounded-full flex items-center justify-center mb-6 shadow-inner">
+                    <i class="fa-solid fa-award text-4xl text-emerald-500"></i>
+                </div>
+                <h2 class="text-2xl font-bold mb-2">Test bestanden!</h2>
+                <p class="text-slate-500 dark:text-slate-400 mb-6">Du hast alle Kabel richtig erkannt.</p>
+                
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="bg-slate-50 dark:bg-slate-900 rounded-xl p-4 border border-slate-100 dark:border-slate-700">
+                        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Deine Zeit</div>
+                        <div id="finalTime" class="text-2xl font-black text-onedrive-600 dark:text-onedrive-400 font-mono">00:00</div>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-900 rounded-xl p-4 border border-slate-100 dark:border-slate-700">
+                        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Fehler</div>
+                        <div id="finalErrors" class="text-2xl font-black text-red-500 font-mono">0</div>
+                    </div>
+                </div>
+
+                <div class="flex gap-3">
+                    <button onclick="closeModal(); exitQuiz()" class="flex-1 py-3 rounded-xl bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-800 dark:text-white font-bold transition shadow-md">Beenden</button>
+                    <button onclick="closeModal(); startQuiz()" class="flex-1 py-3 rounded-xl bg-onedrive-600 hover:bg-onedrive-700 text-white font-bold transition shadow-md">Nochmal testen</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data Set: 8 pairs of Connectors using realistic images
+        const IODATA = [
+            {
+                id: 'usb-a', name: 'USB-A', 
+                desc: 'Universelle, rechteckige Schnittstelle für Maus, Tastatur, Sticks.',
+                img: 'assets/usb_a_cable_1786198032413.webp'
+            },
+            {
+                id: 'usb-c', name: 'USB-C', 
+                desc: 'Moderner, kompakter Anschluss. Beidseitig steckbar (für Daten/Strom).',
+                img: 'assets/usb_c_cable_1786198043571.webp'
+            },
+            {
+                id: 'hdmi', name: 'HDMI', 
+                desc: 'Weit verbreiteter digitaler Anschluss für Monitor & Fernseher (Bild & Ton).',
+                img: 'assets/hdmi_cable_1786198053921.webp'
+            },
+            {
+                id: 'dp', name: 'DisplayPort', 
+                desc: 'Moderne Monitor-Schnittstelle, besonders oft im PC-Gaming genutzt.',
+                img: 'assets/dp_cable_1786198067133.webp'
+            },
+            {
+                id: 'rj45', name: 'LAN (RJ45)', 
+                desc: 'Netzwerkanschluss für das kabelgebundene Internet/Intranet. Hat meist einen kleinen Clip.',
+                img: 'assets/lan_cable_1786198076546.webp'
+            },
+            {
+                id: 'audio', name: 'Audio (3.5mm)', 
+                desc: 'Runder analoger Klinkenanschluss für Lautsprecher oder Kopfhörer.',
+                img: 'assets/audio_cable_1786198086224.webp'
+            },
+            {
+                id: 'vga', name: 'VGA', 
+                desc: 'Alter, analoger Videoanschluss (blau) mit 15 kleinen Pins und Schrauben.',
+                img: 'assets/vga_cable_1786198097423.webp'
+            },
+            {
+                id: 'dvi', name: 'DVI', 
+                desc: 'Älterer digitaler Bildanschluss (meist weiß), Vorgänger von HDMI.',
+                img: 'assets/dvi_cable_1786198107586.webp'
+            },
+            {
+                id: 'bt-dongle', name: 'Bluetooth Dongle', 
+                desc: 'Ein winziger USB-Empfänger für kabellose Geräte wie Mäuse oder Tastaturen.',
+                img: 'assets/bluetooth_dongle_1786198654619.webp'
+            },
+            {
+                id: 'power', name: 'Stromkabel (C13)', 
+                desc: 'Das wichtigste Kabel: Verbindet das PC-Netzteil mit der Steckdose.',
+                img: 'assets/power_cable_1786198664189.webp'
+            },
+            {
+                id: 'usb-b', name: 'USB-B (Druckerkabel)', 
+                desc: 'Ein quadratischer USB-Anschluss, der häufig für Drucker genutzt wird.',
+                img: 'assets/usb_b_cable_1786198671715.webp'
+            }
+        ];
+
+        // System State
+        let timerInterval;
+        let startTime;
+        let quizQueue = [];
+        let currentQuestion = null;
+        let errorCount = 0;
+
+        function shuffle(array) {
+            let currentIndex = array.length, randomIndex;
+            while (currentIndex != 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            }
+            return array;
+        }
+
+        function formatTime(ms) {
+            let totalSecs = Math.floor(ms / 1000);
+            let m = Math.floor(totalSecs / 60);
+            let s = totalSecs % 60;
+            return (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
+        }
+
+        function updateTimer() {
+            const elapsed = performance.now() - startTime;
+            document.getElementById('timeDisplay').textContent = formatTime(elapsed);
+        }
+
+        function initTheme() {
+            const savedTheme = localStorage.getItem('onedrive_theme') || 'light';
+            if (savedTheme === 'dark' || (!localStorage.getItem('onedrive_theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+                document.getElementById('themeIcon').className = 'fa-solid fa-sun text-amber-400 text-sm';
+            } else {
+                document.documentElement.classList.remove('dark');
+                document.getElementById('themeIcon').className = 'fa-solid fa-moon text-sm';
+            }
+        }
+
+        function toggleDarkMode() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('onedrive_theme', isDark ? 'dark' : 'light');
+            document.getElementById('themeIcon').className = isDark ? 'fa-solid fa-sun text-amber-400 text-sm' : 'fa-solid fa-moon text-sm';
+        }
+
+        function syncVorname() {
+            const el = document.getElementById('studentName');
+            const saved = localStorage.getItem('studentVorname') || localStorage.getItem('student_vorname') || '';
+            if(saved) el.value = saved;
+            el.addEventListener('input', function() {
+                localStorage.setItem('studentVorname', this.value.trim());
+                localStorage.setItem('student_vorname', this.value.trim());
+            });
+        }
+
+        // ==================== STUDY MODE ====================
+        function renderStudyMode() {
+            const grid = document.getElementById('flashcardGrid');
+            grid.innerHTML = '';
+            
+            IODATA.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = 'perspective h-64 cursor-pointer group';
+                card.onclick = function() {
+                    this.querySelector('.flip-card').classList.toggle('flipped');
+                };
+
+                card.innerHTML = `
+                    <div class="flip-card w-full h-full">
+                        <div class="flip-card-inner rounded-2xl shadow-md border border-slate-200 dark:border-slate-700 group-hover:shadow-xl transition-shadow">
+                            
+                            <!-- Front: Image -->
+                            <div class="flip-card-front bg-white dark:bg-slate-800 rounded-2xl overflow-hidden flex flex-col relative">
+                                <img src="${item.img}" alt="${item.name} Image" class="w-full h-full object-cover">
+                                <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-900/80 to-transparent p-4 flex justify-between items-end">
+                                    <span class="text-white font-bold text-sm">Kabel ${index + 1}</span>
+                                    <i class="fa-solid fa-rotate text-white/70"></i>
+                                </div>
+                            </div>
+                            
+                            <!-- Back: Info -->
+                            <div class="flip-card-back bg-onedrive-600 dark:bg-onedrive-700 text-white rounded-2xl p-6 flex flex-col justify-center items-center text-center relative overflow-hidden">
+                                <div class="absolute top-4 right-4"><i class="fa-solid fa-rotate text-white/50"></i></div>
+                                <h3 class="text-2xl font-black mb-3">${item.name}</h3>
+                                <p class="text-sm text-onedrive-100">${item.desc}</p>
+                            </div>
+
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // ==================== QUIZ MODE ====================
+        function startQuiz() {
+            document.getElementById('studyMode').classList.add('hidden');
+            document.getElementById('quizMode').classList.remove('hidden');
+            document.getElementById('modeSubtitle').textContent = 'Test-Modus';
+            document.getElementById('timerContainer').classList.remove('hidden');
+            document.getElementById('timerContainer').classList.add('flex');
+            
+            // Setup Quiz
+            errorCount = 0;
+            quizQueue = shuffle([...IODATA]);
+            document.getElementById('qTotal').textContent = quizQueue.length;
+            
+            // Start Timer
+            if(timerInterval) clearInterval(timerInterval);
+            startTime = performance.now();
+            timerInterval = setInterval(updateTimer, 250);
+
+            nextQuestion();
+        }
+
+        function exitQuiz() {
+            clearInterval(timerInterval);
+            document.getElementById('quizMode').classList.add('hidden');
+            document.getElementById('studyMode').classList.remove('hidden');
+            document.getElementById('modeSubtitle').textContent = 'Lern-Modus';
+            document.getElementById('timerContainer').classList.add('hidden');
+            document.getElementById('timerContainer').classList.remove('flex');
+        }
+
+        function nextQuestion() {
+            if(quizQueue.length === 0) {
+                endQuiz();
+                return;
+            }
+
+            currentQuestion = quizQueue.shift();
+            document.getElementById('qCurrent').textContent = IODATA.length - quizQueue.length;
+            
+            // Set Image
+            document.getElementById('quizImageEl').src = currentQuestion.img;
+            
+            // Generate 4 Options (1 correct, 3 random wrong)
+            let wrongOptions = IODATA.filter(item => item.id !== currentQuestion.id);
+            wrongOptions = shuffle(wrongOptions).slice(0, 3);
+            
+            let allOptions = shuffle([currentQuestion, ...wrongOptions]);
+            
+            // Render Buttons
+            const optionsContainer = document.getElementById('quizOptions');
+            optionsContainer.innerHTML = '';
+            
+            allOptions.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'w-full py-4 px-6 rounded-xl bg-white dark:bg-slate-800 shadow-sm border-2 border-slate-200 dark:border-slate-700 text-lg font-bold hover:border-onedrive-500 hover:bg-onedrive-50 dark:hover:bg-onedrive-900/20 transition-all text-slate-700 dark:text-slate-200 flex flex-col items-center justify-center';
+                btn.innerHTML = `<span>${opt.name}</span>`;
+                
+                btn.onclick = function() {
+                    handleAnswer(this, opt.id === currentQuestion.id);
+                };
+                
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function handleAnswer(btnElement, isCorrect) {
+            // Disable all buttons to prevent spam
+            const allBtns = document.getElementById('quizOptions').querySelectorAll('button');
+            allBtns.forEach(b => b.disabled = true);
+
+            if(isCorrect) {
+                btnElement.classList.remove('border-slate-200', 'dark:border-slate-700', 'hover:border-onedrive-500', 'hover:bg-onedrive-50', 'dark:hover:bg-onedrive-900/20');
+                btnElement.classList.add('border-emerald-500', 'bg-emerald-100', 'dark:bg-emerald-900', 'text-emerald-700', 'dark:text-emerald-100');
+                btnElement.innerHTML += ' <i class="fa-solid fa-check ml-2"></i>';
+                
+                setTimeout(() => {
+                    nextQuestion();
+                }, 800);
+            } else {
+                errorCount++;
+                btnElement.classList.remove('border-slate-200', 'dark:border-slate-700', 'hover:border-onedrive-500', 'hover:bg-onedrive-50', 'dark:hover:bg-onedrive-900/20');
+                btnElement.classList.add('border-red-500', 'bg-red-100', 'dark:bg-red-900', 'text-red-700', 'dark:text-red-100', 'wiggle');
+                btnElement.innerHTML += ' <i class="fa-solid fa-xmark ml-2"></i>';
+                
+                // Show the correct answer
+                const correctBtn = Array.from(allBtns).find(b => b.innerText.includes(currentQuestion.name));
+                if(correctBtn) {
+                    correctBtn.classList.remove('border-slate-200', 'dark:border-slate-700');
+                    correctBtn.classList.add('border-emerald-500', 'bg-emerald-50', 'dark:bg-emerald-900/40');
+                }
+
+                setTimeout(() => {
+                    nextQuestion();
+                }, 1500);
+            }
+        }
+
+        function endQuiz() {
+            clearInterval(timerInterval);
+            const elapsed = performance.now() - startTime;
+            
+            document.getElementById('finalTime').textContent = formatTime(elapsed);
+            document.getElementById('finalErrors').textContent = errorCount;
+            
+            // Show Modal
+            const modal = document.getElementById('successModal');
+            const content = document.getElementById('modalContent');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            
+            // Trigger reflow
+            void modal.offsetWidth;
+            
+            modal.classList.remove('opacity-0');
+            content.classList.remove('scale-95');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('successModal');
+            const content = document.getElementById('modalContent');
+            
+            modal.classList.add('opacity-0');
+            content.classList.add('scale-95');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }, 300);
+        }
+
+        // Init
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            syncVorname();
+            renderStudyMode();
+        });
+    </script>
+</body>
+</html>
