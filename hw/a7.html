@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>A7: Kabel & Anschlüsse • Arbeitsblatt</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="assets/js/tailwind.min.js"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -24,9 +24,9 @@
             }
         }
     </script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/fontawesome.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        @import url('assets/fonts/inter.css');
         * { transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease; -webkit-tap-highlight-color: transparent; }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
@@ -94,7 +94,7 @@
                 <button onclick="toggleDarkMode()" title="Dunkelmodus umschalten" class="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
                     <i id="themeIcon" class="fa-solid fa-moon text-sm"></i>
                 </button>
-                <button id="hdrPdfBtn" onclick="handlePdfPrint()" class="p-2 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 transition border border-slate-200 dark:border-slate-700 opacity-60 cursor-not-allowed" title="Mindestens 12 richtige Antworten benötigt">
+                <button id="hdrPdfBtn" onclick="handlePdfPrint()" class="p-2 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 transition border border-slate-200 dark:border-slate-700 opacity-60 cursor-not-allowed" title="Mindestens 13 richtige Antworten benötigt">
                     <i class="fa-solid fa-file-pdf text-sm"></i>
                 </button>
                 <button onclick="confirmReset()" title="Zurücksetzen" class="p-2 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/50 rounded-lg border border-rose-200 dark:border-rose-900/50">
@@ -166,7 +166,7 @@
                 <div class="grid grid-cols-4 gap-2 text-center flex-grow max-w-lg">
                     <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 shadow-xs">
                         <span class="block text-[9px] font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500">Fragen</span>
-                        <span id="statFragen" class="text-sm sm:text-base font-black text-slate-700 dark:text-slate-200">0/15</span>
+                        <span id="statFragen" class="text-sm sm:text-base font-black text-slate-700 dark:text-slate-200">0/16</span>
                     </div>
                     <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 shadow-xs">
                         <span class="block text-[9px] font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500">Fehler</span>
@@ -272,7 +272,7 @@
             </div>
             <div class="text-right">
                 <span class="inline-block px-3 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-full border border-emerald-300">
-                    ✅ Praxis-Test bestanden (Mind. 12/15)
+                    ✅ Praxis-Test bestanden (Mind. 13/16)
                 </span>
             </div>
         </div>
@@ -297,7 +297,7 @@
             <div class="flex justify-center gap-12">
                 <div>
                     <span class="block text-xs uppercase font-bold text-slate-400">Richtige Antworten</span>
-                    <span id="printCorrect" class="text-2xl font-black text-emerald-600">0/15</span>
+                    <span id="printCorrect" class="text-2xl font-black text-emerald-600">0/16</span>
                 </div>
                 <div>
                     <span class="block text-xs uppercase font-bold text-slate-400">Benötigte Zeit</span>
@@ -344,7 +344,8 @@
             { id: 'micro-usb', name: 'Micro-USB', desc: 'Älterer USB-Anschluss, typisch für Powerbanks, E-Reader und ältere Smartphones.', img: 'https://placehold.co/400x300/1e293b/cbd5e1?text=Micro-USB', scenarioText: 'Du möchtest deine ältere Powerbank oder deinen E-Reader aufladen.', scenarioImg: 'https://placehold.co/800x450/1e293b/cbd5e1?text=Micro-USB+Port' },
             { id: 'lightning', name: 'Apple Lightning', desc: 'Proprietärer Anschluss von Apple für ältere iPhones und iPads.', img: 'https://placehold.co/400x300/1e293b/cbd5e1?text=Lightning', scenarioText: 'Du musst dein iPhone 13 (oder älter) aufladen.', scenarioImg: 'https://placehold.co/800x450/1e293b/cbd5e1?text=iPhone+Ladeanschluss' },
             { id: 'sd-card', name: 'SD-Karte', desc: 'Ein Speichermedium, das oft in digitalen Kameras verwendet wird.', img: 'https://placehold.co/400x300/1e293b/cbd5e1?text=SD-Karte', scenarioText: 'Du möchtest die Fotos von deiner digitalen Spiegelreflexkamera auf den PC kopieren.', scenarioImg: 'https://placehold.co/800x450/1e293b/cbd5e1?text=SD-Kartenleser+am+PC' },
-            { id: 'wlan-antenne', name: 'WLAN Antenne', desc: 'Wird oft hinten an den PC geschraubt, um WLAN-Empfang zu ermöglichen.', img: 'https://placehold.co/400x300/1e293b/cbd5e1?text=WLAN+Antenne', scenarioText: 'Dein PC hat kein Internet und du kannst kein LAN-Kabel ziehen. Du möchtest ihn kabellos ins Netzwerk bringen.', scenarioImg: 'https://placehold.co/800x450/1e293b/cbd5e1?text=WLAN-Karten-Anschluss+am+PC' }
+            { id: 'wlan-antenne', name: 'WLAN Antenne', desc: 'Wird oft hinten an den PC geschraubt, um WLAN-Empfang zu ermöglichen.', img: 'https://placehold.co/400x300/1e293b/cbd5e1?text=WLAN+Antenne', scenarioText: 'Dein PC hat kein Internet und du kannst kein LAN-Kabel ziehen. Du möchtest ihn kabellos ins Netzwerk bringen.', scenarioImg: 'https://placehold.co/800x450/1e293b/cbd5e1?text=WLAN-Karten-Anschluss+am+PC' },
+            { id: 'usb-hub', name: 'USB-Hub', desc: 'Ein Verteiler, der aus einem USB-Anschluss mehrere macht.', img: 'https://placehold.co/400x300/1e293b/cbd5e1?text=USB-Hub', scenarioText: 'Dein Laptop hat nur einen USB-Anschluss, aber du möchtest Maus, Tastatur und Headset gleichzeitig anschließen.', scenarioImg: 'https://placehold.co/800x450/1e293b/cbd5e1?text=Laptop+mit+nur+einem+USB-Port' }
         ];
 
         let timerInterval, startTime;
@@ -477,7 +478,7 @@
             
             currentQuestion = quizQueue.shift();
             const currentNum = IODATA.length - quizQueue.length;
-            document.getElementById('statFragen').textContent = `${currentNum}/15`;
+            document.getElementById('statFragen').textContent = `${currentNum}/16`;
             
             document.getElementById('scenarioTitle').textContent = currentQuestion.scenarioText;
             document.getElementById('quizImageEl').src = currentQuestion.scenarioImg;
@@ -529,11 +530,11 @@
             clearInterval(timerInterval);
             const elapsed = performance.now() - startTime;
             
-            const correctAnswers = 15 - errorCount;
-            const passedThisRun = correctAnswers >= 12;
+            const correctAnswers = 16 - errorCount;
+            const passedThisRun = correctAnswers >= 13;
             
-            // Score Logic (Max 1500, -50 per error, -time bonus)
-            let base = 1500;
+            // Score Logic (Max 1600, -50 per error, -time bonus)
+            let base = 1600;
             let errPenalty = errorCount * 100;
             let timePenalty = Math.max(0, Math.floor(elapsed / 1000) - 30) * 5; // Penalty after 30s
             finalScore = Math.max(0, base - errPenalty - timePenalty);
@@ -550,13 +551,13 @@
                 updateProgress();
                 
                 document.getElementById('modalTitle').textContent = "Test bestanden! 🎉";
-                document.getElementById('modalSubtitle').textContent = `Gut gemacht! ${correctAnswers} von 15 richtig.`;
+                document.getElementById('modalSubtitle').textContent = `Gut gemacht! ${correctAnswers} von 16 richtig.`;
                 document.getElementById('modalIcon').className = "fa-solid fa-award";
                 document.getElementById('modalIconWrapper').className = "w-16 h-16 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-3xl font-bold mx-auto mb-2 shadow-inner";
                 document.getElementById('modalPdfBtn').classList.remove('hidden');
             } else {
                 document.getElementById('modalTitle').textContent = "Nicht bestanden";
-                document.getElementById('modalSubtitle').textContent = `Du brauchst mind. 12 richtige Antworten (Du hast ${correctAnswers}/15).`;
+                document.getElementById('modalSubtitle').textContent = `Du brauchst mind. 13 richtige Antworten (Du hast ${correctAnswers}/16).`;
                 document.getElementById('modalIcon').className = "fa-solid fa-xmark";
                 document.getElementById('modalIconWrapper').className = "w-16 h-16 rounded-full bg-rose-100 dark:bg-rose-950 text-rose-600 dark:text-rose-400 flex items-center justify-center text-3xl font-bold mx-auto mb-2 shadow-inner";
                 document.getElementById('modalPdfBtn').classList.add('hidden');
@@ -592,7 +593,7 @@
 
         function handlePdfPrint() {
             if(!hasPassed) {
-                alert("Bitte schließe zuerst den Praxis-Test mit mindestens 12 richtigen Antworten ab.");
+                alert("Bitte schließe zuerst den Praxis-Test mit mindestens 13 richtigen Antworten ab.");
                 return;
             }
             
@@ -611,7 +612,7 @@
             document.getElementById('printDate').textContent = document.getElementById('studentDate').value || new Date().toLocaleDateString('de-CH');
             
             document.getElementById('printPoints').textContent = savedScore + " Pkt.";
-            document.getElementById('printCorrect').textContent = (15 - savedErrors) + " / 15";
+            document.getElementById('printCorrect').textContent = (16 - savedErrors) + " / 16";
             document.getElementById('printTime').textContent = savedTime;
             
             document.getElementById('printGeneratedDate').textContent = new Date().toLocaleString('de-CH');
@@ -649,11 +650,11 @@
 </html>
 
 <!-- 
-TODO: Generate 17 missing images for A7 scenarios and new cables once quota resets.
+TODO: Generate 19 missing images for A7 scenarios and new cables once quota resets.
 
 Prompt for AI Assistant:
 "Please search a7.html for all 'placehold.co' URLs and replace them with real AI-generated images using the generate_image tool. 
-There are 4 main cable images (Micro-USB, Lightning, SD-Karte, WLAN-Antenne) and 13 scenario background images.
-- For the cables: Generate clean, studio-lit macro photography on a white background.
+There are 5 main item images (Micro-USB, Lightning, SD-Karte, WLAN-Antenne, USB-Hub) and 14 scenario background images.
+- For the items: Generate clean, studio-lit macro photography on a white background.
 - For the scenarios: Generate realistic, high-quality, modern office/home tech environments matching the scenario text exactly."
 -->
