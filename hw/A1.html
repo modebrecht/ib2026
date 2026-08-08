@@ -352,9 +352,9 @@
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
                         <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-1">
-                            Umdreh-Verzögerung: <span id="flipVal" class="text-onedrive-500">1.1s</span>
+                            Umdreh-Verzögerung: <span id="flipVal" class="text-onedrive-500">1.8s</span>
                         </label>
-                        <input id="flipDelay" type="range" min="600" max="5000" step="100" value="1100" class="w-full">
+                        <input id="flipDelay" type="range" min="600" max="5000" step="100" value="1800" class="w-full">
                     </div>
                     <div>
                         <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-1">
@@ -508,27 +508,28 @@
 
     <script>
         var SET_EASY = [
-          {id:'cpu', emoji:'🧠', term:'CPU (Prozessor)', desc:'Das Gehirn des Computers.'},
-          {id:'ram', emoji:'⚡', term:'RAM', desc:'Schneller Arbeitsspeicher für laufende Programme.'},
-          {id:'mb',  emoji:'🔌', term:'Mainboard (Motherboard)', desc:'Zentrale Hauptplatine, verbindet alle Teile.'},
-          {id:'ssd', emoji:'🚀', term:'SSD', desc:'Nicht-mechanischer Flash-Speicher.'},
-          {id:'gpu', emoji:'🎨', term:'GPU (Grafikkarte)', desc:'Zuständig für Bild- & Videoberechnung.'},
-          {id:'psu', emoji:'🔋', term:'PSU (Netzteil)', desc:'Versorgt das System zuverlässig mit Strom.'}
+          {id:'cpu', emoji:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="w-[2.5em] h-[2.5em] drop-shadow-lg"><rect x="15" y="15" width="70" height="70" rx="5" fill="#2d6a4f" stroke="#1b4332" stroke-width="2"/><rect x="18" y="18" width="64" height="64" fill="none" stroke="#fb8500" stroke-width="2" stroke-dasharray="2 4"/><rect x="25" y="25" width="50" height="50" rx="4" fill="#ced4da" stroke="#adb5bd" stroke-width="2"/><rect x="30" y="30" width="40" height="40" rx="2" fill="#e9ecef"/><circle cx="80" cy="80" r="3" fill="#fb8500"/><text x="50" y="55" font-family="sans-serif" font-size="14" font-weight="bold" fill="#6c757d" text-anchor="middle">CPU</text></svg>', term:'CPU (Prozessor)', desc:'Das Gehirn des Computers.'},
+          {id:'ram', emoji:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="w-[2.5em] h-[2.5em] drop-shadow-lg"><rect x="10" y="35" width="80" height="30" rx="2" fill="#1b4332"/><path d="M14 58 v7 M18 58 v7 M22 58 v7 M26 58 v7 M30 58 v7 M34 58 v7 M38 58 v7 M42 58 v7 M50 58 v7 M54 58 v7 M58 58 v7 M62 58 v7 M66 58 v7 M70 58 v7 M74 58 v7 M78 58 v7 M82 58 v7" stroke="#fb8500" stroke-width="1.5"/><line x1="45" y1="58" x2="45" y2="65" stroke="#1b4332" stroke-width="3"/><rect x="15" y="40" width="12" height="12" rx="1" fill="#212529"/><rect x="32" y="40" width="12" height="12" rx="1" fill="#212529"/><rect x="56" y="40" width="12" height="12" rx="1" fill="#212529"/><rect x="73" y="40" width="12" height="12" rx="1" fill="#212529"/><text x="50" y="49" font-family="sans-serif" font-size="8" font-weight="bold" fill="#6c757d" text-anchor="middle">DDR5</text></svg>', term:'RAM', desc:'Schneller Arbeitsspeicher für laufende Programme.'},
+          {id:'mb',  emoji:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="w-[2.5em] h-[2.5em] drop-shadow-lg"><rect x="10" y="10" width="80" height="80" fill="#212529" stroke="#111" stroke-width="2"/><rect x="25" y="25" width="26" height="26" fill="#ced4da" stroke="#6c757d"/><rect x="28" y="28" width="20" height="20" fill="#e9ecef"/><rect x="60" y="15" width="4" height="40" fill="#343a40"/><rect x="68" y="15" width="4" height="40" fill="#495057"/><rect x="76" y="15" width="4" height="40" fill="#343a40"/><rect x="84" y="15" width="4" height="40" fill="#495057"/><rect x="15" y="60" width="60" height="6" fill="#0077b6"/><rect x="15" y="72" width="40" height="4" fill="#343a40"/><rect x="60" y="65" width="20" height="20" fill="#6c757d"/><circle cx="70" cy="75" r="6" fill="#495057"/><rect x="5" y="15" width="10" height="40" fill="#adb5bd"/></svg>', term:'Mainboard (Motherboard)', desc:'Zentrale Hauptplatine, verbindet alle Teile.'},
+          {id:'ssd', emoji:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="w-[2.5em] h-[2.5em] drop-shadow-lg"><rect x="15" y="10" width="70" height="80" rx="4" fill="#495057" stroke="#212529" stroke-width="2"/><rect x="25" y="25" width="50" height="50" rx="2" fill="#f8f9fa"/><rect x="25" y="25" width="50" height="15" fill="#0077b6"/><text x="50" y="36" font-family="sans-serif" font-size="10" font-weight="bold" fill="#fff" text-anchor="middle">SSD</text><text x="50" y="55" font-family="sans-serif" font-size="14" font-weight="900" fill="#212529" text-anchor="middle">1 TB</text><rect x="30" y="90" width="15" height="5" fill="#e9ecef"/><rect x="50" y="90" width="25" height="5" fill="#e9ecef"/><rect x="32" y="90" width="11" height="3" fill="#ffb703"/><rect x="52" y="90" width="21" height="3" fill="#ffb703"/></svg>', term:'SSD', desc:'Nicht-mechanischer Flash-Speicher.'},
+          {id:'gpu', emoji:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="w-[2.5em] h-[2.5em] drop-shadow-lg"><rect x="5" y="15" width="10" height="70" fill="#adb5bd"/><path d="M15 20 H 90 Q 95 20 95 25 V 65 Q 95 70 90 70 H 15 Z" fill="#212529"/><circle cx="40" cy="45" r="16" fill="#343a40"/><circle cx="70" cy="45" r="16" fill="#343a40"/><circle cx="40" cy="45" r="14" fill="#111"/><circle cx="70" cy="45" r="14" fill="#111"/><circle cx="40" cy="45" r="4" fill="#e63946"/><circle cx="70" cy="45" r="4" fill="#e63946"/><rect x="25" y="70" width="50" height="8" fill="#ffb703"/><rect x="25" y="72" width="50" height="6" fill="#ffb703" stroke="#fb8500" stroke-width="1"/><path d="M20 25 L 45 25 L 55 35 L 90 35" fill="none" stroke="#e63946" stroke-width="2"/><text x="85" y="30" font-family="sans-serif" font-size="8" font-weight="bold" fill="#fff" text-anchor="end">RTX</text></svg>', term:'GPU (Grafikkarte)', desc:'Zuständig für Bild- & Videoberechnung.'},
+          {id:'psu', emoji:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="w-[2.5em] h-[2.5em] drop-shadow-lg"><rect x="15" y="15" width="70" height="70" fill="#212529" rx="3"/><circle cx="50" cy="50" r="25" fill="none" stroke="#495057" stroke-width="2"/><circle cx="50" cy="50" r="18" fill="none" stroke="#495057" stroke-width="2"/><circle cx="50" cy="50" r="11" fill="none" stroke="#495057" stroke-width="2"/><line x1="25" y1="50" x2="75" y2="50" stroke="#495057" stroke-width="2"/><line x1="50" y1="25" x2="50" y2="75" stroke="#495057" stroke-width="2"/><line x1="32" y1="32" x2="68" y2="68" stroke="#495057" stroke-width="2"/><line x1="32" y1="68" x2="68" y2="32" stroke="#495057" stroke-width="2"/><circle cx="50" cy="50" r="4" fill="#ced4da"/><path d="M85 70 Q 95 70 95 85" fill="none" stroke="#e63946" stroke-width="3"/><path d="M85 75 Q 90 75 90 85" fill="none" stroke="#ffd166" stroke-width="3"/><path d="M85 65 Q 98 65 98 85" fill="none" stroke="#111" stroke-width="3"/></svg>', term:'PSU (Netzteil)', desc:'Versorgt das System zuverlässig mit Strom.'}
         ];
 
         var SET_MEDIUM = [
-          {id:'hdd', emoji:'💽', term:'HDD (Harddisk)', desc:'Klassische Festplatte mit rotierenden Scheiben.'},
-          {id:'case',emoji:'🖥️', term:'Gehäuse', desc:'Schützt Hardware & sorgt für Luftstrom.'}
+          {id:'hdd', emoji:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="w-[2.5em] h-[2.5em] drop-shadow-lg"><rect x="15" y="10" width="70" height="80" rx="3" fill="#ced4da" stroke="#6c757d" stroke-width="2"/><rect x="20" y="15" width="60" height="70" rx="2" fill="#adb5bd"/><circle cx="50" cy="45" r="25" fill="#f8f9fa" stroke="#e9ecef" stroke-width="2"/><circle cx="50" cy="45" r="8" fill="#adb5bd" stroke="#6c757d" stroke-width="1"/><circle cx="50" cy="45" r="3" fill="#343a40"/><path d="M 75 75 L 55 50 L 50 48" fill="none" stroke="#495057" stroke-width="4" stroke-linecap="round"/><circle cx="75" cy="75" r="4" fill="#212529"/></svg>', term:'HDD (Harddisk)', desc:'Klassische Festplatte mit rotierenden Scheiben.'},
+          {id:'case',emoji:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="w-[2.5em] h-[2.5em] drop-shadow-lg"><rect x="25" y="10" width="50" height="80" rx="2" fill="#212529"/><rect x="75" y="10" width="5" height="80" fill="#343a40"/><rect x="30" y="15" width="40" height="60" fill="#495057" opacity="0.8"/><rect x="35" y="20" width="20" height="20" fill="#3f37c9"/><rect x="35" y="45" width="30" height="8" fill="#e63946"/><rect x="35" y="65" width="15" height="10" fill="#111"/><circle cx="60" cy="25" r="6" fill="#4cc9f0"/><circle cx="60" cy="40" r="6" fill="#f72585"/><circle cx="60" cy="55" r="6" fill="#4cc9f0"/><rect x="30" y="90" width="6" height="4" fill="#adb5bd"/><rect x="64" y="90" width="6" height="4" fill="#adb5bd"/></svg>', term:'Gehäuse', desc:'Schützt Hardware & sorgt für Luftstrom.'}
         ];
 
         var SET_HARD = [
-          {id:'cool',emoji:'🥶', term:'CPU-Kühler', desc:'Leitet Hitze vom Prozessor ab.'},
-          {id:'nvme',emoji:'🏎️', term:'NVMe SSD', desc:'Schnellster Flash-Speicher.'}
+          {id:'cool',emoji:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="w-[2.5em] h-[2.5em] drop-shadow-lg"><rect x="30" y="20" width="40" height="45" fill="#ced4da"/><line x1="30" y1="25" x2="70" y2="25" stroke="#adb5bd" stroke-width="1"/><line x1="30" y1="35" x2="70" y2="35" stroke="#adb5bd" stroke-width="1"/><line x1="30" y1="45" x2="70" y2="45" stroke="#adb5bd" stroke-width="1"/><line x1="30" y1="55" x2="70" y2="55" stroke="#adb5bd" stroke-width="1"/><rect x="40" y="65" width="20" height="15" fill="#e6ccb2"/><rect x="42" y="80" width="16" height="5" fill="#6c757d"/><line x1="45" y1="20" x2="45" y2="65" stroke="#b08968" stroke-width="2"/><line x1="55" y1="20" x2="55" y2="65" stroke="#b08968" stroke-width="2"/><rect x="25" y="25" width="50" height="50" rx="5" fill="#212529"/><circle cx="50" cy="50" r="22" fill="#343a40"/><circle cx="50" cy="50" r="8" fill="#e63946"/><path d="M50 50 Q 55 35 60 30 Q 65 40 50 50" fill="#495057"/><path d="M50 50 Q 65 55 70 60 Q 60 65 50 50" fill="#495057"/><path d="M50 50 Q 45 65 40 70 Q 35 60 50 50" fill="#495057"/><path d="M50 50 Q 35 45 30 40 Q 40 35 50 50" fill="#495057"/></svg>', term:'CPU-Kühler', desc:'Leitet Hitze vom Prozessor ab.'},
+          {id:'nvme',emoji:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="w-[2.5em] h-[2.5em] drop-shadow-lg"><rect x="10" y="40" width="80" height="20" rx="1" fill="#111"/><rect x="10" y="40" width="6" height="20" fill="#ffb703"/><rect x="10" y="46" width="6" height="3" fill="#111"/><circle cx="85" cy="50" r="3" fill="#fff" stroke="#ffb703" stroke-width="1.5"/><rect x="22" y="43" width="15" height="14" rx="1" fill="#212529"/><rect x="40" y="43" width="15" height="14" rx="1" fill="#212529"/><rect x="58" y="43" width="12" height="14" rx="1" fill="#343a40"/><rect x="22" y="45" width="48" height="10" fill="#f8f9fa" opacity="0.9"/><text x="46" y="52" font-family="sans-serif" font-size="6" font-weight="bold" fill="#000" text-anchor="middle">M.2 NVMe</text></svg>', term:'NVMe SSD', desc:'Schnellster Flash-Speicher.'}
         ];
 
         var SET_ULTRA = [
-          {id:'lan', emoji:'🌐', term:'Netzwerkkarte (RJ45)', desc:'LAN-Anschluss / Ethernet-Verbindung.'},
-          {id:'hdmi',emoji:'📺', term:'HDMI / DisplayPort', desc:'Digitale Bild- & Ton-Schnittstelle zum Monitor.'}
+          {id:'lan', emoji:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="w-[2.5em] h-[2.5em] drop-shadow-lg"><rect x="25" y="25" width="50" height="50" rx="3" fill="#ced4da" stroke="#6c757d" stroke-width="2"/><path d="M30 35 H70 V65 H30 Z" fill="#212529"/><path d="M40 65 V55 H60 V65" fill="#ced4da"/><line x1="38" y1="35" x2="38" y2="45" stroke="#ffb703" stroke-width="2"/><line x1="42" y1="35" x2="42" y2="45" stroke="#ffb703" stroke-width="2"/><line x1="46" y1="35" x2="46" y2="45" stroke="#ffb703" stroke-width="2"/><line x1="50" y1="35" x2="50" y2="45" stroke="#ffb703" stroke-width="2"/><line x1="54" y1="35" x2="54" y2="45" stroke="#ffb703" stroke-width="2"/><line x1="58" y1="35" x2="58" y2="45" stroke="#ffb703" stroke-width="2"/><line x1="62" y1="35" x2="62" y2="45" stroke="#ffb703" stroke-width="2"/><circle cx="35" cy="70" r="3" fill="#10b981"/><circle cx="65" cy="70" r="3" fill="#f59e0b"/></svg>', term:'Netzwerkkarte (RJ45)', desc:'LAN-Anschluss / Ethernet-Verbindung.'},
+          {id:'hdmi',emoji:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="w-[2.5em] h-[2.5em] drop-shadow-lg"><rect x="40" y="70" width="20" height="30" fill="#212529"/><rect x="30" y="40" width="40" height="30" rx="4" fill="#343a40"/><path d="M35 40 L35 25 L40 20 L60 20 L65 25 L65 40 Z" fill="#ffb703" stroke="#fb8500" stroke-width="1"/><path d="M38 38 L38 27 L42 23 L58 23 L62 27 L62 38 Z" fill="#212529"/><text x="50" y="60" font-family="sans-serif" font-size="10" font-weight="bold" fill="#adb5bd" text-anchor="middle">HDMI</text></svg>', term:'HDMI', desc:'Digitale Bild- und Ton-Schnittstelle zum Monitor (zwei schräge Ecken).'},
+          {id:'dp',emoji:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="w-[2.5em] h-[2.5em] drop-shadow-lg"><rect x="40" y="70" width="20" height="30" fill="#212529"/><rect x="30" y="40" width="40" height="30" rx="4" fill="#343a40"/><path d="M35 40 L35 20 L55 20 L65 30 L65 40 Z" fill="#ced4da" stroke="#adb5bd" stroke-width="1"/><path d="M38 38 L38 23 L53 23 L62 32 L62 38 Z" fill="#212529"/><text x="50" y="60" font-family="sans-serif" font-size="10" font-weight="bold" fill="#adb5bd" text-anchor="middle">DP</text></svg>', term:'DisplayPort', desc:'Digitale Monitor-Schnittstelle, oft für PC-Gaming (nur eine schräge Ecke).'}
         ];
 
         var ALL_MODES = ['einfach', 'mittel', 'schwer', 'ultra'];
@@ -562,7 +563,7 @@
             points:0, moves:0, hits:0, misses:0,
             combo:0, maxCombo:0, comboBonus:0, totalPairs:0,
             timer:null, startTime:null,
-            flipDelay: Number(localStorage.getItem('memFlipDelay')) || 1100,
+            flipDelay: Number(localStorage.getItem('memFlipDelay')) || 1800,
             cardMin: Number(localStorage.getItem('memCardMin')) || 170,
             textSize: Number(localStorage.getItem('memTextSize')) || 13
           };
@@ -595,7 +596,7 @@
           var deck = [];
           for(var i=0; i<chosen.length; i++){
             var p = chosen[i];
-            deck.push({pairId: p.id, kind: 'term', content: (p.emoji + ' ' + p.term), type: 'term'});
+            deck.push({pairId: p.id, kind: 'term', emoji: p.emoji, term: p.term, type: 'term'});
             deck.push({pairId: p.id, kind: 'desc', content: p.desc, type: 'desc'});
           }
           return shuffle(deck);
@@ -713,11 +714,10 @@
                 wrap.className = 'flex flex-col items-center justify-center text-center w-full h-full p-3';
                 var em = document.createElement('div');
                 em.className = 'mem-term-emoji';
-                em.textContent = c.content.split(' ')[0];
+                em.innerHTML = c.emoji;
                 var lab = document.createElement('div');
                 lab.className = 'mem-term-label text-slate-800 dark:text-slate-100';
-                var parts = c.content.split(' '); parts.shift();
-                lab.textContent = parts.join(' ');
+                lab.innerHTML = c.term;
                 wrap.appendChild(em); wrap.appendChild(lab); front.appendChild(wrap);
               } else {
                 var d = document.createElement('div');
