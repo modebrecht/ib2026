@@ -252,9 +252,18 @@
 
         @media print {
             .no-print { display: none !important; }
-            body { background: white !important; color: black !important; font-size: 11pt; }
+            html, body { height: auto !important; min-height: auto !important; margin: 0 !important; padding: 0 !important; }
+            body { background: white !important; color: black !important; font-size: 11pt; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             .print-card { border: 1px solid #cbd5e1 !important; box-shadow: none !important; break-inside: avoid; page-break-inside: avoid; }
             input, textarea, select { border: 1px solid #94a3b8 !important; background: #fff !important; color: #000 !important; }
+            #play-btn-hd { display: none !important; }
+            .monitor-text { opacity: 1 !important; }
+            .math-popup { opacity: 1 !important; transform: none !important; }
+            #pipeline-progress { width: 100% !important; }
+            #pipeline-progress-mobile { height: 100% !important; }
+            #secPraxis { padding: 16px !important; }
+            #secPraxis .p-4 { padding: 12px !important; }
+            #secPraxis .space-y-3 > * + * { margin-top: 8px !important; }
         }
     </style>
 </head>
@@ -262,7 +271,7 @@
 
     <!-- Header -->
     <header class="sticky top-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm no-print">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-2.5 flex items-center justify-between gap-4">
+        <div class="max-w-[1920px] w-full mx-auto px-4 sm:px-8 py-2.5 flex items-center justify-between gap-4">
             <div class="flex items-center gap-3 min-w-0">
                 <div class="w-9 h-9 rounded-lg bg-onedrive-500 text-white flex items-center justify-center font-bold shadow-md shadow-onedrive-500/20 shrink-0">
                     <i class="fa-solid fa-bolt text-lg"></i>
@@ -286,13 +295,8 @@
                 <button onclick="toggleDarkMode()" title="Dunkelmodus umschalten" class="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
                     <i id="themeIcon" class="fa-solid fa-moon text-sm"></i>
                 </button>
-                <button onclick="saveProgressToStorage()" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-onedrive-500 hover:bg-onedrive-600 text-white transition shadow-sm flex items-center gap-1.5">
-                    <i class="fa-solid fa-floppy-disk"></i>
-                    <span class="hidden sm:inline">Speichern</span>
-                </button>
-                <button onclick="handlePrint()" id="printBtn" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-400 dark:bg-slate-700 text-white transition shadow-sm flex items-center gap-1.5 cursor-not-allowed opacity-75" title="Drucken erst bei 100% Ausfüllung möglich">
-                    <i id="printIcon" class="fa-solid fa-lock"></i>
-                    <span class="hidden sm:inline">PDF / Drucken</span>
+                <button id="hdrPdfBtn" onclick="handlePrint()" class="p-2 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 transition border border-slate-200 dark:border-slate-700 opacity-60 cursor-not-allowed" title="Erst bei 100% Ausfüllung möglich">
+                    <i id="printIcon" class="fa-solid fa-file-pdf text-sm"></i>
                 </button>
                 <button onclick="confirmReset()" title="Zurücksetzen" class="p-2 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/50 rounded-lg border border-rose-200 dark:border-rose-900/50">
                     <i class="fa-solid fa-rotate-right text-sm"></i>
@@ -304,7 +308,7 @@
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto w-full px-4 sm:px-6 py-6 space-y-6 flex-grow">
+    <main class="max-w-7xl mx-auto w-full px-4 sm:px-6 py-6 print:py-2 space-y-6 print:space-y-4 flex-grow">
 
         <!-- Title & Metadata -->
         <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 print-card">
@@ -318,19 +322,7 @@
                         <p class="text-xs text-slate-500 dark:text-slate-400">Informatische Bildung • IT-Hardware Grundlagen</p>
                     </div>
                 </div>
-                <div class="flex items-center gap-3">
-                    <div class="text-right">
-                        <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Bearbeitungsstand</span>
-                        <span id="completionBadge" class="text-sm font-bold text-onedrive-600 dark:text-onedrive-400">0% erledigt</span>
-                    </div>
-                    <div class="relative w-12 h-12 flex items-center justify-center font-bold text-xs text-slate-700 dark:text-slate-200">
-                        <svg class="absolute inset-0 w-full h-full transform -rotate-90" viewBox="0 0 36 36">
-                            <circle cx="18" cy="18" r="16" fill="none" class="stroke-slate-200 dark:stroke-slate-800" stroke-width="4"></circle>
-                            <circle id="completionSvgCircle" cx="18" cy="18" r="16" fill="none" class="stroke-emerald-500 transition-all duration-500 ease-out" stroke-width="4" stroke-dasharray="100.53" stroke-dashoffset="100.53" stroke-linecap="round"></circle>
-                        </svg>
-                        <span id="completionPercentNumber" class="relative z-10">0%</span>
-                    </div>
-                </div>
+
             </div>
 
             <!-- Student Metadata -->
@@ -363,7 +355,7 @@
             <div class="absolute top-[30%] right-[-10%] w-[700px] h-[700px] bg-evaV/5 rounded-full blur-[150px] pointer-events-none z-0"></div>
             <div class="absolute bottom-[-10%] left-[20%] w-[600px] h-[600px] bg-evaA/5 rounded-full blur-[150px] pointer-events-none z-0"></div>
 
-            <header class="text-center mb-16 px-4 z-10 relative">
+            <header class="text-center mb-16 print:mb-6 px-4 z-10 relative">
                 <h1 class="text-5xl md:text-7xl font-black mb-4 tracking-tighter text-white drop-shadow-2xl">
                     Das <span class="text-evaE drop-shadow-[0_0_15px_rgba(255,107,0,0.5)]">E</span>-<span class="text-evaV drop-shadow-[0_0_15px_rgba(0,240,255,0.5)]">V</span>-<span class="text-evaA drop-shadow-[0_0_15px_rgba(0,255,102,0.5)]">A</span> Prinzip
                 </h1>
@@ -380,11 +372,11 @@
                 
                 <div id="data-particle" class="absolute w-4 h-4 md:w-5 md:h-5 rounded-full -translate-x-1/2 -translate-y-1/2 opacity-0 pointer-events-none"></div>
 
-                <div class="flex flex-col md:flex-row justify-between w-full gap-10 md:gap-8 relative z-10">
+                <div class="flex flex-col md:flex-row justify-between w-full gap-10 md:gap-8 print:gap-2 relative z-10">
                     <!-- EINGABE -->
                     <div class="flex-1 flex flex-col">
                         <div class="h-20 flex items-center justify-center">
-                            <div id="card-e" class="title-frame border-2 border-evaE/60 bg-evaE/10 text-evaE font-black text-xl md:text-2xl uppercase tracking-widest px-8 py-3 rounded-xl flex items-center justify-center">
+                            <div id="card-e" class="title-frame border-2 border-evaE/60 bg-evaE/10 text-evaE font-black text-xl md:text-2xl uppercase tracking-widest px-8 print:px-2 py-3 rounded-xl flex items-center justify-center">
                                 EINGABE
                             </div>
                         </div>
@@ -396,8 +388,9 @@
                         </div>
                         <div class="h-10 md:h-12 w-full"></div>
                         <div class="w-full">
-                            <div id="math-e" class="math-popup math-popup-e rounded-2xl p-6 text-center w-full">
+                            <div id="math-e" class="math-popup math-popup-e rounded-2xl p-6 print:p-3 text-center w-full">
                                 <div id="typewriter-e" class="font-mono text-xl md:text-2xl font-bold neon-text-e min-h-[64px] flex items-center justify-center text-center leading-relaxed">
+                                    Benutzer tippt ...<br>5 + 3
                                 </div>
                             </div>
                         </div>
@@ -406,7 +399,7 @@
                     <!-- VERARBEITUNG -->
                     <div class="flex-1 flex flex-col">
                         <div class="h-20 flex items-center justify-center">
-                            <div id="card-v" class="title-frame border-2 border-evaV/60 bg-evaV/10 text-evaV font-black text-xl md:text-2xl uppercase tracking-widest px-8 py-3 rounded-xl flex items-center justify-center">
+                            <div id="card-v" class="title-frame border-2 border-evaV/60 bg-evaV/10 text-evaV font-black text-xl md:text-2xl uppercase tracking-widest px-8 print:px-2 py-3 rounded-xl flex items-center justify-center">
                                 VERARBEITUNG
                             </div>
                         </div>
@@ -418,8 +411,9 @@
                         </div>
                         <div class="h-10 md:h-12 w-full"></div>
                         <div class="w-full">
-                            <div id="math-v" class="math-popup math-popup-v rounded-2xl p-6 text-center w-full">
+                            <div id="math-v" class="math-popup math-popup-v rounded-2xl p-6 print:p-3 text-center w-full">
                                 <div id="typewriter-v" class="font-mono text-xl md:text-2xl font-bold neon-text-v min-h-[64px] flex justify-center items-center text-center leading-relaxed">
+                                    Prozessor berechnet<br>5 + 3 = 8
                                 </div>
                             </div>
                         </div>
@@ -428,7 +422,7 @@
                     <!-- AUSGABE -->
                     <div class="flex-1 flex flex-col">
                         <div class="h-20 flex items-center justify-center">
-                            <div id="card-a" class="title-frame border-2 border-evaA/60 bg-evaA/10 text-evaA font-black text-xl md:text-2xl uppercase tracking-widest px-8 py-3 rounded-xl flex items-center justify-center">
+                            <div id="card-a" class="title-frame border-2 border-evaA/60 bg-evaA/10 text-evaA font-black text-xl md:text-2xl uppercase tracking-widest px-8 print:px-2 py-3 rounded-xl flex items-center justify-center">
                                 AUSGABE
                             </div>
                         </div>
@@ -442,8 +436,9 @@
                         </div>
                         <div class="h-10 md:h-12 w-full"></div>
                         <div class="w-full">
-                            <div id="math-a" class="math-popup math-popup-a rounded-2xl p-6 text-center w-full">
+                            <div id="math-a" class="math-popup math-popup-a rounded-2xl p-6 print:p-3 text-center w-full">
                                 <div id="typewriter-a" class="font-mono text-xl md:text-2xl font-black neon-text-a min-h-[64px] flex items-center justify-center text-center leading-relaxed">
+                                    Monitor zeigt Ergebnis: 8
                                 </div>
                             </div>
                         </div>
@@ -463,11 +458,8 @@
         </section>
 
         <!-- Section 2: Video & Notes -->
-        <section id="secVideo" class="hidden bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 print-card space-y-4">
+        <section id="secVideo" class="no-print hidden bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 print-card space-y-4">
             <div>
-                <span class="inline-flex items-center gap-1.5 bg-onedrive-50 dark:bg-onedrive-950 text-onedrive-700 dark:text-onedrive-300 text-xs font-bold px-3 py-1 rounded-full border border-onedrive-200 dark:border-onedrive-800 uppercase mb-2">
-                    <i class="fa-solid fa-play"></i> Erklärvideo
-                </span>
                 <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100">Video: Das EVA-Prinzip einfach erklärt</h3>
             </div>
 
@@ -488,18 +480,14 @@
 
         <!-- Section 3: Theory & Everyday Examples -->
         <section id="secPraxis" class="hidden bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 print-card space-y-6">
-            <div>
-                <span class="inline-flex items-center gap-1.5 bg-onedrive-50 dark:bg-onedrive-950 text-onedrive-700 dark:text-onedrive-300 text-xs font-bold px-3 py-1 rounded-full border border-onedrive-200 dark:border-onedrive-800 uppercase mb-2">
-                    <i class="fa-solid fa-pen-to-square"></i> Praxis &amp; Alltagsbeispiele
-                </span>
-                <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100">5 Beispiele aus deinem Alltag</h3>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            <div class="no-print">
+                <h3 class="text-base font-semibold text-slate-800 dark:text-slate-200 mt-2">
                     Wo begegnet dir das EVA-Prinzip im Alltag? Fülle die folgende Tabelle aus.
-                </p>
+                </h3>
             </div>
 
             <!-- 6 Everyday Example Cards -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 lg:grid-cols-2 print:grid-cols-2 print:gap-2 gap-4">
 
                 <div class="p-4 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 space-y-3">
                     <h4 class="font-bold text-sm text-onedrive-600 dark:text-onedrive-400 flex items-center gap-2">
@@ -539,15 +527,15 @@
                         </div>
                         <div>
                             <label class="block text-[11px] font-bold text-sky-600 dark:text-sky-400 mb-1">Eingabe (E):</label>
-                            <input type="text" id="ex2_in" oninput="updateProgress()" value="Grün, Gelb oder Rot wird erkannt" placeholder="Eingabe beschreiben..." readonly class="cursor-not-allowed opacity-90 w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
+                            <input type="text" id="ex2_in" oninput="updateProgress()" value="Benutzer gibt Zahlen und Operator ein" placeholder="Eingabe beschreiben..." readonly class="cursor-not-allowed opacity-90 w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
                         </div>
                         <div>
                             <label class="block text-[11px] font-bold text-onedrive-600 dark:text-onedrive-400 mb-1">Verarbeitung (V):</label>
-                            <input type="text" id="ex2_proc" oninput="updateProgress()" value="Die Ampel steuert die Fahrweise über die Lichtsignale" placeholder="Verarbeitung beschreiben..." readonly class="cursor-not-allowed opacity-90 w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
+                            <input type="text" id="ex2_proc" oninput="updateProgress()" value="Der Taschenrechner berechnet das Ergebnis" placeholder="Verarbeitung beschreiben..." readonly class="cursor-not-allowed opacity-90 w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
                         </div>
                         <div>
                             <label class="block text-[11px] font-bold text-emerald-600 dark:text-emerald-400 mb-1">Ausgabe (A):</label>
-                            <input type="text" id="ex2_out" oninput="updateProgress()" value="Fahrer bekommen ein Signal für Halt, Fahren oder Vorsicht" placeholder="Ausgabe beschreiben..." readonly class="cursor-not-allowed opacity-90 w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
+                            <input type="text" id="ex2_out" oninput="updateProgress()" value="Das Ergebnis wird auf dem Display angezeigt" placeholder="Ausgabe beschreiben..." readonly class="cursor-not-allowed opacity-90 w-full p-2.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-onedrive-500 dark:text-slate-100">
                         </div>
                     </div>
                 </div>
@@ -784,8 +772,8 @@ function applyDefaultClassAndDate() {
         }
 
         function updateProgress() {
-            const inputsToTrack = ['studentName', 'studentClass', 'studentDate', 'videoNotes', 'theoryAnswer'];
-            for (let i = 1; i <= 5; i++) {
+            const inputsToTrack = ['studentName', 'studentClass', 'studentDate'];
+            for (let i = 1; i <= 6; i++) {
                 inputsToTrack.push(`ex${i}_name`, `ex${i}_in`, `ex${i}_proc`, `ex${i}_out`);
             }
 
@@ -811,27 +799,20 @@ function applyDefaultClassAndDate() {
             }
             
             document.getElementById('progressBar').style.width = `${percent}%`;
-            document.getElementById('completionBadge').innerText = `${percent}% erledigt`;
-            document.getElementById('completionPercentNumber').innerText = `${percent}%`;
-            
-            var svgCircle = document.getElementById('completionSvgCircle');
-            if (svgCircle) {
-                var offset = 100.53 - (100.53 * percent / 100);
-                svgCircle.style.strokeDashoffset = offset;
-            }
 
-            const printBtn = document.getElementById('printBtn');
+
+            const hdrBtn = document.getElementById('hdrPdfBtn');
             const printIcon = document.getElementById('printIcon');
-            if (percent === 100) {
-                printBtn.classList.remove('bg-slate-400', 'dark:bg-slate-700', 'cursor-not-allowed', 'opacity-75');
-                printBtn.classList.add('bg-emerald-600', 'hover:bg-emerald-700', 'cursor-pointer');
-                printBtn.title = "Dokument als PDF exportieren oder drucken";
-                printIcon.className = "fa-solid fa-print";
-            } else {
-                printBtn.classList.remove('bg-emerald-600', 'hover:bg-emerald-700', 'cursor-pointer');
-                printBtn.classList.add('bg-slate-400', 'dark:bg-slate-700', 'cursor-not-allowed', 'opacity-75');
-                printBtn.title = "Drucken erst bei 100% Ausfüllung möglich";
-                printIcon.className = "fa-solid fa-lock";
+            if (hdrBtn) {
+                if (percent === 100) {
+                    hdrBtn.className = 'p-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition shadow-sm cursor-pointer';
+                    hdrBtn.title = "Dokument als PDF exportieren oder drucken";
+                    if (printIcon) printIcon.className = "fa-solid fa-print text-sm";
+                } else {
+                    hdrBtn.className = 'p-2 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 transition border border-slate-200 dark:border-slate-700 opacity-60 cursor-not-allowed';
+                    hdrBtn.title = "Drucken erst bei 100% Ausfüllung möglich";
+                    if (printIcon) printIcon.className = "fa-solid fa-lock text-sm";
+                }
             }
 
             saveProgressToStorage(false);
@@ -876,6 +857,12 @@ function applyDefaultClassAndDate() {
             } catch (e) {
                 console.error("Fehler beim Laden des Speicherstands", e);
             }
+            
+            // Wenn ein Speicherstand gefunden wurde, blenden wir die Arbeitsbereiche direkt ein
+            const secVideo = document.getElementById('secVideo');
+            const secPraxis = document.getElementById('secPraxis');
+            if (secVideo) secVideo.classList.remove('hidden');
+            if (secPraxis) secPraxis.classList.remove('hidden');
         }
 
         function confirmReset() {
@@ -1321,9 +1308,10 @@ function applyDefaultClassAndDate() {
             
             particle.style.opacity = "0";
             particle.style.transform = "scale(0) translate(-50%, -50%)";
-
+            await sleep(500);
             await typeWriter(typewriterA, "Monitor zeigt Ergebnis: 8", 70);
             
+            document.getElementById('play-btn-hd').style.pointerEvents = 'auto';
             const monitorText = document.querySelector('.monitor-text');
             if (monitorText) monitorText.classList.remove('opacity-0');
             
