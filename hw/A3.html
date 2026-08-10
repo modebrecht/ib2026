@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>A3: Aufbau eines Computers • Arbeitsblatt</title>
-    <!-- Tailwind CSS CDN -->
     <script src="assets/js/tailwind.min.js"></script>
     <script>
         tailwind.config = {
@@ -12,6 +11,11 @@
             theme: {
                 extend: {
                     colors: {
+                        bgDark: '#050914',
+                        surface: '#0f172a',
+                        evaE: '#FF6B00',
+                        evaV: '#00F0FF',
+                        evaA: '#00FF66',
                         slate: {
                             50: '#fafafa', 100: '#f5f5f5', 200: '#e5e5e5', 300: '#d4d4d4',
                             400: '#b4bdca', 500: '#a3a3a3', 600: '#616161', 700: '#404040',
@@ -29,45 +33,247 @@
                 }
             }
         }
-    
-        
-            
-        }
-
     </script>
-    <!-- FontAwesome icons -->
     <link rel="stylesheet" href="assets/css/fontawesome.min.css">
     <style>
         @import url('assets/fonts/inter.css');
-        
-        /* Smooth transitions */
         * { transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease; }
-
-        /* Custom scrollbar for webkit */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.5); border-radius: 4px; }
+        
+        .eva-grid-bg {
+            background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
 
-        /* Print styling optimized for A4 paper export */
+        @keyframes ytPulse {
+            0%, 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.45); }
+            50% { transform: scale(1.12); box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); }
+        }
+
+        .yt-pulse {
+            transform-origin: center;
+            animation: ytPulse 1.8s ease-in-out infinite;
+        }
+
+        @keyframes btnScalePulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 15px rgba(0, 240, 255, 0.1); }
+            50% { transform: scale(1.08); box-shadow: 0 0 35px rgba(0, 240, 255, 0.4); }
+        }
+        .btn-scale-pulse {
+            animation: btnScalePulse 2s ease-in-out infinite;
+        }
+
+
+                /* Crispy Visual Animations (Premium) */
+        @keyframes eva-pop {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 transparent; filter: grayscale(100%) opacity(0.6); }
+            40% { transform: scale(1.05); box-shadow: 0 0 40px 8px var(--glow-color); filter: grayscale(0%) opacity(1); }
+            100% { transform: scale(1); box-shadow: 0 0 15px 2px var(--glow-color); filter: grayscale(0%) opacity(1); }
+        }
+        
+        @keyframes packet-travel-1 {
+            0% { left: 16%; opacity: 0; transform: translateY(-50%) scale(0.2);  box-shadow: 0 0 0 rgba(245,158,11,0); }
+            15% { opacity: 1; transform: translateY(-50%) scale(1.3); box-shadow: -12px 0 20px rgba(245,158,11,0.8), 0 0 35px rgba(245,158,11,1); }
+            85% { left: 50%; opacity: 1; transform: translateY(-50%) scale(1.3); box-shadow: -12px 0 20px rgba(245,158,11,0.8), 0 0 35px rgba(245,158,11,1); }
+            100% { left: 50%; opacity: 0; transform: translateY(-50%) scale(0.2); box-shadow: 0 0 0 rgba(245,158,11,0); }
+        }
+        
+        @keyframes packet-travel-2 {
+            0% { left: 50%; opacity: 0; transform: translateY(-50%) scale(0.2);  box-shadow: 0 0 0 rgba(0,120,212,0); }
+            15% { opacity: 1; transform: translateY(-50%) scale(1.3); box-shadow: -12px 0 20px rgba(0,120,212,0.8), 0 0 35px rgba(0,120,212,1); }
+            85% { left: 83%; opacity: 1; transform: translateY(-50%) scale(1.3); box-shadow: -12px 0 20px rgba(0,120,212,0.8), 0 0 35px rgba(0,120,212,1); }
+            100% { left: 83%; opacity: 0; transform: translateY(-50%) scale(0.2); box-shadow: 0 0 0 rgba(0,120,212,0); }
+        }
+        
+        @keyframes gear-spin {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.2); color: #60a5fa; }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+        
+        @keyframes keyboard-press {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            20% { transform: scale(0.85) rotate(-5deg); color: #f59e0b; }
+            40% { transform: scale(0.95) rotate(5deg); color: #f59e0b; }
+            60% { transform: scale(0.85) rotate(-3deg); color: #f59e0b; }
+            80% { transform: scale(0.95) rotate(3deg); color: #f59e0b; }
+        }
+        
+        @keyframes pc-compute {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0 transparent); }
+            20%, 60% { transform: scale(1.2); color: #60a5fa; filter: drop-shadow(0 0 8px #60a5fa); }
+            40%, 80% { transform: scale(1.1); color: #3b82f6; filter: drop-shadow(0 0 12px #3b82f6); }
+        }
+        
+        @keyframes type-text {
+            0% { opacity: 0; transform: scale(0); }
+            60% { opacity: 1; transform: scale(1.4); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        
+        @keyframes line-glow {
+            0% { background-position: 100% 0; }
+            100% { background-position: -100% 0; }
+        }
+
+        .eva-animated { filter: grayscale(100%) opacity(0.6); transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .concrete-icon { transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        
+        /* Glassmorphism Premium Icons */
+        .glass-icon {
+            background: linear-gradient(135deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.3) 100%);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.5);
+            box-shadow: 
+                0 8px 32px 0 rgba(0, 0, 0, 0.1),
+                inset 0 2px 3px rgba(255,255,255,0.8),
+                inset 0 -2px 3px rgba(0,0,0,0.05);
+        }
+        .dark .glass-icon {
+            background: linear-gradient(135deg, rgba(30,41,59,0.8) 0%, rgba(15,23,42,0.6) 100%);
+            border: 1px solid rgba(255,255,255,0.15);
+            box-shadow: 
+                0 8px 32px 0 rgba(0, 0, 0, 0.6),
+                inset 0 1px 1px rgba(255,255,255,0.1),
+                inset 0 -1px 1px rgba(0,0,0,0.4);
+        }
+        /* Connecting Line Glow Effect */
+        .connecting-line { background: linear-gradient(90deg, #e2e8f0 40%, #94a3b8 50%, #e2e8f0 60%); background-size: 200% 100%; transition: background-color 0.5s; }
+        .dark .connecting-line { background: linear-gradient(90deg, #334155 40%, #64748b 50%, #334155 60%); background-size: 200% 100%; }
+        .is-animating .connecting-line { animation: line-glow 2s linear infinite; }
+        
+        /* Triggered States */
+        /* Slower and Premium Animations */
+        @keyframes typing-reveal {
+            0% { opacity: 1; clip-path: inset(0 100% 0 0); border-right: 3px solid currentColor; }
+            95% { opacity: 1; clip-path: inset(0 0 0 0); border-right: 3px solid currentColor; }
+            100% { opacity: 1; clip-path: inset(0 0 0 0); border-right: transparent; }
+        }
+        @keyframes typing-reveal-stay {
+            0% { opacity: 1; clip-path: inset(0 100% 0 0); border-right: 3px solid currentColor; }
+            95% { opacity: 1; clip-path: inset(0 0 0 0); border-right: 3px solid currentColor; }
+            100% { opacity: 1; clip-path: inset(0 0 0 0); border-right: transparent; }
+        }
+        
+        @keyframes header-pop {
+            0% { opacity: 0; transform: translateY(20px); filter: blur(5px); }
+            100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+        }
+
+        @keyframes packet-travel-1 {
+            0% { left: 16%; opacity: 0; transform: translateY(-50%) scale(0.2); background-color: #f59e0b; box-shadow: 0 0 0 rgba(245,158,11,0); }
+            10% { opacity: 1; transform: translateY(-50%) scale(1.4); box-shadow: -15px 0 25px rgba(245,158,11,0.8), 0 0 45px rgba(245,158,11,1); }
+            90% { left: 50%; opacity: 1; transform: translateY(-50%) scale(1.4); box-shadow: -15px 0 25px rgba(245,158,11,0.8), 0 0 45px rgba(245,158,11,1); }
+            100% { left: 50%; opacity: 0; transform: translateY(-50%) scale(0.2); box-shadow: 0 0 0 rgba(245,158,11,0); }
+        }
+        
+        @keyframes packet-travel-2 {
+            0% { left: 50%; opacity: 0; transform: translateY(-50%) scale(0.2); background-color: #0078d4; box-shadow: 0 0 0 rgba(0,120,212,0); }
+            10% { opacity: 1; transform: translateY(-50%) scale(1.4); box-shadow: -15px 0 25px rgba(0,120,212,0.8), 0 0 45px rgba(0,120,212,1); }
+            90% { left: 83%; opacity: 1; transform: translateY(-50%) scale(1.4); box-shadow: -15px 0 25px rgba(0,120,212,0.8), 0 0 45px rgba(0,120,212,1); }
+            100% { left: 83%; opacity: 0; transform: translateY(-50%) scale(0.2); box-shadow: 0 0 0 rgba(0,120,212,0); }
+        }
+        
+        /* Replace Triggered States for Slow Motion */
+        .is-animating .eva-station-1 .station-header { animation: header-pop 1.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; animation-delay: 0.2s; }
+        .is-animating .concrete-icon-1 { color: #f59e0b; border-color: rgba(245,158,11,0.5); box-shadow: 0 0 60px rgba(245,158,11,0.5), inset 0 2px 4px rgba(255,255,255,0.4); transform: translateY(-12px); animation-delay: 0.2s; }
+        .is-animating .concrete-icon-1 i { animation: keyboard-press 2.5s ease-in-out forwards; animation-delay: 1.5s; }
+        .is-animating .dynamic-text-1 p { animation: typing-reveal 3s steps(24, end) forwards; animation-delay: 2s; opacity: 1; clip-path: inset(0 100% 0 0); }
+        
+        .is-animating .data-packet-1 { animation: packet-travel-1 3s cubic-bezier(0.65, 0, 0.35, 1) forwards; animation-delay: 5.5s; display: flex !important; }
+        
+        .is-animating .eva-station-2 .station-header { animation: header-pop 1.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; animation-delay: 8.5s; }
+        .is-animating .concrete-icon-2 { color: #0078d4; border-color: rgba(0,120,212,0.5); box-shadow: 0 0 60px rgba(0,120,212,0.5), inset 0 2px 4px rgba(255,255,255,0.4); transform: translateY(-12px); animation-delay: 8.5s; }
+        .is-animating .concrete-icon-2 i { animation: pc-compute 3.5s ease-in-out forwards; animation-delay: 9.5s; }
+        .is-animating .dynamic-text-2 p { animation: typing-reveal 3s steps(35, end) forwards; animation-delay: 10s; opacity: 1; clip-path: inset(0 100% 0 0); }
+        
+        .is-animating .data-packet-2 { animation: packet-travel-2 3s cubic-bezier(0.65, 0, 0.35, 1) forwards; animation-delay: 13.5s; display: flex !important; }
+        
+        .is-animating .eva-station-3 .station-header { animation: header-pop 1.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; animation-delay: 16.5s; }
+        .is-animating .concrete-icon-3 { color: #10b981; border-color: rgba(16,185,129,0.5); box-shadow: 0 0 60px rgba(16,185,129,0.5), inset 0 2px 4px rgba(255,255,255,0.4); transform: translateY(-12px); animation-delay: 16.5s; }
+        .is-animating .monitor-text { animation: type-text 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; animation-delay: 20s; }
+        .is-animating .dynamic-text-3 p { animation: typing-reveal-stay 3s steps(30, end) forwards; animation-delay: 17.5s; opacity: 1; clip-path: inset(0 100% 0 0); }
+        
+        /* Finished states */
+        .is-finished .station-header { opacity: 1; transform: translateY(0); filter: blur(0); }
+        .is-finished .dynamic-text-3 p { opacity: 1; clip-path: inset(0 0 0 0); border-right: transparent; }
+        .is-finished .dynamic-text-3 p { opacity: 1; clip-path: inset(0 0 0 0); border-right: transparent; }
+        /* Finished state */
+        .is-finished .eva-station-1 .abstract-block { filter: grayscale(0%) opacity(1); box-shadow: 0 0 15px 2px rgba(245, 158, 11, 0.5); }
+        .is-finished .concrete-icon-1 { color: #f59e0b; border-color: rgba(245,158,11,0.5); box-shadow: 0 0 35px rgba(245,158,11,0.4), inset 0 2px 3px rgba(255,255,255,0.4);  }
+        .dark .is-finished .concrete-icon-1 {  }
+        .is-finished .eva-station-2 .abstract-block { filter: grayscale(0%) opacity(1); box-shadow: 0 0 15px 2px rgba(0, 120, 212, 0.5); }
+        .is-finished .concrete-icon-2 { color: #0078d4; border-color: rgba(0,120,212,0.5); box-shadow: 0 0 35px rgba(0,120,212,0.4), inset 0 2px 3px rgba(255,255,255,0.4);  }
+        .dark .is-finished .concrete-icon-2 {  }
+        .is-finished .eva-station-3 .abstract-block { filter: grayscale(0%) opacity(1); box-shadow: 0 0 15px 2px rgba(16, 185, 129, 0.5); }
+        .is-finished .concrete-icon-3 { color: #10b981; border-color: rgba(16,185,129,0.5); box-shadow: 0 0 35px rgba(16,185,129,0.4), inset 0 2px 3px rgba(255,255,255,0.4);  } .is-finished .monitor-text { opacity: 1; }
+        .dark .is-finished .concrete-icon-3 {  } .is-finished .monitor-text { opacity: 1; }
+        .yt-pulse.replay {
+            animation: ytPulse 1.8s ease-in-out 1;
+            animation-fill-mode: both;
+        }
+
+
+
+        /* --- Leuchtende Rahmen für die Titel (Pill Shapes) --- */
+        .title-frame { transition: all 0.4s ease; box-shadow: 0 0 15px rgba(0,0,0,0.5); }
+        .title-frame.active-e { box-shadow: 0 0 30px rgba(255,107,0,0.5), inset 0 0 15px rgba(255,107,0,0.2); transform: scale(1.05); border-color: rgba(255,107,0,0.8); }
+        .title-frame.active-v { box-shadow: 0 0 30px rgba(0,240,255,0.5), inset 0 0 15px rgba(0,240,255,0.2); transform: scale(1.05); border-color: rgba(0,240,255,0.8); }
+        .title-frame.active-a { box-shadow: 0 0 30px rgba(0,255,102,0.5), inset 0 0 15px rgba(0,255,102,0.2); transform: scale(1.05); border-color: rgba(0,255,102,0.8); }
+
+        /* --- Premium Glass Cards (Theorie) --- */
+        .glass-card { background: linear-gradient(145deg, rgba(15, 23, 42, 0.7) 0%, rgba(5, 9, 20, 0.8) 100%); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); border-top: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.05); transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease; }
+        .glass-card.active-e { border-color: rgba(255, 107, 0, 0.4); box-shadow: 0 0 40px rgba(255, 107, 0, 0.15), inset 0 0 20px rgba(255, 107, 0, 0.05); transform: translateY(-5px); }
+        .glass-card.active-v { border-color: rgba(0, 240, 255, 0.4); box-shadow: 0 0 40px rgba(0, 240, 255, 0.15), inset 0 0 20px rgba(0, 240, 255, 0.05); transform: translateY(-5px); }
+        .glass-card.active-a { border-color: rgba(0, 255, 102, 0.4); box-shadow: 0 0 40px rgba(0, 255, 102, 0.15), inset 0 0 20px rgba(0, 255, 102, 0.05); transform: translateY(-5px); }
+        .hardware-node { background: #0f172a; border: 2px solid #1e293b; box-shadow: 0 10px 25px rgba(0,0,0,0.5); transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .node-glow-e { border-color: #FF6B00; box-shadow: 0 0 30px rgba(255, 107, 0, 0.6), inset 0 0 15px rgba(255, 107, 0, 0.3); transform: scale(1.15); color: #FF6B00; }
+        .node-glow-v { border-color: #00F0FF; box-shadow: 0 0 30px rgba(0, 240, 255, 0.6), inset 0 0 15px rgba(0, 240, 255, 0.3); transform: scale(1.15); color: #00F0FF; }
+        .node-glow-a { border-color: #00FF66; box-shadow: 0 0 30px rgba(0, 255, 102, 0.6), inset 0 0 15px rgba(0, 255, 102, 0.3); transform: scale(1.15); color: #00FF66; }
+        .math-popup { background: linear-gradient(180deg, rgba(15, 23, 42, 0.95) 0%, rgba(5, 9, 20, 0.98) 100%); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.05); border-top: 2px solid; box-shadow: 0 20px 40px rgba(0,0,0,0.9); transform: translateY(20px) scale(0.95); opacity: 0; transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+        .math-popup.show { transform: translateY(0) scale(1); opacity: 1; }
+        .math-popup-e { border-top-color: #FF6B00; box-shadow: 0 15px 40px rgba(255, 107, 0, 0.15); }
+        .math-popup-v { border-top-color: #00F0FF; box-shadow: 0 15px 40px rgba(0, 240, 255, 0.15); }
+        .math-popup-a { border-top-color: #00FF66; box-shadow: 0 15px 40px rgba(0, 255, 102, 0.15); }
+        .neon-text-e { text-shadow: 0 0 10px rgba(255, 107, 0, 0.8), 0 0 25px rgba(255, 107, 0, 0.4); color: #fff; }
+        .neon-text-v { text-shadow: 0 0 10px rgba(0, 240, 255, 0.8), 0 0 25px rgba(0, 240, 255, 0.4); color: #fff; }
+        .neon-text-a { text-shadow: 0 0 10px rgba(0, 255, 102, 0.8), 0 0 25px rgba(0, 255, 102, 0.4); color: #fff; }
+        #data-particle { background: #fff; box-shadow: 0 0 20px #fff, 0 0 40px #fff; transition: left 1.5s cubic-bezier(0.4, 0, 0.2, 1), top 1.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s, opacity 0.3s; will-change: left, top, transform; z-index: 30; }
+        #data-particle.processing { animation: processParticle 0.5s ease-in-out infinite alternate; }
+        @keyframes processParticle { 0% { transform: scale(1) translate(-50%, -50%); box-shadow: 0 0 20px #00F0FF, 0 0 40px #00F0FF; background: #00F0FF; } 100% { transform: scale(1.5) translate(-33%, -33%); box-shadow: 0 0 40px #00F0FF, 0 0 80px #00F0FF; background: #fff; } }
+        @keyframes cpuWork { 0% { transform: scale(1.15) translate(1px, 1px); } 20% { transform: scale(1.15) translate(-2px, 0px); } 40% { transform: scale(1.15) translate(2px, -1px); } 60% { transform: scale(1.15) translate(-1px, 2px); } 80% { transform: scale(1.15) translate(1px, -2px); } 100% { transform: scale(1.15) translate(-1px, 1px); } }
+        .cpu-working { animation: cpuWork 0.1s infinite; filter: drop-shadow(0 0 20px #00F0FF); }
+        .cursor::after { content: '|'; animation: blink 1s step-end infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
+
         @media print {
             .no-print { display: none !important; }
-            body { background: white !important; color: black !important; font-size: 11pt; }
+            html, body { height: auto !important; min-height: auto !important; margin: 0 !important; padding: 0 !important; }
+            body { background: white !important; color: black !important; font-size: 11pt; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             .print-card { border: 1px solid #cbd5e1 !important; box-shadow: none !important; break-inside: avoid; page-break-inside: avoid; }
             input, textarea, select { border: 1px solid #94a3b8 !important; background: #fff !important; color: #000 !important; }
-            .solution-box { display: block !important; border: 1px dashed #d97706 !important; background: #fffbeb !important; }
+            #play-btn-hd { display: none !important; }
+            .monitor-text { opacity: 1 !important; }
+            .math-popup { opacity: 1 !important; transform: none !important; }
+            #pipeline-progress { width: 100% !important; }
+            #pipeline-progress-mobile { height: 100% !important; }
+            #secPraxis { padding: 16px !important; }
+            #secPraxis .p-4 { padding: 12px !important; }
+            #secPraxis .space-y-3 > * + * { margin-top: 8px !important; }
         }
     </style>
 </head>
 <body class="bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-full flex flex-col font-sans antialiased">
 
     <header class="sticky top-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm no-print">
-        <!-- Main Top Bar -->
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-2.5 flex items-center justify-between gap-4">
-            
-            <!-- Left: OneDrive Brand & Progress Indicator -->
+        <div class="max-w-[1920px] w-full mx-auto px-4 sm:px-8 py-2.5 flex items-center justify-between gap-4">
             <div class="flex items-center gap-3 min-w-0">
-                <div class="w-9 h-9 rounded-lg bg-onedrive-500 text-white flex items-center justify-center font-bold shadow-md shadow-onedrive-500/20 shrink-0">
-                    <i class="fa-solid fa-desktop text-lg"></i>
+                <div class="w-9 h-9 rounded-lg bg-onedrive-500 text-white flex items-center justify-center font-black shadow-md shadow-onedrive-500/20 shrink-0">
+                    <span class="text-[13px] tracking-wider">EVA</span>
                 </div>
                 <div class="flex items-center gap-3">
                     <div>
@@ -84,33 +290,18 @@
                 </div>
             </div>
 
-            <!-- Right: Action Buttons -->
             <div class="flex items-center gap-2 shrink-0">
-                <!-- Theme Toggle -->
                 <button onclick="toggleDarkMode()" title="Dunkelmodus umschalten" class="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
                     <i id="themeIcon" class="fa-solid fa-moon text-sm"></i>
                 </button>
-
-                <!-- Save Button -->
-                <button onclick="saveProgress()" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-onedrive-500 hover:bg-onedrive-600 text-white transition shadow-sm flex items-center gap-1.5">
-                    <i class="fa-solid fa-floppy-disk"></i>
-                    <span class="hidden sm:inline">Speichern</span>
+                <button id="hdrPdfBtn" onclick="handlePrint()" class="p-2 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 transition border border-slate-200 dark:border-slate-700 opacity-60 cursor-not-allowed" title="Erst bei 100% Ausfüllung möglich">
+                    <i id="printIcon" class="fa-solid fa-file-pdf text-sm"></i>
                 </button>
-
-                <!-- PDF/Print Button (Erst bei 100% klickbar) -->
-                <button onclick="handlePrint()" id="printBtn" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-400 dark:bg-slate-700 text-white transition shadow-sm flex items-center gap-1.5 cursor-not-allowed opacity-75" title="Drucken erst bei 100% Ausfüllung möglich">
-                    <i id="printIcon" class="fa-solid fa-lock"></i>
-                    <span class="hidden sm:inline">PDF / Drucken</span>
-                </button>
-
-                <!-- Reset Button -->
                 <button onclick="confirmReset()" title="Zurücksetzen" class="p-2 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/50 rounded-lg border border-rose-200 dark:border-rose-900/50">
                     <i class="fa-solid fa-rotate-right text-sm"></i>
                 </button>
             </div>
         </div>
-
-        <!-- OneDrive Style Progress Line -->
         <div class="w-full bg-slate-200 dark:bg-slate-800 h-1">
             <div id="progressBar" class="bg-onedrive-500 h-1 transition-all duration-300" style="width: 0%"></div>
         </div>
@@ -118,63 +309,20 @@
 
     <main class="max-w-7xl mx-auto w-full px-4 sm:px-6 py-6 space-y-6 flex-grow">
 
+        <!-- Title & Metadata -->
         <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 print-card">
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-slate-800">
                 <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 rounded-xl bg-onedrive-50 dark:bg-onedrive-900/40 text-onedrive-600 dark:text-onedrive-400 flex items-center justify-center text-xl font-bold border border-onedrive-100 dark:border-onedrive-800/50">
-                        <i class="fa-solid fa-desktop"></i>
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-onedrive-500 to-onedrive-700 flex items-center justify-center text-[22px] font-black border border-onedrive-600 shadow-sm text-white">
+                        <i class="fa-solid fa-desktop text-slate-300"></i>
                     </div>
                     <div>
-                        <h2 class="text-lg font-bold text-slate-900 dark:text-slate-100">Arbeitsblatt: Aufbau eines Computers (IT-Hardware)</h2>
+                        <h2 class="text-lg font-bold text-slate-900 dark:text-slate-100">A3: Aufbau eines Computers</h2>
                         <p class="text-xs text-slate-500 dark:text-slate-400">Informatische Bildung • IT-Hardware • A3</p>
                     </div>
                 </div>
-                <!-- Status Badge -->
-                <div class="flex items-center gap-3">
-                    <div class="text-right">
-                        <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Bearbeitungsstand</span>
-                        <span id="completionBadge" class="text-sm font-bold text-onedrive-600 dark:text-onedrive-400">0% erledigt</span>
-                    </div>
-                    <div class="relative w-12 h-12 flex items-center justify-center font-bold text-xs text-slate-700 dark:text-slate-200">
-                        <svg class="absolute inset-0 w-full h-full transform -rotate-90" viewBox="0 0 36 36">
-                            <circle cx="18" cy="18" r="16" fill="none" class="stroke-slate-200 dark:stroke-slate-800" stroke-width="4"></circle>
-                            <circle id="completionSvgCircle" cx="18" cy="18" r="16" fill="none" class="stroke-emerald-500 transition-all duration-500 ease-out" stroke-width="4" stroke-dasharray="100.53" stroke-dashoffset="100.53" stroke-linecap="round"></circle>
-                        </svg>
-                        <span id="completionPercentNumber" class="relative z-10">0%</span>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Student Metadata Form -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
-                <div>
-                    <label class="block text-xs font-bold uppercase text-slate-500 dark:text-slate-400 mb-1">
-                        <i class="fa-solid fa-user mr-1 text-onedrive-500"></i> Vorname
-                    </label>
-                    <input type="text" id="studentName" readonly tabindex="-1" style="pointer-events: none;" class="w-full px-3.5 py-2 text-sm bg-slate-100 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl font-medium text-slate-500 dark:text-slate-400 opacity-90 cursor-not-allowed">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold uppercase text-slate-500 dark:text-slate-400 mb-1">
-                        <i class="fa-solid fa-users mr-1 text-onedrive-500"></i> Klasse
-                    </label>
-                    <input type="text" id="studentClass" readonly tabindex="-1" style="pointer-events: none;" class="w-full px-3.5 py-2 text-sm bg-slate-100 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl font-medium text-slate-500 dark:text-slate-400 opacity-90 cursor-not-allowed" value="B24">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold uppercase text-slate-500 dark:text-slate-400 mb-1">
-                        <i class="fa-solid fa-calendar mr-1 text-onedrive-500"></i> Datum
-                    </label>
-                    <input type="text" id="studentDate" readonly tabindex="-1" style="pointer-events: none;" class="w-full px-3.5 py-2 text-sm bg-slate-100 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl font-medium text-slate-500 dark:text-slate-400 opacity-90 cursor-not-allowed">
-                </div>
             </div>
-            
-            <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-                <span class="flex items-center gap-1.5">
-                    <i class="fa-solid fa-shield-halved text-onedrive-500"></i>
-                    Automatische Speicherung aktiv (LocalStorage in deinem Browser).
-                </span>
-                <span class="hidden sm:inline font-medium text-slate-400">OneDrive UI • Vercel Edition</span>
-            </div>
-        </div>
 
         <section class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 print-card space-y-6">
             <div class="border-b border-slate-200 dark:border-slate-800 pb-4 flex justify-between items-start">
@@ -191,234 +339,235 @@
             </div>
 
             <!-- Components Grid -->
-            <div class="space-y-5">
+            <div class="hardware-grid">
 
                 <!-- 1. PC-Gehäuse -->
-                <div class="border border-slate-200 dark:border-slate-800 rounded-2xl p-4 bg-slate-50/50 dark:bg-slate-800/40 hover:border-onedrive-300 dark:hover:border-onedrive-700 transition">
-                    <div class="flex items-center gap-3 mb-3">
-                        <div class="w-10 h-10 rounded-xl bg-slate-700 text-white flex items-center justify-center font-bold text-lg shadow-sm">
+                <div class="comp-card rounded-2xl p-5 transition-all duration-300 relative group overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div class="relative z-10 flex items-center gap-4 mb-5 border-b border-slate-200 dark:border-slate-700/50 pb-4">
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-slate-600 to-slate-800 text-white flex items-center justify-center text-xl shadow-lg border border-white/10 group-hover:scale-110 transition-transform duration-300">
                             <i class="fa-solid fa-box"></i>
                         </div>
                         <div>
-                            <h4 class="font-bold text-slate-900 dark:text-slate-100 text-base">1. PC-Gehäuse (Computer Case / Chassis)</h4>
+                            <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">1. PC-Gehäuse (Computer Case / Chassis)</h4>
                             <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">Formfaktoren: Tower, Desktop, Mini-ITX</span>
                         </div>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="relative z-10 flex flex-col gap-4">
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Funktion (Was macht es im PC?)</label>
-                            <textarea id="comp_case_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100"></textarea>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
+                            <textarea id="comp_case_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Alltags-Vergleich (Analogie)</label>
-                            <textarea id="comp_case_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100"></textarea>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
+                            <textarea id="comp_case_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
                         </div>
                     </div>
                 </div>
-
-                <!-- 2. Mainboard -->
-                <div class="border border-slate-200 dark:border-slate-800 rounded-2xl p-4 bg-slate-50/50 dark:bg-slate-800/40 hover:border-onedrive-300 dark:hover:border-onedrive-700 transition">
-                    <div class="flex items-center gap-3 mb-3">
-                        <div class="w-10 h-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center font-bold text-lg shadow-sm">
+<!-- 2. Mainboard -->
+                <div class="comp-card rounded-2xl p-5 transition-all duration-300 relative group overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div class="relative z-10 flex items-center gap-4 mb-5 border-b border-slate-200 dark:border-slate-700/50 pb-4">
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 text-white flex items-center justify-center text-xl shadow-lg border border-white/10 group-hover:scale-110 transition-transform duration-300">
                             <i class="fa-solid fa-chess-board"></i>
                         </div>
                         <div>
-                            <h4 class="font-bold text-slate-900 dark:text-slate-100 text-base">2. Mainboard (Motherboard / Hauptplatine)</h4>
+                            <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">2. Mainboard (Motherboard / Hauptplatine)</h4>
                             <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">Kürzel: MB</span>
                         </div>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="relative z-10 flex flex-col gap-4">
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Funktion (Was macht es im PC?)</label>
-                            <textarea id="comp_mb_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100"></textarea>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
+                            <textarea id="comp_mb_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Alltags-Vergleich (Analogie)</label>
-                            <textarea id="comp_mb_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100"></textarea>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
+                            <textarea id="comp_mb_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
                         </div>
                     </div>
                 </div>
-
-                <!-- 3. Prozessor / CPU -->
-                <div class="border border-slate-200 dark:border-slate-800 rounded-2xl p-4 bg-slate-50/50 dark:bg-slate-800/40 hover:border-onedrive-300 dark:hover:border-onedrive-700 transition">
-                    <div class="flex items-center gap-3 mb-3">
-                        <div class="w-10 h-10 rounded-xl bg-onedrive-600 text-white flex items-center justify-center font-bold text-lg shadow-sm">
+<!-- 3. Prozessor -->
+                <div class="comp-card rounded-2xl p-5 transition-all duration-300 relative group overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div class="relative z-10 flex items-center gap-4 mb-5 border-b border-slate-200 dark:border-slate-700/50 pb-4">
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-onedrive-400 to-onedrive-600 text-white flex items-center justify-center text-xl shadow-lg border border-white/10 group-hover:scale-110 transition-transform duration-300">
                             <i class="fa-solid fa-microchip"></i>
                         </div>
                         <div>
-                            <h4 class="font-bold text-slate-900 dark:text-slate-100 text-base">3. Prozessor (CPU - Central Processing Unit)</h4>
+                            <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">3. Prozessor (CPU - Central Processing Unit)</h4>
                             <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">Kürzel: CPU</span>
                         </div>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="relative z-10 flex flex-col gap-4">
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Funktion (Was macht es im PC?)</label>
-                            <textarea id="comp_cpu_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100"></textarea>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
+                            <textarea id="comp_cpu_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Alltags-Vergleich (Analogie)</label>
-                            <textarea id="comp_cpu_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100"></textarea>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
+                            <textarea id="comp_cpu_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
                         </div>
                     </div>
                 </div>
-
-                <!-- 4. Arbeitsspeicher / RAM -->
-                <div class="border border-slate-200 dark:border-slate-800 rounded-2xl p-4 bg-slate-50/50 dark:bg-slate-800/40 hover:border-onedrive-300 dark:hover:border-onedrive-700 transition">
-                    <div class="flex items-center gap-3 mb-3">
-                        <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold text-lg shadow-sm">
+<!-- 4. Arbeitsspeicher -->
+                <div class="comp-card rounded-2xl p-5 transition-all duration-300 relative group overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div class="relative z-10 flex items-center gap-4 mb-5 border-b border-slate-200 dark:border-slate-700/50 pb-4">
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-400 to-indigo-600 text-white flex items-center justify-center text-xl shadow-lg border border-white/10 group-hover:scale-110 transition-transform duration-300">
                             <i class="fa-solid fa-memory"></i>
                         </div>
                         <div>
-                            <h4 class="font-bold text-slate-900 dark:text-slate-100 text-base">4. Arbeitsspeicher (RAM - Random Access Memory)</h4>
+                            <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">4. Arbeitsspeicher (RAM - Random Access Memory)</h4>
                             <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">Kürzel: RAM</span>
                         </div>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="relative z-10 flex flex-col gap-4">
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Funktion (Was macht es im PC?)</label>
-                            <textarea id="comp_ram_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100"></textarea>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
+                            <textarea id="comp_ram_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Alltags-Vergleich (Analogie)</label>
-                            <textarea id="comp_ram_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100"></textarea>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
+                            <textarea id="comp_ram_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
                         </div>
                     </div>
                 </div>
-
-                <!-- 5. SSD Speicher -->
-                <div class="border border-slate-200 dark:border-slate-800 rounded-2xl p-4 bg-slate-50/50 dark:bg-slate-800/40 hover:border-onedrive-300 dark:hover:border-onedrive-700 transition">
-                    <div class="flex items-center gap-3 mb-3">
-                        <div class="w-10 h-10 rounded-xl bg-cyan-600 text-white flex items-center justify-center font-bold text-lg shadow-sm">
-                            <i class="fa-solid fa-bolt font-bold"></i>
+<!-- 5. Solid -->
+                <div class="comp-card rounded-2xl p-5 transition-all duration-300 relative group overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div class="relative z-10 flex items-center gap-4 mb-5 border-b border-slate-200 dark:border-slate-700/50 pb-4">
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-400 to-cyan-600 text-white flex items-center justify-center text-xl shadow-lg border border-white/10 group-hover:scale-110 transition-transform duration-300">
+                            <i class="fa-solid fa-bolt"></i>
                         </div>
                         <div>
-                            <h4 class="font-bold text-slate-900 dark:text-slate-100 text-base">5. Solid State Drive (SSD)</h4>
+                            <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">5. Solid State Drive (SSD)</h4>
                             <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">Typ: Elektronischer Flash-Massenspeicher (NVMe / SATA)</span>
                         </div>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="relative z-10 flex flex-col gap-4">
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Funktion (Was macht es im PC?)</label>
-                            <textarea id="comp_ssd_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100"></textarea>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
+                            <textarea id="comp_ssd_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Alltags-Vergleich (Analogie)</label>
-                            <textarea id="comp_ssd_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100"></textarea>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
+                            <textarea id="comp_ssd_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
                         </div>
                     </div>
                 </div>
-
-                <!-- 6. HDD Speicher -->
-                <div class="border border-slate-200 dark:border-slate-800 rounded-2xl p-4 bg-slate-50/50 dark:bg-slate-800/40 hover:border-onedrive-300 dark:hover:border-onedrive-700 transition">
-                    <div class="flex items-center gap-3 mb-3">
-                        <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-lg shadow-sm">
+<!-- 6. Festplatte -->
+                <div class="comp-card rounded-2xl p-5 transition-all duration-300 relative group overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div class="relative z-10 flex items-center gap-4 mb-5 border-b border-slate-200 dark:border-slate-700/50 pb-4">
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-400 to-blue-600 text-white flex items-center justify-center text-xl shadow-lg border border-white/10 group-hover:scale-110 transition-transform duration-300">
                             <i class="fa-solid fa-hard-drive"></i>
                         </div>
                         <div>
-                            <h4 class="font-bold text-slate-900 dark:text-slate-100 text-base">6. Festplatte (HDD - Hard Disk Drive)</h4>
+                            <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">6. Festplatte (HDD - Hard Disk Drive)</h4>
                             <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">Typ: Magnetischer Massenspeicher</span>
                         </div>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="relative z-10 flex flex-col gap-4">
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Funktion (Was macht es im PC?)</label>
-                            <textarea id="comp_hdd_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100"></textarea>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
+                            <textarea id="comp_hdd_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Alltags-Vergleich (Analogie)</label>
-                            <textarea id="comp_hdd_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100"></textarea>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
+                            <textarea id="comp_hdd_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
                         </div>
                     </div>
                 </div>
-
-                <!-- 7. Grafikkarte / GPU -->
-                <div class="border border-slate-200 dark:border-slate-800 rounded-2xl p-4 bg-slate-50/50 dark:bg-slate-800/40 hover:border-onedrive-300 dark:hover:border-onedrive-700 transition">
-                    <div class="flex items-center gap-3 mb-3">
-                        <div class="w-10 h-10 rounded-xl bg-purple-600 text-white flex items-center justify-center font-bold text-lg shadow-sm">
+<!-- 7. Grafikkarte -->
+                <div class="comp-card rounded-2xl p-5 transition-all duration-300 relative group overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div class="relative z-10 flex items-center gap-4 mb-5 border-b border-slate-200 dark:border-slate-700/50 pb-4">
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-400 to-purple-600 text-white flex items-center justify-center text-xl shadow-lg border border-white/10 group-hover:scale-110 transition-transform duration-300">
                             <i class="fa-solid fa-vr-cardboard"></i>
                         </div>
                         <div>
-                            <h4 class="font-bold text-slate-900 dark:text-slate-100 text-base">7. Grafikkarte (GPU - Graphics Processing Unit)</h4>
+                            <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">7. Grafikkarte (GPU - Graphics Processing Unit)</h4>
                             <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">Kürzel: GPU</span>
                         </div>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="relative z-10 flex flex-col gap-4">
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Funktion (Was macht es im PC?)</label>
-                            <textarea id="comp_gpu_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100"></textarea>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
+                            <textarea id="comp_gpu_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Alltags-Vergleich (Analogie)</label>
-                            <textarea id="comp_gpu_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100"></textarea>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
+                            <textarea id="comp_gpu_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
                         </div>
                     </div>
                 </div>
-
-                <!-- 8. Netzteil / PSU -->
-                <div class="border border-slate-200 dark:border-slate-800 rounded-2xl p-4 bg-slate-50/50 dark:bg-slate-800/40 hover:border-onedrive-300 dark:hover:border-onedrive-700 transition">
-                    <div class="flex items-center gap-3 mb-3">
-                        <div class="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center font-bold text-lg shadow-sm">
+<!-- 8. Netzteil -->
+                <div class="comp-card rounded-2xl p-5 transition-all duration-300 relative group overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div class="relative z-10 flex items-center gap-4 mb-5 border-b border-slate-200 dark:border-slate-700/50 pb-4">
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 text-white flex items-center justify-center text-xl shadow-lg border border-white/10 group-hover:scale-110 transition-transform duration-300">
                             <i class="fa-solid fa-plug"></i>
                         </div>
                         <div>
-                            <h4 class="font-bold text-slate-900 dark:text-slate-100 text-base">8. Netzteil (PSU - Power Supply Unit)</h4>
+                            <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">8. Netzteil (PSU - Power Supply Unit)</h4>
                             <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">Kürzel: PSU</span>
                         </div>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="relative z-10 flex flex-col gap-4">
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Funktion (Was macht es im PC?)</label>
-                            <textarea id="comp_psu_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100"></textarea>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
+                            <textarea id="comp_psu_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Alltags-Vergleich (Analogie)</label>
-                            <textarea id="comp_psu_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100"></textarea>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
+                            <textarea id="comp_psu_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
                         </div>
                     </div>
                 </div>
-
-                <!-- 9. Kühler / Lüfter -->
-                <div class="border border-slate-200 dark:border-slate-800 rounded-2xl p-4 bg-slate-50/50 dark:bg-slate-800/40 hover:border-onedrive-300 dark:hover:border-onedrive-700 transition">
-                    <div class="flex items-center gap-3 mb-3">
-                        <div class="w-10 h-10 rounded-xl bg-teal-500 text-white flex items-center justify-center font-bold text-lg shadow-sm">
+<!-- 9. Kühlung -->
+                <div class="comp-card rounded-2xl p-5 transition-all duration-300 relative group overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div class="relative z-10 flex items-center gap-4 mb-5 border-b border-slate-200 dark:border-slate-700/50 pb-4">
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-teal-400 to-teal-600 text-white flex items-center justify-center text-xl shadow-lg border border-white/10 group-hover:scale-110 transition-transform duration-300">
                             <i class="fa-solid fa-fan"></i>
                         </div>
                         <div>
-                            <h4 class="font-bold text-slate-900 dark:text-slate-100 text-base">9. Kühlung (CPU-Kühler & Gehäuselüfter)</h4>
+                            <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">9. Kühlung (CPU-Kühler & Gehäuselüfter)</h4>
                             <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">Varianten: Luftkühlung oder Wasserkühlung (AIO)</span>
                         </div>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="relative z-10 flex flex-col gap-4">
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Funktion (Was macht es im PC?)</label>
-                            <textarea id="comp_cool_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100"></textarea>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
+                            <textarea id="comp_cool_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Alltags-Vergleich (Analogie)</label>
-                            <textarea id="comp_cool_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100"></textarea>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
+                            <textarea id="comp_cool_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
                         </div>
                     </div>
                 </div>
-
-                <!-- 10. Netzwerkkarte / WLAN -->
-                <div class="border border-slate-200 dark:border-slate-800 rounded-2xl p-4 bg-slate-50/50 dark:bg-slate-800/40 hover:border-onedrive-300 dark:hover:border-onedrive-700 transition">
-                    <div class="flex items-center gap-3 mb-3">
-                        <div class="w-10 h-10 rounded-xl bg-rose-500 text-white flex items-center justify-center font-bold text-lg shadow-sm">
+<!-- 10. Netzwerkkarte -->
+                <div class="comp-card rounded-2xl p-5 transition-all duration-300 relative group overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div class="relative z-10 flex items-center gap-4 mb-5 border-b border-slate-200 dark:border-slate-700/50 pb-4">
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-rose-400 to-rose-600 text-white flex items-center justify-center text-xl shadow-lg border border-white/10 group-hover:scale-110 transition-transform duration-300">
                             <i class="fa-solid fa-wifi"></i>
                         </div>
                         <div>
-                            <h4 class="font-bold text-slate-900 dark:text-slate-100 text-base">10. Netzwerkkarte / WLAN-Modul (NIC)</h4>
+                            <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">10. Netzwerkkarte / WLAN-Modul (NIC)</h4>
                             <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">Typ: LAN (Ethernet) / Wi-Fi Karte</span>
                         </div>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="relative z-10 flex flex-col gap-4">
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Funktion (Was macht es im PC?)</label>
-                            <textarea id="comp_net_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100"></textarea>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
+                            <textarea id="comp_net_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Alltags-Vergleich (Analogie)</label>
-                            <textarea id="comp_net_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100"></textarea>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
+                            <textarea id="comp_net_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
                         </div>
                     </div>
                 </div>
@@ -454,12 +603,12 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     
                     <!-- EINGABE -->
-                    <div id="zoneContainer_eingabe" class="border-2 border-dashed border-sky-300 dark:border-sky-800 bg-sky-50/50 dark:bg-sky-950/20 rounded-2xl p-4 flex flex-col min-h-[220px] transition-all" data-dropzone="eingabe">
+                    <div id="zoneContainer_eingabe" class="border-2 border-dashed drop-e rounded-2xl p-4 flex flex-col min-h-[220px] transition-all" data-dropzone="eingabe">
                         <div class="flex items-center justify-between pb-3 mb-3 border-b border-sky-200 dark:border-sky-800 pointer-events-none">
-                            <span class="font-bold text-sky-900 dark:text-sky-300 text-sm flex items-center gap-1.5">
+                            <span class="font-bold text-orange-900 dark:text-orange-300 text-sm flex items-center gap-1.5">
                                 <i class="fa-solid fa-keyboard"></i> 1. EINGABE (Input)
                             </span>
-                            <span class="text-xs bg-sky-200 dark:bg-sky-900 text-sky-800 dark:text-sky-200 font-bold px-2.5 py-0.5 rounded-full" id="cnt_eingabe">0</span>
+                            <span class="text-xs bg-orange-200 dark:bg-orange-900 text-orange-800 dark:text-orange-200 font-bold px-2.5 py-0.5 rounded-full" id="cnt_eingabe">0</span>
                         </div>
                         <div id="zone_eingabe" class="space-y-2 flex-grow p-1 min-h-[120px]" data-dropzone="eingabe">
                             <!-- Items go here -->
@@ -467,12 +616,12 @@
                     </div>
 
                     <!-- VERARBEITUNG -->
-                    <div id="zoneContainer_verarbeitung" class="border-2 border-dashed border-purple-300 dark:border-purple-800 bg-purple-50/50 dark:bg-purple-950/20 rounded-2xl p-4 flex flex-col min-h-[220px] transition-all" data-dropzone="verarbeitung">
+                    <div id="zoneContainer_verarbeitung" class="border-2 border-dashed drop-v rounded-2xl p-4 flex flex-col min-h-[220px] transition-all" data-dropzone="verarbeitung">
                         <div class="flex items-center justify-between pb-3 mb-3 border-b border-purple-200 dark:border-purple-800 pointer-events-none">
-                            <span class="font-bold text-purple-900 dark:text-purple-300 text-sm flex items-center gap-1.5">
+                            <span class="font-bold text-cyan-900 dark:text-cyan-300 text-sm flex items-center gap-1.5">
                                 <i class="fa-solid fa-gear"></i> 2. VERARBEITUNG (Processing)
                             </span>
-                            <span class="text-xs bg-purple-200 dark:bg-purple-900 text-purple-800 dark:text-purple-200 font-bold px-2.5 py-0.5 rounded-full" id="cnt_verarbeitung">0</span>
+                            <span class="text-xs bg-cyan-200 dark:bg-cyan-900 text-cyan-800 dark:text-cyan-200 font-bold px-2.5 py-0.5 rounded-full" id="cnt_verarbeitung">0</span>
                         </div>
                         <div id="zone_verarbeitung" class="space-y-2 flex-grow p-1 min-h-[120px]" data-dropzone="verarbeitung">
                             <!-- Items go here -->
@@ -480,7 +629,7 @@
                     </div>
 
                     <!-- AUSGABE -->
-                    <div id="zoneContainer_ausgabe" class="border-2 border-dashed border-emerald-300 dark:border-emerald-800 bg-emerald-50/50 dark:bg-emerald-950/20 rounded-2xl p-4 flex flex-col min-h-[220px] transition-all" data-dropzone="ausgabe">
+                    <div id="zoneContainer_ausgabe" class="border-2 border-dashed drop-a rounded-2xl p-4 flex flex-col min-h-[220px] transition-all" data-dropzone="ausgabe">
                         <div class="flex items-center justify-between pb-3 mb-3 border-b border-emerald-200 dark:border-emerald-800 pointer-events-none">
                             <span class="font-bold text-emerald-900 dark:text-emerald-300 text-sm flex items-center gap-1.5">
                                 <i class="fa-solid fa-desktop"></i> 3. AUSGABE (Output)
@@ -519,45 +668,45 @@
                     2. Vergleichstabelle ausfüllen: Magnetische Festplatte (HDD) vs. Solid State Drive (SSD)
                 </label>
                 <div class="overflow-x-auto">
-                    <table class="w-full border-collapse border border-slate-200 dark:border-slate-800 text-xs sm:text-sm rounded-xl overflow-hidden">
+                    <table class="w-full border-collapse text-xs sm:text-sm rounded-xl overflow-hidden ring-1 ring-slate-200 dark:ring-white/10 shadow-lg">
                         <thead>
-                            <tr class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200">
-                                <th class="border border-slate-200 dark:border-slate-700 p-3 text-left font-bold w-1/3">Eigenschaft</th>
-                                <th class="border border-slate-200 dark:border-slate-700 p-3 text-left font-bold w-1/3">HDD (Mechanische Festplatte)</th>
-                                <th class="border border-slate-200 dark:border-slate-700 p-3 text-left font-bold w-1/3">SSD (Solid State Drive)</th>
+                            <tr class="bg-slate-100/80 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 backdrop-blur-md">
+                                <th class="p-4 text-left font-bold w-1/3 border-b border-slate-200 dark:border-white/10 uppercase tracking-wider text-[10px]">Eigenschaft</th>
+                                <th class="p-4 text-left font-bold w-1/3 border-b border-slate-200 dark:border-white/10 uppercase tracking-wider text-[10px]">HDD (Mechanische Festplatte)</th>
+                                <th class="p-4 text-left font-bold w-1/3 border-b border-slate-200 dark:border-white/10 uppercase tracking-wider text-[10px]">SSD (Solid State Drive)</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
                             <tr>
-                                <td class="border border-slate-200 dark:border-slate-800 p-3 font-semibold bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200">Funktionsweise</td>
-                                <td class="border border-slate-200 dark:border-slate-800 p-3 text-slate-600 dark:text-slate-400">Magnetische Scheiben mit Lesekopf</td>
-                                <td class="border border-slate-200 dark:border-slate-800 p-3 text-slate-600 dark:text-slate-400">Elektronische Flash-Speicherchips</td>
+                                <td class="p-4 border-b border-slate-100 dark:border-white/5 font-semibold bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200">Funktionsweise</td>
+                                <td class="p-4 border-b border-slate-100 dark:border-white/5 text-slate-600 dark:text-slate-400">Magnetische Scheiben mit Lesekopf</td>
+                                <td class="p-4 border-b border-slate-100 dark:border-white/5 text-slate-600 dark:text-slate-400">Elektronische Flash-Speicherchips</td>
                             </tr>
                             <tr>
-                                <td class="border border-slate-200 dark:border-slate-800 p-3 font-semibold bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200">Geschwindigkeit</td>
-                                <td class="border border-slate-200 dark:border-slate-800 p-2.5">
-                                    <input type="text" id="hdd_speed" oninput="updateProgress()" placeholder="Geschwindigkeit..." class="w-full p-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs dark:text-slate-100">
+                                <td class="p-4 border-b border-slate-100 dark:border-white/5 font-semibold bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200">Geschwindigkeit</td>
+                                <td class="p-2 border-b border-slate-100 dark:border-white/5">
+                                    <input type="text" id="hdd_speed" oninput="updateProgress()" placeholder="Geschwindigkeit..." class="w-full p-2.5 bg-transparent border border-transparent hover:border-slate-300 dark:hover:border-slate-600 focus:bg-white dark:focus:bg-slate-800 focus:border-onedrive-500 rounded-lg text-xs dark:text-slate-100 transition-all font-medium">
                                 </td>
-                                <td class="border border-slate-200 dark:border-slate-800 p-2.5">
-                                    <input type="text" id="ssd_speed" oninput="updateProgress()" placeholder="Geschwindigkeit..." class="w-full p-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs dark:text-slate-100">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="border border-slate-200 dark:border-slate-800 p-3 font-semibold bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200">Stossfestigkeit</td>
-                                <td class="border border-slate-200 dark:border-slate-800 p-2.5">
-                                    <input type="text" id="hdd_shock" oninput="updateProgress()" placeholder="Stossfestigkeit..." class="w-full p-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs dark:text-slate-100">
-                                </td>
-                                <td class="border border-slate-200 dark:border-slate-800 p-2.5">
-                                    <input type="text" id="ssd_shock" oninput="updateProgress()" placeholder="Stossfestigkeit..." class="w-full p-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs dark:text-slate-100">
+                                <td class="p-2 border-b border-slate-100 dark:border-white/5">
+                                    <input type="text" id="ssd_speed" oninput="updateProgress()" placeholder="Geschwindigkeit..." class="w-full p-2.5 bg-transparent border border-transparent hover:border-slate-300 dark:hover:border-slate-600 focus:bg-white dark:focus:bg-slate-800 focus:border-onedrive-500 rounded-lg text-xs dark:text-slate-100 transition-all font-medium">
                                 </td>
                             </tr>
                             <tr>
-                                <td class="border border-slate-200 dark:border-slate-800 p-3 font-semibold bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200">Geräuschpegel</td>
-                                <td class="border border-slate-200 dark:border-slate-800 p-2.5">
-                                    <input type="text" id="hdd_noise" oninput="updateProgress()" placeholder="Geräuschpegel..." class="w-full p-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs dark:text-slate-100">
+                                <td class="p-4 border-b border-slate-100 dark:border-white/5 font-semibold bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200">Stossfestigkeit</td>
+                                <td class="p-2 border-b border-slate-100 dark:border-white/5">
+                                    <input type="text" id="hdd_shock" oninput="updateProgress()" placeholder="Stossfestigkeit..." class="w-full p-2.5 bg-transparent border border-transparent hover:border-slate-300 dark:hover:border-slate-600 focus:bg-white dark:focus:bg-slate-800 focus:border-onedrive-500 rounded-lg text-xs dark:text-slate-100 transition-all font-medium">
                                 </td>
-                                <td class="border border-slate-200 dark:border-slate-800 p-2.5">
-                                    <input type="text" id="ssd_noise" oninput="updateProgress()" placeholder="Geräuschpegel..." class="w-full p-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs dark:text-slate-100">
+                                <td class="p-2 border-b border-slate-100 dark:border-white/5">
+                                    <input type="text" id="ssd_shock" oninput="updateProgress()" placeholder="Stossfestigkeit..." class="w-full p-2.5 bg-transparent border border-transparent hover:border-slate-300 dark:hover:border-slate-600 focus:bg-white dark:focus:bg-slate-800 focus:border-onedrive-500 rounded-lg text-xs dark:text-slate-100 transition-all font-medium">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="p-4 border-b border-slate-100 dark:border-white/5 font-semibold bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200">Geräuschpegel</td>
+                                <td class="p-2 border-b border-slate-100 dark:border-white/5">
+                                    <input type="text" id="hdd_noise" oninput="updateProgress()" placeholder="Geräuschpegel..." class="w-full p-2.5 bg-transparent border border-transparent hover:border-slate-300 dark:hover:border-slate-600 focus:bg-white dark:focus:bg-slate-800 focus:border-onedrive-500 rounded-lg text-xs dark:text-slate-100 transition-all font-medium">
+                                </td>
+                                <td class="p-2 border-b border-slate-100 dark:border-white/5">
+                                    <input type="text" id="ssd_noise" oninput="updateProgress()" placeholder="Geräuschpegel..." class="w-full p-2.5 bg-transparent border border-transparent hover:border-slate-300 dark:hover:border-slate-600 focus:bg-white dark:focus:bg-slate-800 focus:border-onedrive-500 rounded-lg text-xs dark:text-slate-100 transition-all font-medium">
                                 </td>
                             </tr>
                         </tbody>
@@ -577,7 +726,7 @@
 
             <!-- Buyer Comparison Cards -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800">
+                <div class="comp-card rounded-2xl p-6 border-t-4 border-t-sky-500 border border-slate-200 dark:border-slate-800/50 bg-gradient-to-b from-sky-500/5 to-transparent hover:shadow-lg hover:-translate-y-1 transition-all">
                     <span class="font-bold text-onedrive-600 dark:text-onedrive-400 flex items-center gap-2 text-sm">
                         <i class="fa-solid fa-user-tie"></i> Person A (Büro & Hausaufgaben):
                     </span>
@@ -585,7 +734,7 @@
                         Schreibt Aufsätze mit Microsoft Word, verwaltet Tabellen in Excel, sendet E-Mails und schaut Lehrvideos auf YouTube.
                     </p>
                 </div>
-                <div class="p-4 rounded-2xl bg-purple-50 dark:bg-purple-950/20 border border-purple-200 dark:border-purple-800">
+                <div class="comp-card rounded-2xl p-6 border-t-4 border-t-purple-500 border border-slate-200 dark:border-slate-800/50 bg-gradient-to-b from-purple-500/5 to-transparent hover:shadow-lg hover:-translate-y-1 transition-all">
                     <span class="font-bold text-purple-700 dark:text-purple-300 flex items-center gap-2 text-sm">
                         <i class="fa-solid fa-gamepad"></i> Person B (Gamer & Content Creator):
                     </span>
@@ -829,18 +978,6 @@
 
     </main>
 
-    <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 text-xs py-4 px-6 no-print">
-        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
-            <div>
-                © IT & Medien Unterrichtsmaterialien • Sekundarschule 8. Klasse
-            </div>
-            <div class="flex items-center gap-4">
-                <span id="saveStatus" class="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-medium">
-                    <i class="fa-solid fa-cloud-arrow-up"></i> Sync bereit
-                </span>
-            </div>
-        </div>
-    </footer>
 
     <script>
         /* Periphery Items List */
@@ -1046,9 +1183,9 @@ function applyDefaultClassAndDate() {
 
         function highlightZone(zone, active) {
             if (active) {
-                zone.classList.add('ring-2', 'ring-onedrive-500', 'bg-onedrive-50/50', 'dark:bg-onedrive-950/40');
+                zone.classList.add('ring-4', 'ring-onedrive-400/50', 'scale-[1.02]');
             } else {
-                zone.classList.remove('ring-2', 'ring-onedrive-500', 'bg-onedrive-50/50', 'dark:bg-onedrive-950/40');
+                zone.classList.remove('ring-4', 'ring-onedrive-400/50', 'scale-[1.02]');
             }
         }
 
@@ -1078,9 +1215,9 @@ function applyDefaultClassAndDate() {
                     loc === 'bank' 
                         ? 'bg-white dark:bg-slate-800 hover:bg-onedrive-50 dark:hover:bg-slate-700 border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200' 
                         : loc === 'eingabe' 
-                            ? 'bg-sky-600 text-white border-sky-700 shadow-sky-500/20' 
+                            ? 'bg-orange-500 text-white border-orange-600 shadow-orange-500/20' 
                             : loc === 'verarbeitung' 
-                                ? 'bg-purple-600 text-white border-purple-700 shadow-purple-500/20' 
+                                ? 'bg-cyan-500 text-white border-cyan-600 shadow-cyan-500/20' 
                                 : 'bg-emerald-600 text-white border-emerald-700 shadow-emerald-500/20'
                 }`;
 
@@ -1236,12 +1373,9 @@ function applyDefaultClassAndDate() {
             currentPercentage = Math.min(100, Math.round((filled / total) * 100));
             
             const pBar = document.getElementById('progressBar');
-            const headerPBar = document.getElementById('headerProgressBar');
             const headerPText = document.getElementById('headerPercentText');
-            const badge = document.getElementById('completionBadge');
-            const percentNum = document.getElementById('completionPercentNumber');
-            const printBtn = document.getElementById('printBtn');
-            const printIcon = document.getElementById('printIcon');
+            const badge = document.getElementById('headerPercentText');
+            const percentNum = document.getElementById('headerPercentNumber');
             
             if (pBar) pBar.style.width = currentPercentage + '%';
             
@@ -1259,22 +1393,24 @@ function applyDefaultClassAndDate() {
             if (badge) badge.innerText = currentPercentage + '% erledigt';
             if (percentNum) percentNum.innerText = currentPercentage + '%';
             
-            var svgCircle = document.getElementById('completionSvgCircle');
+            var svgCircle = document.getElementById('headerSvgCircle');
             if (svgCircle) {
                 var offset = 100.53 - (100.53 * currentPercentage / 100);
                 svgCircle.style.strokeDashoffset = offset;
             }
 
             // Print button lock/unlock state
-            if (printBtn && printIcon) {
+            var hdrPdfBtn = document.getElementById('hdrPdfBtn');
+            var printIcon = document.getElementById('printIcon');
+            if (hdrPdfBtn && printIcon) {
                 if (currentPercentage === 100) {
-                    printBtn.className = 'px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition shadow-sm flex items-center gap-1.5 cursor-pointer animate-pulse';
-                    printIcon.className = 'fa-solid fa-print';
-                    printBtn.title = 'Arbeitsblatt als PDF drucken';
+                    hdrPdfBtn.className = 'p-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white transition border border-emerald-600 shadow-sm cursor-pointer animate-pulse';
+                    printIcon.className = 'fa-solid fa-file-pdf text-sm';
+                    hdrPdfBtn.title = 'Arbeitsblatt als PDF drucken';
                 } else {
-                    printBtn.className = 'px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-400 dark:bg-slate-700 text-white transition shadow-sm flex items-center gap-1.5 cursor-not-allowed opacity-75';
-                    printIcon.className = 'fa-solid fa-lock';
-                    printBtn.title = `Drucken erst bei 100% Ausfüllung möglich (${currentPercentage}%)`;
+                    hdrPdfBtn.className = 'p-2 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 transition border border-slate-200 dark:border-slate-700 opacity-60 cursor-not-allowed';
+                    printIcon.className = 'fa-solid fa-file-pdf text-sm';
+                    hdrPdfBtn.title = `Erst bei 100% Ausfüllung möglich (${currentPercentage}%)`;
                 }
             }
 
@@ -1464,11 +1600,6 @@ function applyDefaultClassAndDate() {
                 onConfirm();
             };
         }
-    
-        
-            
-        }
-
     </script>
 
     <!-- Global Unified Student Vorname Sync & First-Time Prompt -->
