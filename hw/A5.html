@@ -54,6 +54,9 @@
             body { background: white !important; color: black !important; font-size: 11pt; }
             .print-card { border: 1px solid #cbd5e1 !important; box-shadow: none !important; break-inside: avoid; page-break-inside: avoid; }
             input, textarea, select { border: 1px solid #94a3b8 !important; background: #fff !important; color: #000 !important; }
+            /* Tailwinds dark:-Klassen bleiben beim Drucken sonst aktiv (nur body wird oben zurückgesetzt,
+               nicht die .dark-Klasse selbst) -> dunkle Karten/helle Schrift im PDF. */
+            .dark, .dark * { background-color: #fff !important; color: #000 !important; border-color: #cbd5e1 !important; }
         }
     </style>
 </head>
@@ -1316,7 +1319,10 @@ function applyDefaultClassAndDate() {
             } else {
                 const originalTitle = document.title;
                 document.title = 'A5';
+                const wasDark = document.documentElement.classList.contains('dark');
+                if (wasDark) document.documentElement.classList.remove('dark');
                 window.print();
+                if (wasDark) document.documentElement.classList.add('dark');
                 document.title = originalTitle;
             }
         }
@@ -1343,10 +1349,11 @@ function applyDefaultClassAndDate() {
             const stateToSave = {
                 form: formData,
                 cables: cableState,
-                quiz: quizData
+                quiz: quizData,
+                percent: currentPercentage
             };
 
-            localStorage.setItem('onedrive_cables_worksheet_8sek', JSON.stringify(stateToSave));
+            localStorage.setItem('onedrive_a5_worksheet_8sek', JSON.stringify(stateToSave));
             
             const status = document.getElementById('saveStatus');
             if (status) {
@@ -1355,7 +1362,7 @@ function applyDefaultClassAndDate() {
         }
 
         function loadProgress() {
-            const saved = localStorage.getItem('onedrive_cables_worksheet_8sek');
+            const saved = localStorage.getItem('onedrive_a5_worksheet_8sek');
             if (!saved) return;
 
             try {
@@ -1391,7 +1398,7 @@ function applyDefaultClassAndDate() {
 
         function confirmReset() {
             showConfirmModal('Möchtest du wirklich alle Eingaben auf diesem Arbeitsblatt zurücksetzen?', () => {
-                localStorage.removeItem('onedrive_cables_worksheet_8sek');
+                localStorage.removeItem('onedrive_a5_worksheet_8sek');
                 document.querySelectorAll('input[type="text"], textarea').forEach(i => i.value = '');
                 document.querySelectorAll('select').forEach(s => s.selectedIndex = 0);
                 document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);

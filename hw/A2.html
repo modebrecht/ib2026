@@ -718,7 +718,7 @@
             if (percentText.includes('100%')) {
                 const originalTitle = document.title;
                 document.title = 'A2';
-                window.print();
+                safePrint();
                 document.title = originalTitle;
             } else {
                 showToast('Fülle bitte zuerst alle Felder aus (100%), um das Dokument zu drucken.');

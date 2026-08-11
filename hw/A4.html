@@ -616,7 +616,7 @@
             if(passedThisRun) {
                 hasPassed = true;
                 localStorage.setItem('a4_passed', 'true');
-                localStorage.setItem('onedrive_cables_worksheet_8sek', JSON.stringify({ percent: 100 }));
+                localStorage.setItem('onedrive_a4_worksheet_8sek', JSON.stringify({ percent: 100 }));
                 localStorage.setItem('a4_last_score', finalScore);
                 localStorage.setItem('a4_last_errors', errorCount);
                 localStorage.setItem('a4_last_time', formatTime(elapsed));
@@ -656,7 +656,7 @@
         function confirmReset() {
             if(confirm('Möchtest du deinen Fortschritt für A4 zurücksetzen?')) {
                 localStorage.removeItem('a4_passed');
-                localStorage.removeItem('onedrive_cables_worksheet_8sek');
+                localStorage.removeItem('onedrive_a4_worksheet_8sek');
                 localStorage.removeItem('a4_last_score');
                 localStorage.removeItem('a4_last_errors');
                 localStorage.removeItem('a4_last_time');

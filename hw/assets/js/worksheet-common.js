@@ -8,6 +8,25 @@
  * are already defined when that page's init code runs.
  */
 
+/* ---------- Print safety net ---------- */
+/* @media print never neutralizes the .dark class itself, so pages using
+   dark:-prefixed Tailwind classes (dark cards, light text) would otherwise
+   print with those dark colors still active. Inject a print-only override
+   and expose a helper that strips .dark before window.print() and restores
+   it afterwards. */
+(function injectPrintSafetyCSS() {
+    var style = document.createElement('style');
+    style.textContent = '@media print { .dark, .dark * { background-color: #fff !important; color: #000 !important; border-color: #cbd5e1 !important; } }';
+    document.head.appendChild(style);
+})();
+
+function safePrint() {
+    var wasDark = document.documentElement.classList.contains('dark');
+    if (wasDark) document.documentElement.classList.remove('dark');
+    window.print();
+    if (wasDark) document.documentElement.classList.add('dark');
+}
+
 /* ---------- Theme (dark mode) ---------- */
 var THEME_KEY = 'ib-theme';
 
