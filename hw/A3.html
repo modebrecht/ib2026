@@ -264,6 +264,9 @@
             #secPraxis { padding: 16px !important; }
             #secPraxis .p-4 { padding: 12px !important; }
             #secPraxis .space-y-3 > * + * { margin-top: 8px !important; }
+            /* Carousel: beim Drucken/PDF immer ALLE Karten zeigen, unabhängig vom aktuellen Ansichtsmodus */
+            .carousel-slide { display: block !important; margin-top: 1.5rem !important; }
+            .carousel-slide:first-child { margin-top: 0 !important; }
         }
     </style>
 </head>
@@ -347,7 +350,20 @@
             </div>
         </div>
 
-        <section class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 print-card space-y-6">
+        <!-- Carousel Controls (Top): Position counter + Listenansicht-Toggle -->
+        <div id="carouselControlsTop" class="no-print flex items-center justify-between gap-3">
+            <div class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 dark:text-slate-400">
+                <i class="fa-solid fa-layer-group text-onedrive-500"></i>
+                Auftrag <span id="carouselCurrentNum">1</span> von 5
+            </div>
+            <button id="viewToggleBtn" onclick="toggleCarouselView()" type="button" class="inline-flex items-center gap-2 px-3.5 py-2 text-xs font-bold rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 shadow-sm transition">
+                <i id="viewToggleIcon" class="fa-solid fa-list"></i>
+                <span id="viewToggleLabel">Listenansicht</span>
+            </button>
+        </div>
+
+        <div id="carouselTrack">
+        <section class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 print-card space-y-6 carousel-slide" id="slide1">
             <div class="border-b border-slate-200 dark:border-slate-800 pb-4 flex justify-between items-start">
                 <div>
                     <div class="inline-flex items-center gap-1.5 bg-onedrive-50 dark:bg-onedrive-950 text-onedrive-700 dark:text-onedrive-300 text-xs font-bold px-3 py-1 rounded-full border border-onedrive-200 dark:border-onedrive-800 uppercase mb-2">
@@ -751,7 +767,7 @@
             </div>
         </section>
 
-        <section class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 print-card space-y-6">
+        <section class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 print-card space-y-6 carousel-slide" id="slide2">
             <div class="border-b border-slate-200 dark:border-slate-800 pb-4">
                 <div class="inline-flex items-center gap-1.5 bg-onedrive-50 dark:bg-onedrive-950 text-onedrive-700 dark:text-onedrive-300 text-xs font-bold px-3 py-1 rounded-full border border-onedrive-200 dark:border-onedrive-800 uppercase mb-2">
                     <i class="fa-solid fa-arrows-split-up-and-left"></i> Auftrag 2
@@ -821,7 +837,7 @@
             </div>
         </section>
 
-        <section class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 print-card space-y-6">
+        <section class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 print-card space-y-6 carousel-slide" id="slide3">
             <div class="border-b border-slate-200 dark:border-slate-800 pb-4">
                 <div class="inline-flex items-center gap-1.5 bg-onedrive-50 dark:bg-onedrive-950 text-onedrive-700 dark:text-onedrive-300 text-xs font-bold px-3 py-1 rounded-full border border-onedrive-200 dark:border-onedrive-800 uppercase mb-2">
                     <i class="fa-solid fa-database"></i> Auftrag 3
@@ -891,7 +907,7 @@
             </div>
         </section>
 
-        <section class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 print-card space-y-6">
+        <section class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 print-card space-y-6 carousel-slide" id="slide4">
             <div class="border-b border-slate-200 dark:border-slate-800 pb-4">
                 <div class="inline-flex items-center gap-1.5 bg-onedrive-50 dark:bg-onedrive-950 text-onedrive-700 dark:text-onedrive-300 text-xs font-bold px-3 py-1 rounded-full border border-onedrive-200 dark:border-onedrive-800 uppercase mb-2">
                     <i class="fa-solid fa-cart-shopping"></i> Auftrag 4
@@ -943,7 +959,7 @@
             </div>
         </section>
 
-        <section class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 print-card space-y-6">
+        <section class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 print-card space-y-6 carousel-slide" id="slide5">
             <div class="border-b border-slate-200 dark:border-slate-800 pb-4 flex items-center justify-between">
                 <div>
                     <div class="inline-flex items-center gap-1.5 bg-onedrive-50 dark:bg-onedrive-950 text-onedrive-700 dark:text-onedrive-300 text-xs font-bold px-3 py-1 rounded-full border border-onedrive-200 dark:border-onedrive-800 uppercase mb-2">
@@ -1151,6 +1167,38 @@
 
             <div id="quizResult" class="hidden p-3.5 rounded-xl text-center font-bold text-xs shadow-sm"></div>
         </section>
+        </div>
+        <!-- /#carouselTrack -->
+
+        <!-- Carousel Controls (Bottom): Zurück / Dots / Weiter -->
+        <div id="carouselNavRow" class="no-print flex items-center justify-between gap-3">
+            <button id="carouselPrevBtn" onclick="carouselPrev()" type="button" class="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-bold rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 shadow-sm transition disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-white">
+                <i class="fa-solid fa-chevron-left"></i> <span class="hidden sm:inline">Zurück</span>
+            </button>
+            <div class="flex items-center gap-2" id="carouselDots">
+                <button onclick="carouselShow(0)" type="button" class="carousel-dot h-2.5 rounded-full bg-onedrive-500 w-6 transition-all" data-idx="0" aria-label="Zu Auftrag 1"></button>
+                <button onclick="carouselShow(1)" type="button" class="carousel-dot h-2.5 w-2.5 rounded-full bg-slate-300 dark:bg-slate-700 transition-all" data-idx="1" aria-label="Zu Auftrag 2"></button>
+                <button onclick="carouselShow(2)" type="button" class="carousel-dot h-2.5 w-2.5 rounded-full bg-slate-300 dark:bg-slate-700 transition-all" data-idx="2" aria-label="Zu Auftrag 3"></button>
+                <button onclick="carouselShow(3)" type="button" class="carousel-dot h-2.5 w-2.5 rounded-full bg-slate-300 dark:bg-slate-700 transition-all" data-idx="3" aria-label="Zu Auftrag 4"></button>
+                <button onclick="carouselShow(4)" type="button" class="carousel-dot h-2.5 w-2.5 rounded-full bg-slate-300 dark:bg-slate-700 transition-all" data-idx="4" aria-label="Zu Auftrag 5"></button>
+            </div>
+            <button id="carouselNextBtn" onclick="carouselNext()" type="button" class="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-bold rounded-xl bg-onedrive-500 hover:bg-onedrive-600 text-white shadow-sm transition disabled:opacity-30 disabled:cursor-not-allowed">
+                <span class="hidden sm:inline">Weiter</span> <i class="fa-solid fa-chevron-right"></i>
+            </button>
+        </div>
+
+        <!-- Fortschrittsbalken unten (0% - 100%, gesamtes Arbeitsblatt) -->
+        <div id="carouselProgressWrap" class="no-print bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-4">
+            <div class="flex items-center justify-between mb-1.5">
+                <span class="text-xs font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                    <i class="fa-solid fa-chart-simple text-onedrive-500 mr-1"></i> Fortschritt Arbeitsblatt
+                </span>
+                <span id="carouselProgressLabel" class="text-xs font-extrabold text-onedrive-600 dark:text-onedrive-400">0%</span>
+            </div>
+            <div class="w-full bg-slate-200 dark:bg-slate-800 h-2.5 rounded-full overflow-hidden">
+                <div id="carouselProgressBar" class="bg-onedrive-500 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+            </div>
+        </div>
 
     </main>
 
@@ -1180,6 +1228,11 @@
         let isTouchDragging = false;
         let currentPercentage = 0;
 
+        /* Carousel state (A3-Aufträge) */
+        const CAROUSEL_TOTAL = 5;
+        let carouselIndex = 0;
+        let carouselMode = 'carousel'; // 'carousel' | 'list'
+
         /* On page load initialization */
         window.addEventListener('DOMContentLoaded', () => {
             initDarkMode();
@@ -1201,6 +1254,7 @@
             setupUniversalAutoSave();
             initDevices();
             setupDropZones();
+            initCarousel();
             updateProgress();
         });
 
@@ -1518,6 +1572,89 @@ function applyDefaultClassAndDate() {
         }
 
         /* Progress Computation & Print Lock */
+        /* ===== Carousel (A3-Aufträge: eine Karte + Pfeile / Listenansicht) ===== */
+        function initCarousel() {
+            var saved = localStorage.getItem('a3_view_mode');
+            carouselMode = (saved === 'list') ? 'list' : 'carousel';
+            carouselIndex = 0;
+            renderCarousel();
+        }
+
+        function renderCarousel() {
+            var slides = document.querySelectorAll('#carouselTrack > .carousel-slide');
+            var isList = (carouselMode === 'list');
+
+            slides.forEach(function (slide, i) {
+                if (isList) {
+                    slide.style.display = 'block';
+                    slide.style.marginTop = (i === 0) ? '0' : '1.5rem';
+                } else {
+                    slide.style.display = (i === carouselIndex) ? 'block' : 'none';
+                    slide.style.marginTop = '0';
+                }
+            });
+
+            var prevBtn = document.getElementById('carouselPrevBtn');
+            var nextBtn = document.getElementById('carouselNextBtn');
+            var navRow = document.getElementById('carouselNavRow');
+            var topCounterWrap = document.getElementById('carouselControlsTop');
+
+            if (navRow) navRow.style.display = isList ? 'none' : 'flex';
+            if (topCounterWrap) {
+                var counterEl = topCounterWrap.querySelector('div');
+                if (counterEl) counterEl.style.visibility = isList ? 'hidden' : 'visible';
+            }
+
+            if (prevBtn) prevBtn.disabled = isList ? true : (carouselIndex === 0);
+            if (nextBtn) nextBtn.disabled = isList ? true : (carouselIndex === CAROUSEL_TOTAL - 1);
+
+            var counterNum = document.getElementById('carouselCurrentNum');
+            if (counterNum) counterNum.innerText = (carouselIndex + 1);
+
+            document.querySelectorAll('.carousel-dot').forEach(function (dot) {
+                var idx = parseInt(dot.getAttribute('data-idx'), 10);
+                if (!isList && idx === carouselIndex) {
+                    dot.className = 'carousel-dot h-2.5 rounded-full bg-onedrive-500 w-6 transition-all';
+                } else {
+                    dot.className = 'carousel-dot h-2.5 w-2.5 rounded-full bg-slate-300 dark:bg-slate-700 transition-all';
+                }
+            });
+
+            var toggleIcon = document.getElementById('viewToggleIcon');
+            var toggleLabel = document.getElementById('viewToggleLabel');
+            if (toggleIcon && toggleLabel) {
+                if (isList) {
+                    toggleIcon.className = 'fa-solid fa-square';
+                    toggleLabel.innerText = 'Kartenansicht';
+                } else {
+                    toggleIcon.className = 'fa-solid fa-list';
+                    toggleLabel.innerText = 'Listenansicht';
+                }
+            }
+        }
+
+        function carouselShow(i) {
+            if (carouselMode === 'list') return;
+            if (i < 0) i = 0;
+            if (i > CAROUSEL_TOTAL - 1) i = CAROUSEL_TOTAL - 1;
+            carouselIndex = i;
+            renderCarousel();
+            var topEl = document.getElementById('carouselControlsTop');
+            if (topEl) topEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function carouselNext() { carouselShow(carouselIndex + 1); }
+        function carouselPrev() { carouselShow(carouselIndex - 1); }
+
+        function toggleCarouselView() {
+            carouselMode = (carouselMode === 'list') ? 'carousel' : 'list';
+            localStorage.setItem('a3_view_mode', carouselMode);
+            if (carouselMode === 'carousel') carouselIndex = 0;
+            renderCarousel();
+            var topEl = document.getElementById('carouselControlsTop');
+            if (topEl) topEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
         function updateProgress() {
             const textInputs = document.querySelectorAll('input[type="text"], textarea, select');
             let filled = 0;
@@ -1554,7 +1691,12 @@ function applyDefaultClassAndDate() {
             const percentNum = document.getElementById('headerPercentNumber');
             
             if (pBar) pBar.style.width = currentPercentage + '%';
-            
+
+            var carouselPBar = document.getElementById('carouselProgressBar');
+            var carouselPLabel = document.getElementById('carouselProgressLabel');
+            if (carouselPBar) carouselPBar.style.width = currentPercentage + '%';
+            if (carouselPLabel) carouselPLabel.innerText = currentPercentage + '%';
+
             var hdrSvgCircle = document.getElementById('headerSvgCircle');
             if (hdrSvgCircle) {
                 var offset = 100.53 - (100.53 * currentPercentage / 100);
