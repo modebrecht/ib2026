@@ -64,6 +64,28 @@
             75% {transform: translateX(5px);} 
         }
 
+        .pop-success { animation: popSuccess 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, pulseGlow 1.8s infinite ease-in-out; }
+        @keyframes popSuccess { 
+            0% { transform: scale(0.95); } 
+            50% { transform: scale(1.03); } 
+            100% { transform: scale(1); } 
+        }
+        @keyframes pulseGlow { 
+            0%, 100% { box-shadow: 0 0 12px rgba(16, 185, 129, 0.4); } 
+            50% { box-shadow: 0 0 24px rgba(16, 185, 129, 0.8); } 
+        }
+
+        @keyframes bounceShort {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        .animate-bounce-short { animation: bounceShort 0.6s ease-in-out 2; }
+
+        @keyframes timerBar {
+            0% { width: 100%; }
+            100% { width: 0%; }
+        }
+
         @media print {
             body * { visibility: hidden !important; }
             #printCertificate, #printCertificate * { visibility: visible !important; }
@@ -337,15 +359,15 @@
         const IODATA = [
             { id: 'usb-a', name: 'USB-A', desc: 'Universelle, rechteckige Schnittstelle für Maus, Tastatur, Sticks.', img: 'assets/usb_a_cable_1786198032413.webp', scenarioText: 'Du möchtest deine neue externe Festplatte an den PC anschließen.', scenarioImg: 'assets/scenario_usb_a_1786199030831.webp' },
             { id: 'usb-c', name: 'USB-C', desc: 'Moderner, kompakter Anschluss. Beidseitig steckbar (für Daten/Strom).', img: 'assets/usb_c_cable_1786198043571.webp', scenarioText: 'Dein neues Smartphone muss aufgeladen werden.', scenarioImg: 'assets/scenario_usb_c_1786222003950.jpg' },
-            { id: 'hdmi', name: 'HDMI', desc: 'Weit verbreiteter digitaler Anschluss für Monitor & Fernseher (Bild & Ton).', img: 'assets/hdmi_cable_1786198053921.webp', scenarioText: 'Du willst deine Spielekonsole mit dem Smart-TV verbinden.', scenarioImg: 'assets/hdmitv.png' },
+            { id: 'hdmi', name: 'HDMI', desc: 'Weit verbreiteter digitaler Anschluss für Monitor & Fernseher (Bild & Ton).', img: 'assets/hdmi_cable_1786198053921.webp', scenarioText: 'Du willst deine Spielekonsole mit dem Smart-TV verbinden.', scenarioImg: 'assets/hq-hdmi-tv.webp' },
             { id: 'dp', name: 'DisplayPort', desc: 'Moderne Monitor-Schnittstelle, besonders oft im PC-Gaming genutzt.', img: 'assets/dp_cable_1786198067133.webp', scenarioText: 'Du hast einen High-End Gaming Monitor gekauft (144Hz).', scenarioImg: 'assets/scenario_dp_1786222022031.jpg' },
             { id: 'rj45', name: 'LAN (RJ45)', desc: 'Netzwerkanschluss für das kabelgebundene Internet/Intranet. Hat meist einen kleinen Clip.', img: 'assets/lan_cable_1786198076546.webp', scenarioText: 'Das WLAN ist zu langsam. Du möchtest deinen PC per Kabel an den Router anschließen.', scenarioImg: 'assets/scenario_lan_1786222030696.jpg' },
             { id: 'audio', name: 'Audio (3.5mm)', desc: 'Runder analoger Klinkenanschluss für Lautsprecher oder Kopfhörer.', img: 'assets/audio_cable_1786198086224.webp', scenarioText: 'Du möchtest Musik über deine PC-Boxen hören.', scenarioImg: 'assets/scenario_audio_1786222040958.jpg' },
             { id: 'vga', name: 'VGA', desc: 'Alter, analoger Videoanschluss (blau) mit 15 kleinen Pins und Schrauben.', img: 'assets/vga_cable_1786198097423.webp', scenarioText: 'Du sollst ein Referat halten, aber in der Schule steht nur ein alter blauer Beamer-Anschluss zur Verfügung.', scenarioImg: 'assets/scenario_vga_1786199021345.webp' },
-            { id: 'dvi', name: 'DVI', desc: 'Älterer digitaler Bildanschluss (meist weiß), Vorgänger von HDMI.', img: 'assets/dvi_cable_1786198107586.webp', scenarioText: 'Ein etwas älterer Flachbildschirm im Büro hat diesen breiten weißen Anschluss.', scenarioImg: 'assets/scenario_dvi_1786222055868.jpg' },
+            { id: 'dvi', name: 'DVI', desc: 'Älterer digitaler Bildanschluss (meist weiß), Vorgänger von HDMI.', img: 'assets/dvi_cable_1786198107586.webp', scenarioText: 'Ein etwas älterer Flachbildschirm im Büro hat diesen breiten weißen Anschluss.', scenarioImg: 'assets/hq-dvi.webp' },
             { id: 'bt-dongle', name: 'Bluetooth Dongle', desc: 'Ein winziger USB-Empfänger für kabellose Geräte.', img: 'assets/bluetooth_dongle_1786198654619.webp', scenarioText: 'Du hast eine neue kabellose Maus, aber dein Desktop-PC hat kein eingebautes Bluetooth.', scenarioImg: 'assets/scenario_bt_dongle_1786222064317.jpg' },
             { id: 'power', name: 'Stromkabel (C13)', desc: 'Verbindet das PC-Netzteil mit der Steckdose.', img: 'assets/power_cable_1786198664189.webp', scenarioText: 'Du hast den PC aufgebaut, aber er lässt sich nicht einschalten. Welches Kabel fehlt?', scenarioImg: 'assets/scenario_power_1786222072812.jpg' },
-            { id: 'usb-b', name: 'USB-B (Drucker)', desc: 'Ein quadratischer USB-Anschluss, häufig für Drucker.', img: 'assets/usb_b_cable_1786198671715.webp', scenarioText: 'Du musst ein Dokument ausdrucken. Wie verbindest du den Drucker mit dem PC?', scenarioImg: 'assets/scenario_usb_b_1786222081628.jpg' },
+            { id: 'usb-b', name: 'USB-B (Drucker)', desc: 'Ein quadratischer USB-Anschluss, häufig für Drucker.', img: 'assets/usb_b_cable_1786198671715.webp', scenarioText: 'Du musst ein Dokument ausdrucken. Wie verbindest du den Drucker mit dem PC?', scenarioImg: 'assets/hq-usb-b.webp' },
             { id: 'micro-usb', name: 'Micro-USB', desc: 'Älterer USB-Anschluss, typisch für Powerbanks, E-Reader und ältere Smartphones.', img: 'assets/img_micro_usb_1786222089308.jpg', scenarioText: 'Du möchtest deine ältere Powerbank oder deinen E-Reader aufladen.', scenarioImg: 'assets/scenario_micro_usb_1786222104649.jpg' },
             { id: 'lightning', name: 'Apple Lightning', desc: 'Proprietärer Anschluss von Apple für ältere iPhones und iPads.', img: 'assets/img_lightning_1786222112950.jpg', scenarioText: 'Du musst dein iPhone 13 (oder älter) aufladen.', scenarioImg: 'assets/scenario_lightning_1786222121910.jpg' },
             { id: 'sd-card', name: 'SD-Karte', desc: 'Ein Speichermedium, das oft in digitalen Kameras verwendet wird.', img: 'assets/sd_card_item.jpg', scenarioText: 'Du möchtest die Fotos von deiner digitalen Spiegelreflexkamera auf den PC kopieren.', scenarioImg: 'assets/sd_card_scenario.jpg' },
@@ -496,6 +518,7 @@
             allOptions.forEach(opt => {
                 const btn = document.createElement('button');
                 btn.className = 'relative w-full aspect-[4/3] rounded-2xl overflow-hidden shadow-sm border-4 border-white dark:border-slate-800 hover:border-onedrive-500 dark:hover:border-onedrive-500 hover:shadow-lg transition-all group';
+                btn.dataset.id = opt.id;
                 btn.innerHTML = `
                     <img src="${opt.img}" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                     <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent p-3 sm:p-4 flex justify-center items-end h-2/3 opacity-90 group-hover:opacity-100 transition-opacity">
@@ -509,23 +532,68 @@
 
         function handleAnswer(btnElement, isCorrect, clickedName) {
             const allBtns = document.getElementById('quizOptions').querySelectorAll('button');
-            allBtns.forEach(b => b.disabled = true);
+            allBtns.forEach(b => {
+                b.disabled = true;
+                b.style.pointerEvents = 'none';
+            });
 
             if(isCorrect) {
-                btnElement.classList.add('border-emerald-500', 'bg-emerald-100', 'dark:bg-emerald-900');
-                setTimeout(nextQuestion, 600);
+                btnElement.classList.add('border-emerald-500', 'ring-4', 'ring-emerald-500/50', 'pop-success', 'z-10');
+                
+                const checkOverlay = document.createElement('div');
+                checkOverlay.className = 'absolute inset-0 bg-emerald-950/60 backdrop-blur-[2px] flex flex-col items-center justify-center gap-2.5 z-20 p-2 text-center transition-all duration-300';
+                checkOverlay.innerHTML = `
+                    <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-emerald-500 text-white flex items-center justify-center text-3xl shadow-xl animate-bounce-short">
+                        <i class="fa-solid fa-check"></i>
+                    </div>
+                    <span class="bg-emerald-600 text-white font-black text-xs sm:text-sm px-4 py-1.5 rounded-full shadow-lg border border-emerald-400/40 tracking-wide">
+                        Richtig! ✨
+                    </span>
+                    <div class="w-3/4 h-1.5 bg-emerald-950/80 rounded-full overflow-hidden mt-1 border border-emerald-500/30">
+                        <div class="h-full bg-emerald-400 rounded-full transition-all duration-[2000ms] ease-linear w-full" style="animation: timerBar 2s linear forwards;"></div>
+                    </div>
+                `;
+                btnElement.appendChild(checkOverlay);
+                
+                setTimeout(nextQuestion, 2000);
             } else {
                 errorCount++;
                 // Track specific error for the modal and PDF
                 errorDetails.push(`<span class="text-[10px] text-slate-500 block uppercase tracking-wider mt-1">Szenario: "${currentQuestion.scenarioText}"</span>Du hast <b>${clickedName}</b> gewählt, gesucht war aber <b>${currentQuestion.name}</b>.`);
                 
                 document.getElementById('statFehler').textContent = errorCount;
-                btnElement.classList.add('border-red-500', 'bg-red-100', 'dark:bg-red-900', 'wiggle');
+                btnElement.classList.add('border-rose-500', 'ring-4', 'ring-rose-500/50', 'wiggle', 'z-10');
                 
-                const correctBtn = Array.from(allBtns).find(b => b.innerHTML.includes(currentQuestion.name));
-                if(correctBtn) correctBtn.classList.add('border-emerald-500', 'bg-emerald-50', 'dark:bg-emerald-900/40');
+                const errOverlay = document.createElement('div');
+                errOverlay.className = 'absolute inset-0 bg-rose-950/60 backdrop-blur-[2px] flex flex-col items-center justify-center gap-2 z-20 p-2 text-center';
+                errOverlay.innerHTML = `
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-rose-600 text-white flex items-center justify-center text-2xl shadow-xl">
+                        <i class="fa-solid fa-xmark"></i>
+                    </div>
+                    <span class="bg-rose-700 text-white font-extrabold text-xs sm:text-sm px-3.5 py-1 rounded-full shadow-md border border-rose-400/30">
+                        Falsch
+                    </span>
+                `;
+                btnElement.appendChild(errOverlay);
                 
-                setTimeout(nextQuestion, 1800);
+                // Highlight the correct option
+                const correctBtn = Array.from(allBtns).find(b => b.dataset.id === currentQuestion.id);
+                if(correctBtn) {
+                    correctBtn.classList.add('border-emerald-500', 'ring-4', 'ring-emerald-500/50', 'pop-success', 'z-10');
+                    const correctOverlay = document.createElement('div');
+                    correctOverlay.className = 'absolute inset-0 bg-emerald-950/60 backdrop-blur-[2px] flex flex-col items-center justify-center gap-2 z-20 p-2 text-center';
+                    correctOverlay.innerHTML = `
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-emerald-500 text-white flex items-center justify-center text-2xl shadow-xl">
+                            <i class="fa-solid fa-check"></i>
+                        </div>
+                        <span class="bg-emerald-600 text-white font-extrabold text-xs sm:text-sm px-3.5 py-1 rounded-full shadow-lg border border-emerald-400/40">
+                            Richtiges Kabel ✓
+                        </span>
+                    `;
+                    correctBtn.appendChild(correctOverlay);
+                }
+                
+                setTimeout(nextQuestion, 2000);
             }
         }
 
