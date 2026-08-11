@@ -349,7 +349,7 @@
         </div>
 
         <!-- Section 1: Overview & Diagram (Ultra HD) -->
-        <section class="bg-[#050914] eva-grid-bg text-white rounded-2xl shadow-sm border border-slate-800 p-6 print-card space-y-6 relative overflow-hidden">
+        <section class="no-print bg-[#050914] eva-grid-bg text-white rounded-2xl shadow-sm border border-slate-800 p-6 print-card space-y-6 relative overflow-hidden">
             <!-- Statische Hintergrund-Glows -->
             <div class="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-evaE/5 rounded-full blur-[150px] pointer-events-none z-0"></div>
             <div class="absolute top-[30%] right-[-10%] w-[700px] h-[700px] bg-evaV/5 rounded-full blur-[150px] pointer-events-none z-0"></div>
@@ -470,7 +470,7 @@
                     </a>
                     <div class="mt-3">
                         <a onclick="revealPraxis()" href="https://www.youtube.com/watch?v=p-kMnyitkHo" target="_blank" rel="noopener" class="text-sm font-semibold text-red-600 dark:text-red-400 hover:underline">
-                            Youtube öffnen
+                            YouTube öffnen
                         </a>
                     </div>
                 </div>
@@ -815,7 +815,7 @@ function applyDefaultClassAndDate() {
                 }
             }
 
-            saveProgressToStorage(false);
+            saveProgressToStorage(false, percent);
         }
 
         function handlePrint() {
@@ -830,11 +830,12 @@ function applyDefaultClassAndDate() {
             }
         }
 
-        function saveProgressToStorage(notify = true) {
+        function saveProgressToStorage(notify = true, percent) {
             const data = { form: {} };
             document.querySelectorAll('input[type="text"], input[type="date"], textarea').forEach(el => {
                 if (el.id) data.form[el.id] = el.value;
             });
+            if (typeof percent === 'number') data.percent = percent;
             localStorage.setItem('onedrive_a2_eva_worksheet_8sek', JSON.stringify(data));
             if (notify) showToast('Fortschritt erfolgreich gespeichert!');
         }
@@ -868,7 +869,14 @@ function applyDefaultClassAndDate() {
         function confirmReset() {
             showConfirmModal('Möchtest du wirklich alle Eingaben auf diesem Arbeitsblatt zurücksetzen?', () => {
                 localStorage.removeItem('onedrive_a2_eva_worksheet_8sek');
+                localStorage.removeItem('hw_autosave_' + location.pathname.split('/').pop());
                 document.querySelectorAll('input[type="text"], input[type="date"], textarea').forEach(i => i.value = '');
+                var classEl = document.getElementById('studentClass');
+                if (classEl) classEl.value = 'B24';
+                applyDefaultClassAndDate();
+                var nameEl = document.getElementById('studentName');
+                var globalVorname = localStorage.getItem('studentVorname') || localStorage.getItem('student_vorname');
+                if (nameEl && globalVorname) nameEl.value = globalVorname;
                 updateProgress();
                 showToast('Arbeitsblatt wurde zurückgesetzt.');
             });
@@ -942,6 +950,7 @@ function applyDefaultClassAndDate() {
           var el = document.getElementById('studentName');
           if (el && name) {
             el.value = name;
+            if (typeof updateProgress === 'function') updateProgress();
           }
         }
 
