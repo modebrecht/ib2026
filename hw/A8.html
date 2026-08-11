@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="de" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A8: EVA, Speicher & Kaufberatung • Arbeitsblatt</title>
+    <script src="assets/js/tailwind.min.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        slate: {
+                            50: '#fafafa', 100: '#f5f5f5', 200: '#e5e5e5', 300: '#d4d4d4',
+                            400: '#b4bdca', 500: '#a3a3a3', 600: '#616161', 700: '#404040',
+                            800: '#303846', 900: '#1a1f26', 950: '#111418'
+                        },
+                        onedrive: {
+                            50: '#eff6ff', 100: '#dbeafe', 400: '#66a1ff', 500: '#0078d4',
+                            600: '#106ebe', 700: '#005a9e', 800: '#004578',
+                            900: '#00335c', 950: '#001f3f'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Segoe UI', 'Inter', 'system-ui', '-apple-system', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="assets/css/fontawesome.min.css">
+    <style>
+        @import url('assets/fonts/inter.css');
+        * { transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.5); border-radius: 4px; }
+
+        @media print {
+            .no-print { display: none !important; }
+            html, body { height: auto !important; min-height: auto !important; margin: 0 !important; padding: 0 !important; }
+            body { background: white !important; color: black !important; font-size: 11pt; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .print-card { border: 1px solid #cbd5e1 !important; box-shadow: none !important; break-inside: avoid; page-break-inside: avoid; }
+            input, textarea, select { border: 1px solid #94a3b8 !important; background: #fff !important; color: #000 !important; }
+            /* Sicherheitsnetz: Dunkelmodus-Farben beim Drucken immer überschreiben, egal wie gedruckt
+               wird (App-Button, Strg+P, Rechtsklick-Drucken) - sonst bleiben Karten dunkel mit heller
+               Schrift, weil @media print sonst nur body zurücksetzt, nicht die .dark-Klasse selbst. */
+            .dark, .dark * { background-color: #fff !important; color: #000 !important; border-color: #cbd5e1 !important; }
+        }
+    </style>
+</head>
+<body class="bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-full flex flex-col font-sans antialiased">
+
+    <header class="sticky top-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm no-print">
+        <div class="max-w-[1920px] w-full mx-auto px-4 sm:px-8 py-2.5 flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3 min-w-0">
+                <div class="w-9 h-9 rounded-lg bg-onedrive-500 text-white flex items-center justify-center font-black shadow-md shadow-onedrive-500/20 shrink-0">
+                    <i class="fa-solid fa-shuffle text-sm"></i>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div>
+                        <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Fortschritt</span>
+                        <span id="headerPercentText" class="text-sm font-extrabold text-onedrive-600 dark:text-onedrive-400">0% erledigt</span>
+                    </div>
+                    <div class="relative w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center font-bold text-[10px] sm:text-xs text-slate-700 dark:text-slate-200 shrink-0 ml-1">
+                        <svg class="absolute inset-0 w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                            <circle cx="18" cy="18" r="16" fill="none" class="stroke-slate-200 dark:stroke-slate-800" stroke-width="4"></circle>
+                            <circle id="headerSvgCircle" cx="18" cy="18" r="16" fill="none" class="stroke-emerald-500 transition-all duration-500 ease-out" stroke-width="4" stroke-dasharray="100.53" stroke-dashoffset="100.53" stroke-linecap="round"></circle>
+                        </svg>
+                        <span id="headerPercentNumber" class="relative z-10">0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2 shrink-0">
+                <button onclick="toggleDarkMode()" title="Dunkelmodus umschalten" class="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+                    <i id="themeIcon" class="fa-solid fa-moon text-sm"></i>
+                </button>
+                <button id="hdrPdfBtn" onclick="handlePrint()" class="p-2 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 transition border border-slate-200 dark:border-slate-700 opacity-60 cursor-not-allowed" title="Erst bei 100% Ausfüllung möglich">
+                    <i id="printIcon" class="fa-solid fa-file-pdf text-sm"></i>
+                </button>
+                <button onclick="confirmReset()" title="Zurücksetzen" class="p-2 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/50 rounded-lg border border-rose-200 dark:border-rose-900/50">
+                    <i class="fa-solid fa-rotate-right text-sm"></i>
+                </button>
+            </div>
+        </div>
+        <div class="w-full bg-slate-200 dark:bg-slate-800 h-1">
+            <div id="progressBar" class="bg-onedrive-500 h-1 transition-all duration-300" style="width: 0%"></div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto w-full px-4 sm:px-6 py-6 space-y-6 flex-grow">
+
+        <!-- Title & Metadata -->
+        <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 print-card">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-slate-800">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-onedrive-500 to-onedrive-700 flex items-center justify-center text-[22px] font-black border border-onedrive-600 shadow-sm text-white">
+                        <i class="fa-solid fa-shuffle text-slate-300"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-900 dark:text-slate-100">A8: EVA-Prinzip, Speicher & Kaufberatung</h2>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Informatische Bildung • IT-Hardware • A8</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Student Metadata -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-500 dark:text-slate-400 mb-1">
+                        <i class="fa-solid fa-user mr-1 text-onedrive-500"></i> Vorname
+                    </label>
+                    <input type="text" id="studentName" readonly tabindex="-1" style="pointer-events: none;" class="w-full px-3.5 py-2 text-sm bg-slate-100 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl font-medium text-slate-500 dark:text-slate-400 opacity-90 cursor-not-allowed">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-500 dark:text-slate-400 mb-1">
+                        <i class="fa-solid fa-users mr-1 text-onedrive-500"></i> Klasse
+                    </label>
+                    <input type="text" id="studentClass" readonly tabindex="-1" style="pointer-events: none;" class="w-full px-3.5 py-2 text-sm bg-slate-100 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl font-medium text-slate-500 dark:text-slate-400 opacity-90 cursor-not-allowed" value="B24">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-500 dark:text-slate-400 mb-1">
+                        <i class="fa-solid fa-calendar mr-1 text-onedrive-500"></i> Datum
+                    </label>
+                    <input type="text" id="studentDate" readonly tabindex="-1" style="pointer-events: none;" class="w-full px-3.5 py-2 text-sm bg-slate-100 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl font-medium text-slate-500 dark:text-slate-400 opacity-90 cursor-not-allowed">
+                </div>
+            </div>
+        </div>
+
+        <!-- Auftrag 1: EVA-Prinzip & Peripheriegeräte (was Auftrag 2 in A3) -->
+        <section class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 print-card space-y-6">
+            <div class="border-b border-slate-200 dark:border-slate-800 pb-4">
+                <div class="inline-flex items-center gap-1.5 bg-onedrive-50 dark:bg-onedrive-950 text-onedrive-700 dark:text-onedrive-300 text-xs font-bold px-3 py-1 rounded-full border border-onedrive-200 dark:border-onedrive-800 uppercase mb-2">
+                    <i class="fa-solid fa-arrows-split-up-and-left"></i> Auftrag 1
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100">Das EVA-Prinzip & Peripheriegeräte</h3>
+                <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                    Jedes Datenverarbeitungssystem arbeitet nach dem Schema <strong>Eingabe &rarr; Verarbeitung &rarr; Ausgabe</strong>.
+                    Ziehe die untenstehenden Bauteil-Chips per <strong>Drag & Drop</strong> (am PC & Smartphone) in die passenden Felder oder tippe sie an.
+                </p>
+            </div>
+
+            <!-- Device Tag Bank -->
+            <div class="space-y-4">
+                <div id="bankZone" class="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 transition-all min-h-[90px]" data-dropzone="bank">
+                    <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block mb-3 flex items-center justify-between">
+                        <span><i class="fa-solid fa-hand-pointer mr-1"></i> Bauteile-Vorrat (Ziehen oder Tippen):</span>
+                        <span class="text-[10px] text-onedrive-600 dark:text-onedrive-400 font-normal"><i class="fa-solid fa-mobile-screen mr-1"></i> Mobile & Desktop Drag & Drop</span>
+                    </span>
+                    <div id="deviceBank" class="flex flex-wrap gap-2.5 min-h-[48px] items-center">
+                        <!-- Filled by JS -->
+                    </div>
+                </div>
+
+                <!-- EVA Columns Container -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+                    <!-- EINGABE -->
+                    <div id="zoneContainer_eingabe" class="border-2 border-dashed rounded-2xl p-4 flex flex-col min-h-[220px] transition-all" data-dropzone="eingabe">
+                        <div class="flex items-center justify-between pb-3 mb-3 border-b border-orange-200 dark:border-orange-800 pointer-events-none">
+                            <span class="font-bold text-orange-900 dark:text-orange-300 text-sm flex items-center gap-1.5">
+                                <i class="fa-solid fa-keyboard"></i> 1. EINGABE (Input)
+                            </span>
+                            <span class="text-xs bg-orange-200 dark:bg-orange-900 text-orange-800 dark:text-orange-200 font-bold px-2.5 py-0.5 rounded-full" id="cnt_eingabe">0</span>
+                        </div>
+                        <div id="zone_eingabe" class="space-y-2 flex-grow p-1 min-h-[120px]" data-dropzone="eingabe">
+                            <!-- Items go here -->
+                        </div>
+                    </div>
+
+                    <!-- VERARBEITUNG -->
+                    <div id="zoneContainer_verarbeitung" class="border-2 border-dashed rounded-2xl p-4 flex flex-col min-h-[220px] transition-all" data-dropzone="verarbeitung">
+                        <div class="flex items-center justify-between pb-3 mb-3 border-b border-cyan-200 dark:border-cyan-800 pointer-events-none">
+                            <span class="font-bold text-cyan-900 dark:text-cyan-300 text-sm flex items-center gap-1.5">
+                                <i class="fa-solid fa-gear"></i> 2. VERARBEITUNG (Processing)
+                            </span>
+                            <span class="text-xs bg-cyan-200 dark:bg-cyan-900 text-cyan-800 dark:text-cyan-200 font-bold px-2.5 py-0.5 rounded-full" id="cnt_verarbeitung">0</span>
+                        </div>
+                        <div id="zone_verarbeitung" class="space-y-2 flex-grow p-1 min-h-[120px]" data-dropzone="verarbeitung">
+                            <!-- Items go here -->
+                        </div>
+                    </div>
+
+                    <!-- AUSGABE -->
+                    <div id="zoneContainer_ausgabe" class="border-2 border-dashed rounded-2xl p-4 flex flex-col min-h-[220px] transition-all" data-dropzone="ausgabe">
+                        <div class="flex items-center justify-between pb-3 mb-3 border-b border-emerald-200 dark:border-emerald-800 pointer-events-none">
+                            <span class="font-bold text-emerald-900 dark:text-emerald-300 text-sm flex items-center gap-1.5">
+                                <i class="fa-solid fa-desktop"></i> 3. AUSGABE (Output)
+                            </span>
+                            <span class="text-xs bg-emerald-200 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200 font-bold px-2.5 py-0.5 rounded-full" id="cnt_ausgabe">0</span>
+                        </div>
+                        <div id="zone_ausgabe" class="space-y-2 flex-grow p-1 min-h-[120px]" data-dropzone="ausgabe">
+                            <!-- Items go here -->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Auftrag 2: Speichervergleich (was Auftrag 3 in A3) -->
+        <section class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 print-card space-y-6">
+            <div class="border-b border-slate-200 dark:border-slate-800 pb-4">
+                <div class="inline-flex items-center gap-1.5 bg-onedrive-50 dark:bg-onedrive-950 text-onedrive-700 dark:text-onedrive-300 text-xs font-bold px-3 py-1 rounded-full border border-onedrive-200 dark:border-onedrive-800 uppercase mb-2">
+                    <i class="fa-solid fa-database"></i> Auftrag 2
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100">Speichervergleich: RAM vs. SSD vs. HDD</h3>
+                <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Computerspeicher unterscheidet sich hinsichtlich Geschwindigkeit, Bauweise und Beständigkeit.</p>
+            </div>
+
+            <!-- Question 1 -->
+            <div class="space-y-2">
+                <label class="block text-sm font-semibold text-slate-800 dark:text-slate-200">
+                    1. Erkläre den Hauptunterschied zwischen Arbeitsspeicher (RAM) und einer SSD (Massenspeicher) in eigenen Worten:
+                </label>
+                <textarea id="task3_diff" oninput="updateProgress()" rows="3" placeholder="Unterschied in eigenen Worten erklären..." class="w-full p-3.5 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100"></textarea>
+            </div>
+
+            <!-- Question 2 Table -->
+            <div class="space-y-3">
+                <label class="block text-sm font-semibold text-slate-800 dark:text-slate-200">
+                    2. Vergleichstabelle ausfüllen: Magnetische Festplatte (HDD) vs. Solid State Drive (SSD)
+                </label>
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse text-xs sm:text-sm rounded-xl overflow-hidden ring-1 ring-slate-200 dark:ring-white/10 shadow-lg">
+                        <thead>
+                            <tr class="bg-slate-100/80 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 backdrop-blur-md">
+                                <th class="p-4 text-left font-bold w-1/3 border-b border-slate-200 dark:border-white/10 uppercase tracking-wider text-[10px]">Eigenschaft</th>
+                                <th class="p-4 text-left font-bold w-1/3 border-b border-slate-200 dark:border-white/10 uppercase tracking-wider text-[10px]">HDD (Mechanische Festplatte)</th>
+                                <th class="p-4 text-left font-bold w-1/3 border-b border-slate-200 dark:border-white/10 uppercase tracking-wider text-[10px]">SSD (Solid State Drive)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                            <tr>
+                                <td class="p-4 border-b border-slate-100 dark:border-white/5 font-semibold bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200">Funktionsweise</td>
+                                <td class="p-4 border-b border-slate-100 dark:border-white/5 text-slate-600 dark:text-slate-400">Magnetische Scheiben mit Lesekopf</td>
+                                <td class="p-4 border-b border-slate-100 dark:border-white/5 text-slate-600 dark:text-slate-400">Elektronische Flash-Speicherchips</td>
+                            </tr>
+                            <tr>
+                                <td class="p-4 border-b border-slate-100 dark:border-white/5 font-semibold bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200">Geschwindigkeit</td>
+                                <td class="p-2 border-b border-slate-100 dark:border-white/5">
+                                    <input type="text" id="hdd_speed" oninput="updateProgress()" placeholder="Geschwindigkeit..." class="w-full p-2.5 bg-transparent border border-transparent hover:border-slate-300 dark:hover:border-slate-600 focus:bg-white dark:focus:bg-slate-800 focus:border-onedrive-500 rounded-lg text-xs dark:text-slate-100 transition-all font-medium">
+                                </td>
+                                <td class="p-2 border-b border-slate-100 dark:border-white/5">
+                                    <input type="text" id="ssd_speed" oninput="updateProgress()" placeholder="Geschwindigkeit..." class="w-full p-2.5 bg-transparent border border-transparent hover:border-slate-300 dark:hover:border-slate-600 focus:bg-white dark:focus:bg-slate-800 focus:border-onedrive-500 rounded-lg text-xs dark:text-slate-100 transition-all font-medium">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="p-4 border-b border-slate-100 dark:border-white/5 font-semibold bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200">Stossfestigkeit</td>
+                                <td class="p-2 border-b border-slate-100 dark:border-white/5">
+                                    <input type="text" id="hdd_shock" oninput="updateProgress()" placeholder="Stossfestigkeit..." class="w-full p-2.5 bg-transparent border border-transparent hover:border-slate-300 dark:hover:border-slate-600 focus:bg-white dark:focus:bg-slate-800 focus:border-onedrive-500 rounded-lg text-xs dark:text-slate-100 transition-all font-medium">
+                                </td>
+                                <td class="p-2 border-b border-slate-100 dark:border-white/5">
+                                    <input type="text" id="ssd_shock" oninput="updateProgress()" placeholder="Stossfestigkeit..." class="w-full p-2.5 bg-transparent border border-transparent hover:border-slate-300 dark:hover:border-slate-600 focus:bg-white dark:focus:bg-slate-800 focus:border-onedrive-500 rounded-lg text-xs dark:text-slate-100 transition-all font-medium">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="p-4 border-b border-slate-100 dark:border-white/5 font-semibold bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200">Geräuschpegel</td>
+                                <td class="p-2 border-b border-slate-100 dark:border-white/5">
+                                    <input type="text" id="hdd_noise" oninput="updateProgress()" placeholder="Geräuschpegel..." class="w-full p-2.5 bg-transparent border border-transparent hover:border-slate-300 dark:hover:border-slate-600 focus:bg-white dark:focus:bg-slate-800 focus:border-onedrive-500 rounded-lg text-xs dark:text-slate-100 transition-all font-medium">
+                                </td>
+                                <td class="p-2 border-b border-slate-100 dark:border-white/5">
+                                    <input type="text" id="ssd_noise" oninput="updateProgress()" placeholder="Geräuschpegel..." class="w-full p-2.5 bg-transparent border border-transparent hover:border-slate-300 dark:hover:border-slate-600 focus:bg-white dark:focus:bg-slate-800 focus:border-onedrive-500 rounded-lg text-xs dark:text-slate-100 transition-all font-medium">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Auftrag 3: Kaufberater (was Auftrag 4 in A3) -->
+        <section class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 print-card space-y-6">
+            <div class="border-b border-slate-200 dark:border-slate-800 pb-4">
+                <div class="inline-flex items-center gap-1.5 bg-onedrive-50 dark:bg-onedrive-950 text-onedrive-700 dark:text-onedrive-300 text-xs font-bold px-3 py-1 rounded-full border border-onedrive-200 dark:border-onedrive-800 uppercase mb-2">
+                    <i class="fa-solid fa-cart-shopping"></i> Auftrag 3
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100">Transferaufgabe: Der PC-Kaufberater</h3>
+                <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Lies die Anforderungen von Person A und Person B aufmerksam durch.</p>
+            </div>
+
+            <!-- Buyer Comparison Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="rounded-2xl p-6 border-t-4 border-t-sky-500 border border-slate-200 dark:border-slate-800/50 bg-gradient-to-b from-sky-500/5 to-transparent hover:shadow-lg hover:-translate-y-1 transition-all">
+                    <span class="font-bold text-onedrive-600 dark:text-onedrive-400 flex items-center gap-2 text-sm">
+                        <i class="fa-solid fa-user-tie"></i> Person A (Büro & Hausaufgaben):
+                    </span>
+                    <p class="text-xs text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">
+                        Schreibt Aufsätze mit Microsoft Word, verwaltet Tabellen in Excel, sendet E-Mails und schaut Lehrvideos auf YouTube.
+                    </p>
+                </div>
+                <div class="rounded-2xl p-6 border-t-4 border-t-purple-500 border border-slate-200 dark:border-slate-800/50 bg-gradient-to-b from-purple-500/5 to-transparent hover:shadow-lg hover:-translate-y-1 transition-all">
+                    <span class="font-bold text-purple-700 dark:text-purple-300 flex items-center gap-2 text-sm">
+                        <i class="fa-solid fa-gamepad"></i> Person B (Gamer & Content Creator):
+                    </span>
+                    <p class="text-xs text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">
+                        Spielt grafikintensive 3D-Spiele (z.B. Fortnite, GTA) und rendert hochauflösende 4K-Videos für soziale Medien.
+                    </p>
+                </div>
+            </div>
+
+            <div class="space-y-4 pt-2">
+                <div>
+                    <label class="block text-sm font-semibold text-slate-800 dark:text-slate-200 mb-1.5">
+                        Welches Hauptbauteil ist für <strong>Person B</strong> besonders wichtig, das für <strong>Person A</strong> eher nebensächlich ist?
+                    </label>
+                    <select id="task4_component" onchange="updateProgress()" class="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none text-sm font-medium dark:text-slate-100">
+                        <option value="">-- Bitte auswählen --</option>
+                        <option value="gpu">Leistungsstarke dedizierte Grafikkarte (GPU)</option>
+                        <option value="psu">Standard-Netzteil (PSU)</option>
+                        <option value="dvd">DVD-Laufwerk</option>
+                        <option value="keyboard">Standard-Tastatur</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-slate-800 dark:text-slate-200 mb-1.5">
+                        Begründe deine Entscheidung ausführlich:
+                    </label>
+                    <textarea id="task4_reason" oninput="updateProgress()" rows="3" placeholder="Begründung eingeben..." class="w-full p-3.5 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100"></textarea>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        /* Periphery Items List */
+        const devices = [
+            { id: 'd1', name: 'Tastatur', type: 'eingabe', icon: 'fa-keyboard' },
+            { id: 'd2', name: 'Monitor', type: 'ausgabe', icon: 'fa-display' },
+            { id: 'd3', name: 'Maus', type: 'eingabe', icon: 'fa-mouse' },
+            { id: 'd4', name: 'Prozessor (CPU)', type: 'verarbeitung', icon: 'fa-microchip' },
+            { id: 'd5', name: 'Lautsprecher', type: 'ausgabe', icon: 'fa-volume-high' },
+            { id: 'd6', name: 'Mikrofon', type: 'eingabe', icon: 'fa-microphone' },
+            { id: 'd7', name: 'Drucker', type: 'ausgabe', icon: 'fa-print' },
+            { id: 'd8', name: 'Webcam', type: 'eingabe', icon: 'fa-video' },
+            { id: 'd9', name: 'Kopfhörer', type: 'ausgabe', icon: 'fa-headphones' },
+            { id: 'd10', name: 'Grafikkarte (GPU)', type: 'verarbeitung', icon: 'fa-vr-cardboard' },
+            { id: 'd11', name: 'Arbeitsspeicher (RAM)', type: 'verarbeitung', icon: 'fa-memory' }
+        ];
+
+        /* Device placement state */
+        let deviceState = {};
+        let draggedDeviceId = null;
+        let activeTouchGhost = null;
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let isTouchDragging = false;
+        let currentPercentage = 0;
+
+        /* On page load initialization */
+        window.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            loadProgress();
+            applyDefaultClassAndDate();
+
+            // Sync global Vorname
+            var globalVorname = localStorage.getItem('studentVorname') || localStorage.getItem('student_vorname');
+            var nameEl = document.getElementById('studentName');
+            if (nameEl) {
+                if (!nameEl.value && globalVorname) {
+                    nameEl.value = globalVorname;
+                } else if (nameEl.value && nameEl.value.trim()) {
+                    localStorage.setItem('studentVorname', nameEl.value.trim());
+                    localStorage.setItem('student_vorname', nameEl.value.trim());
+                }
+            }
+
+            setupUniversalAutoSave();
+            initDevices();
+            setupDropZones();
+            updateProgress();
+        });
+
+        function applyDefaultClassAndDate() {
+            var dateInput = document.getElementById('studentDate');
+            var d = new Date();
+            var mm = String(d.getMonth() + 1).padStart(2, '0');
+            var dd = String(d.getDate()).padStart(2, '0');
+            var todayStr = dd + '.' + mm + '.' + d.getFullYear();
+            if (dateInput) {
+                dateInput.value = todayStr;
+                dateInput.readOnly = true;
+                dateInput.setAttribute('tabindex', '-1');
+                dateInput.style.pointerEvents = 'none';
+            }
+        }
+
+        function setupUniversalAutoSave() {
+            var pageKey = 'hw_autosave_' + location.pathname.split('/').pop();
+
+            function saveAll() {
+                var data = {};
+                document.querySelectorAll('input, textarea, select').forEach(function(el) {
+                    if (el.id) {
+                        if (el.type === 'checkbox') {
+                            data[el.id] = el.checked;
+                        } else if (el.type === 'radio') {
+                            if (el.checked) data[el.name] = el.value;
+                        } else {
+                            data[el.id] = el.value;
+                        }
+                    } else if (el.name && el.type === 'radio') {
+                        if (el.checked) data[el.name] = el.value;
+                    }
+                });
+                localStorage.setItem(pageKey, JSON.stringify(data));
+            }
+
+            try {
+                var saved = localStorage.getItem(pageKey);
+                if (saved) {
+                    var data = JSON.parse(saved);
+                    Object.keys(data).forEach(function(key) {
+                        var el = document.getElementById(key);
+                        if (el) {
+                            if (el.type === 'checkbox') {
+                                el.checked = !!data[key];
+                            } else if (el.type === 'radio') {
+                                if (el.value === data[key]) el.checked = true;
+                            } else {
+                                if (data[key] !== undefined && data[key] !== null && data[key] !== '') {
+                                    el.value = data[key];
+                                }
+                            }
+                        } else {
+                            var radio = document.querySelector('input[name="' + key + '"][value="' + data[key] + '"]');
+                            if (radio) radio.checked = true;
+                        }
+                    });
+                }
+            } catch(e) {}
+
+            applyDefaultClassAndDate();
+
+            saveAll();
+
+            document.querySelectorAll('input, textarea, select').forEach(function(el) {
+                el.addEventListener('input', saveAll);
+                el.addEventListener('change', saveAll);
+            });
+        }
+
+        function initTheme() {
+            var savedTheme = localStorage.getItem('onedrive_theme');
+            if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+                updateThemeIcon(true);
+            } else {
+                document.documentElement.classList.remove('dark');
+                updateThemeIcon(false);
+            }
+        }
+
+        function toggleDarkMode() {
+            var isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('onedrive_theme', isDark ? 'dark' : 'light');
+            updateThemeIcon(isDark);
+        }
+
+        function updateThemeIcon(isDark) {
+            var icon = document.getElementById('themeIcon');
+            if (icon) {
+                icon.className = isDark ? 'fa-solid fa-sun text-sm text-amber-400' : 'fa-solid fa-moon text-sm';
+            }
+        }
+
+        /* Device Chips & Drag and Drop Initialization */
+        function initDevices() {
+            devices.forEach(dev => {
+                if (!deviceState[dev.id]) {
+                    deviceState[dev.id] = 'bank';
+                }
+            });
+            renderDevices();
+        }
+
+        function setupDropZones() {
+            const zones = document.querySelectorAll('[data-dropzone]');
+            zones.forEach(zone => {
+                const zoneId = zone.getAttribute('data-dropzone');
+
+                zone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = 'move';
+                    highlightZone(zone, true);
+                });
+
+                zone.addEventListener('dragenter', (e) => {
+                    e.preventDefault();
+                    highlightZone(zone, true);
+                });
+
+                zone.addEventListener('dragleave', (e) => {
+                    highlightZone(zone, false);
+                });
+
+                zone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    highlightZone(zone, false);
+                    const devId = e.dataTransfer.getData('text/plain') || draggedDeviceId;
+                    if (devId) {
+                        deviceState[devId] = zoneId;
+                        renderDevices();
+                        updateProgress();
+                    }
+                });
+            });
+        }
+
+        function highlightZone(zone, active) {
+            if (active) {
+                zone.classList.add('ring-4', 'ring-onedrive-400/50', 'scale-[1.02]');
+            } else {
+                zone.classList.remove('ring-4', 'ring-onedrive-400/50', 'scale-[1.02]');
+            }
+        }
+
+        function renderDevices() {
+            const bank = document.getElementById('deviceBank');
+            const zoneEingabe = document.getElementById('zone_eingabe');
+            const zoneVerarbeitung = document.getElementById('zone_verarbeitung');
+            const zoneAusgabe = document.getElementById('zone_ausgabe');
+
+            if (!bank || !zoneEingabe || !zoneVerarbeitung || !zoneAusgabe) return;
+
+            bank.innerHTML = '';
+            zoneEingabe.innerHTML = '';
+            zoneVerarbeitung.innerHTML = '';
+            zoneAusgabe.innerHTML = '';
+
+            let counts = { eingabe: 0, verarbeitung: 0, ausgabe: 0 };
+
+            devices.forEach(dev => {
+                const loc = deviceState[dev.id] || 'bank';
+                const chip = document.createElement('div');
+
+                chip.draggable = true;
+                chip.setAttribute('data-device-id', dev.id);
+
+                chip.className = `inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold cursor-grab active:cursor-grabbing shadow-sm transition-all border select-none touch-none ${
+                    loc === 'bank'
+                        ? 'bg-white dark:bg-slate-800 hover:bg-onedrive-50 dark:hover:bg-slate-700 border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200'
+                        : loc === 'eingabe'
+                            ? 'bg-orange-500 text-white border-orange-600 shadow-orange-500/20'
+                            : loc === 'verarbeitung'
+                                ? 'bg-cyan-500 text-white border-cyan-600 shadow-cyan-500/20'
+                                : 'bg-emerald-600 text-white border-emerald-700 shadow-emerald-500/20'
+                }`;
+
+                chip.innerHTML = `<i class="fa-solid ${dev.icon} text-sm pointer-events-none"></i> <span class="pointer-events-none">${dev.name}</span> <i class="fa-solid fa-grip-dots-vertical text-[10px] opacity-40 ml-1 pointer-events-none"></i>`;
+
+                chip.addEventListener('dragstart', (e) => {
+                    draggedDeviceId = dev.id;
+                    e.dataTransfer.setData('text/plain', dev.id);
+                    e.dataTransfer.effectAllowed = 'move';
+                    chip.classList.add('opacity-40', 'scale-95');
+                });
+
+                chip.addEventListener('dragend', () => {
+                    chip.classList.remove('opacity-40', 'scale-95');
+                    draggedDeviceId = null;
+                });
+
+                chip.addEventListener('touchstart', (e) => handleTouchStart(e, dev, chip), { passive: false });
+                chip.addEventListener('touchmove', (e) => handleTouchMove(e), { passive: false });
+                chip.addEventListener('touchend', (e) => handleTouchEnd(e, dev.id), { passive: false });
+
+                if (loc === 'bank') {
+                    bank.appendChild(chip);
+                } else if (loc === 'eingabe') {
+                    zoneEingabe.appendChild(chip);
+                    counts.eingabe++;
+                } else if (loc === 'verarbeitung') {
+                    zoneVerarbeitung.appendChild(chip);
+                    counts.verarbeitung++;
+                } else if (loc === 'ausgabe') {
+                    zoneAusgabe.appendChild(chip);
+                    counts.ausgabe++;
+                }
+            });
+
+            document.getElementById('cnt_eingabe').innerText = counts.eingabe;
+            document.getElementById('cnt_verarbeitung').innerText = counts.verarbeitung;
+            document.getElementById('cnt_ausgabe').innerText = counts.ausgabe;
+
+            if (bank.children.length === 0) {
+                bank.innerHTML = '<span class="text-xs text-slate-400 dark:text-slate-500 italic py-2">Alle Bauteile wurden zugeordnet! Du kannst sie jederzeit in ein anderes Feld ziehen oder antippen.</span>';
+            }
+        }
+
+        function handleTouchStart(e, dev, chipEl) {
+            const touch = e.touches[0];
+            touchStartX = touch.clientX;
+            touchStartY = touch.clientY;
+            isTouchDragging = false;
+            draggedDeviceId = dev.id;
+        }
+
+        function handleTouchMove(e) {
+            const touch = e.touches[0];
+            const deltaX = Math.abs(touch.clientX - touchStartX);
+            const deltaY = Math.abs(touch.clientY - touchStartY);
+
+            if (deltaX > 8 || deltaY > 8) {
+                isTouchDragging = true;
+                e.preventDefault();
+
+                if (!activeTouchGhost) {
+                    const dev = devices.find(d => d.id === draggedDeviceId);
+                    if (!dev) return;
+
+                    activeTouchGhost = document.createElement('div');
+                    activeTouchGhost.className = 'fixed z-50 pointer-events-none px-4 py-2 bg-onedrive-600 text-white rounded-xl shadow-2xl text-xs font-bold flex items-center gap-2 transform -translate-x-1/2 -translate-y-1/2 opacity-90 scale-105 border border-white/30';
+                    activeTouchGhost.innerHTML = `<i class="fa-solid ${dev.icon}"></i> ${dev.name}`;
+                    document.body.appendChild(activeTouchGhost);
+                }
+
+                activeTouchGhost.style.left = touch.clientX + 'px';
+                activeTouchGhost.style.top = touch.clientY + 'px';
+
+                const elementUnderTouch = document.elementFromPoint(touch.clientX, touch.clientY);
+                const targetZone = elementUnderTouch ? elementUnderTouch.closest('[data-dropzone]') : null;
+
+                document.querySelectorAll('[data-dropzone]').forEach(z => highlightZone(z, false));
+                if (targetZone) {
+                    highlightZone(targetZone, true);
+                }
+            }
+        }
+
+        function handleTouchEnd(e, devId) {
+            document.querySelectorAll('[data-dropzone]').forEach(z => highlightZone(z, false));
+
+            if (activeTouchGhost) {
+                const changedTouch = e.changedTouches[0];
+                const elementUnderTouch = document.elementFromPoint(changedTouch.clientX, changedTouch.clientY);
+                const targetZone = elementUnderTouch ? elementUnderTouch.closest('[data-dropzone]') : null;
+
+                if (targetZone) {
+                    const newZoneId = targetZone.getAttribute('data-dropzone');
+                    deviceState[devId] = newZoneId;
+                }
+
+                activeTouchGhost.remove();
+                activeTouchGhost = null;
+                renderDevices();
+                updateProgress();
+            } else if (!isTouchDragging) {
+                cycleDeviceLocation(devId);
+            }
+
+            draggedDeviceId = null;
+            isTouchDragging = false;
+        }
+
+        function cycleDeviceLocation(id) {
+            const order = ['bank', 'eingabe', 'verarbeitung', 'ausgabe'];
+            const current = deviceState[id] || 'bank';
+            const nextIdx = (order.indexOf(current) + 1) % order.length;
+            deviceState[id] = order[nextIdx];
+
+            renderDevices();
+            updateProgress();
+        }
+
+        /* Progress Computation & Print Lock */
+        function updateProgress() {
+            const textInputs = document.querySelectorAll('input[type="text"], textarea, select');
+            let filled = 0;
+            let total = textInputs.length;
+
+            textInputs.forEach(input => {
+                if (input.value.trim() !== '') {
+                    filled++;
+                }
+            });
+
+            let sortedDevices = 0;
+            Object.values(deviceState).forEach(val => {
+                if (val !== 'bank') sortedDevices++;
+            });
+
+            total += devices.length;
+            filled += sortedDevices;
+
+            currentPercentage = Math.min(100, Math.round((filled / total) * 100));
+
+            const pBar = document.getElementById('progressBar');
+            const headerPText = document.getElementById('headerPercentText');
+            const percentNum = document.getElementById('headerPercentNumber');
+
+            if (pBar) pBar.style.width = currentPercentage + '%';
+            if (headerPText) headerPText.innerText = currentPercentage + '% erledigt';
+            if (percentNum) percentNum.innerText = currentPercentage + '%';
+
+            var svgCircle = document.getElementById('headerSvgCircle');
+            if (svgCircle) {
+                var offset = 100.53 - (100.53 * currentPercentage / 100);
+                svgCircle.style.strokeDashoffset = offset;
+            }
+
+            var hdrPdfBtn = document.getElementById('hdrPdfBtn');
+            var printIcon = document.getElementById('printIcon');
+            if (hdrPdfBtn && printIcon) {
+                if (currentPercentage === 100) {
+                    hdrPdfBtn.className = 'p-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white transition border border-emerald-600 shadow-sm cursor-pointer animate-pulse';
+                    hdrPdfBtn.title = 'Arbeitsblatt als PDF drucken';
+                } else {
+                    hdrPdfBtn.className = 'p-2 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 transition border border-slate-200 dark:border-slate-700 opacity-60 cursor-not-allowed';
+                    hdrPdfBtn.title = `Erst bei 100% Ausfüllung möglich (${currentPercentage}%)`;
+                }
+            }
+
+            saveProgressToStorage();
+        }
+
+        /* LocalStorage Persistence */
+        function saveProgressToStorage() {
+            const formData = {};
+            const inputs = document.querySelectorAll('input[type="text"], input[type="date"], textarea, select');
+
+            inputs.forEach(input => {
+                if (input.id) formData[input.id] = input.value;
+            });
+
+            const stateToSave = {
+                form: formData,
+                devices: deviceState,
+                percent: currentPercentage
+            };
+
+            localStorage.setItem('onedrive_a8_worksheet_8sek', JSON.stringify(stateToSave));
+        }
+
+        function loadProgress() {
+            const saved = localStorage.getItem('onedrive_a8_worksheet_8sek');
+            if (!saved) return;
+
+            try {
+                const data = JSON.parse(saved);
+                if (data.form) {
+                    Object.keys(data.form).forEach(id => {
+                        const el = document.getElementById(id);
+                        if (el) {
+                            if (id === 'studentClass' && (!data.form[id] || !data.form[id].trim())) el.value = 'B24';
+                            else if (data.form[id]) el.value = data.form[id];
+                        }
+                    });
+                }
+                if (data.devices) {
+                    deviceState = data.devices;
+                    renderDevices();
+                }
+            } catch (e) {
+                console.error("Fehler beim Laden des Speicherstands", e);
+            }
+        }
+
+        function handlePrint() {
+            const percentNum = document.getElementById('headerPercentNumber');
+            if (percentNum && percentNum.innerText === '100%') {
+                const originalTitle = document.title;
+                document.title = 'A8';
+                // Dunkelmodus für den Druck immer ausschalten: sonst bleiben die
+                // dark:-Tailwind-Farben (dunkle Karten, helle Schrift) im PDF aktiv,
+                // da @media print nur body zurücksetzt, nicht die .dark-Klasse selbst.
+                const wasDark = document.documentElement.classList.contains('dark');
+                if (wasDark) document.documentElement.classList.remove('dark');
+                window.print();
+                if (wasDark) document.documentElement.classList.add('dark');
+                document.title = originalTitle;
+            } else {
+                showToast('Fülle bitte zuerst alle Felder aus (100%), um das Dokument zu drucken.');
+            }
+        }
+
+        function confirmReset() {
+            showConfirmModal('Möchtest du wirklich alle Eingaben auf diesem Arbeitsblatt zurücksetzen?', () => {
+                localStorage.removeItem('onedrive_a8_worksheet_8sek');
+                localStorage.removeItem('hw_autosave_' + location.pathname.split('/').pop());
+                document.querySelectorAll('input[type="text"], textarea').forEach(i => i.value = '');
+                document.querySelectorAll('select').forEach(s => s.selectedIndex = 0);
+                deviceState = {};
+                initDevices();
+                applyDefaultClassAndDate();
+                var nameEl = document.getElementById('studentName');
+                var globalVorname = localStorage.getItem('studentVorname') || localStorage.getItem('student_vorname');
+                if (nameEl && globalVorname) nameEl.value = globalVorname;
+                updateProgress();
+                showToast('Arbeitsblatt wurde zurückgesetzt.');
+            });
+        }
+
+        /* Custom Toast Notification System */
+        function showToast(message) {
+            let toast = document.getElementById('customToast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'customToast';
+                toast.className = 'fixed bottom-5 right-5 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl z-50 transition-all duration-300 transform translate-y-10 opacity-0 flex items-center gap-2.5 text-xs font-semibold border border-slate-700 max-w-md';
+                document.body.appendChild(toast);
+            }
+            toast.innerHTML = `<i class="fa-solid fa-circle-info text-onedrive-400 text-base shrink-0"></i> <span>${message}</span>`;
+            toast.classList.remove('translate-y-10', 'opacity-0');
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-10', 'opacity-0');
+            }, 3500);
+        }
+
+        /* Custom Confirmation Modal */
+        function showConfirmModal(message, onConfirm) {
+            let modal = document.getElementById('customModal');
+            if (!modal) {
+                modal = document.createElement('div');
+                modal.id = 'customModal';
+                modal.className = 'fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4';
+                document.body.appendChild(modal);
+            }
+
+            modal.innerHTML = `
+                <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 max-w-sm w-full p-6 space-y-4">
+                    <div class="flex items-center gap-3 text-rose-600 dark:text-rose-400 font-bold text-base">
+                        <i class="fa-solid fa-triangle-exclamation text-xl"></i>
+                        <span>Aktion bestätigen</span>
+                    </div>
+                    <p class="text-xs text-slate-600 dark:text-slate-300">${message}</p>
+                    <div class="flex justify-end gap-2 pt-2">
+                        <button id="modalCancelBtn" class="px-3.5 py-1.5 text-xs font-semibold rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200">
+                            Abbrechen
+                        </button>
+                        <button id="modalConfirmBtn" class="px-3.5 py-1.5 text-xs font-semibold rounded-xl bg-rose-600 hover:bg-rose-700 text-white">
+                            Zurücksetzen
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            modal.style.display = 'flex';
+
+            document.getElementById('modalCancelBtn').onclick = () => {
+                modal.style.display = 'none';
+            };
+
+            document.getElementById('modalConfirmBtn').onclick = () => {
+                modal.style.display = 'none';
+                onConfirm();
+            };
+        }
+    </script>
+
+    <!-- Global Unified Student Vorname Sync & First-Time Prompt -->
+    <script>
+      (function() {
+        function getSavedVorname() {
+          return localStorage.getItem('studentVorname') || localStorage.getItem('student_vorname') || '';
+        }
+
+        function setSavedVorname(name) {
+          if (name && name.trim()) {
+            var clean = name.trim();
+            localStorage.setItem('studentVorname', clean);
+            localStorage.setItem('student_vorname', clean);
+            syncVornameInputs(clean);
+          }
+        }
+
+        function syncVornameInputs(name) {
+          var el = document.getElementById('studentName');
+          if (el && name) {
+            el.value = name;
+          }
+        }
+
+        function checkAndPromptVorname() {
+          var name = getSavedVorname();
+          var el = document.getElementById('studentName');
+          if (el && el.value && el.value.trim()) {
+            name = el.value.trim();
+            setSavedVorname(name);
+          }
+          if (!name) {
+            setTimeout(function() {
+              var entered = prompt("Willkommen! Wie lautet dein Vorname?");
+              if (entered && entered.trim()) {
+                setSavedVorname(entered);
+              }
+            }, 300);
+          } else {
+            syncVornameInputs(name);
+          }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+          var el = document.getElementById('studentName');
+          if (el) {
+            var existing = getSavedVorname();
+            if (existing) el.value = existing;
+            el.addEventListener('input', function() {
+              setSavedVorname(el.value);
+            });
+            el.addEventListener('change', function() {
+              setSavedVorname(el.value);
+            });
+          }
+          checkAndPromptVorname();
+        });
+
+        window.addEventListener('storage', function(e) {
+          if (e.key === 'studentVorname' || e.key === 'student_vorname') {
+            if (e.newValue) syncVornameInputs(e.newValue);
+          }
+        });
+      })();
+    </script>
+
+</body>
+</html>
