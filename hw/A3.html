@@ -331,7 +331,7 @@
                         <i class="fa-solid fa-magnifying-glass"></i> Auftrag 1
                     </div>
                     <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100">Die Bauteile im PC-Gehäuse (Hardware-Analyse)</h3>
-                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Recherchiere die 10 Kernkomponenten eines Computers. Beschreibe jeweils die <strong>Funktion</strong> und erstelle einen passenden <strong>Alltags-Vergleich (Analogie)</strong>.</p>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Recherchiere die 16 Bauteile eines Computers. Beschreibe jeweils die <strong>Funktion</strong> und erstelle einen passenden <strong>Alltags-Vergleich (Analogie)</strong>. Die ersten beiden sind als Beispiel bereits ausgefüllt.</p>
                 </div>
                 <div class="hidden md:flex w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-400 items-center justify-center text-xl">
                     <i class="fa-solid fa-desktop"></i>
@@ -339,235 +339,388 @@
             </div>
 
             <!-- Components Grid -->
-            <div class="hardware-grid">
+            <div class="hardware-grid grid grid-cols-1 gap-5">
 
-                <!-- 1. PC-Gehäuse -->
-                <div class="comp-card rounded-2xl p-5 transition-all duration-300 relative group overflow-hidden">
-                    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    <div class="relative z-10 flex items-center gap-4 mb-5 border-b border-slate-200 dark:border-slate-700/50 pb-4">
-                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-slate-600 to-slate-800 text-white flex items-center justify-center text-xl shadow-lg border border-white/10 group-hover:scale-110 transition-transform duration-300">
-                            <i class="fa-solid fa-box"></i>
-                        </div>
-                        <div>
-                            <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">1. PC-Gehäuse (Computer Case / Chassis)</h4>
-                            <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">Formfaktoren: Tower, Desktop, Mini-ITX</span>
-                        </div>
+                <!-- 1. Prozessor -->
+                <div class="comp-card rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative group overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                    <div class="w-full h-64 sm:h-96 overflow-hidden bg-slate-900">
+                        <img src="assets/VL-CPU.webp" alt="Prozessor (CPU)" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                     </div>
-                    <div class="relative z-10 flex flex-col gap-4">
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
-                            <textarea id="comp_case_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                    <div class="relative z-10 p-4">
+                        <div class="mb-3 border-b border-slate-200 dark:border-slate-700/50 pb-2">
+                            <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">1. Prozessor (CPU - Central Processing Unit)</h4>
+                            <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">Kürzel: CPU</span>
                         </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
-                            <textarea id="comp_case_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                        <div class="flex flex-col gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
+                                <textarea id="comp_cpu_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all">Die CPU (der Prozessor) führt alle Berechnungen und logischen Befehle aus – sie ist die zentrale Recheneinheit des Computers.</textarea>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
+                                <textarea id="comp_cpu_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all">Die CPU ist wie das Gehirn des Computers: Sie denkt, trifft Entscheidungen und steuert alle anderen Bauteile.</textarea>
+                            </div>
                         </div>
                     </div>
                 </div>
-<!-- 2. Mainboard -->
-                <div class="comp-card rounded-2xl p-5 transition-all duration-300 relative group overflow-hidden">
-                    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    <div class="relative z-10 flex items-center gap-4 mb-5 border-b border-slate-200 dark:border-slate-700/50 pb-4">
-                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 text-white flex items-center justify-center text-xl shadow-lg border border-white/10 group-hover:scale-110 transition-transform duration-300">
-                            <i class="fa-solid fa-chess-board"></i>
-                        </div>
-                        <div>
+
+                <!-- 2. Mainboard -->
+                <div class="comp-card rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative group overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                    <div class="w-full h-64 sm:h-96 overflow-hidden bg-slate-900">
+                        <img src="assets/VL-Motherboard.webp" alt="Mainboard" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    </div>
+                    <div class="relative z-10 p-4">
+                        <div class="mb-3 border-b border-slate-200 dark:border-slate-700/50 pb-2">
                             <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">2. Mainboard (Motherboard / Hauptplatine)</h4>
                             <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">Kürzel: MB</span>
                         </div>
-                    </div>
-                    <div class="relative z-10 flex flex-col gap-4">
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
-                            <textarea id="comp_mb_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
-                            <textarea id="comp_mb_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
-                        </div>
-                    </div>
-                </div>
-<!-- 3. Prozessor -->
-                <div class="comp-card rounded-2xl p-5 transition-all duration-300 relative group overflow-hidden">
-                    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    <div class="relative z-10 flex items-center gap-4 mb-5 border-b border-slate-200 dark:border-slate-700/50 pb-4">
-                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-onedrive-400 to-onedrive-600 text-white flex items-center justify-center text-xl shadow-lg border border-white/10 group-hover:scale-110 transition-transform duration-300">
-                            <i class="fa-solid fa-microchip"></i>
-                        </div>
-                        <div>
-                            <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">3. Prozessor (CPU - Central Processing Unit)</h4>
-                            <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">Kürzel: CPU</span>
-                        </div>
-                    </div>
-                    <div class="relative z-10 flex flex-col gap-4">
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
-                            <textarea id="comp_cpu_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
-                            <textarea id="comp_cpu_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                        <div class="flex flex-col gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
+                                <textarea id="comp_mb_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all">Das Mainboard verbindet alle Komponenten miteinander und ermöglicht den Datenaustausch zwischen ihnen.</textarea>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
+                                <textarea id="comp_mb_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all">Das Mainboard ist wie ein Bahnhof: Alle Bauteile laufen hier zusammen und tauschen über die Gleise (Leiterbahnen) Informationen aus.</textarea>
+                            </div>
                         </div>
                     </div>
                 </div>
-<!-- 4. Arbeitsspeicher -->
-                <div class="comp-card rounded-2xl p-5 transition-all duration-300 relative group overflow-hidden">
-                    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    <div class="relative z-10 flex items-center gap-4 mb-5 border-b border-slate-200 dark:border-slate-700/50 pb-4">
-                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-400 to-indigo-600 text-white flex items-center justify-center text-xl shadow-lg border border-white/10 group-hover:scale-110 transition-transform duration-300">
-                            <i class="fa-solid fa-memory"></i>
+
+                <!-- 3. PC-Gehäuse -->
+                <div class="comp-card rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative group overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                    <div class="w-full h-64 sm:h-96 overflow-hidden bg-slate-900">
+                        <img src="assets/VL-Chassis.webp" alt="PC-Gehäuse" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    </div>
+                    <div class="relative z-10 p-4">
+                        <div class="mb-3 border-b border-slate-200 dark:border-slate-700/50 pb-2">
+                            <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">3. PC-Gehäuse (Computer Case / Chassis)</h4>
+                            <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">Formfaktoren: Tower, Desktop, Mini-ITX</span>
                         </div>
-                        <div>
+                        <div class="flex flex-col gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
+                                <textarea id="comp_case_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
+                                <textarea id="comp_case_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Arbeitsspeicher -->
+                <div class="comp-card rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative group overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                    <div class="w-full h-64 sm:h-96 overflow-hidden bg-slate-900">
+                        <img src="assets/VL-RAM.webp" alt="Arbeitsspeicher (RAM)" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    </div>
+                    <div class="relative z-10 p-4">
+                        <div class="mb-3 border-b border-slate-200 dark:border-slate-700/50 pb-2">
                             <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">4. Arbeitsspeicher (RAM - Random Access Memory)</h4>
                             <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">Kürzel: RAM</span>
                         </div>
-                    </div>
-                    <div class="relative z-10 flex flex-col gap-4">
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
-                            <textarea id="comp_ram_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
-                            <textarea id="comp_ram_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                        <div class="flex flex-col gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
+                                <textarea id="comp_ram_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
+                                <textarea id="comp_ram_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                            </div>
                         </div>
                     </div>
                 </div>
-<!-- 5. Solid -->
-                <div class="comp-card rounded-2xl p-5 transition-all duration-300 relative group overflow-hidden">
-                    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    <div class="relative z-10 flex items-center gap-4 mb-5 border-b border-slate-200 dark:border-slate-700/50 pb-4">
-                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-400 to-cyan-600 text-white flex items-center justify-center text-xl shadow-lg border border-white/10 group-hover:scale-110 transition-transform duration-300">
-                            <i class="fa-solid fa-bolt"></i>
-                        </div>
-                        <div>
+
+                <!-- 5. SSD -->
+                <div class="comp-card rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative group overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                    <div class="w-full h-64 sm:h-96 overflow-hidden bg-slate-900">
+                        <img src="assets/VL-SSD.webp" alt="Solid State Drive (SSD)" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    </div>
+                    <div class="relative z-10 p-4">
+                        <div class="mb-3 border-b border-slate-200 dark:border-slate-700/50 pb-2">
                             <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">5. Solid State Drive (SSD)</h4>
-                            <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">Typ: Elektronischer Flash-Massenspeicher (NVMe / SATA)</span>
+                            <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">Typ: Elektronischer Flash-Massenspeicher (2.5" SATA)</span>
                         </div>
-                    </div>
-                    <div class="relative z-10 flex flex-col gap-4">
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
-                            <textarea id="comp_ssd_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
-                            <textarea id="comp_ssd_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                        <div class="flex flex-col gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
+                                <textarea id="comp_ssd_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
+                                <textarea id="comp_ssd_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                            </div>
                         </div>
                     </div>
                 </div>
-<!-- 6. Festplatte -->
-                <div class="comp-card rounded-2xl p-5 transition-all duration-300 relative group overflow-hidden">
-                    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    <div class="relative z-10 flex items-center gap-4 mb-5 border-b border-slate-200 dark:border-slate-700/50 pb-4">
-                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-400 to-blue-600 text-white flex items-center justify-center text-xl shadow-lg border border-white/10 group-hover:scale-110 transition-transform duration-300">
-                            <i class="fa-solid fa-hard-drive"></i>
+
+                <!-- 6. NVMe-SSD -->
+                <div class="comp-card rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative group overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                    <div class="w-full h-64 sm:h-96 overflow-hidden bg-slate-900">
+                        <img src="assets/VL-NVMe.webp" alt="NVMe-SSD (M.2)" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    </div>
+                    <div class="relative z-10 p-4">
+                        <div class="mb-3 border-b border-slate-200 dark:border-slate-700/50 pb-2">
+                            <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">6. NVMe-SSD (M.2)</h4>
+                            <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">Typ: Flash-Speicher direkt über die PCIe-Schnittstelle</span>
                         </div>
-                        <div>
-                            <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">6. Festplatte (HDD - Hard Disk Drive)</h4>
+                        <div class="flex flex-col gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
+                                <textarea id="comp_nvme_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
+                                <textarea id="comp_nvme_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 7. Festplatte -->
+                <div class="comp-card rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative group overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                    <div class="w-full h-64 sm:h-96 overflow-hidden bg-slate-900">
+                        <img src="assets/VL-HDD.webp" alt="Festplatte (HDD)" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    </div>
+                    <div class="relative z-10 p-4">
+                        <div class="mb-3 border-b border-slate-200 dark:border-slate-700/50 pb-2">
+                            <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">7. Festplatte (HDD - Hard Disk Drive)</h4>
                             <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">Typ: Magnetischer Massenspeicher</span>
                         </div>
-                    </div>
-                    <div class="relative z-10 flex flex-col gap-4">
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
-                            <textarea id="comp_hdd_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
-                            <textarea id="comp_hdd_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                        <div class="flex flex-col gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
+                                <textarea id="comp_hdd_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
+                                <textarea id="comp_hdd_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                            </div>
                         </div>
                     </div>
                 </div>
-<!-- 7. Grafikkarte -->
-                <div class="comp-card rounded-2xl p-5 transition-all duration-300 relative group overflow-hidden">
-                    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    <div class="relative z-10 flex items-center gap-4 mb-5 border-b border-slate-200 dark:border-slate-700/50 pb-4">
-                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-400 to-purple-600 text-white flex items-center justify-center text-xl shadow-lg border border-white/10 group-hover:scale-110 transition-transform duration-300">
-                            <i class="fa-solid fa-vr-cardboard"></i>
-                        </div>
-                        <div>
-                            <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">7. Grafikkarte (GPU - Graphics Processing Unit)</h4>
+
+                <!-- 8. Grafikkarte -->
+                <div class="comp-card rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative group overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                    <div class="w-full h-64 sm:h-96 overflow-hidden bg-slate-900">
+                        <img src="assets/VL-GPU.webp" alt="Grafikkarte (GPU)" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    </div>
+                    <div class="relative z-10 p-4">
+                        <div class="mb-3 border-b border-slate-200 dark:border-slate-700/50 pb-2">
+                            <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">8. Grafikkarte (GPU - Graphics Processing Unit)</h4>
                             <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">Kürzel: GPU</span>
                         </div>
-                    </div>
-                    <div class="relative z-10 flex flex-col gap-4">
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
-                            <textarea id="comp_gpu_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
-                            <textarea id="comp_gpu_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                        <div class="flex flex-col gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
+                                <textarea id="comp_gpu_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
+                                <textarea id="comp_gpu_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                            </div>
                         </div>
                     </div>
                 </div>
-<!-- 8. Netzteil -->
-                <div class="comp-card rounded-2xl p-5 transition-all duration-300 relative group overflow-hidden">
-                    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    <div class="relative z-10 flex items-center gap-4 mb-5 border-b border-slate-200 dark:border-slate-700/50 pb-4">
-                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 text-white flex items-center justify-center text-xl shadow-lg border border-white/10 group-hover:scale-110 transition-transform duration-300">
-                            <i class="fa-solid fa-plug"></i>
-                        </div>
-                        <div>
-                            <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">8. Netzteil (PSU - Power Supply Unit)</h4>
+
+                <!-- 9. Netzteil -->
+                <div class="comp-card rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative group overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                    <div class="w-full h-64 sm:h-96 overflow-hidden bg-slate-900">
+                        <img src="assets/VL-PSU.webp" alt="Netzteil (PSU)" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    </div>
+                    <div class="relative z-10 p-4">
+                        <div class="mb-3 border-b border-slate-200 dark:border-slate-700/50 pb-2">
+                            <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">9. Netzteil (PSU - Power Supply Unit)</h4>
                             <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">Kürzel: PSU</span>
                         </div>
-                    </div>
-                    <div class="relative z-10 flex flex-col gap-4">
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
-                            <textarea id="comp_psu_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
-                            <textarea id="comp_psu_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                        <div class="flex flex-col gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
+                                <textarea id="comp_psu_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
+                                <textarea id="comp_psu_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                            </div>
                         </div>
                     </div>
                 </div>
-<!-- 9. Kühlung -->
-                <div class="comp-card rounded-2xl p-5 transition-all duration-300 relative group overflow-hidden">
-                    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    <div class="relative z-10 flex items-center gap-4 mb-5 border-b border-slate-200 dark:border-slate-700/50 pb-4">
-                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-teal-400 to-teal-600 text-white flex items-center justify-center text-xl shadow-lg border border-white/10 group-hover:scale-110 transition-transform duration-300">
-                            <i class="fa-solid fa-fan"></i>
-                        </div>
-                        <div>
-                            <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">9. Kühlung (CPU-Kühler & Gehäuselüfter)</h4>
+
+                <!-- 10. Kühlung -->
+                <div class="comp-card rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative group overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                    <div class="w-full h-64 sm:h-96 overflow-hidden bg-slate-900">
+                        <img src="assets/VL-CPUCOOLER.webp" alt="CPU-Kühler" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    </div>
+                    <div class="relative z-10 p-4">
+                        <div class="mb-3 border-b border-slate-200 dark:border-slate-700/50 pb-2">
+                            <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">10. Kühlung (CPU-Kühler & Gehäuselüfter)</h4>
                             <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">Varianten: Luftkühlung oder Wasserkühlung (AIO)</span>
                         </div>
-                    </div>
-                    <div class="relative z-10 flex flex-col gap-4">
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
-                            <textarea id="comp_cool_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
-                            <textarea id="comp_cool_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                        <div class="flex flex-col gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
+                                <textarea id="comp_cool_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
+                                <textarea id="comp_cool_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                            </div>
                         </div>
                     </div>
                 </div>
-<!-- 10. Netzwerkkarte -->
-                <div class="comp-card rounded-2xl p-5 transition-all duration-300 relative group overflow-hidden">
-                    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    <div class="relative z-10 flex items-center gap-4 mb-5 border-b border-slate-200 dark:border-slate-700/50 pb-4">
-                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-rose-400 to-rose-600 text-white flex items-center justify-center text-xl shadow-lg border border-white/10 group-hover:scale-110 transition-transform duration-300">
-                            <i class="fa-solid fa-wifi"></i>
-                        </div>
-                        <div>
-                            <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">10. Netzwerkkarte / WLAN-Modul (NIC)</h4>
+
+                <!-- 11. Netzwerkkarte -->
+                <div class="comp-card rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative group overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                    <div class="w-full h-64 sm:h-96 overflow-hidden bg-slate-900">
+                        <img src="assets/VL-Network.webp" alt="Netzwerkkarte / WLAN-Modul" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    </div>
+                    <div class="relative z-10 p-4">
+                        <div class="mb-3 border-b border-slate-200 dark:border-slate-700/50 pb-2">
+                            <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">11. Netzwerkkarte / WLAN-Modul (NIC)</h4>
                             <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">Typ: LAN (Ethernet) / Wi-Fi Karte</span>
                         </div>
-                    </div>
-                    <div class="relative z-10 flex flex-col gap-4">
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
-                            <textarea id="comp_net_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                        <div class="flex flex-col gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
+                                <textarea id="comp_net_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
+                                <textarea id="comp_net_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                            </div>
                         </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
-                            <textarea id="comp_net_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                    </div>
+                </div>
+
+                <!-- 12. Soundkarte -->
+                <div class="comp-card rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative group overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                    <div class="w-full h-64 sm:h-96 overflow-hidden bg-slate-900">
+                        <img src="assets/VL-Sound.webp" alt="Soundkarte" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    </div>
+                    <div class="relative z-10 p-4">
+                        <div class="mb-3 border-b border-slate-200 dark:border-slate-700/50 pb-2">
+                            <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">12. Soundkarte (Audio-Interface)</h4>
+                            <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">Typ: PCIe-Erweiterungskarte für Audio-Ein-/Ausgabe</span>
+                        </div>
+                        <div class="flex flex-col gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
+                                <textarea id="comp_sound_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
+                                <textarea id="comp_sound_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 13. CD-Laufwerk -->
+                <div class="comp-card rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative group overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                    <div class="w-full h-64 sm:h-96 overflow-hidden bg-slate-900">
+                        <img src="assets/VL-CD.webp" alt="CD-Laufwerk" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    </div>
+                    <div class="relative z-10 p-4">
+                        <div class="mb-3 border-b border-slate-200 dark:border-slate-700/50 pb-2">
+                            <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">13. CD-Laufwerk (optisches Laufwerk)</h4>
+                            <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">Speichermedium: Compact Disc (CD)</span>
+                        </div>
+                        <div class="flex flex-col gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
+                                <textarea id="comp_cd_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
+                                <textarea id="comp_cd_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 14. DVD-Laufwerk -->
+                <div class="comp-card rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative group overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                    <div class="w-full h-64 sm:h-96 overflow-hidden bg-slate-900">
+                        <img src="assets/VL-DVD.webp" alt="DVD-Laufwerk" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    </div>
+                    <div class="relative z-10 p-4">
+                        <div class="mb-3 border-b border-slate-200 dark:border-slate-700/50 pb-2">
+                            <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">14. DVD-Laufwerk (optisches Laufwerk)</h4>
+                            <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">Speichermedium: Digital Versatile Disc (DVD)</span>
+                        </div>
+                        <div class="flex flex-col gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
+                                <textarea id="comp_dvd_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
+                                <textarea id="comp_dvd_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 15. CMOS-Batterie -->
+                <div class="comp-card rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative group overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                    <div class="w-full h-64 sm:h-96 overflow-hidden bg-slate-900">
+                        <img src="assets/VL-CMOS.webp" alt="CMOS-Batterie" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    </div>
+                    <div class="relative z-10 p-4">
+                        <div class="mb-3 border-b border-slate-200 dark:border-slate-700/50 pb-2">
+                            <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">15. CMOS-Batterie (BIOS-Pufferbatterie)</h4>
+                            <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">Typ: Knopfzelle (meist CR2032)</span>
+                        </div>
+                        <div class="flex flex-col gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
+                                <textarea id="comp_cmos_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
+                                <textarea id="comp_cmos_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 16. Sockel-Kompatibilität -->
+                <div class="comp-card rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative group overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                    <div class="w-full h-64 sm:h-96 overflow-hidden bg-slate-900">
+                        <img src="assets/VL-CPU-C.webp" alt="Sockel-Kompatibilität von CPU und Kühler" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    </div>
+                    <div class="relative z-10 p-4">
+                        <div class="mb-3 border-b border-slate-200 dark:border-slate-700/50 pb-2">
+                            <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">16. Sockel-Kompatibilität (CPU ↔ Kühler ↔ Mainboard)</h4>
+                            <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">Beispiel: Sockel LGA1700 (Intel) / AM5 (AMD)</span>
+                        </div>
+                        <div class="flex flex-col gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
+                                <textarea id="comp_socket_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
+                                <textarea id="comp_socket_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -773,8 +926,8 @@
                     <div class="inline-flex items-center gap-1.5 bg-onedrive-50 dark:bg-onedrive-950 text-onedrive-700 dark:text-onedrive-300 text-xs font-bold px-3 py-1 rounded-full border border-onedrive-200 dark:border-onedrive-800 uppercase mb-2">
                         <i class="fa-solid fa-clipboard-check"></i> Auftrag 5
                     </div>
-                    <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100">Hardware-Check: Teste dein Wissen (10 Fragen zu allen Bauteilen)</h3>
-                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Beantworte zu jeder der 10 Hardware-Komponenten die jeweils richtige Fachfrage.</p>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100">Hardware-Check: Teste dein Wissen (10 Fragen zu den Kernkomponenten)</h3>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Beantworte zu den folgenden 10 Kernkomponenten die jeweils richtige Fachfrage.</p>
                 </div>
                 <div class="hidden md:flex w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-400 items-center justify-center text-xl">
                     <i class="fa-solid fa-list-check"></i>
