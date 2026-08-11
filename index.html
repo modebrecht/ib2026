@@ -1581,10 +1581,10 @@
           }
 
           // A4 check
+          const a4Passed = localStorage.getItem('a4_passed') === 'true';
           const a4Data = localStorage.getItem('onedrive_cables_worksheet_8sek');
-          if (a4Data) {
-            const parsed = JSON.parse(a4Data);
-            if (parsed && parsed.percent === 100) markDone('title-A4');
+          if (a4Passed || (a4Data && JSON.parse(a4Data).percent === 100)) {
+            markDone('title-A4');
           }
 
           // A6 check

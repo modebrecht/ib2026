@@ -121,7 +121,7 @@
                 <button onclick="toggleDarkMode()" title="Dunkelmodus umschalten" class="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
                     <i id="themeIcon" class="fa-solid fa-moon text-sm"></i>
                 </button>
-                <button id="hdrPdfBtn" onclick="handlePdfPrint()" class="p-2 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 transition border border-slate-200 dark:border-slate-700 opacity-60 cursor-not-allowed" title="Mindestens 13 richtige Antworten benötigt">
+                <button id="hdrPdfBtn" onclick="handlePdfPrint()" class="p-2 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 transition border border-slate-200 dark:border-slate-700 opacity-60 cursor-not-allowed" title="Alle 16 Fragen müssen fehlerfrei beantwortet werden">
                     <i class="fa-solid fa-file-pdf text-sm"></i>
                 </button>
                 <button onclick="confirmReset()" title="Zurücksetzen" class="p-2 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/50 rounded-lg border border-rose-200 dark:border-rose-900/50">
@@ -299,7 +299,7 @@
             </div>
             <div class="text-right">
                 <span class="inline-block px-3 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-full border border-emerald-300">
-                    ✅ Praxis-Test bestanden (Mind. 13/16)
+                    ✅ Praxis-Test fehlerfrei bestanden (16/16)
                 </span>
             </div>
         </div>
@@ -603,7 +603,7 @@
             const elapsed = performance.now() - startTime;
             
             const correctAnswers = 16 - errorCount;
-            const passedThisRun = correctAnswers >= 13;
+            const passedThisRun = (errorCount === 0);
             
             // Score Logic (Max 1600, -50 per error, -time bonus)
             let base = 1600;
@@ -616,20 +616,21 @@
             if(passedThisRun) {
                 hasPassed = true;
                 localStorage.setItem('a4_passed', 'true');
+                localStorage.setItem('onedrive_cables_worksheet_8sek', JSON.stringify({ percent: 100 }));
                 localStorage.setItem('a4_last_score', finalScore);
                 localStorage.setItem('a4_last_errors', errorCount);
                 localStorage.setItem('a4_last_time', formatTime(elapsed));
                 localStorage.setItem('a4_last_errdetails', JSON.stringify(errorDetails));
                 updateProgress();
                 
-                document.getElementById('modalTitle').textContent = "Test bestanden! 🎉";
-                document.getElementById('modalSubtitle').textContent = `Gut gemacht! ${correctAnswers} von 16 richtig.`;
+                document.getElementById('modalTitle').textContent = "Test fehlerfrei bestanden! 🎉";
+                document.getElementById('modalSubtitle').textContent = "Perfekt! Alle 16 von 16 Fragen wurden richtig beantwortet.";
                 document.getElementById('modalIcon').className = "fa-solid fa-award";
                 document.getElementById('modalIconWrapper').className = "w-16 h-16 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-3xl font-bold mx-auto mb-2 shadow-inner";
                 document.getElementById('modalPdfBtn').classList.remove('hidden');
             } else {
                 document.getElementById('modalTitle').textContent = "Nicht bestanden";
-                document.getElementById('modalSubtitle').textContent = `Du brauchst mind. 13 richtige Antworten (Du hast ${correctAnswers}/16).`;
+                document.getElementById('modalSubtitle').textContent = `Für das Zertifikat müssen ALLE 16 Fragen fehlerfrei beantwortet werden (Du hattest ${errorCount} Fehler).`;
                 document.getElementById('modalIcon').className = "fa-solid fa-xmark";
                 document.getElementById('modalIconWrapper').className = "w-16 h-16 rounded-full bg-rose-100 dark:bg-rose-950 text-rose-600 dark:text-rose-400 flex items-center justify-center text-3xl font-bold mx-auto mb-2 shadow-inner";
                 document.getElementById('modalPdfBtn').classList.add('hidden');
@@ -655,6 +656,7 @@
         function confirmReset() {
             if(confirm('Möchtest du deinen Fortschritt für A4 zurücksetzen?')) {
                 localStorage.removeItem('a4_passed');
+                localStorage.removeItem('onedrive_cables_worksheet_8sek');
                 localStorage.removeItem('a4_last_score');
                 localStorage.removeItem('a4_last_errors');
                 localStorage.removeItem('a4_last_time');
@@ -665,7 +667,7 @@
 
         function handlePdfPrint() {
             if(!hasPassed) {
-                alert("Bitte schließe zuerst den Praxis-Test mit mindestens 13 richtigen Antworten ab.");
+                alert("Bitte schließe zuerst den Praxis-Test fehlerfrei mit allen 16 richtigen Antworten ab.");
                 return;
             }
             
