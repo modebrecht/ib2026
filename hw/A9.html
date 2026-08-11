@@ -473,18 +473,73 @@
                 </div>
             </div>
 
-            <!-- Was passiert beim Recycling? -->
+            <!-- Was passiert beim Recycling? (Quiz) -->
             <div class="space-y-3 pt-2">
                 <h4 class="text-xs font-bold uppercase text-slate-400 dark:text-slate-500">Was passiert mit einem Handy im Recycling?</h4>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div class="flex items-start gap-3 p-4 bg-eco-50 dark:bg-eco-950/30 rounded-xl border border-eco-200 dark:border-eco-900/50">
-                        <i class="fa-solid fa-check text-eco-600 dark:text-eco-400 mt-1"></i>
-                        <p class="text-xs text-slate-600 dark:text-slate-300">Wichtige Metalle (Kupfer, Gold, Silber) werden zurückgewonnen.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                    <!-- Frage 1 -->
+                    <div class="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-xl border border-slate-200 dark:border-slate-700/70 space-y-2">
+                        <p class="font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                            <span class="w-5 h-5 rounded-full bg-eco-500 text-white text-[10px] flex items-center justify-center shrink-0">1</span>
+                            Was passiert mit Kupfer, Gold & Silber?
+                        </p>
+                        <div class="space-y-1.5 text-slate-700 dark:text-slate-300">
+                            <label class="flex items-start gap-2 cursor-pointer hover:text-eco-600 dark:hover:text-eco-400 transition p-1 rounded">
+                                <input type="radio" name="recycle_q1" value="1" onchange="updateProgress()" class="mt-0.5 accent-eco-500"> Werden fachgerecht zurückgewonnen.
+                            </label>
+                            <label class="flex items-start gap-2 cursor-pointer hover:text-eco-600 dark:hover:text-eco-400 transition p-1 rounded">
+                                <input type="radio" name="recycle_q1" value="0" onchange="updateProgress()" class="mt-0.5 accent-eco-500"> Gehen komplett verloren.
+                            </label>
+                            <label class="flex items-start gap-2 cursor-pointer hover:text-eco-600 dark:hover:text-eco-400 transition p-1 rounded">
+                                <input type="radio" name="recycle_q1" value="0" onchange="updateProgress()" class="mt-0.5 accent-eco-500"> Bleiben für immer im Gerät.
+                            </label>
+                        </div>
                     </div>
-                    <div class="flex items-start gap-3 p-4 bg-rose-50 dark:bg-rose-950/30 rounded-xl border border-rose-200 dark:border-rose-900/50">
-                        <i class="fa-solid fa-xmark text-rose-600 dark:text-rose-400 mt-1"></i>
-                        <p class="text-xs text-slate-600 dark:text-slate-300">Viele Kunststoffe und Klebstoffe können NICHT recycelt werden.</p>
+
+                    <!-- Frage 2 -->
+                    <div class="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-xl border border-slate-200 dark:border-slate-700/70 space-y-2">
+                        <p class="font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                            <span class="w-5 h-5 rounded-full bg-eco-500 text-white text-[10px] flex items-center justify-center shrink-0">2</span>
+                            Können alle Kunststoffe/Klebstoffe recycelt werden?
+                        </p>
+                        <div class="space-y-1.5 text-slate-700 dark:text-slate-300">
+                            <label class="flex items-start gap-2 cursor-pointer hover:text-eco-600 dark:hover:text-eco-400 transition p-1 rounded">
+                                <input type="radio" name="recycle_q2" value="0" onchange="updateProgress()" class="mt-0.5 accent-eco-500"> Ja, zu 100%.
+                            </label>
+                            <label class="flex items-start gap-2 cursor-pointer hover:text-eco-600 dark:hover:text-eco-400 transition p-1 rounded">
+                                <input type="radio" name="recycle_q2" value="1" onchange="updateProgress()" class="mt-0.5 accent-eco-500"> Nein, viele können es NICHT.
+                            </label>
+                            <label class="flex items-start gap-2 cursor-pointer hover:text-eco-600 dark:hover:text-eco-400 transition p-1 rounded">
+                                <input type="radio" name="recycle_q2" value="0" onchange="updateProgress()" class="mt-0.5 accent-eco-500"> Nur bei neuen Geräten.
+                            </label>
+                        </div>
                     </div>
+
+                    <!-- Frage 3 -->
+                    <div class="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-xl border border-slate-200 dark:border-slate-700/70 space-y-2">
+                        <p class="font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                            <span class="w-5 h-5 rounded-full bg-eco-500 text-white text-[10px] flex items-center justify-center shrink-0">3</span>
+                            Gold: Tonne Handys vs. Tonne Golderz?
+                        </p>
+                        <div class="space-y-1.5 text-slate-700 dark:text-slate-300">
+                            <label class="flex items-start gap-2 cursor-pointer hover:text-eco-600 dark:hover:text-eco-400 transition p-1 rounded">
+                                <input type="radio" name="recycle_q3" value="0" onchange="updateProgress()" class="mt-0.5 accent-eco-500"> Etwa gleich viel.
+                            </label>
+                            <label class="flex items-start gap-2 cursor-pointer hover:text-eco-600 dark:hover:text-eco-400 transition p-1 rounded">
+                                <input type="radio" name="recycle_q3" value="1" onchange="updateProgress()" class="mt-0.5 accent-eco-500"> Ca. 50x mehr Gold.
+                            </label>
+                            <label class="flex items-start gap-2 cursor-pointer hover:text-eco-600 dark:hover:text-eco-400 transition p-1 rounded">
+                                <input type="radio" name="recycle_q3" value="0" onchange="updateProgress()" class="mt-0.5 accent-eco-500"> Deutlich weniger Gold.
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col items-center gap-2 pt-1">
+                    <button type="button" onclick="checkRecycleQuiz()" class="inline-flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-lg bg-eco-600 hover:bg-eco-700 text-white transition shadow-sm">
+                        <i class="fa-solid fa-check-double"></i> Überprüfen
+                    </button>
+                    <div id="recycleQuizResult" class="hidden p-3 rounded-xl text-center font-bold text-xs shadow-sm w-full"></div>
                 </div>
             </div>
         </section>
