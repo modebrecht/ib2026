@@ -41,238 +41,25 @@
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.5); border-radius: 4px; }
-        
-        .eva-grid-bg {
-            background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-                              linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
-            background-size: 40px 40px;
-        }
-
-        @keyframes ytPulse {
-            0%, 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.45); }
-            50% { transform: scale(1.12); box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); }
-        }
-
-        .yt-pulse {
-            transform-origin: center;
-            animation: ytPulse 1.8s ease-in-out infinite;
-        }
-
-        @keyframes btnScalePulse {
-            0%, 100% { transform: scale(1); box-shadow: 0 0 15px rgba(0, 240, 255, 0.1); }
-            50% { transform: scale(1.08); box-shadow: 0 0 35px rgba(0, 240, 255, 0.4); }
-        }
-        .btn-scale-pulse {
-            animation: btnScalePulse 2s ease-in-out infinite;
-        }
-
-
-                /* Crispy Visual Animations (Premium) */
-        @keyframes eva-pop {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 transparent; filter: grayscale(100%) opacity(0.6); }
-            40% { transform: scale(1.05); box-shadow: 0 0 40px 8px var(--glow-color); filter: grayscale(0%) opacity(1); }
-            100% { transform: scale(1); box-shadow: 0 0 15px 2px var(--glow-color); filter: grayscale(0%) opacity(1); }
-        }
-        
-        @keyframes packet-travel-1 {
-            0% { left: 16%; opacity: 0; transform: translateY(-50%) scale(0.2);  box-shadow: 0 0 0 rgba(245,158,11,0); }
-            15% { opacity: 1; transform: translateY(-50%) scale(1.3); box-shadow: -12px 0 20px rgba(245,158,11,0.8), 0 0 35px rgba(245,158,11,1); }
-            85% { left: 50%; opacity: 1; transform: translateY(-50%) scale(1.3); box-shadow: -12px 0 20px rgba(245,158,11,0.8), 0 0 35px rgba(245,158,11,1); }
-            100% { left: 50%; opacity: 0; transform: translateY(-50%) scale(0.2); box-shadow: 0 0 0 rgba(245,158,11,0); }
-        }
-        
-        @keyframes packet-travel-2 {
-            0% { left: 50%; opacity: 0; transform: translateY(-50%) scale(0.2);  box-shadow: 0 0 0 rgba(0,120,212,0); }
-            15% { opacity: 1; transform: translateY(-50%) scale(1.3); box-shadow: -12px 0 20px rgba(0,120,212,0.8), 0 0 35px rgba(0,120,212,1); }
-            85% { left: 83%; opacity: 1; transform: translateY(-50%) scale(1.3); box-shadow: -12px 0 20px rgba(0,120,212,0.8), 0 0 35px rgba(0,120,212,1); }
-            100% { left: 83%; opacity: 0; transform: translateY(-50%) scale(0.2); box-shadow: 0 0 0 rgba(0,120,212,0); }
-        }
-        
-        @keyframes gear-spin {
-            0% { transform: rotate(0deg) scale(1); }
-            50% { transform: rotate(180deg) scale(1.2); color: #60a5fa; }
-            100% { transform: rotate(360deg) scale(1); }
-        }
-        
-        @keyframes keyboard-press {
-            0%, 100% { transform: scale(1) rotate(0deg); }
-            20% { transform: scale(0.85) rotate(-5deg); color: #f59e0b; }
-            40% { transform: scale(0.95) rotate(5deg); color: #f59e0b; }
-            60% { transform: scale(0.85) rotate(-3deg); color: #f59e0b; }
-            80% { transform: scale(0.95) rotate(3deg); color: #f59e0b; }
-        }
-        
-        @keyframes pc-compute {
-            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0 transparent); }
-            20%, 60% { transform: scale(1.2); color: #60a5fa; filter: drop-shadow(0 0 8px #60a5fa); }
-            40%, 80% { transform: scale(1.1); color: #3b82f6; filter: drop-shadow(0 0 12px #3b82f6); }
-        }
-        
-        @keyframes type-text {
-            0% { opacity: 0; transform: scale(0); }
-            60% { opacity: 1; transform: scale(1.4); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-        
-        @keyframes line-glow {
-            0% { background-position: 100% 0; }
-            100% { background-position: -100% 0; }
-        }
-
-        .eva-animated { filter: grayscale(100%) opacity(0.6); transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
-        .concrete-icon { transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
-        
-        /* Glassmorphism Premium Icons */
-        .glass-icon {
-            background: linear-gradient(135deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.3) 100%);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.5);
-            box-shadow: 
-                0 8px 32px 0 rgba(0, 0, 0, 0.1),
-                inset 0 2px 3px rgba(255,255,255,0.8),
-                inset 0 -2px 3px rgba(0,0,0,0.05);
-        }
-        .dark .glass-icon {
-            background: linear-gradient(135deg, rgba(30,41,59,0.8) 0%, rgba(15,23,42,0.6) 100%);
-            border: 1px solid rgba(255,255,255,0.15);
-            box-shadow: 
-                0 8px 32px 0 rgba(0, 0, 0, 0.6),
-                inset 0 1px 1px rgba(255,255,255,0.1),
-                inset 0 -1px 1px rgba(0,0,0,0.4);
-        }
-        /* Connecting Line Glow Effect */
-        .connecting-line { background: linear-gradient(90deg, #e2e8f0 40%, #94a3b8 50%, #e2e8f0 60%); background-size: 200% 100%; transition: background-color 0.5s; }
-        .dark .connecting-line { background: linear-gradient(90deg, #334155 40%, #64748b 50%, #334155 60%); background-size: 200% 100%; }
-        .is-animating .connecting-line { animation: line-glow 2s linear infinite; }
-        
-        /* Triggered States */
-        /* Slower and Premium Animations */
-        @keyframes typing-reveal {
-            0% { opacity: 1; clip-path: inset(0 100% 0 0); border-right: 3px solid currentColor; }
-            95% { opacity: 1; clip-path: inset(0 0 0 0); border-right: 3px solid currentColor; }
-            100% { opacity: 1; clip-path: inset(0 0 0 0); border-right: transparent; }
-        }
-        @keyframes typing-reveal-stay {
-            0% { opacity: 1; clip-path: inset(0 100% 0 0); border-right: 3px solid currentColor; }
-            95% { opacity: 1; clip-path: inset(0 0 0 0); border-right: 3px solid currentColor; }
-            100% { opacity: 1; clip-path: inset(0 0 0 0); border-right: transparent; }
-        }
-        
-        @keyframes header-pop {
-            0% { opacity: 0; transform: translateY(20px); filter: blur(5px); }
-            100% { opacity: 1; transform: translateY(0); filter: blur(0); }
-        }
-
-        @keyframes packet-travel-1 {
-            0% { left: 16%; opacity: 0; transform: translateY(-50%) scale(0.2); background-color: #f59e0b; box-shadow: 0 0 0 rgba(245,158,11,0); }
-            10% { opacity: 1; transform: translateY(-50%) scale(1.4); box-shadow: -15px 0 25px rgba(245,158,11,0.8), 0 0 45px rgba(245,158,11,1); }
-            90% { left: 50%; opacity: 1; transform: translateY(-50%) scale(1.4); box-shadow: -15px 0 25px rgba(245,158,11,0.8), 0 0 45px rgba(245,158,11,1); }
-            100% { left: 50%; opacity: 0; transform: translateY(-50%) scale(0.2); box-shadow: 0 0 0 rgba(245,158,11,0); }
-        }
-        
-        @keyframes packet-travel-2 {
-            0% { left: 50%; opacity: 0; transform: translateY(-50%) scale(0.2); background-color: #0078d4; box-shadow: 0 0 0 rgba(0,120,212,0); }
-            10% { opacity: 1; transform: translateY(-50%) scale(1.4); box-shadow: -15px 0 25px rgba(0,120,212,0.8), 0 0 45px rgba(0,120,212,1); }
-            90% { left: 83%; opacity: 1; transform: translateY(-50%) scale(1.4); box-shadow: -15px 0 25px rgba(0,120,212,0.8), 0 0 45px rgba(0,120,212,1); }
-            100% { left: 83%; opacity: 0; transform: translateY(-50%) scale(0.2); box-shadow: 0 0 0 rgba(0,120,212,0); }
-        }
-        
-        /* Replace Triggered States for Slow Motion */
-        .is-animating .eva-station-1 .station-header { animation: header-pop 1.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; animation-delay: 0.2s; }
-        .is-animating .concrete-icon-1 { color: #f59e0b; border-color: rgba(245,158,11,0.5); box-shadow: 0 0 60px rgba(245,158,11,0.5), inset 0 2px 4px rgba(255,255,255,0.4); transform: translateY(-12px); animation-delay: 0.2s; }
-        .is-animating .concrete-icon-1 i { animation: keyboard-press 2.5s ease-in-out forwards; animation-delay: 1.5s; }
-        .is-animating .dynamic-text-1 p { animation: typing-reveal 3s steps(24, end) forwards; animation-delay: 2s; opacity: 1; clip-path: inset(0 100% 0 0); }
-        
-        .is-animating .data-packet-1 { animation: packet-travel-1 3s cubic-bezier(0.65, 0, 0.35, 1) forwards; animation-delay: 5.5s; display: flex !important; }
-        
-        .is-animating .eva-station-2 .station-header { animation: header-pop 1.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; animation-delay: 8.5s; }
-        .is-animating .concrete-icon-2 { color: #0078d4; border-color: rgba(0,120,212,0.5); box-shadow: 0 0 60px rgba(0,120,212,0.5), inset 0 2px 4px rgba(255,255,255,0.4); transform: translateY(-12px); animation-delay: 8.5s; }
-        .is-animating .concrete-icon-2 i { animation: pc-compute 3.5s ease-in-out forwards; animation-delay: 9.5s; }
-        .is-animating .dynamic-text-2 p { animation: typing-reveal 3s steps(35, end) forwards; animation-delay: 10s; opacity: 1; clip-path: inset(0 100% 0 0); }
-        
-        .is-animating .data-packet-2 { animation: packet-travel-2 3s cubic-bezier(0.65, 0, 0.35, 1) forwards; animation-delay: 13.5s; display: flex !important; }
-        
-        .is-animating .eva-station-3 .station-header { animation: header-pop 1.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; animation-delay: 16.5s; }
-        .is-animating .concrete-icon-3 { color: #10b981; border-color: rgba(16,185,129,0.5); box-shadow: 0 0 60px rgba(16,185,129,0.5), inset 0 2px 4px rgba(255,255,255,0.4); transform: translateY(-12px); animation-delay: 16.5s; }
-        .is-animating .monitor-text { animation: type-text 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; animation-delay: 20s; }
-        .is-animating .dynamic-text-3 p { animation: typing-reveal-stay 3s steps(30, end) forwards; animation-delay: 17.5s; opacity: 1; clip-path: inset(0 100% 0 0); }
-        
-        /* Finished states */
-        .is-finished .station-header { opacity: 1; transform: translateY(0); filter: blur(0); }
-        .is-finished .dynamic-text-3 p { opacity: 1; clip-path: inset(0 0 0 0); border-right: transparent; }
-        .is-finished .dynamic-text-3 p { opacity: 1; clip-path: inset(0 0 0 0); border-right: transparent; }
-        /* Finished state */
-        .is-finished .eva-station-1 .abstract-block { filter: grayscale(0%) opacity(1); box-shadow: 0 0 15px 2px rgba(245, 158, 11, 0.5); }
-        .is-finished .concrete-icon-1 { color: #f59e0b; border-color: rgba(245,158,11,0.5); box-shadow: 0 0 35px rgba(245,158,11,0.4), inset 0 2px 3px rgba(255,255,255,0.4);  }
-        .dark .is-finished .concrete-icon-1 {  }
-        .is-finished .eva-station-2 .abstract-block { filter: grayscale(0%) opacity(1); box-shadow: 0 0 15px 2px rgba(0, 120, 212, 0.5); }
-        .is-finished .concrete-icon-2 { color: #0078d4; border-color: rgba(0,120,212,0.5); box-shadow: 0 0 35px rgba(0,120,212,0.4), inset 0 2px 3px rgba(255,255,255,0.4);  }
-        .dark .is-finished .concrete-icon-2 {  }
-        .is-finished .eva-station-3 .abstract-block { filter: grayscale(0%) opacity(1); box-shadow: 0 0 15px 2px rgba(16, 185, 129, 0.5); }
-        .is-finished .concrete-icon-3 { color: #10b981; border-color: rgba(16,185,129,0.5); box-shadow: 0 0 35px rgba(16,185,129,0.4), inset 0 2px 3px rgba(255,255,255,0.4);  } .is-finished .monitor-text { opacity: 1; }
-        .dark .is-finished .concrete-icon-3 {  } .is-finished .monitor-text { opacity: 1; }
-        .yt-pulse.replay {
-            animation: ytPulse 1.8s ease-in-out 1;
-            animation-fill-mode: both;
-        }
-
-
-
-        /* --- Leuchtende Rahmen für die Titel (Pill Shapes) --- */
-        .title-frame { transition: all 0.4s ease; box-shadow: 0 0 15px rgba(0,0,0,0.5); }
-        .title-frame.active-e { box-shadow: 0 0 30px rgba(255,107,0,0.5), inset 0 0 15px rgba(255,107,0,0.2); transform: scale(1.05); border-color: rgba(255,107,0,0.8); }
-        .title-frame.active-v { box-shadow: 0 0 30px rgba(0,240,255,0.5), inset 0 0 15px rgba(0,240,255,0.2); transform: scale(1.05); border-color: rgba(0,240,255,0.8); }
-        .title-frame.active-a { box-shadow: 0 0 30px rgba(0,255,102,0.5), inset 0 0 15px rgba(0,255,102,0.2); transform: scale(1.05); border-color: rgba(0,255,102,0.8); }
-
-        /* --- Premium Glass Cards (Theorie) --- */
-        .glass-card { background: linear-gradient(145deg, rgba(15, 23, 42, 0.7) 0%, rgba(5, 9, 20, 0.8) 100%); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); border-top: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.05); transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease; }
-        .glass-card.active-e { border-color: rgba(255, 107, 0, 0.4); box-shadow: 0 0 40px rgba(255, 107, 0, 0.15), inset 0 0 20px rgba(255, 107, 0, 0.05); transform: translateY(-5px); }
-        .glass-card.active-v { border-color: rgba(0, 240, 255, 0.4); box-shadow: 0 0 40px rgba(0, 240, 255, 0.15), inset 0 0 20px rgba(0, 240, 255, 0.05); transform: translateY(-5px); }
-        .glass-card.active-a { border-color: rgba(0, 255, 102, 0.4); box-shadow: 0 0 40px rgba(0, 255, 102, 0.15), inset 0 0 20px rgba(0, 255, 102, 0.05); transform: translateY(-5px); }
-        .hardware-node { background: #0f172a; border: 2px solid #1e293b; box-shadow: 0 10px 25px rgba(0,0,0,0.5); transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
-        .node-glow-e { border-color: #FF6B00; box-shadow: 0 0 30px rgba(255, 107, 0, 0.6), inset 0 0 15px rgba(255, 107, 0, 0.3); transform: scale(1.15); color: #FF6B00; }
-        .node-glow-v { border-color: #00F0FF; box-shadow: 0 0 30px rgba(0, 240, 255, 0.6), inset 0 0 15px rgba(0, 240, 255, 0.3); transform: scale(1.15); color: #00F0FF; }
-        .node-glow-a { border-color: #00FF66; box-shadow: 0 0 30px rgba(0, 255, 102, 0.6), inset 0 0 15px rgba(0, 255, 102, 0.3); transform: scale(1.15); color: #00FF66; }
-        .math-popup { background: linear-gradient(180deg, rgba(15, 23, 42, 0.95) 0%, rgba(5, 9, 20, 0.98) 100%); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.05); border-top: 2px solid; box-shadow: 0 20px 40px rgba(0,0,0,0.9); transform: translateY(20px) scale(0.95); opacity: 0; transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
-        .math-popup.show { transform: translateY(0) scale(1); opacity: 1; }
-        .math-popup-e { border-top-color: #FF6B00; box-shadow: 0 15px 40px rgba(255, 107, 0, 0.15); }
-        .math-popup-v { border-top-color: #00F0FF; box-shadow: 0 15px 40px rgba(0, 240, 255, 0.15); }
-        .math-popup-a { border-top-color: #00FF66; box-shadow: 0 15px 40px rgba(0, 255, 102, 0.15); }
-        .neon-text-e { text-shadow: 0 0 10px rgba(255, 107, 0, 0.8), 0 0 25px rgba(255, 107, 0, 0.4); color: #fff; }
-        .neon-text-v { text-shadow: 0 0 10px rgba(0, 240, 255, 0.8), 0 0 25px rgba(0, 240, 255, 0.4); color: #fff; }
-        .neon-text-a { text-shadow: 0 0 10px rgba(0, 255, 102, 0.8), 0 0 25px rgba(0, 255, 102, 0.4); color: #fff; }
-        #data-particle { background: #fff; box-shadow: 0 0 20px #fff, 0 0 40px #fff; transition: left 1.5s cubic-bezier(0.4, 0, 0.2, 1), top 1.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s, opacity 0.3s; will-change: left, top, transform; z-index: 30; }
-        #data-particle.processing { animation: processParticle 0.5s ease-in-out infinite alternate; }
-        @keyframes processParticle { 0% { transform: scale(1) translate(-50%, -50%); box-shadow: 0 0 20px #00F0FF, 0 0 40px #00F0FF; background: #00F0FF; } 100% { transform: scale(1.5) translate(-33%, -33%); box-shadow: 0 0 40px #00F0FF, 0 0 80px #00F0FF; background: #fff; } }
-        @keyframes cpuWork { 0% { transform: scale(1.15) translate(1px, 1px); } 20% { transform: scale(1.15) translate(-2px, 0px); } 40% { transform: scale(1.15) translate(2px, -1px); } 60% { transform: scale(1.15) translate(-1px, 2px); } 80% { transform: scale(1.15) translate(1px, -2px); } 100% { transform: scale(1.15) translate(-1px, 1px); } }
-        .cpu-working { animation: cpuWork 0.1s infinite; filter: drop-shadow(0 0 20px #00F0FF); }
-        .cursor::after { content: '|'; animation: blink 1s step-end infinite; }
-        @keyframes blink { 50% { opacity: 0; } }
-
         @media print {
             .no-print { display: none !important; }
             html, body { height: auto !important; min-height: auto !important; margin: 0 !important; padding: 0 !important; }
             body { background: white !important; color: black !important; font-size: 11pt; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             .print-card { border: 1px solid #cbd5e1 !important; box-shadow: none !important; break-inside: avoid; page-break-inside: avoid; }
             input, textarea, select { border: 1px solid #94a3b8 !important; background: #fff !important; color: #000 !important; }
-            #play-btn-hd { display: none !important; }
-            .monitor-text { opacity: 1 !important; }
-            .math-popup { opacity: 1 !important; transform: none !important; }
-            #pipeline-progress { width: 100% !important; }
-            #pipeline-progress-mobile { height: 100% !important; }
-            #secPraxis { padding: 16px !important; }
-            #secPraxis .p-4 { padding: 12px !important; }
-            #secPraxis .space-y-3 > * + * { margin-top: 8px !important; }
-            /* Carousel: beim Drucken/PDF immer ALLE Karten zeigen, unabhängig vom aktuellen Ansichtsmodus */
-            .carousel-slide { display: block !important; margin-top: 1.5rem !important; }
-            .carousel-slide:first-child { margin-top: 0 !important; }
+            /* Carousel: beim Drucken/PDF immer ALLE 15 Bauteil-Karten zeigen, unabhängig vom aktuellen Ansichtsmodus */
+            .comp-card { display: block !important; margin-top: 1.5rem !important; }
+            .comp-card:first-child { margin-top: 0 !important; }
+            /* Sicherheitsnetz: Dunkelmodus-Farben beim Drucken immer überschreiben, egal wie gedruckt
+               wird (App-Button, Strg+P, Rechtsklick-Drucken) - sonst bleiben Karten dunkel mit heller
+               Schrift, weil @media print sonst nur body zurücksetzt, nicht die .dark-Klasse selbst. */
+            .dark, .dark * { background-color: #fff !important; color: #000 !important; border-color: #cbd5e1 !important; }
         }
     </style>
 </head>
 <body class="bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-full flex flex-col font-sans antialiased">
 
-    <header class="sticky top-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm no-print">
+    <header class="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm no-print">
         <div class="max-w-[1920px] w-full mx-auto px-4 sm:px-8 py-2.5 flex items-center justify-between gap-4">
             <div class="flex items-center gap-3 min-w-0">
                 <div class="w-9 h-9 rounded-lg bg-onedrive-500 text-white flex items-center justify-center font-black shadow-md shadow-onedrive-500/20 shrink-0">
@@ -294,6 +81,9 @@
             </div>
 
             <div class="flex items-center gap-2 shrink-0">
+                <button id="viewToggleBtn" onclick="toggleCarouselView()" title="Listenansicht umschalten" class="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+                    <i id="viewToggleIcon" class="fa-solid fa-list text-sm"></i>
+                </button>
                 <button onclick="toggleDarkMode()" title="Dunkelmodus umschalten" class="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
                     <i id="themeIcon" class="fa-solid fa-moon text-sm"></i>
                 </button>
@@ -312,73 +102,45 @@
 
     <main class="max-w-7xl mx-auto w-full px-4 sm:px-6 py-6 space-y-6 flex-grow">
 
-        <!-- Title & Metadata -->
-        <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 print-card">
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-slate-800">
-                <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-onedrive-500 to-onedrive-700 flex items-center justify-center text-[22px] font-black border border-onedrive-600 shadow-sm text-white">
-                        <i class="fa-solid fa-desktop text-slate-300"></i>
+        <section class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 print-card space-y-3">
+            <!-- Components Grid / Carousel -->
+            <div id="carouselTrack" class="hardware-grid grid grid-cols-1 gap-3">
+
+                <!-- 0. Einführung + Vorname/Klasse/Datum -->
+                <div class="comp-card rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 p-4">
+                    <div class="mb-3 border-b border-slate-200 dark:border-slate-700/50 pb-2 flex justify-between items-start">
+                        <div>
+                            <div class="inline-flex items-center gap-1.5 bg-onedrive-50 dark:bg-onedrive-950 text-onedrive-700 dark:text-onedrive-300 text-xs font-bold px-3 py-1 rounded-full border border-onedrive-200 dark:border-onedrive-800 uppercase mb-2">
+                                <i class="fa-solid fa-magnifying-glass"></i> Auftrag 1
+                            </div>
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100">Die Bauteile im PC-Gehäuse (Hardware-Analyse)</h3>
+                        </div>
+                        <div class="hidden md:flex w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-400 items-center justify-center text-xl shrink-0">
+                            <i class="fa-solid fa-desktop"></i>
+                        </div>
                     </div>
-                    <div>
-                        <h2 class="text-lg font-bold text-slate-900 dark:text-slate-100">A3: Aufbau eines Computers</h2>
-                        <p class="text-xs text-slate-500 dark:text-slate-400">Informatische Bildung • IT-Hardware • A3</p>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">Recherchiere die 15 Bauteile eines Computers. Beschreibe jeweils die <strong>Funktion</strong> und erstelle einen passenden <strong>Alltags-Vergleich (Analogie)</strong>. Die ersten beiden sind als Beispiel bereits ausgefüllt.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-500 dark:text-slate-400 mb-1">
+                                <i class="fa-solid fa-user mr-1 text-onedrive-500"></i> Vorname
+                            </label>
+                            <input type="text" id="studentName" readonly tabindex="-1" style="pointer-events: none;" class="w-full px-3.5 py-2 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl font-medium text-slate-500 dark:text-slate-400 opacity-90 cursor-not-allowed">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-500 dark:text-slate-400 mb-1">
+                                <i class="fa-solid fa-users mr-1 text-onedrive-500"></i> Klasse
+                            </label>
+                            <input type="text" id="studentClass" readonly tabindex="-1" style="pointer-events: none;" class="w-full px-3.5 py-2 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl font-medium text-slate-500 dark:text-slate-400 opacity-90 cursor-not-allowed" value="B24">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-500 dark:text-slate-400 mb-1">
+                                <i class="fa-solid fa-calendar mr-1 text-onedrive-500"></i> Datum
+                            </label>
+                            <input type="text" id="studentDate" readonly tabindex="-1" style="pointer-events: none;" class="w-full px-3.5 py-2 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl font-medium text-slate-500 dark:text-slate-400 opacity-90 cursor-not-allowed">
+                        </div>
                     </div>
                 </div>
-
-            </div>
-
-            <!-- Student Metadata -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
-                <div>
-                    <label class="block text-xs font-bold uppercase text-slate-500 dark:text-slate-400 mb-1">
-                        <i class="fa-solid fa-user mr-1 text-onedrive-500"></i> Vorname
-                    </label>
-                    <input type="text" id="studentName" readonly tabindex="-1" style="pointer-events: none;" class="w-full px-3.5 py-2 text-sm bg-slate-100 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl font-medium text-slate-500 dark:text-slate-400 opacity-90 cursor-not-allowed">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold uppercase text-slate-500 dark:text-slate-400 mb-1">
-                        <i class="fa-solid fa-users mr-1 text-onedrive-500"></i> Klasse
-                    </label>
-                    <input type="text" id="studentClass" readonly tabindex="-1" style="pointer-events: none;" class="w-full px-3.5 py-2 text-sm bg-slate-100 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl font-medium text-slate-500 dark:text-slate-400 opacity-90 cursor-not-allowed" value="B24">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold uppercase text-slate-500 dark:text-slate-400 mb-1">
-                        <i class="fa-solid fa-calendar mr-1 text-onedrive-500"></i> Datum
-                    </label>
-                    <input type="text" id="studentDate" readonly tabindex="-1" style="pointer-events: none;" class="w-full px-3.5 py-2 text-sm bg-slate-100 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl font-medium text-slate-500 dark:text-slate-400 opacity-90 cursor-not-allowed">
-                </div>
-            </div>
-        </div>
-
-        <!-- Carousel Controls (Top): Position counter + Listenansicht-Toggle -->
-        <div id="carouselControlsTop" class="no-print flex items-center justify-between gap-3">
-            <div class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 dark:text-slate-400">
-                <i class="fa-solid fa-layer-group text-onedrive-500"></i>
-                Auftrag <span id="carouselCurrentNum">1</span> von 5
-            </div>
-            <button id="viewToggleBtn" onclick="toggleCarouselView()" type="button" class="inline-flex items-center gap-2 px-3.5 py-2 text-xs font-bold rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 shadow-sm transition">
-                <i id="viewToggleIcon" class="fa-solid fa-list"></i>
-                <span id="viewToggleLabel">Listenansicht</span>
-            </button>
-        </div>
-
-        <div id="carouselTrack">
-        <section class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 print-card space-y-6 carousel-slide" id="slide1">
-            <div class="border-b border-slate-200 dark:border-slate-800 pb-4 flex justify-between items-start">
-                <div>
-                    <div class="inline-flex items-center gap-1.5 bg-onedrive-50 dark:bg-onedrive-950 text-onedrive-700 dark:text-onedrive-300 text-xs font-bold px-3 py-1 rounded-full border border-onedrive-200 dark:border-onedrive-800 uppercase mb-2">
-                        <i class="fa-solid fa-magnifying-glass"></i> Auftrag 1
-                    </div>
-                    <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100">Die Bauteile im PC-Gehäuse (Hardware-Analyse)</h3>
-                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Recherchiere die 16 Bauteile eines Computers. Beschreibe jeweils die <strong>Funktion</strong> und erstelle einen passenden <strong>Alltags-Vergleich (Analogie)</strong>. Die ersten beiden sind als Beispiel bereits ausgefüllt.</p>
-                </div>
-                <div class="hidden md:flex w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-400 items-center justify-center text-xl">
-                    <i class="fa-solid fa-desktop"></i>
-                </div>
-            </div>
-
-            <!-- Components Grid -->
-            <div class="hardware-grid grid grid-cols-1 gap-5">
 
                 <!-- 1. Prozessor -->
                 <div class="comp-card rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative group overflow-hidden">
@@ -386,19 +148,19 @@
                     <div class="w-full h-64 sm:h-96 overflow-hidden bg-slate-900">
                         <img src="assets/VL-CPU.webp" alt="Prozessor (CPU)" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                     </div>
-                    <div class="relative z-10 p-4">
+                    <div class="relative z-10 p-3">
                         <div class="mb-3 border-b border-slate-200 dark:border-slate-700/50 pb-2">
                             <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">1. Prozessor (CPU - Central Processing Unit)</h4>
                             <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">Kürzel: CPU</span>
                         </div>
-                        <div class="flex flex-col gap-3">
+                        <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
-                                <textarea id="comp_cpu_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all">Die CPU (der Prozessor) führt alle Berechnungen und logischen Befehle aus – sie ist die zentrale Recheneinheit des Computers.</textarea>
+                                <textarea id="comp_cpu_func" oninput="updateProgress()" rows="4" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all">Die CPU (der Prozessor) führt alle Berechnungen und logischen Befehle aus – sie ist die zentrale Recheneinheit des Computers.</textarea>
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
-                                <textarea id="comp_cpu_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all">Die CPU ist wie das Gehirn des Computers: Sie denkt, trifft Entscheidungen und steuert alle anderen Bauteile.</textarea>
+                                <textarea id="comp_cpu_ana" oninput="updateProgress()" rows="4" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all">Die CPU ist wie das Gehirn des Computers: Sie denkt, trifft Entscheidungen und steuert alle anderen Bauteile.</textarea>
                             </div>
                         </div>
                     </div>
@@ -410,19 +172,19 @@
                     <div class="w-full h-64 sm:h-96 overflow-hidden bg-slate-900">
                         <img src="assets/VL-Motherboard.webp" alt="Mainboard" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                     </div>
-                    <div class="relative z-10 p-4">
+                    <div class="relative z-10 p-3">
                         <div class="mb-3 border-b border-slate-200 dark:border-slate-700/50 pb-2">
                             <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">2. Mainboard (Motherboard / Hauptplatine)</h4>
                             <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">Kürzel: MB</span>
                         </div>
-                        <div class="flex flex-col gap-3">
+                        <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
-                                <textarea id="comp_mb_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all">Das Mainboard verbindet alle Komponenten miteinander und ermöglicht den Datenaustausch zwischen ihnen.</textarea>
+                                <textarea id="comp_mb_func" oninput="updateProgress()" rows="4" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all">Das Mainboard verbindet alle Komponenten miteinander und ermöglicht den Datenaustausch zwischen ihnen.</textarea>
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
-                                <textarea id="comp_mb_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all">Das Mainboard ist wie ein Bahnhof: Alle Bauteile laufen hier zusammen und tauschen über die Gleise (Leiterbahnen) Informationen aus.</textarea>
+                                <textarea id="comp_mb_ana" oninput="updateProgress()" rows="4" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all">Das Mainboard ist wie ein Bahnhof: Alle Bauteile laufen hier zusammen und tauschen über die Gleise (Leiterbahnen) Informationen aus.</textarea>
                             </div>
                         </div>
                     </div>
@@ -434,19 +196,19 @@
                     <div class="w-full h-64 sm:h-96 overflow-hidden bg-slate-900">
                         <img src="assets/VL-Chassis.webp" alt="PC-Gehäuse" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                     </div>
-                    <div class="relative z-10 p-4">
+                    <div class="relative z-10 p-3">
                         <div class="mb-3 border-b border-slate-200 dark:border-slate-700/50 pb-2">
                             <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">3. PC-Gehäuse (Computer Case / Chassis)</h4>
                             <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">Formfaktoren: Tower, Desktop, Mini-ITX</span>
                         </div>
-                        <div class="flex flex-col gap-3">
+                        <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
-                                <textarea id="comp_case_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                                <textarea id="comp_case_func" oninput="updateProgress()" rows="4" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
-                                <textarea id="comp_case_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                                <textarea id="comp_case_ana" oninput="updateProgress()" rows="4" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
                             </div>
                         </div>
                     </div>
@@ -458,19 +220,19 @@
                     <div class="w-full h-64 sm:h-96 overflow-hidden bg-slate-900">
                         <img src="assets/VL-RAM.webp" alt="Arbeitsspeicher (RAM)" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                     </div>
-                    <div class="relative z-10 p-4">
+                    <div class="relative z-10 p-3">
                         <div class="mb-3 border-b border-slate-200 dark:border-slate-700/50 pb-2">
                             <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">4. Arbeitsspeicher (RAM - Random Access Memory)</h4>
                             <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">Kürzel: RAM</span>
                         </div>
-                        <div class="flex flex-col gap-3">
+                        <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
-                                <textarea id="comp_ram_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                                <textarea id="comp_ram_func" oninput="updateProgress()" rows="4" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
-                                <textarea id="comp_ram_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                                <textarea id="comp_ram_ana" oninput="updateProgress()" rows="4" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
                             </div>
                         </div>
                     </div>
@@ -482,19 +244,19 @@
                     <div class="w-full h-64 sm:h-96 overflow-hidden bg-slate-900">
                         <img src="assets/VL-SSD.webp" alt="Solid State Drive (SSD)" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                     </div>
-                    <div class="relative z-10 p-4">
+                    <div class="relative z-10 p-3">
                         <div class="mb-3 border-b border-slate-200 dark:border-slate-700/50 pb-2">
                             <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">5. Solid State Drive (SSD)</h4>
                             <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">Typ: Elektronischer Flash-Massenspeicher (2.5" SATA)</span>
                         </div>
-                        <div class="flex flex-col gap-3">
+                        <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
-                                <textarea id="comp_ssd_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                                <textarea id="comp_ssd_func" oninput="updateProgress()" rows="4" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
-                                <textarea id="comp_ssd_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                                <textarea id="comp_ssd_ana" oninput="updateProgress()" rows="4" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
                             </div>
                         </div>
                     </div>
@@ -506,19 +268,19 @@
                     <div class="w-full h-64 sm:h-96 overflow-hidden bg-slate-900">
                         <img src="assets/VL-NVMe.webp" alt="NVMe-SSD (M.2)" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                     </div>
-                    <div class="relative z-10 p-4">
+                    <div class="relative z-10 p-3">
                         <div class="mb-3 border-b border-slate-200 dark:border-slate-700/50 pb-2">
                             <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">6. NVMe-SSD (M.2)</h4>
                             <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">Typ: Flash-Speicher direkt über die PCIe-Schnittstelle</span>
                         </div>
-                        <div class="flex flex-col gap-3">
+                        <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
-                                <textarea id="comp_nvme_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                                <textarea id="comp_nvme_func" oninput="updateProgress()" rows="4" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
-                                <textarea id="comp_nvme_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                                <textarea id="comp_nvme_ana" oninput="updateProgress()" rows="4" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
                             </div>
                         </div>
                     </div>
@@ -530,19 +292,19 @@
                     <div class="w-full h-64 sm:h-96 overflow-hidden bg-slate-900">
                         <img src="assets/VL-HDD.webp" alt="Festplatte (HDD)" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                     </div>
-                    <div class="relative z-10 p-4">
+                    <div class="relative z-10 p-3">
                         <div class="mb-3 border-b border-slate-200 dark:border-slate-700/50 pb-2">
                             <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">7. Festplatte (HDD - Hard Disk Drive)</h4>
                             <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">Typ: Magnetischer Massenspeicher</span>
                         </div>
-                        <div class="flex flex-col gap-3">
+                        <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
-                                <textarea id="comp_hdd_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                                <textarea id="comp_hdd_func" oninput="updateProgress()" rows="4" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
-                                <textarea id="comp_hdd_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                                <textarea id="comp_hdd_ana" oninput="updateProgress()" rows="4" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
                             </div>
                         </div>
                     </div>
@@ -554,19 +316,19 @@
                     <div class="w-full h-64 sm:h-96 overflow-hidden bg-slate-900">
                         <img src="assets/VL-GPU.webp" alt="Grafikkarte (GPU)" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                     </div>
-                    <div class="relative z-10 p-4">
+                    <div class="relative z-10 p-3">
                         <div class="mb-3 border-b border-slate-200 dark:border-slate-700/50 pb-2">
                             <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">8. Grafikkarte (GPU - Graphics Processing Unit)</h4>
                             <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">Kürzel: GPU</span>
                         </div>
-                        <div class="flex flex-col gap-3">
+                        <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
-                                <textarea id="comp_gpu_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                                <textarea id="comp_gpu_func" oninput="updateProgress()" rows="4" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
-                                <textarea id="comp_gpu_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                                <textarea id="comp_gpu_ana" oninput="updateProgress()" rows="4" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
                             </div>
                         </div>
                     </div>
@@ -578,19 +340,19 @@
                     <div class="w-full h-64 sm:h-96 overflow-hidden bg-slate-900">
                         <img src="assets/VL-PSU.webp" alt="Netzteil (PSU)" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                     </div>
-                    <div class="relative z-10 p-4">
+                    <div class="relative z-10 p-3">
                         <div class="mb-3 border-b border-slate-200 dark:border-slate-700/50 pb-2">
                             <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">9. Netzteil (PSU - Power Supply Unit)</h4>
                             <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">Kürzel: PSU</span>
                         </div>
-                        <div class="flex flex-col gap-3">
+                        <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
-                                <textarea id="comp_psu_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                                <textarea id="comp_psu_func" oninput="updateProgress()" rows="4" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
-                                <textarea id="comp_psu_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                                <textarea id="comp_psu_ana" oninput="updateProgress()" rows="4" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
                             </div>
                         </div>
                     </div>
@@ -602,19 +364,19 @@
                     <div class="w-full h-64 sm:h-96 overflow-hidden bg-slate-900">
                         <img src="assets/VL-CPUCOOLER.webp" alt="CPU-Kühler" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                     </div>
-                    <div class="relative z-10 p-4">
+                    <div class="relative z-10 p-3">
                         <div class="mb-3 border-b border-slate-200 dark:border-slate-700/50 pb-2">
                             <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">10. Kühlung (CPU-Kühler & Gehäuselüfter)</h4>
                             <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">Varianten: Luftkühlung oder Wasserkühlung (AIO)</span>
                         </div>
-                        <div class="flex flex-col gap-3">
+                        <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
-                                <textarea id="comp_cool_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                                <textarea id="comp_cool_func" oninput="updateProgress()" rows="4" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
-                                <textarea id="comp_cool_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                                <textarea id="comp_cool_ana" oninput="updateProgress()" rows="4" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
                             </div>
                         </div>
                     </div>
@@ -626,19 +388,19 @@
                     <div class="w-full h-64 sm:h-96 overflow-hidden bg-slate-900">
                         <img src="assets/VL-Network.webp" alt="Netzwerkkarte / WLAN-Modul" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                     </div>
-                    <div class="relative z-10 p-4">
+                    <div class="relative z-10 p-3">
                         <div class="mb-3 border-b border-slate-200 dark:border-slate-700/50 pb-2">
                             <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">11. Netzwerkkarte / WLAN-Modul (NIC)</h4>
                             <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">Typ: LAN (Ethernet) / Wi-Fi Karte</span>
                         </div>
-                        <div class="flex flex-col gap-3">
+                        <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
-                                <textarea id="comp_net_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                                <textarea id="comp_net_func" oninput="updateProgress()" rows="4" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
-                                <textarea id="comp_net_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                                <textarea id="comp_net_ana" oninput="updateProgress()" rows="4" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
                             </div>
                         </div>
                     </div>
@@ -650,115 +412,92 @@
                     <div class="w-full h-64 sm:h-96 overflow-hidden bg-slate-900">
                         <img src="assets/VL-Sound.webp" alt="Soundkarte" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                     </div>
-                    <div class="relative z-10 p-4">
+                    <div class="relative z-10 p-3">
                         <div class="mb-3 border-b border-slate-200 dark:border-slate-700/50 pb-2">
                             <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">12. Soundkarte (Audio-Interface)</h4>
                             <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">Typ: PCIe-Erweiterungskarte für Audio-Ein-/Ausgabe</span>
                         </div>
-                        <div class="flex flex-col gap-3">
+                        <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
-                                <textarea id="comp_sound_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                                <textarea id="comp_sound_func" oninput="updateProgress()" rows="4" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
-                                <textarea id="comp_sound_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                                <textarea id="comp_sound_ana" oninput="updateProgress()" rows="4" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 13. CD-Laufwerk -->
+                <!-- 13. CD/DVD-Laufwerk (zusammengefasst) -->
                 <div class="comp-card rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative group overflow-hidden">
                     <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
-                    <div class="w-full h-64 sm:h-96 overflow-hidden bg-slate-900">
+                    <div class="w-full h-64 sm:h-96 overflow-hidden bg-slate-900 grid grid-cols-2 gap-px">
                         <img src="assets/VL-CD.webp" alt="CD-Laufwerk" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                    </div>
-                    <div class="relative z-10 p-4">
-                        <div class="mb-3 border-b border-slate-200 dark:border-slate-700/50 pb-2">
-                            <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">13. CD-Laufwerk (optisches Laufwerk)</h4>
-                            <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">Speichermedium: Compact Disc (CD)</span>
-                        </div>
-                        <div class="flex flex-col gap-3">
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
-                                <textarea id="comp_cd_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
-                                <textarea id="comp_cd_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 14. DVD-Laufwerk -->
-                <div class="comp-card rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative group overflow-hidden">
-                    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
-                    <div class="w-full h-64 sm:h-96 overflow-hidden bg-slate-900">
                         <img src="assets/VL-DVD.webp" alt="DVD-Laufwerk" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                     </div>
-                    <div class="relative z-10 p-4">
+                    <div class="relative z-10 p-3">
                         <div class="mb-3 border-b border-slate-200 dark:border-slate-700/50 pb-2">
-                            <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">14. DVD-Laufwerk (optisches Laufwerk)</h4>
-                            <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">Speichermedium: Digital Versatile Disc (DVD)</span>
+                            <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">13. CD-/DVD-Laufwerk (optisches Laufwerk)</h4>
+                            <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">Speichermedium: Compact Disc (CD) / Digital Versatile Disc (DVD)</span>
                         </div>
-                        <div class="flex flex-col gap-3">
+                        <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
-                                <textarea id="comp_dvd_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                                <textarea id="comp_cddvd_func" oninput="updateProgress()" rows="4" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
-                                <textarea id="comp_dvd_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                                <textarea id="comp_cddvd_ana" oninput="updateProgress()" rows="4" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 15. CMOS-Batterie -->
+                <!-- 14. CMOS-Batterie -->
                 <div class="comp-card rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative group overflow-hidden">
                     <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
                     <div class="w-full h-64 sm:h-96 overflow-hidden bg-slate-900">
                         <img src="assets/VL-CMOS.webp" alt="CMOS-Batterie" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                     </div>
-                    <div class="relative z-10 p-4">
+                    <div class="relative z-10 p-3">
                         <div class="mb-3 border-b border-slate-200 dark:border-slate-700/50 pb-2">
-                            <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">15. CMOS-Batterie (BIOS-Pufferbatterie)</h4>
+                            <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">14. CMOS-Batterie (BIOS-Pufferbatterie)</h4>
                             <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">Typ: Knopfzelle (meist CR2032)</span>
                         </div>
-                        <div class="flex flex-col gap-3">
+                        <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
-                                <textarea id="comp_cmos_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                                <textarea id="comp_cmos_func" oninput="updateProgress()" rows="4" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
-                                <textarea id="comp_cmos_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                                <textarea id="comp_cmos_ana" oninput="updateProgress()" rows="4" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 16. Sockel-Kompatibilität -->
+                <!-- 15. Sockel-Kompatibilität -->
                 <div class="comp-card rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative group overflow-hidden">
                     <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
                     <div class="w-full h-64 sm:h-96 overflow-hidden bg-slate-900">
                         <img src="assets/VL-CPU-C.webp" alt="Sockel-Kompatibilität von CPU und Kühler" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                     </div>
-                    <div class="relative z-10 p-4">
+                    <div class="relative z-10 p-3">
                         <div class="mb-3 border-b border-slate-200 dark:border-slate-700/50 pb-2">
-                            <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">16. Sockel-Kompatibilität (CPU ↔ Kühler ↔ Mainboard)</h4>
+                            <h4 class="font-bold text-slate-900 dark:text-slate-100 text-[15px]">15. Sockel-Kompatibilität (CPU ↔ Kühler ↔ Mainboard)</h4>
                             <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">Beispiel: Sockel LGA1700 (Intel) / AM5 (AMD)</span>
                         </div>
-                        <div class="flex flex-col gap-3">
+                        <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
-                                <textarea id="comp_socket_func" oninput="updateProgress()" rows="2" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                                <textarea id="comp_socket_func" oninput="updateProgress()" rows="4" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie)</label>
-                                <textarea id="comp_socket_ana" oninput="updateProgress()" rows="2" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
+                                <textarea id="comp_socket_ana" oninput="updateProgress()" rows="4" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
                             </div>
                         </div>
                     </div>
@@ -766,470 +505,28 @@
 
             </div>
         </section>
-
-        <section class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 print-card space-y-6 carousel-slide" id="slide2">
-            <div class="border-b border-slate-200 dark:border-slate-800 pb-4">
-                <div class="inline-flex items-center gap-1.5 bg-onedrive-50 dark:bg-onedrive-950 text-onedrive-700 dark:text-onedrive-300 text-xs font-bold px-3 py-1 rounded-full border border-onedrive-200 dark:border-onedrive-800 uppercase mb-2">
-                    <i class="fa-solid fa-arrows-split-up-and-left"></i> Auftrag 2
-                </div>
-                <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100">Das EVA-Prinzip & Peripheriegeräte</h3>
-                <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
-                    Jedes Datenverarbeitungssystem arbeitet nach dem Schema <strong>Eingabe &rarr; Verarbeitung &rarr; Ausgabe</strong>.  
-                    Ziehe die untenstehenden Bauteil-Chips per <strong>Drag & Drop</strong> (am PC & Smartphone) in die passenden Felder oder tippe sie an.
-                </p>
-            </div>
-
-            <!-- Device Tag Bank -->
-            <div class="space-y-4">
-                <div id="bankZone" class="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 transition-all min-h-[90px]" data-dropzone="bank">
-                    <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block mb-3 flex items-center justify-between">
-                        <span><i class="fa-solid fa-hand-pointer mr-1"></i> Bauteile-Vorrat (Ziehen oder Tippen):</span>
-                        <span class="text-[10px] text-onedrive-600 dark:text-onedrive-400 font-normal"><i class="fa-solid fa-mobile-screen mr-1"></i> Mobile & Desktop Drag & Drop</span>
-                    </span>
-                    <div id="deviceBank" class="flex flex-wrap gap-2.5 min-h-[48px] items-center">
-                        <!-- Filled by JS -->
-                    </div>
-                </div>
-
-                <!-- EVA Columns Container -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    
-                    <!-- EINGABE -->
-                    <div id="zoneContainer_eingabe" class="border-2 border-dashed drop-e rounded-2xl p-4 flex flex-col min-h-[220px] transition-all" data-dropzone="eingabe">
-                        <div class="flex items-center justify-between pb-3 mb-3 border-b border-sky-200 dark:border-sky-800 pointer-events-none">
-                            <span class="font-bold text-orange-900 dark:text-orange-300 text-sm flex items-center gap-1.5">
-                                <i class="fa-solid fa-keyboard"></i> 1. EINGABE (Input)
-                            </span>
-                            <span class="text-xs bg-orange-200 dark:bg-orange-900 text-orange-800 dark:text-orange-200 font-bold px-2.5 py-0.5 rounded-full" id="cnt_eingabe">0</span>
-                        </div>
-                        <div id="zone_eingabe" class="space-y-2 flex-grow p-1 min-h-[120px]" data-dropzone="eingabe">
-                            <!-- Items go here -->
-                        </div>
-                    </div>
-
-                    <!-- VERARBEITUNG -->
-                    <div id="zoneContainer_verarbeitung" class="border-2 border-dashed drop-v rounded-2xl p-4 flex flex-col min-h-[220px] transition-all" data-dropzone="verarbeitung">
-                        <div class="flex items-center justify-between pb-3 mb-3 border-b border-purple-200 dark:border-purple-800 pointer-events-none">
-                            <span class="font-bold text-cyan-900 dark:text-cyan-300 text-sm flex items-center gap-1.5">
-                                <i class="fa-solid fa-gear"></i> 2. VERARBEITUNG (Processing)
-                            </span>
-                            <span class="text-xs bg-cyan-200 dark:bg-cyan-900 text-cyan-800 dark:text-cyan-200 font-bold px-2.5 py-0.5 rounded-full" id="cnt_verarbeitung">0</span>
-                        </div>
-                        <div id="zone_verarbeitung" class="space-y-2 flex-grow p-1 min-h-[120px]" data-dropzone="verarbeitung">
-                            <!-- Items go here -->
-                        </div>
-                    </div>
-
-                    <!-- AUSGABE -->
-                    <div id="zoneContainer_ausgabe" class="border-2 border-dashed drop-a rounded-2xl p-4 flex flex-col min-h-[220px] transition-all" data-dropzone="ausgabe">
-                        <div class="flex items-center justify-between pb-3 mb-3 border-b border-emerald-200 dark:border-emerald-800 pointer-events-none">
-                            <span class="font-bold text-emerald-900 dark:text-emerald-300 text-sm flex items-center gap-1.5">
-                                <i class="fa-solid fa-desktop"></i> 3. AUSGABE (Output)
-                            </span>
-                            <span class="text-xs bg-emerald-200 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200 font-bold px-2.5 py-0.5 rounded-full" id="cnt_ausgabe">0</span>
-                        </div>
-                        <div id="zone_ausgabe" class="space-y-2 flex-grow p-1 min-h-[120px]" data-dropzone="ausgabe">
-                            <!-- Items go here -->
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </section>
-
-        <section class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 print-card space-y-6 carousel-slide" id="slide3">
-            <div class="border-b border-slate-200 dark:border-slate-800 pb-4">
-                <div class="inline-flex items-center gap-1.5 bg-onedrive-50 dark:bg-onedrive-950 text-onedrive-700 dark:text-onedrive-300 text-xs font-bold px-3 py-1 rounded-full border border-onedrive-200 dark:border-onedrive-800 uppercase mb-2">
-                    <i class="fa-solid fa-database"></i> Auftrag 3
-                </div>
-                <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100">Speichervergleich: RAM vs. SSD vs. HDD</h3>
-                <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Computerspeicher unterscheidet sich hinsichtlich Geschwindigkeit, Bauweise und Beständigkeit.</p>
-            </div>
-
-            <!-- Question 1 -->
-            <div class="space-y-2">
-                <label class="block text-sm font-semibold text-slate-800 dark:text-slate-200">
-                    1. Erkläre den Hauptunterschied zwischen Arbeitsspeicher (RAM) und einer SSD (Massenspeicher) in eigenen Worten:
-                </label>
-                <textarea id="task3_diff" oninput="updateProgress()" rows="3" placeholder="Unterschied in eigenen Worten erklären..." class="w-full p-3.5 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100"></textarea>
-            </div>
-
-            <!-- Question 2 Table -->
-            <div class="space-y-3">
-                <label class="block text-sm font-semibold text-slate-800 dark:text-slate-200">
-                    2. Vergleichstabelle ausfüllen: Magnetische Festplatte (HDD) vs. Solid State Drive (SSD)
-                </label>
-                <div class="overflow-x-auto">
-                    <table class="w-full border-collapse text-xs sm:text-sm rounded-xl overflow-hidden ring-1 ring-slate-200 dark:ring-white/10 shadow-lg">
-                        <thead>
-                            <tr class="bg-slate-100/80 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 backdrop-blur-md">
-                                <th class="p-4 text-left font-bold w-1/3 border-b border-slate-200 dark:border-white/10 uppercase tracking-wider text-[10px]">Eigenschaft</th>
-                                <th class="p-4 text-left font-bold w-1/3 border-b border-slate-200 dark:border-white/10 uppercase tracking-wider text-[10px]">HDD (Mechanische Festplatte)</th>
-                                <th class="p-4 text-left font-bold w-1/3 border-b border-slate-200 dark:border-white/10 uppercase tracking-wider text-[10px]">SSD (Solid State Drive)</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
-                            <tr>
-                                <td class="p-4 border-b border-slate-100 dark:border-white/5 font-semibold bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200">Funktionsweise</td>
-                                <td class="p-4 border-b border-slate-100 dark:border-white/5 text-slate-600 dark:text-slate-400">Magnetische Scheiben mit Lesekopf</td>
-                                <td class="p-4 border-b border-slate-100 dark:border-white/5 text-slate-600 dark:text-slate-400">Elektronische Flash-Speicherchips</td>
-                            </tr>
-                            <tr>
-                                <td class="p-4 border-b border-slate-100 dark:border-white/5 font-semibold bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200">Geschwindigkeit</td>
-                                <td class="p-2 border-b border-slate-100 dark:border-white/5">
-                                    <input type="text" id="hdd_speed" oninput="updateProgress()" placeholder="Geschwindigkeit..." class="w-full p-2.5 bg-transparent border border-transparent hover:border-slate-300 dark:hover:border-slate-600 focus:bg-white dark:focus:bg-slate-800 focus:border-onedrive-500 rounded-lg text-xs dark:text-slate-100 transition-all font-medium">
-                                </td>
-                                <td class="p-2 border-b border-slate-100 dark:border-white/5">
-                                    <input type="text" id="ssd_speed" oninput="updateProgress()" placeholder="Geschwindigkeit..." class="w-full p-2.5 bg-transparent border border-transparent hover:border-slate-300 dark:hover:border-slate-600 focus:bg-white dark:focus:bg-slate-800 focus:border-onedrive-500 rounded-lg text-xs dark:text-slate-100 transition-all font-medium">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="p-4 border-b border-slate-100 dark:border-white/5 font-semibold bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200">Stossfestigkeit</td>
-                                <td class="p-2 border-b border-slate-100 dark:border-white/5">
-                                    <input type="text" id="hdd_shock" oninput="updateProgress()" placeholder="Stossfestigkeit..." class="w-full p-2.5 bg-transparent border border-transparent hover:border-slate-300 dark:hover:border-slate-600 focus:bg-white dark:focus:bg-slate-800 focus:border-onedrive-500 rounded-lg text-xs dark:text-slate-100 transition-all font-medium">
-                                </td>
-                                <td class="p-2 border-b border-slate-100 dark:border-white/5">
-                                    <input type="text" id="ssd_shock" oninput="updateProgress()" placeholder="Stossfestigkeit..." class="w-full p-2.5 bg-transparent border border-transparent hover:border-slate-300 dark:hover:border-slate-600 focus:bg-white dark:focus:bg-slate-800 focus:border-onedrive-500 rounded-lg text-xs dark:text-slate-100 transition-all font-medium">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="p-4 border-b border-slate-100 dark:border-white/5 font-semibold bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200">Geräuschpegel</td>
-                                <td class="p-2 border-b border-slate-100 dark:border-white/5">
-                                    <input type="text" id="hdd_noise" oninput="updateProgress()" placeholder="Geräuschpegel..." class="w-full p-2.5 bg-transparent border border-transparent hover:border-slate-300 dark:hover:border-slate-600 focus:bg-white dark:focus:bg-slate-800 focus:border-onedrive-500 rounded-lg text-xs dark:text-slate-100 transition-all font-medium">
-                                </td>
-                                <td class="p-2 border-b border-slate-100 dark:border-white/5">
-                                    <input type="text" id="ssd_noise" oninput="updateProgress()" placeholder="Geräuschpegel..." class="w-full p-2.5 bg-transparent border border-transparent hover:border-slate-300 dark:hover:border-slate-600 focus:bg-white dark:focus:bg-slate-800 focus:border-onedrive-500 rounded-lg text-xs dark:text-slate-100 transition-all font-medium">
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <section class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 print-card space-y-6 carousel-slide" id="slide4">
-            <div class="border-b border-slate-200 dark:border-slate-800 pb-4">
-                <div class="inline-flex items-center gap-1.5 bg-onedrive-50 dark:bg-onedrive-950 text-onedrive-700 dark:text-onedrive-300 text-xs font-bold px-3 py-1 rounded-full border border-onedrive-200 dark:border-onedrive-800 uppercase mb-2">
-                    <i class="fa-solid fa-cart-shopping"></i> Auftrag 4
-                </div>
-                <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100">Transferaufgabe: Der PC-Kaufberater</h3>
-                <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Lies die Anforderungen von Person A und Person B aufmerksam durch.</p>
-            </div>
-
-            <!-- Buyer Comparison Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="comp-card rounded-2xl p-6 border-t-4 border-t-sky-500 border border-slate-200 dark:border-slate-800/50 bg-gradient-to-b from-sky-500/5 to-transparent hover:shadow-lg hover:-translate-y-1 transition-all">
-                    <span class="font-bold text-onedrive-600 dark:text-onedrive-400 flex items-center gap-2 text-sm">
-                        <i class="fa-solid fa-user-tie"></i> Person A (Büro & Hausaufgaben):
-                    </span>
-                    <p class="text-xs text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">
-                        Schreibt Aufsätze mit Microsoft Word, verwaltet Tabellen in Excel, sendet E-Mails und schaut Lehrvideos auf YouTube.
-                    </p>
-                </div>
-                <div class="comp-card rounded-2xl p-6 border-t-4 border-t-purple-500 border border-slate-200 dark:border-slate-800/50 bg-gradient-to-b from-purple-500/5 to-transparent hover:shadow-lg hover:-translate-y-1 transition-all">
-                    <span class="font-bold text-purple-700 dark:text-purple-300 flex items-center gap-2 text-sm">
-                        <i class="fa-solid fa-gamepad"></i> Person B (Gamer & Content Creator):
-                    </span>
-                    <p class="text-xs text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">
-                        Spielt grafikintensive 3D-Spiele (z.B. Fortnite, GTA) und rendert hochauflösende 4K-Videos für soziale Medien.
-                    </p>
-                </div>
-            </div>
-
-            <div class="space-y-4 pt-2">
-                <div>
-                    <label class="block text-sm font-semibold text-slate-800 dark:text-slate-200 mb-1.5">
-                        Welches Hauptbauteil ist für <strong>Person B</strong> besonders wichtig, das für <strong>Person A</strong> eher nebensächlich ist?
-                    </label>
-                    <select id="task4_component" onchange="updateProgress()" class="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none text-sm font-medium dark:text-slate-100">
-                        <option value="">-- Bitte auswählen --</option>
-                        <option value="gpu">Leistungsstarke dedizierte Grafikkarte (GPU)</option>
-                        <option value="psu">Standard-Netzteil (PSU)</option>
-                        <option value="dvd">DVD-Laufwerk</option>
-                        <option value="keyboard">Standard-Tastatur</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-semibold text-slate-800 dark:text-slate-200 mb-1.5">
-                        Begründe deine Entscheidung ausführlich:
-                    </label>
-                    <textarea id="task4_reason" oninput="updateProgress()" rows="3" placeholder="Begründung eingeben..." class="w-full p-3.5 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100"></textarea>
-                </div>
-            </div>
-        </section>
-
-        <section class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 print-card space-y-6 carousel-slide" id="slide5">
-            <div class="border-b border-slate-200 dark:border-slate-800 pb-4 flex items-center justify-between">
-                <div>
-                    <div class="inline-flex items-center gap-1.5 bg-onedrive-50 dark:bg-onedrive-950 text-onedrive-700 dark:text-onedrive-300 text-xs font-bold px-3 py-1 rounded-full border border-onedrive-200 dark:border-onedrive-800 uppercase mb-2">
-                        <i class="fa-solid fa-clipboard-check"></i> Auftrag 5
-                    </div>
-                    <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100">Hardware-Check: Teste dein Wissen (10 Fragen zu den Kernkomponenten)</h3>
-                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Beantworte zu den folgenden 10 Kernkomponenten die jeweils richtige Fachfrage.</p>
-                </div>
-                <div class="hidden md:flex w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-400 items-center justify-center text-xl">
-                    <i class="fa-solid fa-list-check"></i>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-                <!-- 1. PC-Gehäuse -->
-                <div class="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-xl border border-slate-200 dark:border-slate-700/70 space-y-2">
-                    <p class="font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                        <span class="w-5 h-5 rounded-full bg-onedrive-500 text-white text-[10px] flex items-center justify-center shrink-0">1</span>
-                        1. PC-Gehäuse: Welche Hauptfunktion erfüllt es?
-                    </p>
-                    <div class="space-y-1.5 text-slate-700 dark:text-slate-300">
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q1" value="0" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Es verarbeitet logische Daten und Rechenoperationen.
-                        </label>
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q1" value="1" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Es schützt Bauteile vor Staub/Schäden & sorgt für gezielten Luftstrom.
-                        </label>
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q1" value="0" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Es speichert Fotos und Betriebssystem-Dateien langfristig ab.
-                        </label>
-                    </div>
-                </div>
-
-                <!-- 2. Mainboard -->
-                <div class="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-xl border border-slate-200 dark:border-slate-700/70 space-y-2">
-                    <p class="font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                        <span class="w-5 h-5 rounded-full bg-onedrive-500 text-white text-[10px] flex items-center justify-center shrink-0">2</span>
-                        2. Mainboard: Warum gilt es als Zentrale des PCs?
-                    </p>
-                    <div class="space-y-1.5 text-slate-700 dark:text-slate-300">
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q2" value="1" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Weil es alle Bauteile miteinander verbindet & Datenaustausch steuert.
-                        </label>
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q2" value="0" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Weil es den PC mit Wechselstrom versorgt.
-                        </label>
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q2" value="0" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Weil es für die Bildausgabe auf dem Monitor zuständig ist.
-                        </label>
-                    </div>
-                </div>
-
-                <!-- 3. CPU -->
-                <div class="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-xl border border-slate-200 dark:border-slate-700/70 space-y-2">
-                    <p class="font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                        <span class="w-5 h-5 rounded-full bg-onedrive-500 text-white text-[10px] flex items-center justify-center shrink-0">3</span>
-                        3. Prozessor (CPU): Wo genau befindet er sich?
-                    </p>
-                    <div class="space-y-1.5 text-slate-700 dark:text-slate-300">
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q3" value="0" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Fest verbaut im Gehäuse-Netzteil.
-                        </label>
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q3" value="1" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Im CPU-Sockel des Mainboards direkt unter dem Kühler.
-                        </label>
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q3" value="0" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Auf der Rückseite des Monitors.
-                        </label>
-                    </div>
-                </div>
-
-                <!-- 4. RAM -->
-                <div class="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-xl border border-slate-200 dark:border-slate-700/70 space-y-2">
-                    <p class="font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                        <span class="w-5 h-5 rounded-full bg-onedrive-500 text-white text-[10px] flex items-center justify-center shrink-0">4</span>
-                        4. Arbeitsspeicher (RAM): Was passiert beim Ausschalten?
-                    </p>
-                    <div class="space-y-1.5 text-slate-700 dark:text-slate-300">
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q4" value="1" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Alle enthaltenen Daten gehen verloren (flüchtiger Speicher).
-                        </label>
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q4" value="0" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Daten bleiben dauerhaft ohne Strom abgespeichert.
-                        </label>
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q4" value="0" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Daten werden automatisch an den Drucker übertragen.
-                        </label>
-                    </div>
-                </div>
-
-                <!-- 5. SSD -->
-                <div class="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-xl border border-slate-200 dark:border-slate-700/70 space-y-2">
-                    <p class="font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                        <span class="w-5 h-5 rounded-full bg-onedrive-500 text-white text-[10px] flex items-center justify-center shrink-0">5</span>
-                        5. SSD: Warum ist sie viel schneller als eine HDD?
-                    </p>
-                    <div class="space-y-1.5 text-slate-700 dark:text-slate-300">
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q5" value="0" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Weil sie rotierende Scheiben mit hoher Drehzahl nutzt.
-                        </label>
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q5" value="1" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Weil sie rein elektronische Flash-Chips ohne Mechanik nutzt.
-                        </label>
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q5" value="0" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Weil sie direkt vom Lüfter gekühlt wird.
-                        </label>
-                    </div>
-                </div>
-
-                <!-- 6. HDD -->
-                <div class="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-xl border border-slate-200 dark:border-slate-700/70 space-y-2">
-                    <p class="font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                        <span class="w-5 h-5 rounded-full bg-onedrive-500 text-white text-[10px] flex items-center justify-center shrink-0">6</span>
-                        6. HDD (Festplatte): Welches Merkmal ist typisch?
-                    </p>
-                    <div class="space-y-1.5 text-slate-700 dark:text-slate-300">
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q6" value="1" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Rotierende Magnet-Scheiben mit beweglichem Lesekopf.
-                        </label>
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q6" value="0" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Völlig erschütterungsfest und lautlos im Betrieb.
-                        </label>
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q6" value="0" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Verliert Daten sofort bei Stromausfall.
-                        </label>
-                    </div>
-                </div>
-
-                <!-- 7. GPU -->
-                <div class="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-xl border border-slate-200 dark:border-slate-700/70 space-y-2">
-                    <p class="font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                        <span class="w-5 h-5 rounded-full bg-onedrive-500 text-white text-[10px] flex items-center justify-center shrink-0">7</span>
-                        7. Grafikkarte (GPU): Was ist ihre Hauptaufgabe?
-                    </p>
-                    <div class="space-y-1.5 text-slate-700 dark:text-slate-300">
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q7" value="0" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Ausdrucken von Office-Dokumenten.
-                        </label>
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q7" value="1" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Berechnen & Rendern von 3D-Grafiken, Spielen & Videos.
-                        </label>
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q7" value="0" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Empfang von WLAN-Signalen vom Router.
-                        </label>
-                    </div>
-                </div>
-
-                <!-- 8. PSU -->
-                <div class="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-xl border border-slate-200 dark:border-slate-700/70 space-y-2">
-                    <p class="font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                        <span class="w-5 h-5 rounded-full bg-onedrive-500 text-white text-[10px] flex items-center justify-center shrink-0">8</span>
-                        8. Netzteil (PSU): Warum ist es unentbehrlich?
-                    </p>
-                    <div class="space-y-1.5 text-slate-700 dark:text-slate-300">
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q8" value="1" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Wandelt 230V Steckdosenstrom in Gleichstrom für Bauteile um.
-                        </label>
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q8" value="0" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Speichert E-Mails und Dateien bei Stromausfall ab.
-                        </label>
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q8" value="0" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Steuert Tastatur- und Mauseingaben.
-                        </label>
-                    </div>
-                </div>
-
-                <!-- 9. Kühlung -->
-                <div class="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-xl border border-slate-200 dark:border-slate-700/70 space-y-2">
-                    <p class="font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                        <span class="w-5 h-5 rounded-full bg-onedrive-500 text-white text-[10px] flex items-center justify-center shrink-0">9</span>
-                        9. Kühlung: Was würde ohne Kühler geschehen?
-                    </p>
-                    <div class="space-y-1.5 text-slate-700 dark:text-slate-300">
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q9" value="0" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Der PC schaltet sich aus Ersparnisgründen ab.
-                        </label>
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q9" value="1" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> CPU/GPU überhitzen rasch und erleiden Hardwareschäden.
-                        </label>
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q9" value="0" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Der Monitor zeigt nur Schwarz-Weiss-Bilder an.
-                        </label>
-                    </div>
-                </div>
-
-                <!-- 10. Netzwerkkarte / NIC -->
-                <div class="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-xl border border-slate-200 dark:border-slate-700/70 space-y-2">
-                    <p class="font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                        <span class="w-5 h-5 rounded-full bg-onedrive-500 text-white text-[10px] flex items-center justify-center shrink-0">10</span>
-                        10. Netzwerkkarte / WLAN: Wozu dient diese Karte?
-                    </p>
-                    <div class="space-y-1.5 text-slate-700 dark:text-slate-300">
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q10" value="1" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Verbindet den PC per LAN oder Wi-Fi mit dem Netzwerk/Internet.
-                        </label>
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q10" value="0" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Speichert Musik- und Bilddateien dauerhaft auf Chips.
-                        </label>
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q10" value="0" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Wandelt Töne in elektrische Signale für Boxen um.
-                        </label>
-                    </div>
-                </div>
-            </div>
-
-            <div id="quizResult" class="hidden p-3.5 rounded-xl text-center font-bold text-xs shadow-sm"></div>
-        </section>
-        </div>
-        <!-- /#carouselTrack -->
 
         <!-- Carousel Controls (Bottom): Zurück / Dots / Weiter -->
         <div id="carouselNavRow" class="no-print flex items-center justify-between gap-3">
             <button id="carouselPrevBtn" onclick="carouselPrev()" type="button" class="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-bold rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 shadow-sm transition disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-white">
                 <i class="fa-solid fa-chevron-left"></i> <span class="hidden sm:inline">Zurück</span>
             </button>
-            <div class="flex items-center gap-2" id="carouselDots">
-                <button onclick="carouselShow(0)" type="button" class="carousel-dot h-2.5 rounded-full bg-onedrive-500 w-6 transition-all" data-idx="0" aria-label="Zu Auftrag 1"></button>
-                <button onclick="carouselShow(1)" type="button" class="carousel-dot h-2.5 w-2.5 rounded-full bg-slate-300 dark:bg-slate-700 transition-all" data-idx="1" aria-label="Zu Auftrag 2"></button>
-                <button onclick="carouselShow(2)" type="button" class="carousel-dot h-2.5 w-2.5 rounded-full bg-slate-300 dark:bg-slate-700 transition-all" data-idx="2" aria-label="Zu Auftrag 3"></button>
-                <button onclick="carouselShow(3)" type="button" class="carousel-dot h-2.5 w-2.5 rounded-full bg-slate-300 dark:bg-slate-700 transition-all" data-idx="3" aria-label="Zu Auftrag 4"></button>
-                <button onclick="carouselShow(4)" type="button" class="carousel-dot h-2.5 w-2.5 rounded-full bg-slate-300 dark:bg-slate-700 transition-all" data-idx="4" aria-label="Zu Auftrag 5"></button>
+            <div class="flex items-center gap-1.5 flex-wrap justify-center" id="carouselDots">
+                <!-- Dots werden per JS für alle 15 Bauteile erzeugt -->
             </div>
             <button id="carouselNextBtn" onclick="carouselNext()" type="button" class="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-bold rounded-xl bg-onedrive-500 hover:bg-onedrive-600 text-white shadow-sm transition disabled:opacity-30 disabled:cursor-not-allowed">
                 <span class="hidden sm:inline">Weiter</span> <i class="fa-solid fa-chevron-right"></i>
             </button>
         </div>
 
-        <!-- Fortschrittsbalken unten (0% - 100%, gesamtes Arbeitsblatt) -->
-        <div id="carouselProgressWrap" class="no-print bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-4">
-            <div class="flex items-center justify-between mb-1.5">
-                <span class="text-xs font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">
-                    <i class="fa-solid fa-chart-simple text-onedrive-500 mr-1"></i> Fortschritt Arbeitsblatt
-                </span>
-                <span id="carouselProgressLabel" class="text-xs font-extrabold text-onedrive-600 dark:text-onedrive-400">0%</span>
-            </div>
-            <div class="w-full bg-slate-200 dark:bg-slate-800 h-2.5 rounded-full overflow-hidden">
-                <div id="carouselProgressBar" class="bg-onedrive-500 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
-            </div>
-        </div>
-
     </main>
 
 
     <script>
-        /* Periphery Items List */
-        const devices = [
-            { id: 'd1', name: 'Tastatur', type: 'eingabe', icon: 'fa-keyboard' },
-            { id: 'd2', name: 'Monitor', type: 'ausgabe', icon: 'fa-display' },
-            { id: 'd3', name: 'Maus', type: 'eingabe', icon: 'fa-mouse' },
-            { id: 'd4', name: 'Prozessor (CPU)', type: 'verarbeitung', icon: 'fa-microchip' },
-            { id: 'd5', name: 'Lautsprecher', type: 'ausgabe', icon: 'fa-volume-high' },
-            { id: 'd6', name: 'Mikrofon', type: 'eingabe', icon: 'fa-microphone' },
-            { id: 'd7', name: 'Drucker', type: 'ausgabe', icon: 'fa-print' },
-            { id: 'd8', name: 'Webcam', type: 'eingabe', icon: 'fa-video' },
-            { id: 'd9', name: 'Kopfhörer', type: 'ausgabe', icon: 'fa-headphones' },
-            { id: 'd10', name: 'Grafikkarte (GPU)', type: 'verarbeitung', icon: 'fa-vr-cardboard' },
-            { id: 'd11', name: 'Arbeitsspeicher (RAM)', type: 'verarbeitung', icon: 'fa-memory' }
-        ];
-
-        /* Device placement state */
-        let deviceState = {};
-        let draggedDeviceId = null;
-        let activeTouchGhost = null;
-        let touchStartX = 0;
-        let touchStartY = 0;
-        let isTouchDragging = false;
         let currentPercentage = 0;
 
-        /* Carousel state (A3-Aufträge) */
-        const CAROUSEL_TOTAL = 5;
+        /* Carousel state (A3: Slide 0 = Einführung/Vorname/Klasse/Datum, Slides 1-15 = Bauteile) */
+        const CAROUSEL_TOTAL = 16;
         let carouselIndex = 0;
         let carouselMode = 'carousel'; // 'carousel' | 'list'
 
@@ -1252,8 +549,6 @@
             }
 
             setupUniversalAutoSave();
-            initDevices();
-            setupDropZones();
             initCarousel();
             updateProgress();
         });
@@ -1340,7 +635,7 @@ function applyDefaultClassAndDate() {
         }
 
         function initDarkMode() {
-            const savedTheme = localStorage.getItem('theme');
+            const savedTheme = localStorage.getItem('onedrive_theme');
             const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
             if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
                 document.documentElement.classList.add('dark');
@@ -1353,7 +648,7 @@ function applyDefaultClassAndDate() {
 
         function toggleDarkMode() {
             const isDark = document.documentElement.classList.toggle('dark');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            localStorage.setItem('onedrive_theme', isDark ? 'dark' : 'light');
             updateThemeIcon(isDark);
         }
 
@@ -1368,212 +663,21 @@ function applyDefaultClassAndDate() {
             }
         }
 
-        /* Device Chips & Drag and Drop Initialization */
-        function initDevices() {
-            devices.forEach(dev => {
-                if (!deviceState[dev.id]) {
-                    deviceState[dev.id] = 'bank';
-                }
-            });
-            renderDevices();
-        }
-
-        function setupDropZones() {
-            const zones = document.querySelectorAll('[data-dropzone]');
-            zones.forEach(zone => {
-                const zoneId = zone.getAttribute('data-dropzone');
-                
-                zone.addEventListener('dragover', (e) => {
-                    e.preventDefault();
-                    e.dataTransfer.dropEffect = 'move';
-                    highlightZone(zone, true);
-                });
-
-                zone.addEventListener('dragenter', (e) => {
-                    e.preventDefault();
-                    highlightZone(zone, true);
-                });
-
-                zone.addEventListener('dragleave', (e) => {
-                    highlightZone(zone, false);
-                });
-
-                zone.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    highlightZone(zone, false);
-                    const devId = e.dataTransfer.getData('text/plain') || draggedDeviceId;
-                    if (devId) {
-                        deviceState[devId] = zoneId;
-                        renderDevices();
-                        updateProgress();
-                    }
-                });
-            });
-        }
-
-        function highlightZone(zone, active) {
-            if (active) {
-                zone.classList.add('ring-4', 'ring-onedrive-400/50', 'scale-[1.02]');
-            } else {
-                zone.classList.remove('ring-4', 'ring-onedrive-400/50', 'scale-[1.02]');
-            }
-        }
-
-        function renderDevices() {
-            const bank = document.getElementById('deviceBank');
-            const zoneEingabe = document.getElementById('zone_eingabe');
-            const zoneVerarbeitung = document.getElementById('zone_verarbeitung');
-            const zoneAusgabe = document.getElementById('zone_ausgabe');
-
-            if (!bank || !zoneEingabe || !zoneVerarbeitung || !zoneAusgabe) return;
-
-            bank.innerHTML = '';
-            zoneEingabe.innerHTML = '';
-            zoneVerarbeitung.innerHTML = '';
-            zoneAusgabe.innerHTML = '';
-
-            let counts = { eingabe: 0, verarbeitung: 0, ausgabe: 0 };
-
-            devices.forEach(dev => {
-                const loc = deviceState[dev.id] || 'bank';
-                const chip = document.createElement('div');
-                
-                chip.draggable = true;
-                chip.setAttribute('data-device-id', dev.id);
-
-                chip.className = `inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold cursor-grab active:cursor-grabbing shadow-sm transition-all border select-none touch-none ${
-                    loc === 'bank' 
-                        ? 'bg-white dark:bg-slate-800 hover:bg-onedrive-50 dark:hover:bg-slate-700 border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200' 
-                        : loc === 'eingabe' 
-                            ? 'bg-orange-500 text-white border-orange-600 shadow-orange-500/20' 
-                            : loc === 'verarbeitung' 
-                                ? 'bg-cyan-500 text-white border-cyan-600 shadow-cyan-500/20' 
-                                : 'bg-emerald-600 text-white border-emerald-700 shadow-emerald-500/20'
-                }`;
-
-                chip.innerHTML = `<i class="fa-solid ${dev.icon} text-sm pointer-events-none"></i> <span class="pointer-events-none">${dev.name}</span> <i class="fa-solid fa-grip-dots-vertical text-[10px] opacity-40 ml-1 pointer-events-none"></i>`;
-
-                // Desktop HTML5 Drag events
-                chip.addEventListener('dragstart', (e) => {
-                    draggedDeviceId = dev.id;
-                    e.dataTransfer.setData('text/plain', dev.id);
-                    e.dataTransfer.effectAllowed = 'move';
-                    chip.classList.add('opacity-40', 'scale-95');
-                });
-
-                chip.addEventListener('dragend', () => {
-                    chip.classList.remove('opacity-40', 'scale-95');
-                    draggedDeviceId = null;
-                });
-
-                // Mobile Touch Drag & Tap events
-                chip.addEventListener('touchstart', (e) => handleTouchStart(e, dev, chip), { passive: false });
-                chip.addEventListener('touchmove', (e) => handleTouchMove(e), { passive: false });
-                chip.addEventListener('touchend', (e) => handleTouchEnd(e, dev.id), { passive: false });
-
-                if (loc === 'bank') {
-                    bank.appendChild(chip);
-                } else if (loc === 'eingabe') {
-                    zoneEingabe.appendChild(chip);
-                    counts.eingabe++;
-                } else if (loc === 'verarbeitung') {
-                    zoneVerarbeitung.appendChild(chip);
-                    counts.verarbeitung++;
-                } else if (loc === 'ausgabe') {
-                    zoneAusgabe.appendChild(chip);
-                    counts.ausgabe++;
-                }
-            });
-
-            document.getElementById('cnt_eingabe').innerText = counts.eingabe;
-            document.getElementById('cnt_verarbeitung').innerText = counts.verarbeitung;
-            document.getElementById('cnt_ausgabe').innerText = counts.ausgabe;
-
-            if (bank.children.length === 0) {
-                bank.innerHTML = '<span class="text-xs text-slate-400 dark:text-slate-500 italic py-2">Alle Bauteile wurden zugeordnet! Du kannst sie jederzeit in ein anderes Feld ziehen oder antippen.</span>';
-            }
-        }
-
-        function handleTouchStart(e, dev, chipEl) {
-            const touch = e.touches[0];
-            touchStartX = touch.clientX;
-            touchStartY = touch.clientY;
-            isTouchDragging = false;
-            draggedDeviceId = dev.id;
-        }
-
-        function handleTouchMove(e) {
-            const touch = e.touches[0];
-            const deltaX = Math.abs(touch.clientX - touchStartX);
-            const deltaY = Math.abs(touch.clientY - touchStartY);
-
-            if (deltaX > 8 || deltaY > 8) {
-                isTouchDragging = true;
-                e.preventDefault(); // Prevent page scrolling during drag
-
-                if (!activeTouchGhost) {
-                    const dev = devices.find(d => d.id === draggedDeviceId);
-                    if (!dev) return;
-
-                    activeTouchGhost = document.createElement('div');
-                    activeTouchGhost.className = 'fixed z-50 pointer-events-none px-4 py-2 bg-onedrive-600 text-white rounded-xl shadow-2xl text-xs font-bold flex items-center gap-2 transform -translate-x-1/2 -translate-y-1/2 opacity-90 scale-105 border border-white/30';
-                    activeTouchGhost.innerHTML = `<i class="fa-solid ${dev.icon}"></i> ${dev.name}`;
-                    document.body.appendChild(activeTouchGhost);
-                }
-
-                activeTouchGhost.style.left = touch.clientX + 'px';
-                activeTouchGhost.style.top = touch.clientY + 'px';
-
-                // Highlight hovered element
-                const elementUnderTouch = document.elementFromPoint(touch.clientX, touch.clientY);
-                const targetZone = elementUnderTouch ? elementUnderTouch.closest('[data-dropzone]') : null;
-
-                document.querySelectorAll('[data-dropzone]').forEach(z => highlightZone(z, false));
-                if (targetZone) {
-                    highlightZone(targetZone, true);
-                }
-            }
-        }
-
-        function handleTouchEnd(e, devId) {
-            document.querySelectorAll('[data-dropzone]').forEach(z => highlightZone(z, false));
-
-            if (activeTouchGhost) {
-                const changedTouch = e.changedTouches[0];
-                const elementUnderTouch = document.elementFromPoint(changedTouch.clientX, changedTouch.clientY);
-                const targetZone = elementUnderTouch ? elementUnderTouch.closest('[data-dropzone]') : null;
-
-                if (targetZone) {
-                    const newZoneId = targetZone.getAttribute('data-dropzone');
-                    deviceState[devId] = newZoneId;
-                }
-
-                activeTouchGhost.remove();
-                activeTouchGhost = null;
-                renderDevices();
-                updateProgress();
-            } else if (!isTouchDragging) {
-                // If it was just a tap without drag, cycle location smoothly
-                cycleDeviceLocation(devId);
-            }
-
-            draggedDeviceId = null;
-            isTouchDragging = false;
-        }
-
-        function cycleDeviceLocation(id) {
-            const order = ['bank', 'eingabe', 'verarbeitung', 'ausgabe'];
-            const current = deviceState[id] || 'bank';
-            const nextIdx = (order.indexOf(current) + 1) % order.length;
-            deviceState[id] = order[nextIdx];
-            
-            renderDevices();
-            updateProgress();
-        }
-
-        /* Progress Computation & Print Lock */
-        /* ===== Carousel (A3-Aufträge: eine Karte + Pfeile / Listenansicht) ===== */
+        /* ===== Carousel (A3: 15 Bauteil-Karten, eine Karte + Pfeile / Listenansicht) ===== */
         function initCarousel() {
+            var dotsWrap = document.getElementById('carouselDots');
+            if (dotsWrap && dotsWrap.children.length === 0) {
+                for (var i = 0; i < CAROUSEL_TOTAL; i++) {
+                    var dot = document.createElement('button');
+                    dot.type = 'button';
+                    dot.className = 'carousel-dot h-2.5 w-2.5 rounded-full bg-slate-300 dark:bg-slate-700 transition-all';
+                    dot.setAttribute('data-idx', String(i));
+                    dot.setAttribute('aria-label', i === 0 ? 'Zur Einführung' : ('Zu Bauteil ' + i));
+                    dot.onclick = (function (idx) { return function () { carouselShow(idx); }; })(i);
+                    dotsWrap.appendChild(dot);
+                }
+            }
+
             var saved = localStorage.getItem('a3_view_mode');
             carouselMode = (saved === 'list') ? 'list' : 'carousel';
             carouselIndex = 0;
@@ -1581,7 +685,7 @@ function applyDefaultClassAndDate() {
         }
 
         function renderCarousel() {
-            var slides = document.querySelectorAll('#carouselTrack > .carousel-slide');
+            var slides = document.querySelectorAll('#carouselTrack > .comp-card');
             var isList = (carouselMode === 'list');
 
             slides.forEach(function (slide, i) {
@@ -1597,19 +701,11 @@ function applyDefaultClassAndDate() {
             var prevBtn = document.getElementById('carouselPrevBtn');
             var nextBtn = document.getElementById('carouselNextBtn');
             var navRow = document.getElementById('carouselNavRow');
-            var topCounterWrap = document.getElementById('carouselControlsTop');
 
             if (navRow) navRow.style.display = isList ? 'none' : 'flex';
-            if (topCounterWrap) {
-                var counterEl = topCounterWrap.querySelector('div');
-                if (counterEl) counterEl.style.visibility = isList ? 'hidden' : 'visible';
-            }
 
             if (prevBtn) prevBtn.disabled = isList ? true : (carouselIndex === 0);
             if (nextBtn) nextBtn.disabled = isList ? true : (carouselIndex === CAROUSEL_TOTAL - 1);
-
-            var counterNum = document.getElementById('carouselCurrentNum');
-            if (counterNum) counterNum.innerText = (carouselIndex + 1);
 
             document.querySelectorAll('.carousel-dot').forEach(function (dot) {
                 var idx = parseInt(dot.getAttribute('data-idx'), 10);
@@ -1621,14 +717,14 @@ function applyDefaultClassAndDate() {
             });
 
             var toggleIcon = document.getElementById('viewToggleIcon');
-            var toggleLabel = document.getElementById('viewToggleLabel');
-            if (toggleIcon && toggleLabel) {
+            var viewToggleBtn = document.getElementById('viewToggleBtn');
+            if (toggleIcon) {
                 if (isList) {
-                    toggleIcon.className = 'fa-solid fa-square';
-                    toggleLabel.innerText = 'Kartenansicht';
+                    toggleIcon.className = 'fa-solid fa-square text-sm';
+                    if (viewToggleBtn) viewToggleBtn.title = 'Kartenansicht (eine Karte + Pfeile)';
                 } else {
-                    toggleIcon.className = 'fa-solid fa-list';
-                    toggleLabel.innerText = 'Listenansicht';
+                    toggleIcon.className = 'fa-solid fa-list text-sm';
+                    if (viewToggleBtn) viewToggleBtn.title = 'Listenansicht (alle Karten untereinander)';
                 }
             }
         }
@@ -1639,20 +735,31 @@ function applyDefaultClassAndDate() {
             if (i > CAROUSEL_TOTAL - 1) i = CAROUSEL_TOTAL - 1;
             carouselIndex = i;
             renderCarousel();
-            var topEl = document.getElementById('carouselControlsTop');
-            if (topEl) topEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            var trackEl = document.getElementById('carouselTrack');
+            if (trackEl) trackEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
         function carouselNext() { carouselShow(carouselIndex + 1); }
         function carouselPrev() { carouselShow(carouselIndex - 1); }
+
+        /* Pfeiltasten-Navigation: links/rechts wechseln die Bauteil-Karte,
+           ausser der Fokus liegt gerade in einem Eingabefeld (dort sollen die
+           Pfeiltasten weiterhin den Textcursor bewegen). */
+        document.addEventListener('keydown', function (e) {
+            if (carouselMode === 'list') return;
+            var tag = (document.activeElement && document.activeElement.tagName) || '';
+            if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+            if (e.key === 'ArrowLeft') { e.preventDefault(); carouselPrev(); }
+            else if (e.key === 'ArrowRight') { e.preventDefault(); carouselNext(); }
+        });
 
         function toggleCarouselView() {
             carouselMode = (carouselMode === 'list') ? 'carousel' : 'list';
             localStorage.setItem('a3_view_mode', carouselMode);
             if (carouselMode === 'carousel') carouselIndex = 0;
             renderCarousel();
-            var topEl = document.getElementById('carouselControlsTop');
-            if (topEl) topEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            var trackEl = document.getElementById('carouselTrack');
+            if (trackEl) trackEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
         function updateProgress() {
@@ -1666,36 +773,14 @@ function applyDefaultClassAndDate() {
                 }
             });
 
-            // Count quiz questions answered (q1 to q10)
-            const numQuizQuestions = 10;
-            total += numQuizQuestions;
-            for (let i = 1; i <= numQuizQuestions; i++) {
-                if (document.querySelector(`input[name="q${i}"]:checked`)) {
-                    filled++;
-                }
-            }
-
-            let sortedDevices = 0;
-            Object.values(deviceState).forEach(val => {
-                if (val !== 'bank') sortedDevices++;
-            });
-
-            total += devices.length;
-            filled += sortedDevices;
-
             currentPercentage = Math.min(100, Math.round((filled / total) * 100));
-            
+
             const pBar = document.getElementById('progressBar');
             const headerPText = document.getElementById('headerPercentText');
             const badge = document.getElementById('headerPercentText');
             const percentNum = document.getElementById('headerPercentNumber');
             
             if (pBar) pBar.style.width = currentPercentage + '%';
-
-            var carouselPBar = document.getElementById('carouselProgressBar');
-            var carouselPLabel = document.getElementById('carouselProgressLabel');
-            if (carouselPBar) carouselPBar.style.width = currentPercentage + '%';
-            if (carouselPLabel) carouselPLabel.innerText = currentPercentage + '%';
 
             var hdrSvgCircle = document.getElementById('headerSvgCircle');
             if (hdrSvgCircle) {
@@ -1746,18 +831,8 @@ function applyDefaultClassAndDate() {
                 }
             });
 
-            const quizData = {};
-            for (let i = 1; i <= 10; i++) {
-                const radios = document.querySelectorAll(`input[name="q${i}"]`);
-                radios.forEach((r, idx) => {
-                    if (r.checked) quizData[`q${i}`] = idx;
-                });
-            }
-
             const stateToSave = {
                 form: formData,
-                devices: deviceState,
-                quiz: quizData,
                 percent: currentPercentage
             };
 
@@ -1774,7 +849,13 @@ function applyDefaultClassAndDate() {
             if (percentNum && percentNum.innerText === '100%') {
                 const originalTitle = document.title;
                 document.title = 'A3';
+                // Dunkelmodus für den Druck immer ausschalten: sonst bleiben die
+                // dark:-Tailwind-Farben (dunkle Karten, helle Schrift) im PDF aktiv,
+                // da @media print nur body zurücksetzt, nicht die .dark-Klasse selbst.
+                const wasDark = document.documentElement.classList.contains('dark');
+                if (wasDark) document.documentElement.classList.remove('dark');
                 window.print();
+                if (wasDark) document.documentElement.classList.add('dark');
                 document.title = originalTitle;
             } else {
                 showToast('Fülle bitte zuerst alle Felder aus (100%), um das Dokument zu drucken.');
@@ -1797,20 +878,6 @@ function applyDefaultClassAndDate() {
                         }
                     });
                 }
-                if (data.devices) {
-                    deviceState = data.devices;
-                    renderDevices();
-                }
-                if (data.quiz) {
-                    Object.keys(data.quiz).forEach(qKey => {
-                        const radios = document.querySelectorAll(`input[name="${qKey}"]`);
-                        const checkedIdx = data.quiz[qKey];
-                        if (radios[checkedIdx]) {
-                            radios[checkedIdx].checked = true;
-                        }
-                    });
-                    checkQuiz();
-                }
             } catch (e) {
                 console.error("Fehler beim Laden des Speicherstands", e);
             }
@@ -1819,48 +886,15 @@ function applyDefaultClassAndDate() {
         function confirmReset() {
             showConfirmModal('Möchtest du wirklich alle Eingaben auf diesem Arbeitsblatt zurücksetzen?', () => {
                 localStorage.removeItem('onedrive_hardware_worksheet_8sek');
+                localStorage.removeItem('hw_autosave_' + location.pathname.split('/').pop());
                 document.querySelectorAll('input[type="text"], textarea').forEach(i => i.value = '');
-                document.querySelectorAll('select').forEach(s => s.selectedIndex = 0);
-                document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
-                const res = document.getElementById('quizResult');
-                if (res) res.classList.add('hidden');
-                deviceState = {};
-                initDevices();
+                applyDefaultClassAndDate();
+                var nameEl = document.getElementById('studentName');
+                var globalVorname = localStorage.getItem('studentVorname') || localStorage.getItem('student_vorname');
+                if (nameEl && globalVorname) nameEl.value = globalVorname;
                 updateProgress();
                 showToast('Arbeitsblatt wurde zurückgesetzt.');
             });
-        }
-
-        /* 10-Questions Check Quiz */
-        function checkQuiz() {
-            let score = 0;
-            let answered = 0;
-            const totalQuestions = 10;
-
-            for (let i = 1; i <= totalQuestions; i++) {
-                const selected = document.querySelector(`input[name="q${i}"]:checked`);
-                if (selected) {
-                    answered++;
-                    score += parseInt(selected.value);
-                }
-            }
-
-            const res = document.getElementById('quizResult');
-            if (res && answered > 0) {
-                res.classList.remove('hidden');
-                if (answered === totalQuestions) {
-                    if (score === totalQuestions) {
-                        res.className = 'p-3.5 rounded-xl text-center font-bold text-xs bg-emerald-600 text-white shadow-sm';
-                        res.innerText = `🎉 Hervorragend! Du hast alle ${totalQuestions} von ${totalQuestions} Hardware-Fragen richtig beantwortet!`;
-                    } else {
-                        res.className = 'p-3.5 rounded-xl text-center font-bold text-xs bg-amber-600 text-white shadow-sm';
-                        res.innerText = `👍 Du hast ${score} von ${totalQuestions} Fragen richtig beantwortet. Überprüfe deine Antworten noch einmal!`;
-                    }
-                } else {
-                    res.className = 'p-3.5 rounded-xl text-center font-bold text-xs bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 shadow-sm';
-                    res.innerText = `Fortschritt Wissenstest: ${answered} von ${totalQuestions} Fragen beantwortet.`;
-                }
-            }
         }
 
         /* Custom Toast Notification System */
@@ -1983,133 +1017,6 @@ function applyDefaultClassAndDate() {
             if (e.newValue) syncVornameInputs(e.newValue);
           }
         });
-      })();
-    </script><!-- Global Unified Theme & Font Size Storage & Sync -->
-    <script>
-      (function() {
-        const THEME_KEY = 'ib-theme';
-        const FONT_KEY = 'ib-font-size';
-
-        // 1. Theme Management
-        function applyTheme(theme) {
-          const isDark = (theme === 'dark');
-          if (isDark) {
-            document.documentElement.classList.add('dark');
-            document.body.setAttribute('data-theme', 'dark');
-          } else {
-            document.documentElement.classList.remove('dark');
-            document.body.setAttribute('data-theme', 'light');
-          }
-          const themeToggle = document.getElementById('themeToggle');
-          if (themeToggle) themeToggle.checked = isDark;
-          const themeIcon = document.getElementById('themeIcon');
-          if (themeIcon) themeIcon.className = isDark ? 'fa-solid fa-sun text-amber-400 text-sm' : 'fa-solid fa-moon text-sm';
-        }
-
-        function saveTheme(theme) {
-          localStorage.setItem(THEME_KEY, theme);
-          localStorage.setItem('onedrive_theme', theme);
-          applyTheme(theme);
-        }
-
-        function initTheme() {
-          const saved = localStorage.getItem(THEME_KEY) || localStorage.getItem('onedrive_theme');
-          if (saved) {
-            applyTheme(saved);
-          } else {
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            applyTheme(prefersDark ? 'dark' : 'light');
-          }
-        }
-
-        // 2. Font Size Management
-        function applyFontSize(sizeVal) {
-          const val = Number(sizeVal) || 100;
-          const scale = val / 100;
-          document.documentElement.style.setProperty('--font-scale', scale);
-          document.documentElement.style.fontSize = val + '%';
-          const slider = document.getElementById('fontSizeRange');
-          if (slider) slider.value = val;
-        }
-
-        function saveFontSize(sizeVal) {
-          const val = Number(sizeVal) || 100;
-          localStorage.setItem(FONT_KEY, val);
-          localStorage.setItem('onedrive_font_size', val);
-          applyFontSize(val);
-        }
-
-        function initFontSize() {
-          const saved = localStorage.getItem(FONT_KEY) || localStorage.getItem('onedrive_font_size') || 100;
-          applyFontSize(saved);
-        }
-
-        window.toggleDarkMode = function() {
-          const isCurrentlyDark = document.documentElement.classList.contains('dark') || document.body.getAttribute('data-theme') === 'dark';
-          saveTheme(isCurrentlyDark ? 'light' : 'dark');
-        };
-
-        window.setTheme = function(theme) {
-          saveTheme(theme);
-        };
-
-        window.setFontSize = function(val) {
-          saveFontSize(val);
-        };
-
-        document.addEventListener('DOMContentLoaded', function() {
-          initTheme();
-          initFontSize();
-          
-          const themeToggle = document.getElementById('themeToggle');
-          if (themeToggle) {
-            themeToggle.addEventListener('change', function() {
-              saveTheme(themeToggle.checked ? 'dark' : 'light');
-            });
-          }
-
-          const fontSlider = document.getElementById('fontSizeRange');
-          if (fontSlider) {
-            fontSlider.addEventListener('input', function() {
-              saveFontSize(fontSlider.value);
-            });
-          }
-        });
-
-        window.addEventListener('storage', function(e) {
-          if (e.key === THEME_KEY || e.key === 'onedrive_theme') {
-            if (e.newValue) applyTheme(e.newValue);
-          }
-          if (e.key === FONT_KEY || e.key === 'onedrive_font_size') {
-            if (e.newValue) applyFontSize(e.newValue);
-          }
-        });
-      })();
-    </script>
-
-
-    <!-- Readonly Date Enforcer -->
-    <script>
-      (function enforceMobileReadonlyDate() {
-        function setToday() {
-          var el = document.getElementById('studentDate');
-          if (el) {
-            var d = new Date();
-            var dd = String(d.getDate()).padStart(2, '0');
-            var mm = String(d.getMonth() + 1).padStart(2, '0');
-            var yyyy = d.getFullYear();
-            var formattedDate = dd + '.' + mm + '.' + yyyy;
-            el.value = formattedDate;
-            el.readOnly = true;
-            el.setAttribute('tabindex', '-1');
-            el.style.pointerEvents = 'none';
-          }
-        }
-        if (document.readyState === 'loading') {
-          document.addEventListener('DOMContentLoaded', setToday);
-        } else {
-          setToday();
-        }
       })();
     </script>
 

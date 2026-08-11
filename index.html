@@ -884,10 +884,10 @@
                        A3: Computeraufbau
                     </h4>
                     <p style="font-size: calc(13px * var(--font-scale)); color: var(--muted); margin: 0;">
-                      Aufbau eines Computers &amp; 10 Kernkomponenten im Detail
+                      Aufbau eines Computers &amp; 15 Kernkomponenten im Detail
                     </p>
                   </div>
-                  <a href="hw/A3.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen" disabled><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
+                  <a href="hw/A3.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
                 </div>
               </div>
 
@@ -954,6 +954,36 @@
                     </p>
                   </div>
                   <a href="hw/A7.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
+                </div>
+              </div>
+
+              <!-- Unterkachel: A8 EVA, Speicher & Kaufberatung -->
+              <div class="unterkachel">
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+                  <div>
+                    <h4 class="unterkachel-title" id="title-A8" style="margin-bottom: 2px;">
+                       A8: EVA-Prinzip, Speicher &amp; Kaufberatung
+                    </h4>
+                    <p style="font-size: calc(13px * var(--font-scale)); color: var(--muted); margin: 0;">
+                      EVA-Zuordnung, RAM/SSD/HDD-Vergleich &amp; PC-Kaufberatung
+                    </p>
+                  </div>
+                  <a href="hw/A8.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
+                </div>
+              </div>
+
+              <!-- Unterkachel: AEXAM Hardware-Wissenstest -->
+              <div class="unterkachel">
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+                  <div>
+                    <h4 class="unterkachel-title" id="title-AEXAM" style="margin-bottom: 2px;">
+                       AEXAM: Hardware-Wissenstest
+                    </h4>
+                    <p style="font-size: calc(13px * var(--font-scale)); color: var(--muted); margin: 0;">
+                      10 Fragen zu den Kernkomponenten &ndash; Wissenstest
+                    </p>
+                  </div>
+                  <a href="hw/AEXAM.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
                 </div>
               </div>
             </div>
@@ -1683,7 +1713,21 @@
             const parsed = JSON.parse(a7Data);
             if (parsed && parsed.completed && parsed.completed['S4'] === true) markDone('title-A7');
           }
-          
+
+          // A8 check
+          const a8Data = localStorage.getItem('onedrive_a8_worksheet_8sek');
+          if (a8Data) {
+            const parsed = JSON.parse(a8Data);
+            if (parsed && parsed.percent === 100) markDone('title-A8');
+          }
+
+          // AEXAM check
+          const aexamData = localStorage.getItem('onedrive_aexam_worksheet_8sek');
+          if (aexamData) {
+            const parsed = JSON.parse(aexamData);
+            if (parsed && parsed.percent === 100) markDone('title-AEXAM');
+          }
+
         } catch (e) {
           console.error("Fehler beim Überprüfen des Fortschritts:", e);
         }
