@@ -126,3 +126,30 @@ Die komplette JS-Logik für Autofill (globaler Vorname-Sync, Klasse-Default "B24
 - **A3.html**: 4 Fixes (kaputtes Layout durch fehlendes `</div>`, fehlendes Metadaten-Formular, LaTeX-Darstellungsfehler, percent-Feld).
 - Offene Punkte zur Entscheidung: `A3_backup.html`/`A3_merged.html` behalten oder löschen? A5 in index.html ergänzen (nicht heute im Scope)?
 - **A4-A7, memory.html, vortrag.html**: noch nicht auditiert.
+
+---
+
+## Nachtrag: gemeinsame JS-Datei für Theme/Autofill/Autosave (A1 & A2)
+
+A1.html und A2.html enthielten je **~300 Zeilen fast wortwörtlich dupliziertes Boilerplate** für Dark Mode, Schriftgrössen-Sync, den globalen Vorname-Abgleich (inkl. Erstbesuch-`prompt()`) und das generische Formular-Autosave (`hw_autosave_<Datei>.html`). Teilweise sogar doppelt *innerhalb derselben Datei* (z. B. `initTheme()`/`toggleDarkMode()` je zweimal definiert, wobei die zweite Definition die erste unbemerkt überschrieb — totes Code).
+
+Dieser Code wurde nach [hw/assets/js/worksheet-common.js](hw/assets/js/worksheet-common.js) ausgelagert (Theme, Font-Size, Vorname-Sync, `applyDefaultClassAndDate()`, `setupUniversalAutoSave()`). A1.html und A2.html binden die Datei jetzt per `<script src="assets/js/worksheet-common.js">` ein, die lokalen Kopien wurden entfernt (−599 Zeilen in Summe, ein 234-Zeilen-Modul statt zwei Kopien). Verhalten ist unverändert — vor/nach dem Refactor per Headless-Screenshot pixelgleich verifiziert (Vorname/Klasse/Datum-Autofill, Fortschritt, Dark Mode).
+
+`index.html` wurde **nicht** angefasst: es hat kein Vorname/Klasse/Datum-Formular (keine Autofill-Logik nötig) und sein Theme/Font-Size-System ist an ein eigenes, andersartiges Einstellungs-Panel gekoppelt (eigene Element-IDs, kein einfacher Toggle-Button wie bei den Arbeitsblättern) — eine Umstellung auf die gemeinsame Datei wäre kein reines Auslagern identischen Codes, sondern ein separates, riskanteres Refactoring. Nicht vorgenommen.
+
+A3.html, A4-A7 etc. haben denselben dupliziertes-Boilerplate-Bug (siehe A3-Abschnitt oben), wurden aber wie vom Nutzer vorgegeben heute nicht angefasst — `worksheet-common.js` ist so geschrieben, dass sie later einfach denselben `<script src="assets/js/worksheet-common.js">`-Tag einbinden könnten, um denselben Code-Duplizierungs-Bug zu beheben.
+
+### Nachträglich gefundener & behobener Bug im Refactor selbst
+
+Bei der Verifikation fiel auf: A2.html initialisiert über `document.addEventListener('DOMContentLoaded', ...)` (deferred), A1.html dagegen über eine sofort ausgeführte IIFE (synchron). Die gemeinsame Datei wurde zunächst bei beiden **vor** dem Haupt-Script eingebunden. Für A1 ist das korrekt (synchroner Code braucht die Funktionen sofort). Für A2 hätte das aber die Registrierungsreihenfolge zweier `DOMContentLoaded`-Listener vertauscht: die gemeinsame Datei (Vorname-Prompt) wäre jetzt **vor** A2s eigenem Code gelaufen, statt wie ursprünglich danach. In einem Randfall (lokale Fortschrittsdaten fürs Arbeitsblatt bereits vorhanden, aber der globale Vorname-Key fehlt) hätte das einen unnötigen `prompt()` ausgelöst, obwohl der Name eigentlich schon lokal bekannt war.
+
+**Fix:** `<script src="assets/js/worksheet-common.js">` bei A2.html ans Dateiende verschoben (genau dort, wo die alten "Global Unified"-Blöcke ursprünglich standen) — stellt die ursprüngliche Reihenfolge wieder her. Per Headless-Test verifiziert: mit lokalen Daten aber fehlendem globalem Key erscheint jetzt kein Prompt mehr, der Name wird korrekt aus den lokalen Daten übernommen.
+
+### End-to-End-Verifikation (heute durchgeführt)
+
+Mit einem persistenten Browser-Profil wurde der komplette Kreislauf getestet:
+1. A1 "gespielt" (3 Modi über die echte `showSummary()`-Funktion abgeschlossen) → Seite neu geladen → Fortschritt (3/3, 100 %, PDF-Button grün, Vorname/Klasse/Datum) bleibt korrekt erhalten.
+2. A2 komplett ausgefüllt (echte Input-Events ausgelöst) → Seite neu geladen → 100 % erledigt, PDF-Button grün, alle Felder bleiben erhalten.
+3. `index.html` mit demselben Profil geöffnet → **sowohl A1 als auch A2 zeigen jetzt automatisch das grüne Häkchen** in der Übersicht.
+
+Der komplette Kreislauf (Formular ausfüllen/spielen → localStorage speichern → Reload lädt korrekt → Dashboard erkennt "erledigt") funktioniert nachweislich durchgehend für A1 und A2.
