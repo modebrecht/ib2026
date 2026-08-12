@@ -219,9 +219,8 @@
                 <div class="theory-item"><span style="font-weight: 600;">9. Suchen im Text</span><div class="keys-wrap"><kbd>Ctrl</kbd> + <kbd>F</kbd></div></div>
                 <div class="theory-item"><span style="font-weight: 600;">10. Suchen & Ersetzen</span><div class="keys-wrap"><kbd>Ctrl</kbd> + <kbd>H</kbd></div></div>
                 <div class="theory-item"><span style="font-weight: 600;">11. Drucken</span><div class="keys-wrap"><kbd>Ctrl</kbd> + <kbd>P</kbd></div></div>
-                <div class="theory-item"><span style="font-weight: 600;">12. Neues Fenster / Dokument</span><div class="keys-wrap"><kbd>Ctrl</kbd> + <kbd>N</kbd> (Browser-Info)</div></div>
-                <div class="theory-item"><span style="font-weight: 600;">13. Datei öffnen</span><div class="keys-wrap"><kbd>Ctrl</kbd> + <kbd>O</kbd></div></div>
-                <div class="theory-item"><span style="font-weight: 600;">14. Zum Ende springen</span><div class="keys-wrap"><kbd>Ctrl</kbd> + <kbd>End (Ende)</kbd></div></div>
+                <div class="theory-item"><span style="font-weight: 600;">12. Datei öffnen</span><div class="keys-wrap"><kbd>Ctrl</kbd> + <kbd>O</kbd></div></div>
+                <div class="theory-item"><span style="font-weight: 600;">13. Zum Ende springen</span><div class="keys-wrap"><kbd>Ctrl</kbd> + <kbd>End (Ende)</kbd></div></div>
             </div>
 
             <div style="text-align: center; margin-top: 2rem;">
@@ -508,7 +507,7 @@
             displayBox.innerHTML = item.keys.map(k => `<div class="big-kbd" data-keyname="${k}">${k}</div>`).join('<div class="plus-sign">+</div>');
 
             document.getElementById('q1-counter-label').innerText = `Kürzel ${q1Index + 1} von ${shortcuts.length}`;
-            let progressPct = (q1Index / shortcuts.length) * 100;
+            let progressPct = ((q1Index + 1) / shortcuts.length) * 100;
             document.getElementById('q1-progress-bar').style.width = `${progressPct}%`;
 
             let livePct = q1TotalAttempts === 0 ? 100 : Math.round((q1CorrectHits / q1TotalAttempts) * 100);
@@ -631,8 +630,8 @@
                 hintBtn.disabled = false;
             }
 
-            document.getElementById('q2-counter-label').innerText = `50/50 ${q2Index + 1} von ${shortcuts.length}`;
-            let progressPct = (q2Index / shortcuts.length) * 100;
+            document.getElementById('q2-counter-label').innerText = `Rätsel ${q2Index + 1} von ${shortcuts.length}`;
+            let progressPct = ((q2Index + 1) / shortcuts.length) * 100;
             document.getElementById('q2-progress-bar').style.width = `${progressPct}%`;
 
             let livePct = q2TotalAttempts === 0 ? 100 : Math.round((q2CorrectHits / q2TotalAttempts) * 100);
@@ -781,7 +780,7 @@
             }
 
             document.getElementById('q3-counter-label').innerText = `Blind ${q3Index + 1} von ${shortcuts.length}`;
-            let progressPct = (q3Index / shortcuts.length) * 100;
+            let progressPct = ((q3Index + 1) / shortcuts.length) * 100;
             document.getElementById('q3-progress-bar').style.width = `${progressPct}%`;
 
             let livePct = q3TotalAttempts === 0 ? 100 : Math.round((q3CorrectHits / q3TotalAttempts) * 100);

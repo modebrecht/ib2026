@@ -574,7 +574,7 @@
             document.getElementById('q4-key2').innerText = item.key2;
 
             document.getElementById('q4-counter-label').innerText = `Zeichen ${q4Index + 1} von ${altgrItems.length}`;
-            let progressPct = (q4Index / altgrItems.length) * 100;
+            let progressPct = ((q4Index + 1) / altgrItems.length) * 100;
             document.getElementById('q4-progress-bar').style.width = `${progressPct}%`;
 
             let livePct = q4TotalAttempts === 0 ? 100 : Math.round((q4CorrectHits / q4TotalAttempts) * 100);
@@ -692,8 +692,8 @@
                 hintBtn.disabled = false;
             }
 
-            document.getElementById('q5-counter-label').innerText = `50/50 ${q5Index + 1} von ${altgrItems.length}`;
-            let progressPct = (q5Index / altgrItems.length) * 100;
+            document.getElementById('q5-counter-label').innerText = `Rätsel ${q5Index + 1} von ${altgrItems.length}`;
+            let progressPct = ((q5Index + 1) / altgrItems.length) * 100;
             document.getElementById('q5-progress-bar').style.width = `${progressPct}%`;
 
             let livePct = q5TotalAttempts === 0 ? 100 : Math.round((q5CorrectHits / q5TotalAttempts) * 100);
@@ -828,7 +828,7 @@
             }
 
             document.getElementById('q6-counter-label').innerText = `Blind ${q6Index + 1} von ${altgrItems.length}`;
-            let progressPct = (q6Index / altgrItems.length) * 100;
+            let progressPct = ((q6Index + 1) / altgrItems.length) * 100;
             document.getElementById('q6-progress-bar').style.width = `${progressPct}%`;
 
             let livePct = q6TotalAttempts === 0 ? 100 : Math.round((q6CorrectHits / q6TotalAttempts) * 100);
