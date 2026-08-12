@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A3: Mission Maus weglegen - Boss Challenge</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.75);
+            --border-color: rgba(255, 255, 255, 0.12);
+            --accent-green: #10b981;
+            --accent-blue: #3b82f6;
+            --accent-purple: #8b5cf6;
+            --accent-amber: #f59e0b;
+            --accent-red: #ef4444;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .top-bar {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-link:hover {
+            color: var(--accent-red);
+        }
+
+        .xp-pill {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: #0f172a;
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-weight: 800;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-cert-pdf {
+            background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+            color: white;
+            padding: 14px 32px;
+            border-radius: 16px;
+            font-weight: 800;
+            font-size: 1.15rem;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
+            transition: all 0.2s ease;
+        }
+
+        .btn-cert-pdf:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(16, 185, 129, 0.6);
+        }
+
+        .badge-boss {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid var(--accent-red);
+            color: #fca5a5;
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 2.5rem;
+            backdrop-filter: blur(16px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .level-box {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .level-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--accent-amber);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .task-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .code-box {
+            background: #090d16;
+            border: 1px dashed var(--accent-purple);
+            color: #38bdf8;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-family: 'Space Grotesk', monospace;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-top: 8px;
+        }
+
+        .penalty-warning {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid var(--accent-red);
+            color: #fca5a5;
+            padding: 12px 20px;
+            border-radius: 14px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .timer-display {
+            font-family: 'Space Grotesk', monospace;
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--accent-green);
+        }
+
+        .btn-start-boss {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            padding: 16px 40px;
+            font-size: 1.2rem;
+            font-weight: 800;
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.4);
+        }
+
+        .btn-start-boss:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(239, 68, 68, 0.6);
+        }
+
+        .lock-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.2rem;
+            padding: 3rem 1.5rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="top-bar">
+        <a href="A2.html" class="back-link">
+            ← Zurück zu Arbeitsblatt A2
+        </a>
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <div class="xp-pill">
+                ⚡ XP: <span class="global-xp-val">0</span>
+            </div>
+            <span class="badge-boss">Boss Challenge A3</span>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- LOCK CHECK FOR A3 (Requires Q6 from A2 >= 70%) -->
+        <div class="card lock-screen" id="a3-lock-screen" style="display: none;">
+            <div style="font-size: 4rem;">🔒</div>
+            <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 2rem; color: #fca5a5;">
+                Die Boss-Challenge A3 ist noch gesperrt!
+            </h2>
+            <p style="color: var(--text-muted); font-size: 1.1rem; max-width: 550px;">
+                Du benötigst <strong>mindestens 70% Genauigkeit</strong> in <u>Quest 6 (AltGr Blind-Profi) von Arbeitsblatt A2</u>, um die Boss-Challenge freizuschalten.
+            </p>
+            <a href="A2.html" class="btn-start-boss" style="text-decoration: none;">
+                Zurück zu A2 ➔
+            </a>
+        </div>
+
+        <div id="a3-content-wrap">
+
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <div>
+                        <h1 style="font-family: 'Space Grotesk', sans-serif; font-size: 2.2rem; color: var(--accent-red);">
+                            Mission: Maus weglegen 🐭⛔
+                        </h1>
+                        <p style="color: var(--text-muted); font-size: 1.1rem;">
+                            Acht Aufträge. Drei Level. Keine Maus.
+                        </p>
+                    </div>
+                    <div class="timer-display" id="boss-timer">00:00</div>
+                </div>
+
+                <div class="penalty-warning">
+                    <span>⚠️ STRENGES MAUS-VERBOT: Jedes Mal, wenn du auf den Bildschirm klickst, verlierst du 5 XP!</span>
+                    <span id="click-counter" style="background: rgba(0,0,0,0.3); padding: 4px 10px; border-radius: 8px;">Mausklicks: 0</span>
+                </div>
+
+                <!-- LEVEL 1 -->
+                <div class="level-box">
+                    <div class="level-title">🔥 Level 1: Aufwärmen (Mit Kürzel-Hilfe)</div>
+                    <ul class="task-list">
+                        <li class="task-item">
+                            <span>1. Öffne ein neues Dokument / Fenster</span>
+                            <span style="font-weight: 700; color: #38bdf8;">Ctrl + N</span>
+                        </li>
+                        <li class="task-item">
+                            <span>2. Markiere alles, kopiere es und füge es dreimal ein</span>
+                            <span style="font-weight: 700; color: #38bdf8;">Ctrl + A ➔ C ➔ V</span>
+                        </li>
+                        <li class="task-item">
+                            <span>3. Mach alles rückgängig, bis nur noch dein Name dasteht</span>
+                            <span style="font-weight: 700; color: #38bdf8;">Ctrl + Z</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- LEVEL 2 -->
+                <div class="level-box">
+                    <div class="level-title">⚡ Level 2: Ohne Hilfe (Finde das Kürzel im Kopf)</div>
+                    <ul class="task-list">
+                        <li class="task-item">
+                            <span>4. Tippe eine erfundene Schul-Mailadresse: <code>vorname.name@schule.ch</code></span>
+                        </li>
+                        <li class="task-item">
+                            <span>5. Tippe diesen Dateipfad ab: <code>C:\Schule\Informatik\Uebung.docx</code></span>
+                        </li>
+                        <li class="task-item">
+                            <span>6. Tippe ab: <code>Die Temperatur beträgt 21 °C [gemessen um 08:00].</code></span>
+                        </li>
+                        <li class="task-item">
+                            <span>7. Springe ans Ende des Dokuments – und wieder ganz an den Anfang.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- LEVEL 3 -->
+                <div class="level-box" style="border-color: var(--accent-red);">
+                    <div class="level-title" style="color: var(--accent-red);">👑 Level 3: Bossaufgabe (Alles auf einmal)</div>
+                    <p style="color: var(--text-muted); margin-bottom: 8px;">8. Tippe diese Zeile exakt ab – jedes Zeichen zählt:</p>
+                    <div class="code-box">
+                        {Schule} = [Informatik] | 21 °C ~ dein.name@schule.ch
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button class="btn-start-boss" id="start-boss-btn" onclick="startBossChallenge()">
+                        ⏱️ Mission Jetzt Starten!
+                    </button>
+                </div>
+            </div>
+
+            <!-- REFLEKTIONS-FORMULAR & MASTER CERTIFICATE DOWNLOAD -->
+            <div class="card" style="margin-top: 2rem; border-color: var(--accent-green); background: rgba(16, 185, 129, 0.08);">
+                <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.8rem; color: var(--accent-green); margin-bottom: 0.5rem; text-align: center;">
+                    🎓 Kurs-Abschluss & Zertifikat für die Lehrperson
+                </h2>
+                <p style="color: var(--text-muted); margin-bottom: 1.5rem; text-align: center;">
+                    Welche drei Tastenkombinationen willst du ab heute wirklich jeden Tag benutzen? Trage sie ein und lade danach dein <strong>1-Blatt-Gesamtzertifikat</strong> für die Lehrperson herunter.
+                </p>
+
+                <div style="display: flex; flex-direction: column; gap: 1rem; max-width: 600px; margin: 0 auto 1.8rem auto;">
+                    <input type="text" placeholder="1. Tastenkombination (z. B. Ctrl + C)" style="padding: 12px; border-radius: 10px; background: #0f172a; border: 1px solid var(--border-color); color: white;">
+                    <input type="text" placeholder="2. Tastenkombination (z. B. AltGr + 2 für @)" style="padding: 12px; border-radius: 10px; background: #0f172a; border: 1px solid var(--border-color); color: white;">
+                    <input type="text" placeholder="3. Tastenkombination (z. B. Ctrl + Shift + V)" style="padding: 12px; border-radius: 10px; background: #0f172a; border: 1px solid var(--border-color); color: white;">
+                </div>
+
+                <div style="text-align: center;">
+                    <button class="btn-cert-pdf" onclick="downloadCertificatePDF()">
+                        🎓 Abschlusszertifikat für Lehrperson (PDF) herunterladen
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Global XP Engine -->
+    <script src="xp.js"></script>
+    <script>
+        let mouseClicks = 0;
+        let timerSeconds = 0;
+        let timerInterval = null;
+        let isBossActive = false;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!isQuestUnlocked('q7')) {
+                document.getElementById('a3-lock-screen').style.display = 'flex';
+                document.getElementById('a3-content-wrap').style.display = 'none';
+            } else {
+                document.getElementById('a3-lock-screen').style.display = 'none';
+                document.getElementById('a3-content-wrap').style.display = 'block';
+            }
+        });
+
+        // MOUSE PENALTY DETECTOR
+        document.addEventListener('click', (e) => {
+            if (!isBossActive) return;
+            if (e.target.id === 'start-boss-btn') return;
+
+            mouseClicks++;
+            addGlobalXP(-5);
+            playSound('wrong');
+
+            document.getElementById('click-counter').innerText = `Mausklicks: ${mouseClicks} (-${mouseClicks * 5} XP)`;
+        });
+
+        function startBossChallenge() {
+            isBossActive = true;
+            mouseClicks = 0;
+            timerSeconds = 0;
+            document.getElementById('click-counter').innerText = `Mausklicks: 0`;
+
+            const btn = document.getElementById('start-boss-btn');
+            btn.innerText = "⚡ Mission Läuft...";
+            btn.disabled = true;
+
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                timerSeconds++;
+                let mins = Math.floor(timerSeconds / 60).toString().padStart(2, '0');
+                let secs = (timerSeconds % 60).toString().padStart(2, '0');
+                document.getElementById('boss-timer').innerText = `${mins}:${secs}`;
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
