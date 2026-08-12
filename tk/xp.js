@@ -44,10 +44,24 @@ function isQuestUnlocked(questId) {
     return true;
 }
 
-// TEACHER CHEAT CODE: Shift + Alt + L
+// SECRET TEACHER CHEAT CODE
+let teacherBuffer = "";
+let teacherTimer = null;
+
 document.addEventListener('keydown', (e) => {
-    if (e.shiftKey && e.altKey && (e.key === 'L' || e.key === 'l')) {
-        unlockAllQuests();
+    if (e.altKey && e.shiftKey) {
+        const key = e.key.toUpperCase();
+        if (['L', 'O', 'K'].includes(key)) {
+            e.preventDefault(); // Block browser shortcut interference
+            teacherBuffer += key;
+            clearTimeout(teacherTimer);
+            teacherTimer = setTimeout(() => { teacherBuffer = ""; }, 3500);
+
+            if (teacherBuffer.endsWith("LOKLOK")) {
+                teacherBuffer = "";
+                unlockAllQuests();
+            }
+        }
     }
 });
 
@@ -55,7 +69,7 @@ function unlockAllQuests() {
     let scores = { q1: 100, q2: 100, q3: 100, q4: 100, q5: 100, q6: 100, q7: 100 };
     localStorage.setItem(QUEST_SCORES_KEY, JSON.stringify(scores));
     addGlobalXP(500);
-    alert("🔑 CHEAT CODE: Alle Quests freigeschaltet (Q1 - Q7) und auf 100% gesetzt.");
+    alert("🔑 LEHRER-MODUS: Alle Quests freigeschaltet.");
     location.reload();
 }
 
