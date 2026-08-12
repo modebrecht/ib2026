@@ -85,13 +85,13 @@
 }
 
 .phase-tabs {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
     background: rgba(15, 23, 42, 0.6);
     padding: 6px;
     border-radius: 16px;
     border: 1px solid var(--border-color);
     gap: 6px;
-    flex-wrap: wrap;
 }
 
 .trainer-container {
