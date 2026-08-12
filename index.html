@@ -816,6 +816,10 @@
             <span aria-hidden="true">250%</span>
           </div>
         </div>
+
+        <div style="margin-top: 8px; text-align: center;">
+          <span style="font-size: 9px; color: var(--muted); opacity: 0.18; font-family: monospace; letter-spacing: 0.8px; user-select: none;">IB-U V2.0.0</span>
+        </div>
       </div>
     </div>
 
@@ -830,7 +834,7 @@
         </div>
 
         <!-- Tile 1: IT Hardware -->
-        <div class="kachel">
+        <div class="kachel" id="hwKachel">
           <div class="kachel-header" onclick="toggleKachel(this)">
             <div class="kachel-title-wrap">
               <div class="kachel-icon">
@@ -1006,7 +1010,7 @@
         </div>
 
                 <!-- Tile 2: Vortrag & Präsentation -->
-        <div class="kachel">
+        <div class="kachel" id="vortragKachel">
           <div class="kachel-header" onclick="toggleKachel(this)">
             <div class="kachel-title-wrap">
               <div class="kachel-icon">
@@ -1263,7 +1267,7 @@
         <div class="kachel open" id="tkKachel">
           <div class="kachel-header" onclick="toggleKachel(this)">
             <div class="kachel-title-wrap">
-              <div class="kachel-icon" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white;">
+              <div class="kachel-icon">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M6 8h.01"/><path d="M10 8h.01"/><path d="M14 8h.01"/><path d="M18 8h.01"/><path d="M8 12h.01"/><path d="M12 12h.01"/><path d="M16 12h.01"/><path d="M7 16h10"/></svg>
               </div>
               <div>
@@ -1471,9 +1475,31 @@
     const fontSizeRange = document.getElementById('fontSizeRange');
     const fontSizeValue = document.getElementById('fontSizeValue');
 
+    function saveKachelStates() {
+      const states = {};
+      document.querySelectorAll('.kachel[id]').forEach(k => {
+        states[k.id] = k.classList.contains('open');
+      });
+      localStorage.setItem('ib-kachel-states-v1', JSON.stringify(states));
+    }
+
+    function restoreKachelStates() {
+      try {
+        const stored = localStorage.getItem('ib-kachel-states-v1');
+        if (!stored) return;
+        const states = JSON.parse(stored);
+        document.querySelectorAll('.kachel[id]').forEach(k => {
+          if (k.id in states) {
+            k.classList.toggle('open', !!states[k.id]);
+          }
+        });
+      } catch (e) {}
+    }
+
     function toggleKachel(headerEl) {
       const kachel = headerEl.parentElement;
       kachel.classList.toggle('open');
+      saveKachelStates();
     }
 
     function setTheme(theme) {
@@ -1511,6 +1537,7 @@
     // Initialize
     setTheme(localStorage.getItem('ib-theme') || 'light');
     setFontSize(localStorage.getItem('ib-font-size') || 100);
+    restoreKachelStates();
   </script>
 
 
