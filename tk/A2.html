@@ -70,9 +70,12 @@
             font-weight: 800;
             font-size: 0.95rem;
             box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
-            display: flex;
+            display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 6px;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .badge-ch {
@@ -163,6 +166,8 @@
             font-family: 'Space Grotesk', monospace;
             font-size: 1rem;
             font-weight: 700;
+            white-space: nowrap;
+            display: inline-block;
         }
 
         .big-symbol-kbd {
@@ -266,17 +271,18 @@
             border: 2px solid rgba(245, 158, 11, 0.4);
             box-shadow: 0 6px 0 rgba(0, 0, 0, 0.6);
             color: #fde047;
-            flex: 1 1 auto;
-            max-width: 115px;
-            min-width: 60px;
+            flex: 0 1 auto;
+            max-width: 160px;
+            min-width: 70px;
             height: clamp(55px, 12vh, 78px);
-            padding: 0 6px;
+            padding: 0 12px;
             border-radius: 14px;
             font-family: 'Space Grotesk', monospace;
-            font-size: clamp(1.1rem, 4.5vw, 1.8rem);
+            font-size: clamp(0.95rem, 3.5vw, 1.4rem);
             font-weight: 800;
-            white-space: nowrap;
-            display: flex;
+            white-space: nowrap !important;
+            word-break: keep-all;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
             transition: all 0.15s ease;
@@ -379,6 +385,12 @@
             border-color: rgba(255, 255, 255, 0.3);
         }
 
+        button:active, .btn-start-course:active, .btn-hint:active, .btn-reset-game:active, .btn-home:active, a:active {
+            transform: translateY(3px) scale(0.97) !important;
+            box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.4) !important;
+            transition: transform 0.05s ease, box-shadow 0.05s ease !important;
+        }
+
         .trophy-view {
             display: none;
             flex-direction: column;
@@ -474,9 +486,9 @@
                     <div class="theory-item"><div style="display:flex; align-items:center; gap:10px;"><kbd class="big-symbol-kbd">€</kbd> <span style="font-weight: 600;">Euro-Zeichen</span></div><div><kbd>AltGr</kbd> + <kbd>E</kbd></div></div>
                     <div class="theory-item"><div style="display:flex; align-items:center; gap:10px;"><kbd class="big-symbol-kbd">|</kbd> <span style="font-weight: 600;">Senkrechter Strich (Pipe)</span></div><div><kbd>AltGr</kbd> + <kbd>7</kbd></div></div>
                     <div class="theory-item"><div style="display:flex; align-items:center; gap:10px;"><kbd class="big-symbol-kbd">\</kbd> <span style="font-weight: 600;">Backslash</span></div><div><kbd>AltGr</kbd> + <kbd>&lt;</kbd></div></div>
-                    <div class="theory-item"><div style="display:flex; align-items:center; gap:10px;"><kbd class="big-symbol-kbd">[</kbd> <span style="font-weight: 600;">Eckige Klammer auf</span></div><div><kbd>AltGr</kbd> + <kbd>è / ä</kbd></div></div>
-                    <div class="theory-item"><div style="display:flex; align-items:center; gap:10px;"><kbd class="big-symbol-kbd">]</kbd> <span style="font-weight: 600;">Eckige Klammer zu</span></div><div><kbd>AltGr</kbd> + <kbd>à / ö</kbd></div></div>
-                    <div class="theory-item"><div style="display:flex; align-items:center; gap:10px;"><kbd class="big-symbol-kbd">{</kbd> <span style="font-weight: 600;">Geschweifte Klammer auf</span></div><div><kbd>AltGr</kbd> + <kbd>é / ü</kbd></div></div>
+                    <div class="theory-item"><div style="display:flex; align-items:center; gap:10px;"><kbd class="big-symbol-kbd">[</kbd> <span style="font-weight: 600;">Eckige Klammer auf</span></div><div><kbd>AltGr</kbd> + <kbd>è/ä</kbd></div></div>
+                    <div class="theory-item"><div style="display:flex; align-items:center; gap:10px;"><kbd class="big-symbol-kbd">]</kbd> <span style="font-weight: 600;">Eckige Klammer zu</span></div><div><kbd>AltGr</kbd> + <kbd>à/ö</kbd></div></div>
+                    <div class="theory-item"><div style="display:flex; align-items:center; gap:10px;"><kbd class="big-symbol-kbd">{</kbd> <span style="font-weight: 600;">Geschweifte Klammer auf</span></div><div><kbd>AltGr</kbd> + <kbd>é/ü</kbd></div></div>
                     <div class="theory-item"><div style="display:flex; align-items:center; gap:10px;"><kbd class="big-symbol-kbd">}</kbd> <span style="font-weight: 600;">Geschweifte Klammer zu</span></div><div><kbd>AltGr</kbd> + <kbd>$</kbd></div></div>
                     <div class="theory-item"><div style="display:flex; align-items:center; gap:10px;"><kbd class="big-symbol-kbd">°</kbd> <span style="font-weight: 600;">Gradzeichen</span></div><div><kbd>AltGr</kbd> + <kbd>4</kbd></div></div>
                 </div>
@@ -684,9 +696,9 @@
             { title: "Euro-Zeichen", char: "€", key2: "E", desc: "Das Währungszeichen für Euro." },
             { title: "Senkrechter Strich (Pipe)", char: "|", key2: "7", desc: "Wichtig in der Informatik & Befehlszeile." },
             { title: "Backslash", char: "\\", key2: "<", desc: "Trennzeichen in Windows-Dateipfaden." },
-            { title: "Eckige Klammer auf", char: "[", key2: "è / ä", desc: "Für Arrays und Listen im Code." },
-            { title: "Eckige Klammer zu", char: "]", key2: "à / ö", desc: "Schließt die eckige Klammer." },
-            { title: "Geschweifte Klammer auf", char: "{", key2: "é / ü", desc: "Hauptklammer in vielen Programmiersprachen." },
+            { title: "Eckige Klammer auf", char: "[", key2: "è/ä", desc: "Für Arrays und Listen im Code." },
+            { title: "Eckige Klammer zu", char: "]", key2: "à/ö", desc: "Schließt die eckige Klammer." },
+            { title: "Geschweifte Klammer auf", char: "{", key2: "é/ü", desc: "Hauptklammer in vielen Programmiersprachen." },
             { title: "Geschweifte Klammer zu", char: "}", key2: "$", desc: "Schließt den Codeblock." },
             { title: "Gradzeichen", char: "°", key2: "4", desc: "Für Temperaturangaben wie 21 °C." }
         ];

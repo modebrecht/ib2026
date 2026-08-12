@@ -1259,7 +1259,41 @@
           <h2 class="column-title">Klasse B25</h2>
         </div>
 
-        <!-- Tile 1: Berufsorientierung -->
+        <!-- Tile 1: Tastenkombinationen -->
+        <div class="kachel open" id="tkKachel">
+          <div class="kachel-header" onclick="toggleKachel(this)">
+            <div class="kachel-title-wrap">
+              <div class="kachel-icon" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M6 8h.01"/><path d="M10 8h.01"/><path d="M14 8h.01"/><path d="M18 8h.01"/><path d="M8 12h.01"/><path d="M12 12h.01"/><path d="M16 12h.01"/><path d="M7 16h10"/></svg>
+              </div>
+              <div>
+                <h3 class="kachel-title">Tastenkombinationen</h3>
+                <p class="kachel-subtitle">Praxiskurse A1–A3 &amp; Tastatur-Übungen</p>
+              </div>
+            </div>
+            <div class="toggle-arrow">▼</div>
+          </div>
+
+          <div class="kachel-body">
+            <div class="unterkacheln">
+              <div class="unterkachel">
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+                  <div>
+                    <h4 class="unterkachel-title" style="margin-bottom: 2px;">
+                      Tastenkombinationen (A1–A3)
+                    </h4>
+                    <p style="font-size: calc(13px * var(--font-scale)); color: var(--muted); margin: 0;">
+                      Tastatur-Übungen, Sonderzeichen &amp; Maus-weglegen-Challenge
+                    </p>
+                  </div>
+                  <a href="tk/index.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tile 2: Berufsorientierung -->
         <div class="kachel" id="boKachel">
           <div class="kachel-header" onclick="toggleKachel(this)">
             <div class="kachel-title-wrap">

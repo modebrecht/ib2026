@@ -70,9 +70,12 @@
             font-weight: 800;
             font-size: 0.95rem;
             box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
-            display: flex;
+            display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 6px;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .container {
@@ -361,6 +364,12 @@
             border-color: rgba(255, 255, 255, 0.3);
         }
 
+        button:active, .btn-start-course:active, .btn-hint:active, .btn-reset-game:active, .btn-home:active, a.btn-start-course:active {
+            transform: translateY(3px) scale(0.97) !important;
+            box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.4) !important;
+            transition: transform 0.05s ease, box-shadow 0.05s ease !important;
+        }
+
         .trophy-view {
             display: none;
             flex-direction: column;
@@ -393,7 +402,7 @@
 
     <!-- Header Navigation -->
     <header class="top-bar">
-        <a href="start.html" class="back-link">
+        <a href="index.html" class="back-link">
             ← Zurück zur Übersicht
         </a>
         <div style="display: flex; align-items: center; gap: 12px;">
@@ -436,8 +445,7 @@
                 <div class="theory-item"><span style="font-weight: 600;">11. Drucken</span><div class="keys-wrap"><kbd>Ctrl</kbd> + <kbd>P</kbd></div></div>
                 <div class="theory-item"><span style="font-weight: 600;">12. Neues Fenster / Dokument</span><div class="keys-wrap"><kbd>Ctrl</kbd> + <kbd>N</kbd> (Browser-Info)</div></div>
                 <div class="theory-item"><span style="font-weight: 600;">13. Datei öffnen</span><div class="keys-wrap"><kbd>Ctrl</kbd> + <kbd>O</kbd></div></div>
-                <div class="theory-item"><span style="font-weight: 600;">14. Zum Anfang springen</span><div class="keys-wrap"><kbd>Ctrl</kbd> + <kbd>Home (Pos1)</kbd></div></div>
-                <div class="theory-item"><span style="font-weight: 600;">15. Zum Ende springen</span><div class="keys-wrap"><kbd>Ctrl</kbd> + <kbd>End (Ende)</kbd></div></div>
+                <div class="theory-item"><span style="font-weight: 600;">14. Zum Ende springen</span><div class="keys-wrap"><kbd>Ctrl</kbd> + <kbd>End (Ende)</kbd></div></div>
             </div>
 
             <div style="text-align: center; margin-top: 2rem;">
@@ -635,8 +643,7 @@
             { title: "10. Suchen & Ersetzen", desc: "Wörter suchen und automatisch austauschen.", keys: ["Ctrl", "H"], code: "KeyH" },
             { title: "11. Drucken", desc: "Den Druckdialog zum Ausdrucken aufrufen.", keys: ["Ctrl", "P"], code: "KeyP" },
             { title: "12. Datei öffnen", desc: "Das Menü zum Öffnen einer bestehenden Datei anzeigen.", keys: ["Ctrl", "O"], code: "KeyO" },
-            { title: "13. Zum Anfang springen", desc: "Ganz an den Anfang des Dokuments springen.", keys: ["Ctrl", "Home"], code: "Home" },
-            { title: "14. Zum Ende springen", desc: "Ganz an das Ende des Dokuments springen.", keys: ["Ctrl", "End"], code: "End" }
+            { title: "13. Zum Ende springen", desc: "Ganz an das Ende des Dokuments springen.", keys: ["Ctrl", "End"], code: "End" }
         ];
 
         let activePhase = 1;

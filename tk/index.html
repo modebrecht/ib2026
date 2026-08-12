@@ -3,21 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Informatik Let's Go! - Klasse 8</title>
-    <!-- Google Fonts -->
+    <title>Informatik B25 - Tastenkombinationen</title>
+    <!-- Google Fonts & FontAwesome -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --bg-dark: #0f172a;
-            --card-bg: rgba(30, 41, 59, 0.7);
-            --border-color: rgba(255, 255, 255, 0.1);
+            --card-bg: rgba(30, 41, 59, 0.75);
+            --border-color: rgba(255, 255, 255, 0.12);
             --accent-green: #10b981;
             --accent-blue: #3b82f6;
             --accent-purple: #8b5cf6;
             --accent-amber: #f59e0b;
-            --accent-cyan: #06b6d4;
+            --accent-red: #ef4444;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
         }
@@ -28,613 +29,376 @@
             padding: 0;
         }
 
-        html {
-            scroll-snap-type: y mandatory;
-            scroll-behavior: smooth;
+        body {
             font-family: 'Outfit', sans-serif;
             background-color: var(--bg-dark);
             color: var(--text-main);
-        }
-
-        body {
-            overflow-y: auto;
-            overflow-x: hidden;
-        }
-
-        /* Section Container */
-        .section {
-            height: 100vh;
-            width: 100vw;
-            padding: 2rem 1.5rem;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
+        }
+
+        .top-bar {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .xp-pill {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: #0f172a;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: 800;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+            display: inline-flex;
+            align-items: center;
             justify-content: center;
-            align-items: center;
-            text-align: center;
-            position: relative;
-            scroll-snap-align: start;
-            scroll-snap-stop: always;
-            background-size: cover;
-            background-position: center;
+            gap: 6px;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
-        /* Ambient Glow Effect */
-        .glow {
-            position: absolute;
-            width: 450px;
-            height: 450px;
-            border-radius: 50%;
-            filter: blur(120px);
-            opacity: 0.25;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .section-content {
-            position: relative;
-            z-index: 1;
-            max-width: 900px;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1.2rem;
-        }
-
-        /* Typography */
-        .badge {
+        .btn-home {
             background: rgba(255, 255, 255, 0.08);
             border: 1px solid var(--border-color);
-            padding: 6px 16px;
-            border-radius: 50px;
+            color: var(--text-main);
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-weight: 700;
             font-size: 0.9rem;
-            font-weight: 600;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            color: var(--accent-cyan);
-            backdrop-filter: blur(8px);
-        }
-
-        h1 {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: clamp(2.5rem, 6vw, 4.5rem);
-            font-weight: 800;
-            line-height: 1.1;
-            background: linear-gradient(135deg, #ffffff 0%, #94a3b8 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        h2 {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: clamp(2rem, 4.5vw, 3.2rem);
-            font-weight: 700;
-            line-height: 1.2;
-        }
-
-        p.description {
-            font-size: clamp(1.1rem, 2vw, 1.4rem);
-            color: var(--text-muted);
-            max-width: 750px;
-            line-height: 1.6;
-        }
-
-        /* Interactive / Graphic Cards */
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 1.8rem;
-            width: 100%;
-            max-width: 780px;
-            backdrop-filter: blur(12px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-            margin-top: 0.5rem;
-        }
-
-        /* Binary Demo Component */
-        .binary-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 1.2rem;
-            margin: 1rem 0;
-            flex-wrap: wrap;
-        }
-
-        .bit-box {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .bit-label {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            font-weight: 600;
-        }
-
-        .bit-btn {
-            width: 70px;
-            height: 80px;
-            background: #0f172a;
-            border: 2px solid var(--accent-blue);
-            border-radius: 14px;
-            color: white;
-            font-size: 2.2rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
-            font-family: 'Space Grotesk', monospace;
-        }
-
-        .bit-btn.active {
-            background: var(--accent-blue);
-            border-color: #60a5fa;
-            box-shadow: 0 0 25px rgba(59, 130, 246, 0.6);
-            transform: translateY(-4px);
-        }
-
-        .binary-result {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-top: 0.8rem;
-            color: #e2e8f0;
-        }
-
-        .binary-result span {
-            color: var(--accent-amber);
-            font-size: 2rem;
-            font-family: 'Space Grotesk', sans-serif;
-        }
-
-        /* Buttons */
-        .btn-primary {
-            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-            color: white;
-            padding: 16px 36px;
-            font-size: 1.3rem;
-            font-weight: 700;
-            border: none;
-            border-radius: 14px;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
             text-decoration: none;
             display: inline-flex;
             align-items: center;
-            gap: 10px;
-            margin-top: 1rem;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 15px 30px rgba(59, 130, 246, 0.6);
-            background: linear-gradient(135deg, #60a5fa 0%, #2563eb 100%);
-        }
-
-        .btn-green {
-            background: linear-gradient(135deg, #10b981 0%, #047857 100%);
-            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
-        }
-        .btn-green:hover {
-            background: linear-gradient(135deg, #34d399 0%, #059669 100%);
-            box-shadow: 0 15px 30px rgba(16, 185, 129, 0.6);
-        }
-
-        /* Flowchart / Step-by-Step Graphic */
-        .flow-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-            margin: 1rem 0;
-        }
-
-        .flow-step {
-            background: rgba(15, 23, 42, 0.8);
-            border: 1px solid var(--border-color);
-            padding: 12px 20px;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 1rem;
-            color: #cbd5e1;
-            display: flex;
-            align-items: center;
             gap: 8px;
+            transition: all 0.2s ease;
         }
 
-        .flow-arrow {
-            color: var(--accent-amber);
-            font-size: 1.4rem;
-            font-weight: bold;
-        }
-
-        /* Hardware Software Grid */
-        .hw-sw-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.2rem;
-            width: 100%;
-            text-align: left;
-        }
-
-        .hw-sw-card {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid var(--border-color);
-            padding: 1.2rem;
-            border-radius: 14px;
-        }
-
-        .hw-sw-card h4 {
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        /* Fixed Navigation Dots & Controls */
-        .nav-controls {
-            position: fixed;
-            bottom: 25px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            z-index: 100;
-            background: rgba(15, 23, 42, 0.75);
-            padding: 10px 22px;
-            border-radius: 50px;
-            backdrop-filter: blur(16px);
-            border: 1px solid var(--border-color);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        }
-
-        .nav-dots {
-            display: flex;
-            gap: 10px;
-        }
-
-        .nav-dot {
-            width: 12px;
-            height: 12px;
-            background-color: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .nav-dot.active {
-            background-color: var(--accent-blue);
-            transform: scale(1.3);
-            box-shadow: 0 0 12px var(--accent-blue);
-        }
-
-        .nav-arrow-btn {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: color 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 2px 6px;
-        }
-
-        .nav-arrow-btn:hover {
+        .btn-home:hover {
+            background: rgba(255, 255, 255, 0.18);
             color: white;
+            transform: translateY(-2px);
         }
 
-        .kbd-hint {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 100;
-            background: rgba(15, 23, 42, 0.6);
+        .btn-home:active {
+            transform: translateY(2px) scale(0.97) !important;
+        }
+
+        .container {
+            max-width: 1050px;
+            margin: 1.5rem auto;
+            padding: 0 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .hero-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.9) 100%);
             border: 1px solid var(--border-color);
-            padding: 6px 12px;
-            border-radius: 8px;
+            border-radius: 20px;
+            padding: 1.8rem 2rem;
+            text-align: center;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 640px) {
+            .modules-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .module-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 1.2rem 1.4rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-card > *:not(.card-canvas) {
+            position: relative;
+            z-index: 2;
+        }
+
+        .card-canvas {
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .module-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        }
+
+        .module-card.m1 { border-top: 4px solid var(--accent-blue); }
+        .module-card.m2 { border-top: 4px solid var(--accent-amber); }
+        .module-card.m3 { border-top: 4px solid var(--accent-red); }
+        .module-card.m4 { border-top: 4px solid var(--accent-green); }
+
+        .btn-module {
+            display: block;
+            text-align: center;
+            padding: 14px 18px;
+            border-radius: 14px;
+            font-weight: 800;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            font-size: 0.95rem;
+        }
+
+        .btn-m1 { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; }
+        .btn-m2 { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #0f172a; }
+        .btn-m3 { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; }
+        .btn-m4 { background: linear-gradient(135deg, #10b981 0%, #047857 100%); color: white; border: none; cursor: pointer; width: 100%; }
+
+        .btn-module:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+
+        .btn-module:active, button:active, a.btn-module:active {
+            transform: translateY(3px) scale(0.97) !important;
+            box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+            transition: transform 0.05s ease, box-shadow 0.05s ease !important;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 50px;
             font-size: 0.8rem;
-            color: var(--text-muted);
-            backdrop-filter: blur(8px);
+            font-weight: 700;
+            text-transform: uppercase;
         }
 
-        kbd {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 4px;
-            padding: 2px 6px;
-            font-family: monospace;
-            color: #f1f5f9;
-        }
-
-        @media (max-width: 768px) {
-            .hw-sw-grid { grid-template-columns: 1fr; }
-            .section { padding: 1.5rem 1rem; }
-            .card { padding: 1.2rem; }
-            .kbd-hint { display: none; }
-        }
+        .badge-blue { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+        .badge-amber { background: rgba(245, 158, 11, 0.2); color: #fde047; }
+        .badge-red { background: rgba(239, 68, 68, 0.2); color: #fca5a5; }
+        .badge-green { background: rgba(16, 185, 129, 0.2); color: #34d399; }
     </style>
 </head>
 <body>
 
-    <div class="kbd-hint">
-        Tastatur: Nutze <kbd>↑</kbd> <kbd>↓</kbd> oder <kbd>Leertaste</kbd>
-    </div>
-
-    <!-- 1. STARTSEITE -->
-    <div id="section1" class="section">
-        <div class="glow" style="background: var(--accent-blue); top: 20%; left: 30%;"></div>
-        <div class="section-content">
-            <span class="badge">Informatik 8. Klasse</span>
-            <h1>Willkommen zur Informatik!</h1>
-            <p class="description">
-                Ein spannender Einblick in die unsichtbare Welt der Daten, Algorithmen und Systeme, die deinen Alltag prägen.
-            </p>
-            <button class="btn-primary" onclick="scrollToSection(2)">
-                Let's Go! 🚀
-            </button>
+    <header class="top-bar">
+        <div style="font-weight: 800; font-size: 1.2rem; font-family: 'Space Grotesk', sans-serif;">
+            Informatik B25 • Tastenkombinationen
         </div>
-    </div>
-
-    <!-- 2. WAS IST INFORMATIK? -->
-    <div id="section2" class="section">
-        <div class="glow" style="background: var(--accent-purple); top: 30%; right: 20%;"></div>
-        <div class="section-content">
-            <span class="badge" style="color: var(--accent-purple);">Grundbegriff</span>
-            <h2 style="color: #c084fc;">Was ist Informatik?</h2>
-            <p class="description">
-                Informatik ist <strong>nicht</strong> nur "am Computer sitzen"! Es ist die Wissenschaft der automatischen Informationsverarbeitung & Problemlösung.
-            </p>
-            <div class="card">
-                <div style="font-size: 1.1rem; color: #e2e8f0; margin-bottom: 1rem; font-weight: 600;">
-                    Das Grundprinzip aller Computer: <u>EVA-Prinzip</u>
-                </div>
-                <div class="flow-container">
-                    <div class="flow-step">📥 <strong>E</strong>ingabe (Maus/Tastatur)</div>
-                    <div class="flow-arrow">➔</div>
-                    <div class="flow-step">⚙️ <strong>V</strong>erarbeitung (CPU)</div>
-                    <div class="flow-arrow">➔</div>
-                    <div class="flow-step">📤 <strong>A</strong>usgabe (Bildschirm)</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 3. BITS & BYTES -->
-    <div id="section3" class="section">
-        <div class="glow" style="background: var(--accent-cyan); top: 15%; left: 20%;"></div>
-        <div class="section-content">
-            <span class="badge" style="color: var(--accent-cyan);">Daten & Binärcode</span>
-            <h2 style="color: #38bdf8;">Bits & Bytes</h2>
-            <p class="description">
-                Ein Computer kennt nur zwei Zustände: <strong>Strom an (1)</strong> oder <strong>Strom aus (0)</strong>. 
-                Jedes Zeichen besteht aus diesen Bits. 8 Bits = 1 Byte!
-            </p>
-            <div class="card">
-                <div style="font-size: 1rem; color: var(--text-muted); margin-bottom: 0.5rem;">
-                    💡 <strong>Probier es selbst aus!</strong> Klicke auf die Bits, um Schalter umzulegen:
-                </div>
-                <div class="binary-container">
-                    <div class="bit-box">
-                        <span class="bit-label">Wert: 8</span>
-                        <button class="bit-btn" id="bit-8" onclick="toggleBit(8)">0</button>
-                    </div>
-                    <div class="bit-box">
-                        <span class="bit-label">Wert: 4</span>
-                        <button class="bit-btn active" id="bit-4" onclick="toggleBit(4)">1</button>
-                    </div>
-                    <div class="bit-box">
-                        <span class="bit-label">Wert: 2</span>
-                        <button class="bit-btn" id="bit-2" onclick="toggleBit(2)">0</button>
-                    </div>
-                    <div class="bit-box">
-                        <span class="bit-label">Wert: 1</span>
-                        <button class="bit-btn active" id="bit-1" onclick="toggleBit(1)">1</button>
-                    </div>
-                </div>
-                <div class="binary-result">
-                    Binärcode <code style="color: var(--accent-cyan); background: rgba(0,0,0,0.4); padding: 2px 8px; border-radius: 6px;" id="binary-str">0101</code> = Zahl <span id="decimal-val">5</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 4. ALGORITHMEN -->
-    <div id="section4" class="section">
-        <div class="glow" style="background: var(--accent-amber); top: 40%; left: 35%;"></div>
-        <div class="section-content">
-            <span class="badge" style="color: var(--accent-amber);">Logik & Abläufe</span>
-            <h2 style="color: #fbbf24;">Algorithmen</h2>
-            <p class="description">
-                Ein Algorithmus ist eine eindeutige Schritt-für-Schritt-Anleitung zur Lösung eines Problems. Wie ein genaues Kochrezept!
-            </p>
-            <div class="card">
-                <div class="flow-container">
-                    <div class="flow-step" style="border-color: #fbbf24;">1. Start / Problem</div>
-                    <div class="flow-arrow">➔</div>
-                    <div class="flow-step" style="border-color: #fbbf24;">2. Schritt-für-Schritt Befehle</div>
-                    <div class="flow-arrow">➔</div>
-                    <div class="flow-step" style="border-color: #fbbf24;">3. Ergebnis / Ziel</div>
-                </div>
-                <p style="font-size: 0.95rem; color: var(--text-muted); margin-top: 0.8rem;">
-                    Egal ob TikTok-Empfehlungen, Navis oder Google-Suche – überall stecken Algorithmen dahinter.
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <!-- 5. HARDWARE & SOFTWARE -->
-    <div id="section5" class="section">
-        <div class="glow" style="background: var(--accent-green); bottom: 20%; right: 25%;"></div>
-        <div class="section-content">
-            <span class="badge" style="color: var(--accent-green);">Das Gesamtsystem</span>
-            <h2 style="color: #34d399;">Hardware & Software</h2>
-            <p class="description">
-                Erst das perfekte Zusammenspiel von physischen Teilen und digitalen Programmen macht den Computer nutzbar.
-            </p>
-            <div class="card">
-                <div class="hw-sw-grid">
-                    <div class="hw-sw-card">
-                        <h4 style="color: #60a5fa;">🖥️ Hardware</h4>
-                        <p style="font-size: 0.95rem; color: var(--text-muted);">
-                            Alles, was du anfassen kannst: Prozessor (CPU), Arbeitsspeicher (RAM), Tastatur, Monitor, Festplatte.
-                        </p>
-                    </div>
-                    <div class="hw-sw-card">
-                        <h4 style="color: #f472b6;">💿 Software</h4>
-                        <p style="font-size: 0.95rem; color: var(--text-muted);">
-                            Programme & Daten: Betriebssystem (Windows, macOS), Webbrowser, Spiele, Apps, Code.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 6. DAS INTERNET -->
-    <div id="section6" class="section">
-        <div class="glow" style="background: var(--accent-blue); top: 25%; left: 30%;"></div>
-        <div class="section-content">
-            <span class="badge" style="color: var(--accent-blue);">Vernetzung</span>
-            <h2 style="color: #60a5fa;">Das Internet & Sicherheit</h2>
-            <p class="description">
-                Ein weltweites Netz von Milliarden Computern, die rund um die Uhr Daten austauschen.
-            </p>
-            <div class="card">
-                <div style="font-size: 1.1rem; font-weight: 600; color: #f8fafc; margin-bottom: 0.5rem;">
-                    🌐 Informationsfreiheit vs. Sicherheit
-                </div>
-                <p style="font-size: 0.95rem; color: var(--text-muted); line-height: 1.5;">
-                    Im Internet können wir in Sekundenschnelle Daten übertragen. Aber Achtung: Passwortschutz, Verschlüsselung und Datenschutz sind in der Informatik überlebenswichtig!
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <!-- 7. ÜBERGANG ZU A1 -->
-    <div id="section7" class="section">
-        <div class="glow" style="background: var(--accent-green); top: 30%; right: 30%;"></div>
-        <div class="section-content">
-            <span class="badge" style="color: var(--accent-green);">Bereit für die Praxis?</span>
-            <h2 style="color: #34d399;">Vom Verstehen zum Tun!</h2>
-            <p class="description">
-                Jetzt kennst du die Grundlagen! Bevor wir am PC richtig durchstarten, beherrschen wir unseren Arbeitsplatz und die Tastatur wie echte Profis.
-            </p>
-            <a href="A1.html" class="btn-primary btn-green">
-                Arbeitsblatt A1: Tastatur & Kürzel ➔
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <a href="presentation.html" class="btn-home">
+                📖 Theorie & Präsentation
             </a>
+            <div class="xp-pill">
+                ⚡ XP: <span class="global-xp-val">0</span>
+            </div>
         </div>
+    </header>
+
+    <div class="container">
+
+        <div class="hero-card">
+            <h1 style="font-family: 'Space Grotesk', sans-serif; font-size: clamp(2rem, 5vw, 2.8rem); margin-bottom: 0.8rem;">
+                Tastenkombinationen 🚀
+            </h1>
+            <p style="color: var(--text-muted); font-size: 1.15rem; max-width: 650px; margin: 0 auto 1.5rem auto;">
+                Lerne die wichtigsten Tastatur-Kürzel unter Windows & auf der Schweizer Tastatur kennen. Meistere alle Quests und erstelle deine Ergebnisübersicht!
+            </p>
+            <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
+                <a href="A1.html" class="btn-module btn-m1" style="min-width: 200px;">Jetzt Kurs starten ➔</a>
+            </div>
+        </div>
+
+        <div class="modules-grid">
+            <!-- MODULE 1 -->
+            <div class="module-card m1">
+                <div>
+                    <span class="badge badge-blue">Arbeitsblatt A1</span>
+                    <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.4rem; margin: 0.8rem 0 0.4rem 0;">
+                        Allgemeine Befehle
+                    </h2>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">
+                        Kopieren, Einfügen, Rückgängig, Speichern, Ende und Suchen & Ersetzen.
+                    </p>
+                </div>
+                <div>
+                    <div style="font-size: 0.85rem; color: var(--accent-blue); font-weight: 700; margin-bottom: 0.8rem;">
+                        ⚡ Quests 1–3
+                    </div>
+                    <a href="A1.html" class="btn-module btn-m1">A1 Starten ➔</a>
+                </div>
+            </div>
+
+            <!-- MODULE 2 -->
+            <div class="module-card m2">
+                <div>
+                    <span class="badge badge-amber">Arbeitsblatt A2</span>
+                    <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.4rem; margin: 0.8rem 0 0.4rem 0;">
+                        Sonderzeichen
+                    </h2>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">
+                        Schweizer Tastaturbelegung für @, #, €, |, \, [, ], {, } und °.
+                    </p>
+                </div>
+                <div>
+                    <div style="font-size: 0.85rem; color: var(--accent-amber); font-weight: 700; margin-bottom: 0.8rem;">
+                        ⚡ Quests 4–6 (ab A1 ≥ 70%)
+                    </div>
+                    <a href="A2.html" class="btn-module btn-m2">A2 Starten ➔</a>
+                </div>
+            </div>
+
+            <!-- MODULE 3 -->
+            <div class="module-card m3">
+                <div>
+                    <span class="badge badge-red">Arbeitsblatt A3</span>
+                    <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.4rem; margin: 0.8rem 0 0.4rem 0;">
+                        Mission: Maus weglegen
+                    </h2>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">
+                        Die Boss-Challenge! 10 Aufträge in Word ohne Mausklicks.
+                    </p>
+                </div>
+                <div>
+                    <div style="font-size: 0.85rem; color: var(--accent-red); font-weight: 700; margin-bottom: 0.8rem;">
+                        👑 Boss-Challenge (ab A2 ≥ 70%)
+                    </div>
+                    <a href="A3.html" class="btn-module btn-m3">A3 Starten ➔</a>
+                </div>
+            </div>
+
+            <!-- MODULE 4: LEISTUNGSNACHWEIS PDF -->
+            <div class="module-card m4">
+                <div>
+                    <span class="badge badge-green">PDF Export</span>
+                    <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.4rem; margin: 0.8rem 0 0.4rem 0;">
+                        Leistungsnachweis
+                    </h2>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">
+                        Ergebnis-Zusammenfassung als PDF herunterladen.
+                    </p>
+                </div>
+                <div>
+                    <div style="font-size: 0.85rem; color: var(--accent-green); font-weight: 700; margin-bottom: 0.8rem;">
+                        📄 PDF für Lehrperson
+                    </div>
+                    <button onclick="downloadCertificatePDF()" class="btn-module btn-m4">
+                        <i class="fa-solid fa-file-pdf"></i> PDF Herunterladen
+                    </button>
+                </div>
+            </div>
+        </div>
+
     </div>
 
-    <!-- Fixed Bottom Controls -->
-    <div class="nav-controls">
-        <button class="nav-arrow-btn" onclick="navigateSection(-1)" title="Vorherige Folie">▲</button>
-        <div class="nav-dots" id="navigationDots"></div>
-        <button class="nav-arrow-btn" onclick="navigateSection(1)" title="Nächste Folie">▼</button>
-    </div>
-
+    <!-- Global XP Engine -->
+    <script src="xp.js"></script>
     <script>
-        const sections = document.querySelectorAll('.section');
-        const navDotsContainer = document.getElementById('navigationDots');
-        let currentSectionIndex = 0;
+        // Hover Particle Animation drifting Left
+        document.querySelectorAll('.module-card').forEach(card => {
+            const canvas = document.createElement('canvas');
+            canvas.className = 'card-canvas';
+            card.appendChild(canvas);
+            const ctx = canvas.getContext('2d');
 
-        // Create Nav Dots
-        sections.forEach((_, index) => {
-            const dot = document.createElement('div');
-            dot.classList.add('nav-dot');
-            dot.setAttribute('title', `Folie ${index + 1}`);
-            dot.onclick = () => scrollToSection(index + 1);
-            navDotsContainer.appendChild(dot);
-        });
+            let particles = [];
+            let isHovered = false;
+            let animId = null;
 
-        // Scroll Function
-        function scrollToSection(sectionNumber) {
-            const targetSection = document.getElementById('section' + sectionNumber);
-            if (targetSection) {
-                targetSection.scrollIntoView({ behavior: 'smooth' });
-                currentSectionIndex = sectionNumber - 1;
-                updateNavDots();
+            function resize() {
+                const rect = card.getBoundingClientRect();
+                canvas.width = rect.width;
+                canvas.height = rect.height;
             }
-        }
+            resize();
+            window.addEventListener('resize', resize);
 
-        function navigateSection(direction) {
-            let nextIndex = currentSectionIndex + direction;
-            if (nextIndex >= 0 && nextIndex < sections.length) {
-                scrollToSection(nextIndex + 1);
+            // Determine particle color based on module class
+            let pColor = '59, 130, 246'; // M1 Blue
+            if (card.classList.contains('m2')) pColor = '245, 158, 11'; // M2 Amber
+            if (card.classList.contains('m3')) pColor = '239, 68, 68';  // M3 Red
+            if (card.classList.contains('m4')) pColor = '16, 185, 129';  // M4 Green
+
+            function spawnParticle() {
+                particles.push({
+                    x: canvas.width + Math.random() * 20,
+                    y: Math.random() * canvas.height,
+                    vx: -(1.2 + Math.random() * 2.2), // Move Left!
+                    vy: (Math.random() - 0.5) * 0.6,
+                    radius: 2 + Math.random() * 3,
+                    alpha: 0.7 + Math.random() * 0.3
+                });
             }
-        }
 
-        // Update Dots Active State
-        function updateNavDots() {
-            const dots = document.querySelectorAll('.nav-dot');
-            dots.forEach((dot, index) => {
-                if (index === currentSectionIndex) {
-                    dot.classList.add('active');
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                if (isHovered && Math.random() < 0.5) {
+                    spawnParticle();
+                }
+
+                for (let i = particles.length - 1; i >= 0; i--) {
+                    let p = particles[i];
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.alpha -= 0.012;
+
+                    if (p.alpha <= 0 || p.x < -10) {
+                        particles.splice(i, 1);
+                        continue;
+                    }
+
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(${pColor}, ${p.alpha})`;
+                    ctx.shadowColor = `rgba(${pColor}, ${p.alpha})`;
+                    ctx.shadowBlur = 10;
+                    ctx.fill();
+                    ctx.restore();
+                }
+
+                if (isHovered || particles.length > 0) {
+                    animId = requestAnimationFrame(animate);
                 } else {
-                    dot.classList.remove('active');
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    animId = null;
                 }
-            });
-        }
-
-        // Observer for Scrolling
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const id = entry.target.id;
-                    currentSectionIndex = parseInt(id.replace('section', '')) - 1;
-                    updateNavDots();
-                }
-            });
-        }, {
-            threshold: 0.6
-        });
-
-        sections.forEach(section => {
-            observer.observe(section);
-        });
-
-        // Keyboard Navigation (Arrow Keys / Space)
-        window.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
-                e.preventDefault();
-                navigateSection(1);
-            } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
-                e.preventDefault();
-                navigateSection(-1);
-            }
-        });
-
-        // Interactive Binary Demo Logic
-        let bits = { 8: 0, 4: 1, 2: 0, 1: 1 };
-
-        function toggleBit(val) {
-            bits[val] = bits[val] === 1 ? 0 : 1;
-            const btn = document.getElementById('bit-' + val);
-            btn.innerText = bits[val];
-            if (bits[val] === 1) {
-                btn.classList.add('active');
-            } else {
-                btn.classList.remove('active');
             }
 
-            // Calculate Decimal
-            let dec = (bits[8] * 8) + (bits[4] * 4) + (bits[2] * 2) + (bits[1] * 1);
-            let binStr = `${bits[8]}${bits[4]}${bits[2]}${bits[1]}`;
+            card.addEventListener('mouseenter', () => {
+                isHovered = true;
+                if (!animId) animate();
+            });
 
-            document.getElementById('binary-str').innerText = binStr;
-            document.getElementById('decimal-val').innerText = dec;
-        }
-
-        // Init
-        updateNavDots();
+            card.addEventListener('mouseleave', () => {
+                isHovered = false;
+            });
+        });
     </script>
 </body>
 </html>
