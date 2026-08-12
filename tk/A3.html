@@ -127,20 +127,26 @@
             text-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
         }
 
-        .btn-start-timer {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-            color: white;
+        .btn-start-timer, .btn-stop-timer {
             padding: 16px 36px;
             font-size: 1.15rem;
             font-weight: 800;
-            border: none;
             border-radius: 14px;
             cursor: pointer;
             transition: all 0.2s ease;
-            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 10px;
+            min-width: 220px;
+            box-sizing: border-box;
+        }
+
+        .btn-start-timer {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            border: none;
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
         }
 
         .btn-start-timer:hover {
@@ -149,19 +155,16 @@
         }
 
         .btn-stop-timer {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid var(--border-color);
+            background: linear-gradient(135deg, #374151 0%, #1f2937 100%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
-            padding: 14px 28px;
-            font-size: 1.05rem;
-            font-weight: 700;
-            border-radius: 14px;
-            cursor: pointer;
-            transition: all 0.2s ease;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
         }
 
         .btn-stop-timer:hover {
-            background: rgba(255, 255, 255, 0.2);
+            background: linear-gradient(135deg, #4b5563 0%, #374151 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.6);
         }
 
         .btn-cert-pdf {
@@ -268,15 +271,15 @@
                 </a>
             </div>
 
-            <!-- MISSION 2: MAUS WEGLEGEN (STOPPUHR) -->
+            <!-- STOPPUHR -->
             <div class="card" style="margin-top: 2.5rem;">
                 <div style="text-align: center; margin-bottom: 1.2rem;">
-                    <div style="font-size: 3.2rem; line-height: 1; margin-bottom: 0.5rem;">🐭⛔</div>
+                    <div style="font-size: 3.2rem; line-height: 1; margin-bottom: 0.5rem;">⏱️</div>
                     <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.8rem; color: var(--accent-red);">
-                        Mission 2 – Maus weglegen!
+                        Stoppuhr
                     </h2>
                     <p style="color: var(--text-muted); font-size: 1.1rem; max-width: 600px; margin: 0.4rem auto 0 auto;">
-                        Messe hier deine Zeit für Mission 2 (Maus-freie Zone im Word-Dokument).
+                        Miss deine Zeit für das Word-Dokument.
                     </p>
                 </div>
 
@@ -285,10 +288,10 @@
 
                     <div style="display: flex; gap: 14px; flex-wrap: wrap; justify-content: center;">
                         <button class="btn-start-timer" id="start-boss-btn" onclick="startBossChallenge()">
-                            ▶️ Mission 2 Timer starten
+                            ▶️ Timer starten
                         </button>
                         <button class="btn-stop-timer" id="stop-boss-btn" onclick="stopBossChallenge()" style="display: none;">
-                            ⏹️ Mission 2 Beenden & Zeit Stoppen
+                            ⏹️ Timer stoppen
                         </button>
                     </div>
 
