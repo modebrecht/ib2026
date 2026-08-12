@@ -485,18 +485,31 @@
 
         let activePhase = 1;
 
-        // Q4 State (AltGr Geführt)
+        function shuffleArray(arr) {
+            const array = [...arr];
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Q4 State
+        let q4Items = shuffleArray(altgrItems);
         let q4Index = 0;
         let q4CorrectHits = 0;
         let q4TotalAttempts = 0;
 
-        // Q5 State (AltGr 50/50)
+        // Q5 State
+        let q5Items = shuffleArray(altgrItems);
         let q5Index = 0;
         let q5CorrectHits = 0;
         let q5TotalAttempts = 0;
         let q5HintRevealed = false;
+        let q5HiddenKey = 'key2';
 
-        // Q6 State (AltGr Blind)
+        // Q6 State
+        let q6Items = shuffleArray(altgrItems);
         let q6Index = 0;
         let q6CorrectHits = 0;
         let q6TotalAttempts = 0;
@@ -531,6 +544,7 @@
 
         /* --- QUEST 4 LOGIC (ALTGR GEFÜHRT) --- */
         function resetQ4() {
+            q4Items = shuffleArray(altgrItems);
             q4Index = 0;
             q4CorrectHits = 0;
             q4TotalAttempts = 0;
@@ -540,7 +554,7 @@
         }
 
         function updateQ4Card() {
-            if (q4Index >= altgrItems.length) {
+            if (q4Index >= q4Items.length) {
                 document.getElementById('q4-card').style.display = 'none';
                 const trophyView = document.getElementById('q4-trophy-view');
                 trophyView.style.display = 'flex';
@@ -566,14 +580,14 @@
                 return;
             }
 
-            const item = altgrItems[q4Index];
+            const item = q4Items[q4Index];
             document.getElementById('q4-symbol-box').innerText = item.char;
             document.getElementById('q4-title').innerText = item.title;
             document.getElementById('q4-desc').innerText = item.desc;
             document.getElementById('q4-key2').innerText = item.key2;
 
-            document.getElementById('q4-counter-label').innerText = `Zeichen ${q4Index + 1} von ${altgrItems.length}`;
-            let progressPct = ((q4Index + 1) / altgrItems.length) * 100;
+            document.getElementById('q4-counter-label').innerText = `Zeichen ${q4Index + 1} von ${q4Items.length}`;
+            let progressPct = ((q4Index + 1) / q4Items.length) * 100;
             document.getElementById('q4-progress-bar').style.width = `${progressPct}%`;
 
             let livePct = q4TotalAttempts === 0 ? 100 : Math.round((q4CorrectHits / q4TotalAttempts) * 100);
@@ -590,8 +604,8 @@
         }
 
         document.getElementById('q4-char-input').addEventListener('input', (e) => {
-            if (activePhase !== 2 || q4Index >= altgrItems.length) return;
-            const targetChar = altgrItems[q4Index].char;
+            if (activePhase !== 2 || q4Index >= q4Items.length) return;
+            const targetChar = q4Items[q4Index].char;
             const typedVal = e.target.value;
 
             if (typedVal.includes(targetChar)) {
@@ -629,6 +643,7 @@
         }
 
         function resetQ5() {
+            q5Items = shuffleArray(altgrItems);
             q5Index = 0;
             q5CorrectHits = 0;
             q5TotalAttempts = 0;
@@ -640,7 +655,7 @@
         }
 
         function updateQ5Card() {
-            if (q5Index >= altgrItems.length) {
+            if (q5Index >= q5Items.length) {
                 document.getElementById('q5-card').style.display = 'none';
                 const trophyView = document.getElementById('q5-trophy-view');
                 trophyView.style.display = 'flex';
@@ -667,7 +682,7 @@
             }
 
             q5HintRevealed = false;
-            const item = altgrItems[q5Index];
+            const item = q5Items[q5Index];
             document.getElementById('q5-symbol-box').innerText = item.char;
             document.getElementById('q5-title').innerText = item.title;
             document.getElementById('q5-desc').innerText = item.desc;
@@ -691,8 +706,8 @@
                 hintBtn.disabled = false;
             }
 
-            document.getElementById('q5-counter-label').innerText = `Rätsel ${q5Index + 1} von ${altgrItems.length}`;
-            let progressPct = ((q5Index + 1) / altgrItems.length) * 100;
+            document.getElementById('q5-counter-label').innerText = `Rätsel ${q5Index + 1} von ${q5Items.length}`;
+            let progressPct = ((q5Index + 1) / q5Items.length) * 100;
             document.getElementById('q5-progress-bar').style.width = `${progressPct}%`;
 
             let livePct = q5TotalAttempts === 0 ? 100 : Math.round((q5CorrectHits / q5TotalAttempts) * 100);
@@ -720,7 +735,7 @@
                 addGlobalXP(-30);
                 playSound('hint');
 
-                const item = altgrItems[q5Index];
+                const item = q5Items[q5Index];
                 const displayBox = document.getElementById('q5-shortcut-display');
                 displayBox.innerHTML = `
                     <div class="big-kbd">AltGr</div>
@@ -774,6 +789,7 @@
         }
 
         function resetQ6() {
+            q6Items = shuffleArray(altgrItems);
             q6Index = 0;
             q6CorrectHits = 0;
             q6TotalAttempts = 0;
@@ -785,7 +801,7 @@
         }
 
         function updateQ6Card() {
-            if (q6Index >= altgrItems.length) {
+            if (q6Index >= q6Items.length) {
                 document.getElementById('q6-card').style.display = 'none';
                 const trophyView = document.getElementById('q6-trophy-view');
                 trophyView.style.display = 'flex';
@@ -812,7 +828,7 @@
             }
 
             q6HintRevealed = false;
-            const item = altgrItems[q6Index];
+            const item = q6Items[q6Index];
             document.getElementById('q6-title').innerText = item.title;
             document.getElementById('q6-desc').innerText = item.desc;
 
@@ -826,8 +842,8 @@
                 hintBtn.disabled = false;
             }
 
-            document.getElementById('q6-counter-label').innerText = `Blind ${q6Index + 1} von ${altgrItems.length}`;
-            let progressPct = ((q6Index + 1) / altgrItems.length) * 100;
+            document.getElementById('q6-counter-label').innerText = `Blind ${q6Index + 1} von ${q6Items.length}`;
+            let progressPct = ((q6Index + 1) / q6Items.length) * 100;
             document.getElementById('q6-progress-bar').style.width = `${progressPct}%`;
 
             let livePct = q6TotalAttempts === 0 ? 100 : Math.round((q6CorrectHits / q6TotalAttempts) * 100);
@@ -855,7 +871,7 @@
                 addGlobalXP(-30);
                 playSound('hint');
 
-                const item = altgrItems[q6Index];
+                const item = q6Items[q6Index];
                 const hintBtn = document.getElementById('q6-hint-btn');
                 hintBtn.innerText = `💡 Tipp: AltGr + ${item.key2} (Zeichen: ${item.char})`;
                 hintBtn.disabled = true;
@@ -863,8 +879,8 @@
         }
 
         document.getElementById('q6-char-input').addEventListener('input', (e) => {
-            if (activePhase !== 4 || q6Index >= altgrItems.length) return;
-            const targetChar = altgrItems[q6Index].char;
+            if (activePhase !== 4 || q6Index >= q6Items.length) return;
+            const targetChar = q6Items[q6Index].char;
             const typedVal = e.target.value;
 
             if (typedVal.includes(targetChar)) {

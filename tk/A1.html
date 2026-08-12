@@ -219,7 +219,8 @@
                 <div class="theory-item"><span style="font-weight: 600;">10. Suchen & Ersetzen</span><div class="keys-wrap"><kbd>Ctrl</kbd> + <kbd>H</kbd></div></div>
                 <div class="theory-item"><span style="font-weight: 600;">11. Drucken</span><div class="keys-wrap"><kbd>Ctrl</kbd> + <kbd>P</kbd></div></div>
                 <div class="theory-item"><span style="font-weight: 600;">12. Datei öffnen</span><div class="keys-wrap"><kbd>Ctrl</kbd> + <kbd>O</kbd></div></div>
-                <div class="theory-item"><span style="font-weight: 600;">13. Zum Ende springen</span><div class="keys-wrap"><kbd>Ctrl</kbd> + <kbd>End (Ende)</kbd></div></div>
+                <div class="theory-item"><span style="font-weight: 600;">13. Zum Anfang springen</span><div class="keys-wrap"><kbd>Ctrl</kbd> + <kbd>Home</kbd></div></div>
+                <div class="theory-item"><span style="font-weight: 600;">14. Zum Ende springen</span><div class="keys-wrap"><kbd>Ctrl</kbd> + <kbd>End</kbd></div></div>
             </div>
 
             <div style="text-align: center; margin-top: 2rem;">
@@ -417,17 +418,29 @@
             { title: "10. Suchen & Ersetzen", desc: "Wörter suchen und automatisch austauschen.", keys: ["Ctrl", "H"], code: "KeyH" },
             { title: "11. Drucken", desc: "Den Druckdialog zum Ausdrucken aufrufen.", keys: ["Ctrl", "P"], code: "KeyP" },
             { title: "12. Datei öffnen", desc: "Das Menü zum Öffnen einer bestehenden Datei anzeigen.", keys: ["Ctrl", "O"], code: "KeyO" },
-            { title: "13. Zum Ende springen", desc: "Ganz an das Ende des Dokuments springen.", keys: ["Ctrl", "End"], code: "End" }
+            { title: "13. Zum Anfang springen", desc: "Ganz an den Anfang des Dokuments springen.", keys: ["Ctrl", "Home"], code: "Home" },
+            { title: "14. Zum Ende springen", desc: "Ganz an das Ende des Dokuments springen.", keys: ["Ctrl", "End"], code: "End" }
         ];
+
+        function shuffleArray(arr) {
+            const array = [...arr];
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
 
         let activePhase = 1;
 
         // Q1 State
+        let q1Shortcuts = shuffleArray(shortcuts);
         let q1Index = 0;
         let q1CorrectHits = 0;
         let q1TotalAttempts = 0;
 
         // Q2 State (50/50)
+        let q2Shortcuts = shuffleArray(shortcuts);
         let q2Index = 0;
         let q2CorrectHits = 0;
         let q2TotalAttempts = 0;
@@ -435,6 +448,7 @@
         let q2HiddenIndex = 1;
 
         // Q3 State (Blind)
+        let q3Shortcuts = shuffleArray(shortcuts);
         let q3Index = 0;
         let q3CorrectHits = 0;
         let q3TotalAttempts = 0;
@@ -463,6 +477,7 @@
 
         /* --- QUEST 1 LOGIC --- */
         function resetQ1() {
+            q1Shortcuts = shuffleArray(shortcuts);
             q1Index = 0;
             q1CorrectHits = 0;
             q1TotalAttempts = 0;
@@ -472,7 +487,7 @@
         }
 
         function updateQ1Card() {
-            if (q1Index >= shortcuts.length) {
+            if (q1Index >= q1Shortcuts.length) {
                 document.getElementById('q1-card').style.display = 'none';
                 const trophyView = document.getElementById('q1-trophy-view');
                 trophyView.style.display = 'flex';
@@ -498,15 +513,15 @@
                 return;
             }
 
-            const item = shortcuts[q1Index];
+            const item = q1Shortcuts[q1Index];
             document.getElementById('q1-title').innerText = item.title;
             document.getElementById('q1-desc').innerText = item.desc;
             
             const displayBox = document.getElementById('q1-shortcut-display');
             displayBox.innerHTML = item.keys.map(k => `<div class="big-kbd" data-keyname="${k}">${k}</div>`).join('<div class="plus-sign">+</div>');
 
-            document.getElementById('q1-counter-label').innerText = `Kürzel ${q1Index + 1} von ${shortcuts.length}`;
-            let progressPct = ((q1Index + 1) / shortcuts.length) * 100;
+            document.getElementById('q1-counter-label').innerText = `Kürzel ${q1Index + 1} von ${q1Shortcuts.length}`;
+            let progressPct = ((q1Index + 1) / q1Shortcuts.length) * 100;
             document.getElementById('q1-progress-bar').style.width = `${progressPct}%`;
 
             let livePct = q1TotalAttempts === 0 ? 100 : Math.round((q1CorrectHits / q1TotalAttempts) * 100);
@@ -570,6 +585,7 @@
         }
 
         function resetQ2() {
+            q2Shortcuts = shuffleArray(shortcuts);
             q2Index = 0;
             q2CorrectHits = 0;
             q2TotalAttempts = 0;
@@ -581,7 +597,7 @@
         }
 
         function updateQ2Card() {
-            if (q2Index >= shortcuts.length) {
+            if (q2Index >= q2Shortcuts.length) {
                 document.getElementById('q2-card').style.display = 'none';
                 const trophyView = document.getElementById('q2-trophy-view');
                 trophyView.style.display = 'flex';
@@ -608,7 +624,7 @@
             }
 
             q2HintRevealed = false;
-            const item = shortcuts[q2Index];
+            const item = q2Shortcuts[q2Index];
             document.getElementById('q2-title').innerText = item.title;
             
             q2HiddenIndex = Math.random() < 0.5 ? 0 : (item.keys.length - 1);
@@ -629,8 +645,8 @@
                 hintBtn.disabled = false;
             }
 
-            document.getElementById('q2-counter-label').innerText = `Rätsel ${q2Index + 1} von ${shortcuts.length}`;
-            let progressPct = ((q2Index + 1) / shortcuts.length) * 100;
+            document.getElementById('q2-counter-label').innerText = `Rätsel ${q2Index + 1} von ${q2Shortcuts.length}`;
+            let progressPct = ((q2Index + 1) / q2Shortcuts.length) * 100;
             document.getElementById('q2-progress-bar').style.width = `${progressPct}%`;
 
             let livePct = q2TotalAttempts === 0 ? 100 : Math.round((q2CorrectHits / q2TotalAttempts) * 100);
@@ -720,6 +736,7 @@
         }
 
         function resetQ3() {
+            q3Shortcuts = shuffleArray(shortcuts);
             q3Index = 0;
             q3CorrectHits = 0;
             q3TotalAttempts = 0;
@@ -731,7 +748,7 @@
         }
 
         function updateQ3Card() {
-            if (q3Index >= shortcuts.length) {
+            if (q3Index >= q3Shortcuts.length) {
                 document.getElementById('q3-card').style.display = 'none';
                 const trophyView = document.getElementById('q3-trophy-view');
                 trophyView.style.display = 'flex';
@@ -758,7 +775,7 @@
             }
 
             q3HintRevealed = false;
-            const item = shortcuts[q3Index];
+            const item = q3Shortcuts[q3Index];
             document.getElementById('q3-title').innerText = item.title.replace(/^\d+\.\s*/, '');
             
             const displayBox = document.getElementById('q3-shortcut-display');
@@ -778,8 +795,8 @@
                 hintBtn.disabled = false;
             }
 
-            document.getElementById('q3-counter-label').innerText = `Blind ${q3Index + 1} von ${shortcuts.length}`;
-            let progressPct = ((q3Index + 1) / shortcuts.length) * 100;
+            document.getElementById('q3-counter-label').innerText = `Blind ${q3Index + 1} von ${q3Shortcuts.length}`;
+            let progressPct = ((q3Index + 1) / q3Shortcuts.length) * 100;
             document.getElementById('q3-progress-bar').style.width = `${progressPct}%`;
 
             let livePct = q3TotalAttempts === 0 ? 100 : Math.round((q3CorrectHits / q3TotalAttempts) * 100);
@@ -885,7 +902,7 @@
         window.addEventListener('keydown', (e) => {
             if (activePhase === 2) {
                 // Q1
-                const target = shortcuts[q1Index];
+                const target = q1Shortcuts[q1Index];
 
                 if (e.ctrlKey || e.metaKey || e.key === 'Control') {
                     const ctrlBtn = document.querySelector('#q1-shortcut-display .big-kbd[data-keyname="Ctrl"]');
@@ -908,7 +925,7 @@
                 }
             } else if (activePhase === 3 && isQuestUnlocked('q2')) {
                 // Q2 (50/50)
-                const target = shortcuts[q2Index];
+                const target = q2Shortcuts[q2Index];
 
                 if (e.ctrlKey || e.metaKey || e.key === 'Control') {
                     const ctrlBtn = document.querySelector('#q2-shortcut-display .big-kbd[data-keyname="Ctrl"]');
@@ -931,7 +948,7 @@
                 }
             } else if (activePhase === 4 && isQuestUnlocked('q3')) {
                 // Q3 (Blind)
-                const target = shortcuts[q3Index];
+                const target = q3Shortcuts[q3Index];
 
                 if (e.ctrlKey || e.metaKey || e.key === 'Control') {
                     const ctrlBtn = document.querySelector('#q3-shortcut-display .big-kbd[data-keyname="Ctrl"]');
