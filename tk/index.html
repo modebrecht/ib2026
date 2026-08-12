@@ -74,6 +74,7 @@
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 1.5rem;
+            align-items: stretch;
         }
 
         @media (max-width: 640px) {
@@ -86,14 +87,31 @@
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 20px;
-            padding: 1.2rem 1.4rem;
+            padding: 1.5rem;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            gap: 1rem;
+            gap: 1.2rem;
+            height: 100%;
+            min-height: 240px;
+            box-sizing: border-box;
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+        }
+
+        .module-card-content {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .module-card-desc {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.45;
+            min-height: 2.8em;
+            margin-top: 0.4rem;
         }
 
         .module-card > *:not(.card-canvas) {
@@ -156,6 +174,7 @@
             font-size: 0.8rem;
             font-weight: 700;
             text-transform: uppercase;
+            align-self: flex-start;
         }
 
         .badge-blue { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
@@ -197,12 +216,12 @@
         <div class="modules-grid">
             <!-- MODULE 1 -->
             <div class="module-card m1">
-                <div>
+                <div class="module-card-content">
                     <span class="badge badge-blue">Arbeitsblatt A1</span>
-                    <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.4rem; margin: 0.8rem 0 0.4rem 0;">
+                    <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.4rem; margin: 0.8rem 0 0.2rem 0;">
                         Allgemeine Befehle
                     </h2>
-                    <p style="color: var(--text-muted); font-size: 0.9rem;">
+                    <p class="module-card-desc">
                         Kopieren, Einfügen, Rückgängig, Speichern, Ende und Suchen & Ersetzen.
                     </p>
                 </div>
@@ -216,12 +235,12 @@
 
             <!-- MODULE 2 -->
             <div class="module-card m2">
-                <div>
+                <div class="module-card-content">
                     <span class="badge badge-amber">Arbeitsblatt A2</span>
-                    <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.4rem; margin: 0.8rem 0 0.4rem 0;">
+                    <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.4rem; margin: 0.8rem 0 0.2rem 0;">
                         Sonderzeichen
                     </h2>
-                    <p style="color: var(--text-muted); font-size: 0.9rem;">
+                    <p class="module-card-desc">
                         Schweizer Tastaturbelegung für @, #, €, |, \, [, ], {, } und °.
                     </p>
                 </div>
@@ -235,13 +254,13 @@
 
             <!-- MODULE 3 -->
             <div class="module-card m3">
-                <div>
+                <div class="module-card-content">
                     <span class="badge badge-red">Arbeitsblatt A3</span>
-                    <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.4rem; margin: 0.8rem 0 0.4rem 0;">
+                    <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.4rem; margin: 0.8rem 0 0.2rem 0;">
                         Mission: Maus weglegen
                     </h2>
-                    <p style="color: var(--text-muted); font-size: 0.9rem;">
-                        Die Boss-Challenge! 10 Aufträge in Word ohne Mausklicks.
+                    <p class="module-card-desc">
+                        Die Boss-Challenge! 10 Aufträge in MS Word ohne Mausklicks.
                     </p>
                 </div>
                 <div>
@@ -254,13 +273,13 @@
 
             <!-- MODULE 4: LEISTUNGSNACHWEIS PDF -->
             <div class="module-card m4">
-                <div>
+                <div class="module-card-content">
                     <span class="badge badge-green">PDF Export</span>
-                    <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.4rem; margin: 0.8rem 0 0.4rem 0;">
+                    <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.4rem; margin: 0.8rem 0 0.2rem 0;">
                         Leistungsnachweis
                     </h2>
-                    <p style="color: var(--text-muted); font-size: 0.9rem;">
-                        Ergebnis-Zusammenfassung als PDF herunterladen.
+                    <p class="module-card-desc">
+                        Ergebnis-Zusammenfassung als PDF für die Lehrperson herunterladen.
                     </p>
                 </div>
                 <div>
