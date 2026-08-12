@@ -60,6 +60,15 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 12px;
+        }
+
+        .theory-keys {
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 6px !important;
+            white-space: nowrap !important;
+            flex-shrink: 0 !important;
         }
 
         kbd {
@@ -135,23 +144,40 @@
             box-shadow: 0 0 30px rgba(245, 158, 11, 0.35);
         }
 
+        .shortcut-display {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin: 1.5rem 0;
+            flex-wrap: nowrap;
+        }
+
+        .plus-sign {
+            font-size: clamp(1.2rem, 3.5vw, 1.8rem);
+            font-weight: 800;
+            color: var(--text-muted);
+            user-select: none;
+            flex-shrink: 0;
+        }
+
         .big-kbd {
             background: #1e293b;
             border: 2px solid rgba(245, 158, 11, 0.4);
             box-shadow: 0 6px 0 rgba(0, 0, 0, 0.6);
             color: #fde047;
-            flex: 0 1 auto;
-            max-width: 160px;
-            min-width: 70px;
+            flex: 1 1 auto;
+            max-width: 130px;
+            min-width: 60px;
             height: clamp(55px, 12vh, 78px);
-            padding: 0 12px;
+            padding: 0 6px;
             border-radius: 14px;
             font-family: 'Space Grotesk', monospace;
-            font-size: clamp(0.95rem, 3.5vw, 1.4rem);
+            font-size: clamp(1.0rem, 4vw, 1.6rem);
             font-weight: 800;
             white-space: nowrap !important;
             word-break: keep-all;
-            display: inline-flex;
+            display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.15s ease;
@@ -261,16 +287,16 @@
                 </p>
 
                 <div class="grid-2">
-                    <div class="theory-item"><div style="display:flex; align-items:center; gap:10px;"><kbd class="big-symbol-kbd">@</kbd> <span style="font-weight: 600;">Klammeraffe</span></div><div><kbd>AltGr</kbd> + <kbd>2</kbd></div></div>
-                    <div class="theory-item"><div style="display:flex; align-items:center; gap:10px;"><kbd class="big-symbol-kbd">#</kbd> <span style="font-weight: 600;">Hashtag / Raute</span></div><div><kbd>AltGr</kbd> + <kbd>3</kbd></div></div>
-                    <div class="theory-item"><div style="display:flex; align-items:center; gap:10px;"><kbd class="big-symbol-kbd">€</kbd> <span style="font-weight: 600;">Euro-Zeichen</span></div><div><kbd>AltGr</kbd> + <kbd>E</kbd></div></div>
-                    <div class="theory-item"><div style="display:flex; align-items:center; gap:10px;"><kbd class="big-symbol-kbd">|</kbd> <span style="font-weight: 600;">Senkrechter Strich (Pipe)</span></div><div><kbd>AltGr</kbd> + <kbd>7</kbd></div></div>
-                    <div class="theory-item"><div style="display:flex; align-items:center; gap:10px;"><kbd class="big-symbol-kbd">\</kbd> <span style="font-weight: 600;">Backslash</span></div><div><kbd>AltGr</kbd> + <kbd>&lt;</kbd></div></div>
-                    <div class="theory-item"><div style="display:flex; align-items:center; gap:10px;"><kbd class="big-symbol-kbd">[</kbd> <span style="font-weight: 600;">Eckige Klammer auf</span></div><div><kbd>AltGr</kbd> + <kbd>è/ä</kbd></div></div>
-                    <div class="theory-item"><div style="display:flex; align-items:center; gap:10px;"><kbd class="big-symbol-kbd">]</kbd> <span style="font-weight: 600;">Eckige Klammer zu</span></div><div><kbd>AltGr</kbd> + <kbd>à/ö</kbd></div></div>
-                    <div class="theory-item"><div style="display:flex; align-items:center; gap:10px;"><kbd class="big-symbol-kbd">{</kbd> <span style="font-weight: 600;">Geschweifte Klammer auf</span></div><div><kbd>AltGr</kbd> + <kbd>é/ü</kbd></div></div>
-                    <div class="theory-item"><div style="display:flex; align-items:center; gap:10px;"><kbd class="big-symbol-kbd">}</kbd> <span style="font-weight: 600;">Geschweifte Klammer zu</span></div><div><kbd>AltGr</kbd> + <kbd>$</kbd></div></div>
-                    <div class="theory-item"><div style="display:flex; align-items:center; gap:10px;"><kbd class="big-symbol-kbd">°</kbd> <span style="font-weight: 600;">Gradzeichen</span></div><div><kbd>AltGr</kbd> + <kbd>4</kbd></div></div>
+                    <div class="theory-item"><div style="display:flex; align-items:center; gap:10px;"><kbd class="big-symbol-kbd">@</kbd> <span style="font-weight: 600;">Klammeraffe</span></div><div class="theory-keys"><kbd>AltGr</kbd> + <kbd>2</kbd></div></div>
+                    <div class="theory-item"><div style="display:flex; align-items:center; gap:10px;"><kbd class="big-symbol-kbd">#</kbd> <span style="font-weight: 600;">Hashtag / Raute</span></div><div class="theory-keys"><kbd>AltGr</kbd> + <kbd>3</kbd></div></div>
+                    <div class="theory-item"><div style="display:flex; align-items:center; gap:10px;"><kbd class="big-symbol-kbd">€</kbd> <span style="font-weight: 600;">Euro-Zeichen</span></div><div class="theory-keys"><kbd>AltGr</kbd> + <kbd>E</kbd></div></div>
+                    <div class="theory-item"><div style="display:flex; align-items:center; gap:10px;"><kbd class="big-symbol-kbd">|</kbd> <span style="font-weight: 600;">Senkrechter Strich (Pipe)</span></div><div class="theory-keys"><kbd>AltGr</kbd> + <kbd>7</kbd></div></div>
+                    <div class="theory-item"><div style="display:flex; align-items:center; gap:10px;"><kbd class="big-symbol-kbd">\</kbd> <span style="font-weight: 600;">Backslash</span></div><div class="theory-keys"><kbd>AltGr</kbd> + <kbd>&lt;</kbd></div></div>
+                    <div class="theory-item"><div style="display:flex; align-items:center; gap:10px;"><kbd class="big-symbol-kbd">[</kbd> <span style="font-weight: 600;">Eckige Klammer auf</span></div><div class="theory-keys"><kbd>AltGr</kbd> + <kbd>è/ä</kbd></div></div>
+                    <div class="theory-item"><div style="display:flex; align-items:center; gap:10px;"><kbd class="big-symbol-kbd">]</kbd> <span style="font-weight: 600;">Eckige Klammer zu</span></div><div class="theory-keys"><kbd>AltGr</kbd> + <kbd>à/ö</kbd></div></div>
+                    <div class="theory-item"><div style="display:flex; align-items:center; gap:10px;"><kbd class="big-symbol-kbd">{</kbd> <span style="font-weight: 600;">Geschweifte Klammer auf</span></div><div class="theory-keys"><kbd>AltGr</kbd> + <kbd>é/ü</kbd></div></div>
+                    <div class="theory-item"><div style="display:flex; align-items:center; gap:10px;"><kbd class="big-symbol-kbd">}</kbd> <span style="font-weight: 600;">Geschweifte Klammer zu</span></div><div class="theory-keys"><kbd>AltGr</kbd> + <kbd>$</kbd></div></div>
+                    <div class="theory-item"><div style="display:flex; align-items:center; gap:10px;"><kbd class="big-symbol-kbd">°</kbd> <span style="font-weight: 600;">Gradzeichen</span></div><div class="theory-keys"><kbd>AltGr</kbd> + <kbd>4</kbd></div></div>
                 </div>
 
                 <div style="text-align: center; margin-top: 2rem;">
@@ -296,6 +322,9 @@
                     </div>
 
                     <div class="carousel-card" id="q4-card">
+                        <div style="font-size: 0.8rem; color: var(--accent-green); text-transform: uppercase; font-weight: 700; letter-spacing: 1px; margin-bottom: 0.5rem;">
+                            ⚡ Geführter Mode – Tippe das gezeigte Zeichen:
+                        </div>
                         <div class="symbol-hero-box" id="q4-symbol-box">@</div>
                         <div class="action-label" id="q4-title">Klammeraffe</div>
                         <div class="action-desc" id="q4-desc">Wichtig für jede E-Mail-Adresse!</div>
@@ -425,12 +454,12 @@
 
                     <div class="carousel-card q6-card" id="q6-card">
                         <div style="font-size: 0.8rem; color: var(--accent-purple); text-transform: uppercase; font-weight: 700; letter-spacing: 1px;">
-                            🧠 Memory Mode – Aus dem Kopf getippt:
+                            🧠 Memory Mode – Aus dem Gedächtnis:
                         </div>
                         <div class="action-label" id="q6-title" style="margin-top: 0.5rem;">Klammeraffe</div>
                         <div class="action-desc" id="q6-desc">Wichtig für jede E-Mail-Adresse!</div>
 
-                        <div class="shortcut-display">
+                        <div class="shortcut-display" id="q6-shortcut-display">
                             <div class="big-kbd">?</div>
                             <div class="plus-sign">+</div>
                             <div class="big-kbd">?</div>
@@ -598,7 +627,7 @@
             input.focus();
 
             const statusMsg = document.getElementById('q4-status-msg');
-            statusMsg.innerHTML = 'Drücke <kbd>AltGr</kbd> + Taste auf deiner Tastatur!';
+            statusMsg.innerHTML = 'Warte auf Tastatur-Eingabe... <span style="color:var(--accent-amber);">Drücke die Tasten!</span>';
             statusMsg.style.color = "var(--text-muted)";
             document.getElementById('q4-card').classList.remove('success-flash');
         }
@@ -607,6 +636,7 @@
             if (activePhase !== 2 || q4Index >= q4Items.length) return;
             const targetChar = q4Items[q4Index].char;
             const typedVal = e.target.value;
+            if (!typedVal) return;
 
             if (typedVal.includes(targetChar)) {
                 addGlobalXP(10);
@@ -617,11 +647,25 @@
                 const card = document.getElementById('q4-card');
                 const statusMsg = document.getElementById('q4-status-msg');
                 card.classList.add('success-flash');
-                statusMsg.innerHTML = '✨ <span style="color: var(--accent-green);">+10 XP! Perfekt getippt!</span>';
+                statusMsg.innerHTML = '✨ <span style="color: var(--accent-green);">+10 XP!</span>';
 
                 setTimeout(() => {
                     q4Index++;
                     updateQ4Card();
+                }, 600);
+            } else {
+                addGlobalXP(-10);
+                playSound('wrong');
+                q4TotalAttempts++;
+
+                const card = document.getElementById('q4-card');
+                const statusMsg = document.getElementById('q4-status-msg');
+                card.classList.add('error-flash');
+                statusMsg.innerHTML = '❌ <span style="color: var(--accent-red);">-10 XP!</span>';
+
+                setTimeout(() => {
+                    card.classList.remove('error-flash');
+                    e.target.value = "";
                 }, 600);
             }
         });
@@ -718,9 +762,9 @@
             input.focus();
 
             const statusMsg = document.getElementById('q5-status-msg');
-            statusMsg.innerHTML = 'Ergänze die fehlende Taste: <span style="color:var(--accent-cyan);">Tippe das Sonderzeichen!</span>';
+            statusMsg.innerHTML = 'Warte auf Tastatur-Eingabe... <span style="color:var(--accent-amber);">Drücke die Tasten!</span>';
             statusMsg.style.color = "var(--text-muted)";
-            document.getElementById('q5-card').classList.remove('success-flash');
+            document.getElementById('q5-card').classList.remove('success-flash', 'error-flash');
         }
 
         function useQ5Hint() {
@@ -753,6 +797,7 @@
             if (activePhase !== 3 || q5Index >= altgrItems.length) return;
             const targetChar = altgrItems[q5Index].char;
             const typedVal = e.target.value;
+            if (!typedVal) return;
 
             if (typedVal.includes(targetChar)) {
                 addGlobalXP(10);
@@ -763,11 +808,25 @@
                 const card = document.getElementById('q5-card');
                 const statusMsg = document.getElementById('q5-status-msg');
                 card.classList.add('success-flash');
-                statusMsg.innerHTML = '✨ <span style="color: var(--accent-green);">+10 XP! 50/50 richtig gelöst!</span>';
+                statusMsg.innerHTML = '✨ <span style="color: var(--accent-green);">+10 XP!</span>';
 
                 setTimeout(() => {
                     q5Index++;
                     updateQ5Card();
+                }, 600);
+            } else {
+                addGlobalXP(-10);
+                playSound('wrong');
+                q5TotalAttempts++;
+
+                const card = document.getElementById('q5-card');
+                const statusMsg = document.getElementById('q5-status-msg');
+                card.classList.add('error-flash');
+                statusMsg.innerHTML = '❌ <span style="color: var(--accent-red);">-10 XP!</span>';
+
+                setTimeout(() => {
+                    card.classList.remove('error-flash');
+                    e.target.value = "";
                 }, 600);
             }
         });
@@ -832,6 +891,11 @@
             document.getElementById('q6-title').innerText = item.title;
             document.getElementById('q6-desc').innerText = item.desc;
 
+            const displayBox = document.getElementById('q6-shortcut-display');
+            if (displayBox) {
+                displayBox.innerHTML = `<div class="big-kbd">?</div><div class="plus-sign">+</div><div class="big-kbd">?</div>`;
+            }
+
             const currentXP = getGlobalXP();
             const hintBtn = document.getElementById('q6-hint-btn');
             if (currentXP < 30) {
@@ -854,9 +918,9 @@
             input.focus();
 
             const statusMsg = document.getElementById('q6-status-msg');
-            statusMsg.innerHTML = 'Wie tippst du dieses Zeichen? <span style="color:var(--accent-purple);">Tippe es aus dem Kopf!</span>';
+            statusMsg.innerHTML = 'Warte auf Tastatur-Eingabe... <span style="color:var(--accent-amber);">Drücke die Tasten!</span>';
             statusMsg.style.color = "var(--text-muted)";
-            document.getElementById('q6-card').classList.remove('success-flash');
+            document.getElementById('q6-card').classList.remove('success-flash', 'error-flash');
         }
 
         function useQ6Hint() {
@@ -872,8 +936,13 @@
                 playSound('hint');
 
                 const item = q6Items[q6Index];
+                const displayBox = document.getElementById('q6-shortcut-display');
+                if (displayBox) {
+                    displayBox.innerHTML = `<div class="big-kbd">AltGr</div><div class="plus-sign">+</div><div class="big-kbd">${item.key2}</div>`;
+                }
+
                 const hintBtn = document.getElementById('q6-hint-btn');
-                hintBtn.innerText = `💡 Tipp: AltGr + ${item.key2} (Zeichen: ${item.char})`;
+                hintBtn.innerText = `💡 Tipp gekauft (-30 XP)!`;
                 hintBtn.disabled = true;
             }
         }
@@ -882,6 +951,7 @@
             if (activePhase !== 4 || q6Index >= q6Items.length) return;
             const targetChar = q6Items[q6Index].char;
             const typedVal = e.target.value;
+            if (!typedVal) return;
 
             if (typedVal.includes(targetChar)) {
                 addGlobalXP(10);
@@ -889,14 +959,34 @@
                 q6CorrectHits++;
                 q6TotalAttempts++;
 
+                const item = q6Items[q6Index];
+                const displayBox = document.getElementById('q6-shortcut-display');
+                if (displayBox) {
+                    displayBox.innerHTML = `<div class="big-kbd pressed-success">AltGr</div><div class="plus-sign">+</div><div class="big-kbd pressed-success">${item.key2}</div>`;
+                }
+
                 const card = document.getElementById('q6-card');
                 const statusMsg = document.getElementById('q6-status-msg');
                 card.classList.add('success-flash');
-                statusMsg.innerHTML = '✨ <span style="color: var(--accent-green);">+10 XP! Perfekt aus dem Kopf getippt!</span>';
+                statusMsg.innerHTML = '✨ <span style="color: var(--accent-green);">+10 XP!</span>';
 
                 setTimeout(() => {
                     q6Index++;
                     updateQ6Card();
+                }, 600);
+            } else {
+                addGlobalXP(-10);
+                playSound('wrong');
+                q6TotalAttempts++;
+
+                const card = document.getElementById('q6-card');
+                const statusMsg = document.getElementById('q6-status-msg');
+                card.classList.add('error-flash');
+                statusMsg.innerHTML = '❌ <span style="color: var(--accent-red);">-10 XP!</span>';
+
+                setTimeout(() => {
+                    card.classList.remove('error-flash');
+                    e.target.value = "";
                 }, 600);
             }
         });

@@ -370,7 +370,23 @@
 
             playSound('correct');
             addGlobalXP(50);
+            saveQuestScore('q7', 100);
         }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const isUnlocked = isQuestUnlocked('q7');
+            const lockScreen = document.getElementById('a3-lock-screen');
+            const contentWrap = document.getElementById('a3-content-wrap');
+
+            if (!isUnlocked) {
+                lockScreen.style.display = 'flex';
+                contentWrap.style.display = 'none';
+            } else {
+                lockScreen.style.display = 'none';
+                contentWrap.style.display = 'flex';
+                contentWrap.style.flexDirection = 'column';
+            }
+        });
     </script>
 </body>
 </html>

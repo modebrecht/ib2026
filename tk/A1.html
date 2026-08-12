@@ -246,6 +246,9 @@
                 </div>
 
                 <div class="carousel-card" id="q1-card">
+                    <div style="font-size: 0.8rem; color: var(--accent-cyan); text-transform: uppercase; font-weight: 700; letter-spacing: 1px; margin-bottom: 0.5rem;">
+                        ⚡ Geführter Mode – Drücke die gezeigten Tasten:
+                    </div>
                     <div class="action-label" id="q1-title">Kopieren</div>
                     <div class="action-desc" id="q1-desc">Markierten Text oder Datei in den Zwischenspeicher kopieren.</div>
 
@@ -365,7 +368,7 @@
 
                 <div class="carousel-card q3-card" id="q3-card">
                     <div style="font-size: 0.8rem; color: var(--accent-purple); text-transform: uppercase; font-weight: 700; letter-spacing: 1px;">
-                        🧠 Memory Mode – Aus dem Kopf drücke:
+                        🧠 Memory Mode – Aus dem Gedächtnis:
                     </div>
                     <div class="action-label" id="q3-title" style="margin-top: 0.5rem;">KOPIEREN</div>
 
@@ -545,7 +548,7 @@
             const card = document.getElementById('q1-card');
             const statusMsg = document.getElementById('q1-status-msg');
             card.classList.add('success-flash');
-            statusMsg.innerHTML = '✨ <span style="color: var(--accent-green);">+10 XP! Perfekt gedrückt!</span>';
+            statusMsg.innerHTML = '✨ <span style="color: var(--accent-green);">+10 XP!</span>';
 
             setTimeout(() => {
                 q1Index++;
@@ -561,7 +564,7 @@
             const card = document.getElementById('q1-card');
             const statusMsg = document.getElementById('q1-status-msg');
             card.classList.add('error-flash');
-            statusMsg.innerHTML = '❌ <span style="color: var(--accent-red);">-10 XP! Falsche Kombination. Versuche es noch einmal!</span>';
+            statusMsg.innerHTML = '❌ <span style="color: var(--accent-red);">-10 XP!</span>';
 
             setTimeout(() => {
                 card.classList.remove('error-flash');
@@ -653,7 +656,7 @@
             document.getElementById('q2-score-live').innerText = `Genauigkeit: ${livePct}%`;
 
             const statusMsg = document.getElementById('q2-status-msg');
-            statusMsg.innerHTML = 'Ergänze die fehlende Taste: <span style="color:var(--accent-amber);">Drücke die Voll-Kombination!</span>';
+            statusMsg.innerHTML = 'Warte auf Tastatur-Eingabe... <span style="color:var(--accent-amber);">Drücke die Tasten!</span>';
             statusMsg.style.color = "var(--text-muted)";
 
             document.getElementById('q2-card').classList.remove('success-flash', 'error-flash');
@@ -696,7 +699,7 @@
             const card = document.getElementById('q2-card');
             const statusMsg = document.getElementById('q2-status-msg');
             card.classList.add('success-flash');
-            statusMsg.innerHTML = '✨ <span style="color: var(--accent-green);">+10 XP! 50/50 richtig gelöst!</span>';
+            statusMsg.innerHTML = '✨ <span style="color: var(--accent-green);">+10 XP!</span>';
 
             setTimeout(() => {
                 q2Index++;
@@ -712,7 +715,7 @@
             const card = document.getElementById('q2-card');
             const statusMsg = document.getElementById('q2-status-msg');
             card.classList.add('error-flash');
-            statusMsg.innerHTML = '❌ <span style="color: var(--accent-red);">-10 XP! Falsche Taste. Versuche es noch einmal!</span>';
+            statusMsg.innerHTML = '❌ <span style="color: var(--accent-red);">-10 XP!</span>';
 
             setTimeout(() => {
                 card.classList.remove('error-flash');
@@ -803,7 +806,7 @@
             document.getElementById('q3-score-live').innerText = `Genauigkeit: ${livePct}%`;
 
             const statusMsg = document.getElementById('q3-status-msg');
-            statusMsg.innerHTML = 'Welches Kürzel war das? <span style="color:var(--accent-purple);">Drücke es aus dem Kopf!</span>';
+            statusMsg.innerHTML = 'Warte auf Tastatur-Eingabe... <span style="color:var(--accent-amber);">Drücke die Tasten!</span>';
             statusMsg.style.color = "var(--text-muted)";
 
             document.getElementById('q3-card').classList.remove('success-flash', 'error-flash');
@@ -846,7 +849,23 @@
             const card = document.getElementById('q3-card');
             const statusMsg = document.getElementById('q3-status-msg');
             card.classList.add('success-flash');
-            statusMsg.innerHTML = '✨ <span style="color: var(--accent-green);">+10 XP! Perfekt aus dem Kopf gedrückt!</span>';
+            statusMsg.innerHTML = '✨ <span style="color: var(--accent-green);">+10 XP!</span>';
+
+            setTimeout(() => {
+                q3Index++;
+                updateQ3Card();
+            }, 600);
+        }
+
+        function handleQ3Wrong() {
+            addGlobalXP(-10);
+            playSound('wrong');
+            q3TotalAttempts++;
+
+            const card = document.getElementById('q3-card');
+            const statusMsg = document.getElementById('q3-status-msg');
+            card.classList.add('error-flash');
+            statusMsg.innerHTML = '❌ <span style="color: var(--accent-red);">-10 XP!</span>';
 
             setTimeout(() => {
                 q3Index++;
