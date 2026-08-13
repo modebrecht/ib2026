@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tastaturkürzel – Interaktive Übung</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: radial-gradient(circle at top, #eef2ff 0%, #f8fafc 56%, #ffffff 100%);
+      --panel: #ffffff;
+      --accent: #2563eb;
+      --accent-soft: rgba(37, 99, 235, 0.08);
+      --accent-grad: linear-gradient(120deg, #2563eb 0%, #6366f1 40%, #0ea5e9 100%);
+      --text: #0f172a;
+      --muted: #6b7280;
+      --radius: 14px;
+      --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.03);
+      --shadow-lg: 0 20px 25px -15px rgba(15, 23, 42, 0.12);
+      --card-border: rgba(148, 163, 184, 0.15);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+      min-height: 100vh;
+    }
+    .app {
+      width: min(1100px, 100%);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    header {
+      background: radial-gradient(circle at 10% 10%, rgba(255,255,255,1) 0%, rgba(241,245,249,0.10) 60%, rgba(248,250,252,0) 100%), #ffffff;
+      border-radius: 20px;
+      padding: 14px 18px 16px 18px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid rgba(99, 102, 241, 0.08);
+    }
+    .title-block h1 {
+      margin: 0;
+      font-size: 1.08rem;
+      background: var(--accent-grad);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .title-block p {
+      margin: 0;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .set-area {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .set-tabs {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .set-tab {
+      border: 1px solid rgba(37, 99, 235, 0);
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(5px);
+      padding: 5px 14px 6px 14px;
+      border-radius: 9999px;
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--muted);
+      transition: 0.15s ease;
+    }
+    .set-tab:hover {
+      background: rgba(37, 99, 235, 0.08);
+    }
+    .set-tab.active {
+      background: var(--accent-grad);
+      border-color: rgba(37, 99, 235, 0.2);
+      color: #fff;
+      box-shadow: 0 10px 25px -12px rgba(37, 99, 235, 0.55);
+    }
+    .questions {
+      background: rgba(255,255,255,0.35);
+      border-radius: 20px;
+      padding: 18px 18px 4px 18px;
+      display: grid;
+      gap: 14px;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(3px);
+    }
+    .question-card {
+      border: 1px solid rgba(15, 23, 42, 0.03);
+      background: #ffffff;
+      border-radius: 14px;
+      padding: 10px 12px 12px 12px;
+      display: grid;
+      gap: 6px;
+      transition: transform 0.05s ease-out;
+    }
+    .question-card:hover {
+      transform: translateY(-1px);
+      border-color: rgba(99, 102, 241, 0.12);
+    }
+    .question-title {
+      font-weight: 600;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .question-label {
+      background: rgba(99, 102, 241, 0.12);
+      color: rgba(15, 23, 42, 0.7);
+      font-size: 0.7rem;
+      padding: 3px 9px;
+      border-radius: 999px;
+      min-width: 70px;
+      text-align: center;
+    }
+    select {
+      width: 100%;
+      padding: 6px 8px;
+      border-radius: 10px;
+      border: 1px solid rgba(15, 23, 42, 0.12);
+      font-size: 0.9rem;
+      background: #fff;
+      outline: none;
+      transition: 0.12s ease;
+    }
+    select:focus {
+      border-color: rgba(99, 102, 241, 0.4);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+    }
+    select.correct {
+      border-color: rgba(34, 197, 94, 0.7);
+      background: rgba(34, 197, 94, 0.05);
+    }
+    select.wrong {
+      border-color: rgba(239, 68, 68, 0.6);
+      background: rgba(239, 68, 68, 0.03);
+    }
+    .actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      padding: 10px 0 16px 0;
+    }
+    button.check-btn {
+      background: var(--accent-grad);
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      padding: 7px 18px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 12px 25px -15px rgba(37, 99, 235, 0.9);
+    }
+    .secondary-btn {
+      background: linear-gradient(120deg,#0f172a 0%,#475569 100%);
+    }
+    .score {
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.45);
+      backdrop-filter: blur(3px);
+      z-index: 40;
+    }
+    .summary {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 280px;
+      background: rgba(255,255,255,0.98);
+      border:1px solid rgba(148,163,184,0.25);
+      border-radius:16px;
+      padding:14px 14px 10px 14px;
+      display:none;
+      gap:6px;
+      box-shadow: 0 20px 40px -24px rgba(15, 23, 42, 0.4);
+      z-index:50;
+    }
+    .summary-title {
+      font-weight:600;
+      color:#0f172a;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:8px;
+    }
+    @media (max-width: 680px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .set-area {
+        width: 100%;
+        justify-content: space-between;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="title-block">
+        <h1>Tastaturkürzel – Interaktive Übung</h1>
+        <p>Wähle zuerst das Arbeitsblatt (A–F), dann die richtigen Kürzel aus.</p>
+      </div>
+      <div class="set-area">
+        <div class="set-tabs" id="setTabs"></div>
+        <button class="check-btn secondary-btn" id="showSummaryBtn" style="white-space:nowrap;">Auswertung</button>
+        <button class="check-btn" id="downloadJsonBtn" style="display:none;">Download JSON</button>
+      </div>
+    </header>
+
+    <div class="questions" id="questionsContainer"></div>
+
+    <div class="actions">
+      <button class="check-btn" id="checkBtn">Überprüfen</button>
+      <div class="score" id="scoreBox">0 / 8 richtig</div>
+    </div>
+
+    <!-- Modal + Overlay -->
+    <div class="overlay" id="overlay"></div>
+    <div class="summary" id="summaryPanel">
+      <div class="summary-title">
+        <span>Auswertung</span>
+        <button id="closeSummary" style="background:transparent;border:none;font-size:1rem;cursor:pointer;color:#0f172a;">×</button>
+      </div>
+      <div id="summaryRows" style="display:grid;gap:4px;font-size:0.8rem;color:#475569;"></div>
+    </div>
+  </div>
+
+  <script>
+    // --- Datenbasis ---
+    var DATA = {
+      A: [
+        { text: "Du möchtest einen Textabschnitt kopieren. Welche Tastenkombination ist dafür zuständig?", correct: "Ctrl + C", wrong: ["Ctrl + X", "Ctrl + V"] },
+        { text: "Wie kannst du deinen Computer sperren, wenn du deinen Platz kurz verlässt?", correct: "Win + L", wrong: ["Ctrl + L", "Alt + F4"] },
+        { text: "Welche Tastenkombination macht eine Aktion rückgängig?", correct: "Ctrl + Z", wrong: ["Ctrl + Y", "Ctrl + U"] },
+        { text: "Mit welchem Kürzel kannst du nach einem Wort suchen?", correct: "Ctrl + F", wrong: ["Ctrl + S", "Ctrl + H"] },
+        { text: "Welches Kürzel fügt den zuletzt kopierten/ausgeschnittenen Inhalt ein?", correct: "Ctrl + V", wrong: ["Ctrl + C", "Ctrl + A"] },
+        { text: "Du willst das gerade Geöffnete schnell drucken. Welche Tastenkombination nimmst du?", correct: "Ctrl + P", wrong: ["Ctrl + D", "Ctrl + Shift + P"] },
+        { text: "Wie wählst du alles in einem Dokument aus?", correct: "Ctrl + A", wrong: ["Ctrl + E", "Ctrl + Q"] },
+        { text: "Du hast etwas rückgängig gemacht, möchtest es aber wiederholen. Welches Kürzel?", correct: "Ctrl + Y", wrong: ["Ctrl + Z", "Ctrl + R"] }
+      ],
+      B: [
+        { text: "Welche Tastenkombination drückst du, um deine Arbeit zu sichern?", correct: "Ctrl + S", wrong: ["Ctrl + A", "Ctrl + D"] },
+        { text: "Wie kannst du Text fett formatieren?", correct: "Ctrl + B", wrong: ["Ctrl + I", "Ctrl + F"] },
+        { text: "Wie schließt du das aktive Fenster oder den aktuellen Tab?", correct: "Ctrl + W", wrong: ["Ctrl + Q", "Alt + Tab"] },
+        { text: "Welches Kürzel wechselt zwischen geöffneten Programmen?", correct: "Alt + Tab", wrong: ["Ctrl + Tab", "Win + D"] },
+        { text: "Welche Tastenkombination nutzt du zum Ausschneiden?", correct: "Ctrl + X", wrong: ["Ctrl + C", "Ctrl + V"] },
+        { text: "Mit welchem Kürzel startest du ein neues Dokument?", correct: "Ctrl + N", wrong: ["Ctrl + M", "Ctrl + Shift + N"] },
+        { text: "Welches Kürzel stellt eine Aktion wieder her (Redo)?", correct: "Ctrl + Y", wrong: ["Ctrl + Z", "Ctrl + Shift + Z"] },
+        { text: "Wie öffnest du eine neue Browser-Registerkarte?", correct: "Ctrl + T", wrong: ["Ctrl + N", "Ctrl + Shift + T"] }
+      ],
+      C: [
+        { text: "Du hast etwas kopiert. Wie fügst du es ein?", correct: "Ctrl + V", wrong: ["Ctrl + C", "Ctrl + X"] },
+        { text: "Welches Kürzel öffnet direkt den Task-Manager?", correct: "Ctrl + Shift + Esc", wrong: ["Ctrl + Alt + Del", "Alt + F4"] },
+        { text: "Wie aktualisierst du eine Webseite?", correct: "F5", wrong: ["Ctrl + E", "Win + R"] },
+        { text: "Wie markierst du den gesamten Inhalt einer Seite?", correct: "Ctrl + A", wrong: ["Ctrl + Shift + A", "Ctrl + E"] },
+        { text: "Welches Kürzel erstellt eine Kopie eines markierten Textes?", correct: "Ctrl + C", wrong: ["Ctrl + X", "Ctrl + V"] },
+        { text: "Mit welchem Kürzel speicherst du schnell?", correct: "Ctrl + S", wrong: ["Ctrl + P", "Ctrl + Shift + S"] },
+        { text: "Welches Kürzel macht den letzten Schritt rückgängig?", correct: "Ctrl + Z", wrong: ["Ctrl + Y", "Ctrl + U"] },
+        { text: "Wie kannst du ein neues Dokument/Fenster öffnen?", correct: "Ctrl + N", wrong: ["Ctrl + O", "Ctrl + Shift + N"] }
+      ],
+      D: [
+        { text: "Welche Tastenkombination macht Text fett?", correct: "Ctrl + B", wrong: ["Ctrl + I", "Ctrl + U"] },
+        { text: "Wie aktivierst du die Suchfunktion?", correct: "Ctrl + F", wrong: ["Ctrl + H", "Ctrl + S"] },
+        { text: "Welches Kürzel dient dazu, Text auszuschneiden?", correct: "Ctrl + X", wrong: ["Ctrl + C", "Ctrl + V"] },
+        { text: "Wie wechselst du schnell zwischen laufenden Anwendungen?", correct: "Alt + Tab", wrong: ["Ctrl + Tab", "Win + Tab"] },
+        { text: "Welche Tastenkombination schließt den aktuellen Tab?", correct: "Ctrl + W", wrong: ["Ctrl + Q", "Alt + F4"] },
+        { text: "Welches Kürzel öffnet den Druckdialog?", correct: "Ctrl + P", wrong: ["Ctrl + D", "Ctrl + Shift + P"] },
+        { text: "Du willst im Browser einen neuen Tab öffnen. Welche Tastenkombination?", correct: "Ctrl + T", wrong: ["Ctrl + N", "Ctrl + Shift + T"] },
+        { text: "Dein PC hängt ein bisschen und du willst schnell sehen, was läuft. Welche Tastenkombination öffnet den Task-Manager direkt?", correct: "Ctrl + Shift + Esc", wrong: ["Ctrl + Alt + Del", "Alt + F4"] }
+      ],
+      E: [
+        { text: "Du möchtest eine bereits gespeicherte Datei öffnen. Welche Tastenkombination?", correct: "Ctrl + O", wrong: ["Ctrl + Shift + O", "Win + O"] },
+        { text: "Du möchtest das Windows-Startmenü per Tastatur öffnen.", correct: "Ctrl + Esc", wrong: ["Win + F1", "Win + Esc"] },
+        { text: "Du bist am Ende eines längeren Dokuments und willst ganz nach oben zum Anfang springen.", correct: "Ctrl + Home", wrong: ["Ctrl + End", "Win + Pfeil nach oben"] },
+        { text: "Du willst in einem langen Dokument direkt ans Ende springen.", correct: "Ctrl + End", wrong: ["Ctrl + Home", "Win + Pfeil nach unten"] },
+        { text: "Du möchtest alle Fenster minimieren und den Desktop sehen.", correct: "Win + D", wrong: ["Win + Pfeil rechts", "Win + S"] },
+        { text: "Du willst ein Fenster links am Bildschirm andocken.", correct: "Win + Pfeil nach links", wrong: ["Win + Pfeil nach rechts", "Win + Pfeil nach oben"] },
+        { text: "Du möchtest schnell die Windows-Suche öffnen.", correct: "Win + S", wrong: ["Win + F1", "Ctrl + O"] },
+        { text: "Du willst einen Screenshot vom gesamten Bildschirm machen.", correct: "Taste Printscreen (Prt Scr)", wrong: ["Win + F1", "Win + S"] }
+      ],
+      F: [
+        { text: "Du möchtest den Datei-Explorer sofort öffnen.", correct: "Win + E", wrong: ["Win + X", "Ctrl + E"] },
+        { text: "Du möchtest nur einen Bildausschnitt als Screenshot aufnehmen. Welche Tastenkombination benutzt du?", correct: "Win + Shift + S", wrong: ["Taste Printscreen (Prt Scr)", "Win + S"] },
+        { text: "Du willst alle geöffneten Fenster als Übersicht sehen (Aufgabenansicht).", correct: "Win + Tab", wrong: ["Alt + Tab", "Ctrl + Tab"] },
+        { text: "Du möchtest ein Fenster an die rechte Bildschirmhälfte andocken.", correct: "Win + Pfeil nach rechts", wrong: ["Win + Pfeil nach oben", "Ctrl + Pfeil nach rechts"] },
+        { text: "Du möchtest ein Fenster maximieren (oben andocken).", correct: "Win + Pfeil nach oben", wrong: ["Win + Pfeil nach unten", "Alt + Pfeil nach oben"] },
+        { text: "Du hast aus Versehen einen Browser-Tab geschlossen und willst ihn sofort zurückholen.", correct: "Ctrl + Shift + T", wrong: ["Ctrl + T", "Ctrl + Shift + N"] },
+        { text: "Du willst das aktuell aktive Fenster/Programm beenden.", correct: "Alt + F4", wrong: ["Ctrl + F4", "Win + F4"] },
+        { text: "Du möchtest im Browser die Verlauf-/Chronik-Ansicht öffnen.", correct: "Ctrl + H", wrong: ["Ctrl + J", "Ctrl + L"] }
+      ]
+    };
+
+    var setTabsEl = document.getElementById("setTabs");
+    var questionsContainer = document.getElementById("questionsContainer");
+    var checkBtn = document.getElementById("checkBtn");
+    var scoreBox = document.getElementById("scoreBox");
+    var showSummaryBtn = document.getElementById("showSummaryBtn");
+    var overlay = document.getElementById("overlay");
+    var summaryPanel = document.getElementById("summaryPanel");
+    var summaryRowsEl = document.getElementById("summaryRows");
+    var closeSummary = document.getElementById("closeSummary");
+    var downloadJsonBtn = document.getElementById("downloadJsonBtn");
+    var STORAGE_KEY = "tastaturkuerzel-progress-v1";
+    var currentSet = "A";
+
+    function shuffle(arr) {
+      return arr
+        .map(function (v) { return { v: v, s: Math.random() }; })
+        .sort(function (a, b) { return a.s - b.s; })
+        .map(function (obj) { return obj.v; });
+    }
+
+    function renderTabs() {
+      var sets = ["A", "B", "C", "D", "E", "F"];
+      setTabsEl.innerHTML = "";
+      sets.forEach(function (key) {
+        var btn = document.createElement("button");
+        btn.textContent = "Arbeitsblatt " + key;
+        btn.className = "set-tab" + (key === currentSet ? " active" : "");
+        btn.addEventListener("click", function () {
+          currentSet = key;
+          renderQuestions();
+          scoreBox.textContent = "0 / 8 richtig";
+          overlay.style.display = "none";
+          summaryPanel.style.display = "none";
+        });
+        setTabsEl.appendChild(btn);
+      });
+    }
+
+    function renderQuestions() {
+      questionsContainer.innerHTML = "";
+      renderTabs();
+      var progress = loadProgress();
+      var stored = progress[currentSet] || {};
+      var storedAnswers = Array.isArray(stored.answers) ? stored.answers : [];
+      var questions = DATA[currentSet];
+      questions.forEach(function (q, idx) {
+        var card = document.createElement("div");
+        card.className = "question-card";
+
+        var title = document.createElement("div");
+        title.className = "question-title";
+        title.innerHTML = '<span class="question-label">Frage ' + (idx + 1) + '</span> <span>' + q.text + '</span>';
+
+        var select = document.createElement("select");
+        select.setAttribute("data-correct", q.correct);
+
+        var options = shuffle([q.correct].concat(q.wrong));
+        var emptyOpt = document.createElement("option");
+        emptyOpt.value = "";
+        emptyOpt.textContent = "Bitte wählen …";
+        select.appendChild(emptyOpt);
+        options.forEach(function (opt) {
+        var o = document.createElement("option");
+        o.value = opt;
+        o.textContent = opt;
+        select.appendChild(o);
+      });
+      if (storedAnswers[idx]) {
+        select.value = storedAnswers[idx];
+      }
+
+        card.appendChild(title);
+        card.appendChild(select);
+        questionsContainer.appendChild(card);
+      });
+    }
+
+    function loadProgress() {
+      try {
+        var raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function saveProgress(setKey, percent, answersArr) {
+      var data = loadProgress();
+      if (!data[setKey]) {
+        data[setKey] = { first: percent, last: percent, answers: answersArr };
+      } else {
+        if (typeof data[setKey].first !== "number") {
+          data[setKey].first = percent;
+        }
+        data[setKey].last = percent;
+        data[setKey].answers = answersArr;
+      }
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+    function renderSummary() {
+      var data = loadProgress();
+      var sets = ["A", "B", "C", "D", "E", "F"];
+      while (summaryRowsEl.firstChild) {
+        summaryRowsEl.removeChild(summaryRowsEl.firstChild);
+      }
+      sets.forEach(function (s, idx) {
+        var row = document.createElement("div");
+        row.style.display = "flex";
+        row.style.justifyContent = "space-between";
+        row.style.alignItems = "center";
+        row.style.gap = "8px";
+        row.style.padding = "2px 0";
+
+        var nameSpan = document.createElement("span");
+        nameSpan.style.fontWeight = "600";
+        nameSpan.textContent = s;
+
+        var stored = data[s] || {};
+        var firstVal = typeof stored.first === "number" ? stored.first + "%" : "0%";
+        var lastVal = typeof stored.last === "number" ? stored.last + "%" : "0%";
+
+        var valuesSpan = document.createElement("span");
+        valuesSpan.textContent = firstVal + " → " + lastVal;
+
+        row.appendChild(nameSpan);
+        row.appendChild(valuesSpan);
+        summaryRowsEl.appendChild(row);
+
+        if (idx < sets.length - 1) {
+          var line = document.createElement("div");
+          line.style.height = "1px";
+          line.style.background = "rgba(148,163,184,0.35)";
+          line.style.margin = "3px 0 4px 0";
+          summaryRowsEl.appendChild(line);
+        }
+      });
+    }
+
+    checkBtn.addEventListener("click", function () {
+      var selects = questionsContainer.querySelectorAll("select");
+      var correctCount = 0;
+      var chosen = [];
+      for (var i = 0; i < selects.length; i++) {
+        var sel = selects[i];
+        sel.classList.remove("correct", "wrong");
+        var correctVal = sel.getAttribute("data-correct");
+        chosen.push(sel.value || "");
+        if (sel.value && sel.value === correctVal) {
+          sel.classList.add("correct");
+          correctCount++;
+        } else {
+          sel.classList.add("wrong");
+        }
+      }
+      var percent = Math.round((correctCount / selects.length) * 100);
+      scoreBox.textContent = correctCount + " / " + selects.length + " richtig (" + percent + "%)";
+      saveProgress(currentSet, percent, chosen);
+      renderSummary();
+      overlay.style.display = "none";
+      summaryPanel.style.display = "none";
+    });
+
+    showSummaryBtn.addEventListener("click", function () {
+      renderSummary();
+      overlay.style.display = "block";
+      summaryPanel.style.display = "grid";
+    });
+
+    closeSummary.addEventListener("click", function () {
+      overlay.style.display = "none";
+      summaryPanel.style.display = "none";
+    });
+
+    overlay.addEventListener("click", function () {
+      overlay.style.display = "none";
+      summaryPanel.style.display = "none";
+    });
+
+    downloadJsonBtn.addEventListener("click", function () {
+      var data = loadProgress();
+      var jsonStr = JSON.stringify(data, null, 2);
+      var win = window.open();
+      if (win) {
+        win.document.write("<pre style='white-space:pre-wrap;word-break:break-word;font-family:monospace;padding:12px;background:#0f172a;color:#e2e8f0;'>" +
+          jsonStr.replace(/</g, "&lt;") + "</pre>");
+      } else {
+        alert("Konnte kein neues Fenster öffnen. Bitte Popups erlauben oder JSON manuell aus der Konsole kopieren.");
+      }
+    });
+
+    // initial
+    renderQuestions();
+    renderSummary();
+  </script>
+</body>
+</html>
