@@ -171,7 +171,12 @@ function downloadCertificatePDF(studentName) {
     ctx.stroke();
 
     ctx.fillStyle = '#38bdf8';
-    ctx.font = '800 30px "Space Grotesk", sans-serif';
+    let nameFontSize = 30;
+    ctx.font = `800 ${nameFontSize}px "Space Grotesk", sans-serif`;
+    while (ctx.measureText(studentName).width > 640 && nameFontSize > 14) {
+        nameFontSize -= 2;
+        ctx.font = `800 ${nameFontSize}px "Space Grotesk", sans-serif`;
+    }
     ctx.fillText(studentName, 600, 275);
 
     // Global XP & Date
@@ -224,14 +229,26 @@ function downloadCertificatePDF(studentName) {
     ctx.stroke();
 
     // A3 Boss Challenge Status
-    const a3Unlocked = (scores.q6 || 0) >= 70 || scores.q7 === 100;
+    const a3Completed = scores.q7 === 100;
+    const a3Unlocked = (scores.q6 || 0) >= 70;
     ctx.fillStyle = '#ef4444';
     ctx.font = '800 22px "Space Grotesk", sans-serif';
     ctx.fillText('Arbeitsblatt A3 (Mission: Maus weglegen)', 130, 625);
 
-    ctx.fillStyle = a3Unlocked ? '#10b981' : '#f43f5e';
+    let a3StatusColor, a3StatusText;
+    if (a3Completed) {
+        a3StatusColor = '#10b981';
+        a3StatusText = 'Status: 🟢 Absolviert (Praktische Übung in MS Word)';
+    } else if (a3Unlocked) {
+        a3StatusColor = '#f59e0b';
+        a3StatusText = 'Status: 🟡 Freigeschaltet, aber noch nicht absolviert';
+    } else {
+        a3StatusColor = '#f43f5e';
+        a3StatusText = 'Status: 🔴 Gesperrt (Voraussetzung: Q6 >= 70%)';
+    }
+    ctx.fillStyle = a3StatusColor;
     ctx.font = '700 18px sans-serif';
-    ctx.fillText(a3Unlocked ? 'Status: 🟢 Absolviert (Praktische Übung in MS Word)' : 'Status: 🔴 Gesperrt (Voraussetzung: Q6 >= 70%)', 150, 665);
+    ctx.fillText(a3StatusText, 150, 665);
 
     // Stamp Text
     ctx.fillStyle = '#94a3b8';

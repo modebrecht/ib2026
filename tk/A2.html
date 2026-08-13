@@ -506,9 +506,9 @@
             { title: "Senkrechter Strich (Pipe)", char: "|", key2: "7", desc: "Wichtig in der Informatik & Befehlszeile." },
             { title: "Backslash", char: "\\", key2: "<", desc: "Trennzeichen in Windows-Dateipfaden." },
             { title: "Eckige Klammer auf", char: "[", key2: "è/ä", desc: "Für Arrays und Listen im Code." },
-            { title: "Eckige Klammer zu", char: "]", key2: "à/ö", desc: "Schließt die eckige Klammer." },
+            { title: "Eckige Klammer zu", char: "]", key2: "à/ö", desc: "Schliesst die eckige Klammer." },
             { title: "Geschweifte Klammer auf", char: "{", key2: "é/ü", desc: "Hauptklammer in vielen Programmiersprachen." },
-            { title: "Geschweifte Klammer zu", char: "}", key2: "$", desc: "Schließt den Codeblock." },
+            { title: "Geschweifte Klammer zu", char: "}", key2: "$", desc: "Schliesst den Codeblock." },
             { title: "Gradzeichen", char: "°", key2: "4", desc: "Für Temperaturangaben wie 21 °C." }
         ];
 
@@ -554,6 +554,15 @@
                 document.getElementById('a2-lock-screen').style.display = 'none';
                 document.getElementById('a2-content-wrap').style.display = 'block';
             }
+        });
+
+        // Einfügen per Zwischenablage (Strg+V, Rechtsklick, Drag&Drop) verhindern:
+        // Das Ziel der Übung ist, das Sonderzeichen mit AltGr selbst zu tippen, nicht es hineinzukopieren.
+        ['q4-char-input', 'q5-char-input', 'q6-char-input'].forEach(id => {
+            const input = document.getElementById(id);
+            input.addEventListener('paste', (e) => e.preventDefault());
+            input.addEventListener('drop', (e) => e.preventDefault());
+            input.addEventListener('contextmenu', (e) => e.preventDefault());
         });
 
         function switchPhase(phaseNum) {

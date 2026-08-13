@@ -181,6 +181,24 @@
         .badge-amber { background: rgba(245, 158, 11, 0.2); color: #fde047; }
         .badge-red { background: rgba(239, 68, 68, 0.2); color: #fca5a5; }
         .badge-green { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+
+        .done-pill {
+            display: none;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            margin-left: 8px;
+        }
+
+        .module-card.done {
+            box-shadow: 0 0 0 2px var(--accent-green) inset, 0 15px 35px rgba(16, 185, 129, 0.25);
+        }
     </style>
 </head>
 <body>
@@ -217,7 +235,10 @@
             <!-- MODULE 1 -->
             <div class="module-card m1">
                 <div class="module-card-content">
-                    <span class="badge badge-blue">Arbeitsblatt A1</span>
+                    <div style="display: flex; align-items: center; flex-wrap: wrap;">
+                        <span class="badge badge-blue">Arbeitsblatt A1</span>
+                        <span class="done-pill" id="done-m1">✅ Erledigt</span>
+                    </div>
                     <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.4rem; margin: 0.8rem 0 0.2rem 0;">
                         Allgemeine Befehle
                     </h2>
@@ -236,7 +257,10 @@
             <!-- MODULE 2 -->
             <div class="module-card m2">
                 <div class="module-card-content">
-                    <span class="badge badge-amber">Arbeitsblatt A2</span>
+                    <div style="display: flex; align-items: center; flex-wrap: wrap;">
+                        <span class="badge badge-amber">Arbeitsblatt A2</span>
+                        <span class="done-pill" id="done-m2">✅ Erledigt</span>
+                    </div>
                     <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.4rem; margin: 0.8rem 0 0.2rem 0;">
                         Sonderzeichen
                     </h2>
@@ -255,7 +279,10 @@
             <!-- MODULE 3 -->
             <div class="module-card m3">
                 <div class="module-card-content">
-                    <span class="badge badge-red">Arbeitsblatt A3</span>
+                    <div style="display: flex; align-items: center; flex-wrap: wrap;">
+                        <span class="badge badge-red">Arbeitsblatt A3</span>
+                        <span class="done-pill" id="done-m3">✅ Erledigt</span>
+                    </div>
                     <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.4rem; margin: 0.8rem 0 0.2rem 0;">
                         Mission: Maus weglegen
                     </h2>
@@ -297,6 +324,25 @@
 
     <!-- Global XP Engine -->
     <script src="xp.js"></script>
+    <script>
+        // Mark modules as "Erledigt" based on saved quest scores
+        function checkModuleCompletion() {
+            const scores = getQuestScores();
+            const done = {
+                m1: (scores.q3 || 0) >= 70,   // A1 done: Quest 3 passed (also unlocks A2)
+                m2: (scores.q6 || 0) >= 70,   // A2 done: Quest 6 passed (also unlocks A3)
+                m3: scores.q7 === 100         // A3 done: Boss-Timer wurde tatsächlich gestoppt
+            };
+            Object.keys(done).forEach(id => {
+                const pill = document.getElementById('done-' + id);
+                const card = document.querySelector('.module-card.' + id);
+                if (pill) pill.style.display = done[id] ? 'inline-flex' : 'none';
+                if (card) card.classList.toggle('done', done[id]);
+            });
+        }
+        document.addEventListener('DOMContentLoaded', checkModuleCompletion);
+        window.addEventListener('focus', checkModuleCompletion);
+    </script>
     <script>
         // Hover Particle Animation drifting Left
         document.querySelectorAll('.module-card').forEach(card => {

@@ -153,3 +153,19 @@ Mit einem persistenten Browser-Profil wurde der komplette Kreislauf getestet:
 3. `index.html` mit demselben Profil geöffnet → **sowohl A1 als auch A2 zeigen jetzt automatisch das grüne Häkchen** in der Übersicht.
 
 Der komplette Kreislauf (Formular ausfüllen/spielen → localStorage speichern → Reload lädt korrekt → Dashboard erkennt "erledigt") funktioniert nachweislich durchgehend für A1 und A2.
+
+///
+
+re analyze current situation of TK 
+WHAT ELSE LOOKS OFF ? 
+
+make a new in list ANALYZE.md
+
+check if progression is solid 
+check if everything is working as expected (A1.html and mark in index.html as done).
+korrigiere ebenfalls rechtschreibung, oder zeige mir auf wenn etwas essentielles fehlen würde.
+check if pdf creation is okay 
+check if all input fields save into localstorage / and load consistent. (not relevant here i guess)
+
+BUT MAKE SURE PEOPLE cannot do CTRL+V in the GAMES Q1-Q6 ? 
+

@@ -118,3 +118,81 @@ Zwei fast identische `DOMContentLoaded`-Listener prüften beide `isQuestUnlocked
 | 6 | A3.html | 🟢 Kosmetisch | Doppelte `DOMContentLoaded`-Sperrprüfung | ✅ behoben |
 
 **Alle 6 Bugs wurden behoben.** Verifikation: `node --check` auf allen Inline-Scripts (A1/A2/A3/index.html + xp.js) fehlerfrei; Headless-Chrome-Ladetest aller fünf Seiten ohne Konsolenfehler/-warnungen. Kein manueller Klick-Test im echten Browser durchgeführt — bei Gelegenheit empfehlenswert, insbesondere Quest 5 (Bug 1) einmal live durchzuspielen.
+
+---
+---
+
+# Runde 2: Zweiter Audit — 2026-08-13
+
+Auf erneute Anfrage: Progression, PDF-Erstellung, Rechtschreibung, localStorage-Konsistenz und die "erledigt"-Markierung in `index.html` gezielt geprüft, plus generelle Suche nach weiteren Auffälligkeiten. Zusätzlich: Copy-Paste-Schutz für die AltGr-Eingabefelder ergänzt (explizite Anforderung). Alle unten aufgeführten Punkte wurden im selben Durchgang behoben.
+
+## ✅ Neuer Fund 1 (mittel): PDF-Zertifikat zeigte A3 fälschlich als "Absolviert", obwohl nur freigeschaltet
+
+**Fundstelle:** [tk/xp.js:227](xp.js#L227) (vorher)
+
+```js
+const a3Unlocked = (scores.q6 || 0) >= 70 || scores.q7 === 100;
+...
+ctx.fillText(a3Unlocked ? 'Status: 🟢 Absolviert (Praktische Übung in MS Word)' : '...', 150, 665);
+```
+
+Die Variable heisst `a3Unlocked` ("freigeschaltet"), wird aber für die Anzeige "🟢 Absolviert" verwendet. Da `(scores.q6 || 0) >= 70` bereits per ODER-Verknüpfung ausreicht, zeigte das Leistungsnachweis-PDF **"Absolviert"** an, sobald ein Schüler A2 mit ≥70% abgeschlossen hatte — unabhängig davon, ob er A3.html je geöffnet oder die Stoppuhr je gestartet/gestoppt hat. Für ein Dokument, das der Lehrperson als Nachweis dient, ist das eine echte Fehlinformation.
+
+**Fix:** Getrennt in `a3Completed` (`scores.q7 === 100`, wird nur beim tatsächlichen Stoppen der Stoppuhr gesetzt, siehe `stopBossChallenge()`) und `a3Unlocked` (`scores.q6 >= 70`). Drei-stufige Statusanzeige ergänzt ([tk/xp.js:226-244](xp.js#L226-L244)): 🟢 Absolviert / 🟡 Freigeschaltet, aber noch nicht absolviert / 🔴 Gesperrt.
+
+## ✅ Neuer Fund 2 (klein): Sehr lange Schülernamen könnten im PDF aus der Namensbox herauslaufen
+
+**Fundstelle:** [tk/xp.js:174-175](xp.js#L174-L175) (vorher)
+
+`ctx.fillText(studentName, 600, 275)` mit fester Schriftgrösse 30px, zentriert in einer 700px breiten Box — bei einem langen eingegebenen Namen (z. B. Doppelnamen) hätte der Text über den Rahmen hinausragen können, da Canvas-Text nicht automatisch umbricht oder verkleinert wird.
+
+**Fix:** Schriftgrösse wird jetzt dynamisch reduziert (`ctx.measureText`-Schleife, [tk/xp.js:173-179](xp.js#L173-L179)), bis der Name in die Box passt (min. 14px).
+
+## ✅ Neuer Fund 3 (klein, Rechtschreibung): "Schließt" (ß) statt Schweizer "Schliesst"
+
+**Fundstellen:** [tk/A2.html:509](A2.html#L509), [511](A2.html#L511)
+
+Der gesamte restliche Text auf allen tk-Seiten verwendet konsequent die Schweizer Rechtschreibung ohne ß (z. B. "Gradzeichen", keine weiteren ß-Treffer im ganzen Ordner ausser hier). Nur an diesen zwei Stellen stand "Schließt" statt "Schliesst" — Inkonsistenz behoben.
+
+## ✅ Neuer Fund 4 (Feature-Lücke, jetzt ergänzt): `index.html` markierte abgeschlossene Module nirgends als "erledigt"
+
+Im ersten Audit nur als Randnotiz vermerkt, jetzt auf explizite Nachfrage umgesetzt: `index.html` zeigte bisher ausschliesslich die globale XP-Zahl an — nach Abschluss von A1 gab es **keinerlei visuelles Feedback** auf der Übersichtsseite, dass A1 erledigt ist.
+
+**Umsetzung** ([tk/index.html:184-198](index.html#L184-L198) CSS, [tk/index.html:237-286](index.html#L237-L286) Markup, [tk/index.html:327-343](index.html#L327-L343) Logik): Jede der drei Modul-Karten (A1/A2/A3) bekommt einen grünen "✅ Erledigt"-Pill neben dem Arbeitsblatt-Badge plus einen grünen Rahmen-Glow, sobald das jeweilige Abschlusskriterium erfüllt ist:
+- **A1 erledigt:** Quest 3 ≥ 70% (dasselbe Kriterium, das auch A2 freischaltet)
+- **A2 erledigt:** Quest 6 ≥ 70% (schaltet auch A3 frei)
+- **A3 erledigt:** Boss-Timer wurde tatsächlich gestoppt (`scores.q7 === 100`, **nicht** nur freigeschaltet — konsistent mit Fund 1 oben)
+
+Aktualisiert bei jedem Seitenaufruf (`DOMContentLoaded`) und beim erneuten Fokussieren des Tabs (`focus`-Event, damit es beim Zurücknavigieren von A1/A2/A3 sofort aktuell ist — gleiches Muster wie in `hw/index.html`).
+
+**Verifiziert per Headless-Chrome mit vorbelegtem `localStorage`:** Frischer Zustand (kein Fortschritt) → keine Pills sichtbar. Nur A1 abgeschlossen (q3=80) → nur `done-m1` sichtbar. Alle Quests 100% → alle drei Pills sichtbar, alle drei Karten mit `.done`-Klasse.
+
+## ✅ Neue, explizit angeforderte Änderung: Copy-Paste-Schutz für die AltGr-Zeichen-Felder (Q4–Q6)
+
+**Anforderung:** "Stelle sicher, dass niemand in den Spielen Q1–Q6 Strg+V benutzen kann."
+
+**Einordnung:** Q1–Q3 (A1.html) haben **keine** Texteingabefelder — die Tastenkombinationen werden per `keydown` direkt erkannt, es gibt nichts, worin man etwas einfügen könnte. Ausserdem ist **Strg+V ("Einfügen") selbst eines der 14 zu lernenden Kürzel** in Quest 1–3 — würde man diese Tastenkombination dort blockieren, liesse sich genau diese Aufgabe nicht mehr lösen. Der Browser führt dort ohnehin nie eine echte Einfüge-Aktion aus (`e.preventDefault()` greift bereits für `v` in der bestehenden Taste-Sperrliste), es wird nur als Tastendruck zur Bewertung erkannt — das ist beabsichtigtes Verhalten, kein Cheat-Vektor.
+
+**Tatsächlicher Cheat-Vektor:** Q4–Q6 (A2.html) haben echte `<input type="text">`-Felder für das Sonderzeichen. Dort **könnte** ein Schüler das korrekte Zeichen hineinkopieren, statt es mit AltGr wirklich zu tippen — das würde den Lernzweck der Übung umgehen.
+
+**Fix** ([tk/A2.html:559-566](A2.html#L559-L566)): Für `q4-char-input`, `q5-char-input` und `q6-char-input` werden jetzt `paste`, `drop` (Drag&Drop von Text) und `contextmenu` (Rechtsklick-Menü mit "Einfügen"-Option) per `preventDefault()` unterbunden. Tippen bleibt uneingeschränkt möglich, nur das Einfügen aus der Zwischenablage ist blockiert.
+
+## Übrige geprüfte Punkte — keine neuen Probleme gefunden
+
+- **Progression/Freischalt-Kette:** Erneut Schritt für Schritt durchgegangen (q1→q7), stimmt weiterhin durchgängig mit den angezeigten Texten überein. Keine neuen Lücken.
+- **localStorage-Konsistenz:** `tk_global_xp_v1` und `tk_quest_scores_v1` werden ausschliesslich über die gemeinsamen `xp.js`-Funktionen gelesen/geschrieben und sind seitenübergreifend konsistent (gleiche Origin, gleiche Keys auf allen 5 Seiten). Die `char-target-input`-Felder in A2 sind bewusst nicht persistent (werden pro Runde geleert) — kein Bug, da sie kein "Formularfeld" im hw-Sinne sind, sondern Spiel-Eingaben.
+- **Tote Links / fehlende Assets:** Alle `href`/`src`-Referenzen in allen tk-Seiten geprüft, alle Zieldateien vorhanden (inkl. `vendor/`-Ordner, `Tastenkombinationen_A3.docx`).
+- **Rechtschreibung sonst:** Keine weiteren Tippfehler, keine doppelten Leerzeichen gefunden (automatisiert geprüft).
+- Kein `console.log`/`debugger`/`TODO`-Code übrig geblieben.
+
+## Zusammenfassung Runde 2
+
+| # | Datei | Schweregrad | Kurzbeschreibung | Status |
+|---|---|---|---|---|
+| 1 | xp.js | 🟠 Mittel | PDF zeigte A3 als "Absolviert" schon bei blosser Freischaltung | ✅ behoben |
+| 2 | xp.js | 🟡 Klein | Lange Namen könnten im PDF überlaufen | ✅ behoben |
+| 3 | A2.html | 🟡 Klein | "Schließt" (ß) statt Schweizer "Schliesst" | ✅ behoben |
+| 4 | index.html | 🔵 Feature-Lücke | Kein "erledigt"-Indikator pro Modul | ✅ ergänzt |
+| 5 | A2.html | 🔵 Angefordert | Kein Schutz vor Copy-Paste in Q4–Q6 | ✅ ergänzt |
+
+Verifiziert per `node --check` (alle Inline-Scripts fehlerfrei) und Headless-Chrome-Tests mit vorbelegtem `localStorage` (done-Markierung: fresh/teilweise/komplett alle korrekt; keine Konsolenfehler auf allen 5 Seiten).
