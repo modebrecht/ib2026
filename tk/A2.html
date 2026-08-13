@@ -528,6 +528,7 @@
         let q4Index = 0;
         let q4CorrectHits = 0;
         let q4TotalAttempts = 0;
+        let q4Locked = false;
 
         // Q5 State
         let q5Items = shuffleArray(altgrItems);
@@ -535,7 +536,7 @@
         let q5CorrectHits = 0;
         let q5TotalAttempts = 0;
         let q5HintRevealed = false;
-        let q5HiddenKey = 'key2';
+        let q5Locked = false;
 
         // Q6 State
         let q6Items = shuffleArray(altgrItems);
@@ -543,6 +544,7 @@
         let q6CorrectHits = 0;
         let q6TotalAttempts = 0;
         let q6HintRevealed = false;
+        let q6Locked = false;
 
         document.addEventListener('DOMContentLoaded', () => {
             if (!isQuestUnlocked('q4')) {
@@ -583,6 +585,7 @@
         }
 
         function updateQ4Card() {
+            q4Locked = false;
             if (q4Index >= q4Items.length) {
                 document.getElementById('q4-card').style.display = 'none';
                 const trophyView = document.getElementById('q4-trophy-view');
@@ -633,12 +636,13 @@
         }
 
         document.getElementById('q4-char-input').addEventListener('input', (e) => {
-            if (activePhase !== 2 || q4Index >= q4Items.length) return;
+            if (activePhase !== 2 || q4Index >= q4Items.length || q4Locked) return;
             const targetChar = q4Items[q4Index].char;
             const typedVal = e.target.value;
             if (!typedVal) return;
 
             if (typedVal.includes(targetChar)) {
+                q4Locked = true;
                 addGlobalXP(10);
                 playSound('correct');
                 q4CorrectHits++;
@@ -654,6 +658,7 @@
                     updateQ4Card();
                 }, 600);
             } else {
+                q4Locked = true;
                 addGlobalXP(-10);
                 playSound('wrong');
                 q4TotalAttempts++;
@@ -666,6 +671,7 @@
                 setTimeout(() => {
                     card.classList.remove('error-flash');
                     e.target.value = "";
+                    q4Locked = false;
                 }, 600);
             }
         });
@@ -699,6 +705,7 @@
         }
 
         function updateQ5Card() {
+            q5Locked = false;
             if (q5Index >= q5Items.length) {
                 document.getElementById('q5-card').style.display = 'none';
                 const trophyView = document.getElementById('q5-trophy-view');
@@ -794,12 +801,13 @@
         }
 
         document.getElementById('q5-char-input').addEventListener('input', (e) => {
-            if (activePhase !== 3 || q5Index >= altgrItems.length) return;
-            const targetChar = altgrItems[q5Index].char;
+            if (activePhase !== 3 || q5Index >= q5Items.length || q5Locked) return;
+            const targetChar = q5Items[q5Index].char;
             const typedVal = e.target.value;
             if (!typedVal) return;
 
             if (typedVal.includes(targetChar)) {
+                q5Locked = true;
                 addGlobalXP(10);
                 playSound('correct');
                 q5CorrectHits++;
@@ -815,6 +823,7 @@
                     updateQ5Card();
                 }, 600);
             } else {
+                q5Locked = true;
                 addGlobalXP(-10);
                 playSound('wrong');
                 q5TotalAttempts++;
@@ -827,6 +836,7 @@
                 setTimeout(() => {
                     card.classList.remove('error-flash');
                     e.target.value = "";
+                    q5Locked = false;
                 }, 600);
             }
         });
@@ -860,6 +870,7 @@
         }
 
         function updateQ6Card() {
+            q6Locked = false;
             if (q6Index >= q6Items.length) {
                 document.getElementById('q6-card').style.display = 'none';
                 const trophyView = document.getElementById('q6-trophy-view');
@@ -948,12 +959,13 @@
         }
 
         document.getElementById('q6-char-input').addEventListener('input', (e) => {
-            if (activePhase !== 4 || q6Index >= q6Items.length) return;
+            if (activePhase !== 4 || q6Index >= q6Items.length || q6Locked) return;
             const targetChar = q6Items[q6Index].char;
             const typedVal = e.target.value;
             if (!typedVal) return;
 
             if (typedVal.includes(targetChar)) {
+                q6Locked = true;
                 addGlobalXP(10);
                 playSound('correct');
                 q6CorrectHits++;
@@ -975,6 +987,7 @@
                     updateQ6Card();
                 }, 600);
             } else {
+                q6Locked = true;
                 addGlobalXP(-10);
                 playSound('wrong');
                 q6TotalAttempts++;
@@ -987,6 +1000,7 @@
                 setTimeout(() => {
                     card.classList.remove('error-flash');
                     e.target.value = "";
+                    q6Locked = false;
                 }, 600);
             }
         });

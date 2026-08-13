@@ -103,6 +103,12 @@ function playSound(type) {
             gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
             osc.start();
             osc.stop(ctx.currentTime + 0.3);
+        } else if (type === 'hint') {
+            osc.frequency.setValueAtTime(392.00, ctx.currentTime); // G4
+            gain.gain.setValueAtTime(0.12, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.2);
         }
     } catch(e) {}
 }
