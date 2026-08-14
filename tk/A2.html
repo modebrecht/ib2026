@@ -63,6 +63,26 @@
             gap: 12px;
         }
 
+        .theory-note {
+            margin-top: 1.2rem;
+            background: rgba(245, 158, 11, 0.08);
+            border: 1px solid rgba(245, 158, 11, 0.35);
+            border-radius: 14px;
+            padding: 14px 16px;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.9;
+        }
+
+        .theory-note strong {
+            color: #fde047;
+        }
+
+        .theory-note kbd {
+            font-size: 0.85rem;
+            padding: 2px 7px;
+        }
+
         .theory-keys {
             display: inline-flex !important;
             align-items: center !important;
@@ -292,11 +312,16 @@
                     <div class="theory-item"><div style="display:flex; align-items:center; gap:10px;"><kbd class="big-symbol-kbd">€</kbd> <span style="font-weight: 600;">Euro-Zeichen</span></div><div class="theory-keys"><kbd>AltGr</kbd> + <kbd>E</kbd></div></div>
                     <div class="theory-item"><div style="display:flex; align-items:center; gap:10px;"><kbd class="big-symbol-kbd">|</kbd> <span style="font-weight: 600;">Senkrechter Strich (Pipe)</span></div><div class="theory-keys"><kbd>AltGr</kbd> + <kbd>7</kbd></div></div>
                     <div class="theory-item"><div style="display:flex; align-items:center; gap:10px;"><kbd class="big-symbol-kbd">\</kbd> <span style="font-weight: 600;">Backslash</span></div><div class="theory-keys"><kbd>AltGr</kbd> + <kbd>&lt;</kbd></div></div>
-                    <div class="theory-item"><div style="display:flex; align-items:center; gap:10px;"><kbd class="big-symbol-kbd">[</kbd> <span style="font-weight: 600;">Eckige Klammer auf</span></div><div class="theory-keys"><kbd>AltGr</kbd> + <kbd>è/ä</kbd></div></div>
-                    <div class="theory-item"><div style="display:flex; align-items:center; gap:10px;"><kbd class="big-symbol-kbd">]</kbd> <span style="font-weight: 600;">Eckige Klammer zu</span></div><div class="theory-keys"><kbd>AltGr</kbd> + <kbd>à/ö</kbd></div></div>
-                    <div class="theory-item"><div style="display:flex; align-items:center; gap:10px;"><kbd class="big-symbol-kbd">{</kbd> <span style="font-weight: 600;">Geschweifte Klammer auf</span></div><div class="theory-keys"><kbd>AltGr</kbd> + <kbd>é/ü</kbd></div></div>
+                    <div class="theory-item"><div style="display:flex; align-items:center; gap:10px;"><kbd class="big-symbol-kbd">[</kbd> <span style="font-weight: 600;">Eckige Klammer auf</span></div><div class="theory-keys"><kbd>AltGr</kbd> + <kbd>ü</kbd></div></div>
+                    <div class="theory-item"><div style="display:flex; align-items:center; gap:10px;"><kbd class="big-symbol-kbd">]</kbd> <span style="font-weight: 600;">Eckige Klammer zu</span></div><div class="theory-keys"><kbd>AltGr</kbd> + <kbd>¨</kbd></div></div>
+                    <div class="theory-item"><div style="display:flex; align-items:center; gap:10px;"><kbd class="big-symbol-kbd">{</kbd> <span style="font-weight: 600;">Geschweifte Klammer auf</span></div><div class="theory-keys"><kbd>AltGr</kbd> + <kbd>ä</kbd></div></div>
                     <div class="theory-item"><div style="display:flex; align-items:center; gap:10px;"><kbd class="big-symbol-kbd">}</kbd> <span style="font-weight: 600;">Geschweifte Klammer zu</span></div><div class="theory-keys"><kbd>AltGr</kbd> + <kbd>$</kbd></div></div>
                     <div class="theory-item"><div style="display:flex; align-items:center; gap:10px;"><kbd class="big-symbol-kbd">°</kbd> <span style="font-weight: 600;">Gradzeichen</span></div><div class="theory-keys"><kbd>AltGr</kbd> + <kbd>4</kbd></div></div>
+                </div>
+
+                <div class="theory-note">
+                    <strong>Merke dir die Reihenfolge:</strong> Die vier Klammern liegen der Reihe nach auf den vier Tasten rechts neben
+                    <kbd>P</kbd> bzw. <kbd>L</kbd>: <kbd>ü</kbd> → <kbd>[</kbd>, <kbd>¨</kbd> → <kbd>]</kbd>, <kbd>ä</kbd> → <kbd>{</kbd>, <kbd>$</kbd> → <kbd>}</kbd>.
                 </div>
 
                 <div style="text-align: center; margin-top: 2rem;">
@@ -505,9 +530,9 @@
             { title: "Euro-Zeichen", char: "€", key2: "E", desc: "Das Währungszeichen für Euro." },
             { title: "Senkrechter Strich (Pipe)", char: "|", key2: "7", desc: "Wichtig in der Informatik & Befehlszeile." },
             { title: "Backslash", char: "\\", key2: "<", desc: "Trennzeichen in Windows-Dateipfaden." },
-            { title: "Eckige Klammer auf", char: "[", key2: "è/ä", desc: "Für Arrays und Listen im Code." },
-            { title: "Eckige Klammer zu", char: "]", key2: "à/ö", desc: "Schliesst die eckige Klammer." },
-            { title: "Geschweifte Klammer auf", char: "{", key2: "é/ü", desc: "Hauptklammer in vielen Programmiersprachen." },
+            { title: "Eckige Klammer auf", char: "[", key2: "ü", desc: "Für Arrays und Listen im Code. Die Taste rechts neben dem P." },
+            { title: "Eckige Klammer zu", char: "]", key2: "¨", desc: "Schliesst die eckige Klammer. Die Taste mit dem ! darüber." },
+            { title: "Geschweifte Klammer auf", char: "{", key2: "ä", desc: "Hauptklammer in vielen Programmiersprachen." },
             { title: "Geschweifte Klammer zu", char: "}", key2: "$", desc: "Schliesst den Codeblock." },
             { title: "Gradzeichen", char: "°", key2: "4", desc: "Für Temperaturangaben wie 21 °C." }
         ];
