@@ -96,6 +96,49 @@
             box-shadow: 0 4px 15px rgba(var(--tab-accent-rgb), 0.4);
         }
 
+        .theory-block {
+            border-color: rgba(6, 182, 212, 0.35);
+        }
+
+        .theory-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(1.2rem, 3.4vw, 1.5rem);
+            margin-bottom: 0.6rem;
+        }
+
+        .theory-intro {
+            color: var(--text-muted);
+            font-size: 0.98rem;
+            line-height: 1.55;
+        }
+
+        .theory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 10px;
+            margin-top: 1.1rem;
+        }
+
+        .theory-item {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 12px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .theory-item kbd {
+            align-self: flex-start;
+        }
+
+        .theory-item span {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            line-height: 1.35;
+        }
+
         .sheet-head {
             display: flex;
             justify-content: space-between;
@@ -446,6 +489,27 @@
     <div class="container">
         <div class="sheet-wrap" id="sheetWrap">
 
+            <div class="card theory-block">
+                <h2 class="theory-title">📘 Bevor du loslegst: Diese Kürzel gehören zu Windows selbst</h2>
+                <p class="theory-intro">
+                    Die folgenden Tastenkombinationen funktionieren systemweit – egal, welches Programm gerade offen ist. Windows verarbeitet sie direkt, bevor eine Webseite sie überhaupt sehen könnte. Deshalb kannst du sie hier nicht "live" ausprobieren – lerne sie zuerst als Theorie, das Quiz danach prüft, ob du sie erkennst.
+                </p>
+                <div class="theory-grid">
+                    <div class="theory-item"><kbd>Win + L</kbd><span>Bildschirm sperren, wenn du den Platz verlässt</span></div>
+                    <div class="theory-item"><kbd>Win + D</kbd><span>Alle Fenster minimieren, Desktop anzeigen</span></div>
+                    <div class="theory-item"><kbd>Win + E</kbd><span>Datei-Explorer öffnen</span></div>
+                    <div class="theory-item"><kbd>Win + S</kbd><span>Windows-Suche öffnen</span></div>
+                    <div class="theory-item"><kbd>Win + Shift + S</kbd><span>Bildschirmausschnitt fotografieren</span></div>
+                    <div class="theory-item"><kbd>Win + Tab</kbd><span>Aufgabenansicht: alle offenen Fenster anzeigen</span></div>
+                    <div class="theory-item"><kbd>Win + .</kbd><span>Emoji- und Sonderzeichen-Menü öffnen</span></div>
+                    <div class="theory-item"><kbd>Win + P</kbd><span>Beamer/zweiten Bildschirm einstellen (Duplizieren, Erweitern, …)</span></div>
+                    <div class="theory-item"><kbd>Win + Pfeiltasten</kbd><span>Fenster links/rechts andocken oder maximieren</span></div>
+                    <div class="theory-item"><kbd>Alt + Tab</kbd><span>Zwischen offenen Programmen wechseln</span></div>
+                    <div class="theory-item"><kbd>Ctrl + Shift + Esc</kbd><span>Task-Manager direkt öffnen</span></div>
+                    <div class="theory-item"><kbd>Ctrl + Esc</kbd><span>Startmenü per Tastatur öffnen</span></div>
+                </div>
+            </div>
+
             <div class="set-tabs" id="setTabs"></div>
 
             <div class="card">
@@ -488,6 +552,9 @@
             <span style="color: var(--text-muted);">Ø letzter Versuch</span>
             <span id="summaryAvg" style="font-family: 'Space Grotesk', monospace;">0%</span>
         </div>
+        <button class="btn-accent" id="downloadA4PdfBtn" style="width: 100%; margin-top: 1rem;">
+            📄 Eigenes Zeugnis als PDF herunterladen
+        </button>
     </div>
 
     <!-- Global XP Engine (nur XP-Anzeige im Header) -->
@@ -498,13 +565,13 @@
         var AMBER = { accent: "#f59e0b", dark: "#d97706", rgb: "245, 158, 11" };
 
         var META = {
-            A: { name: "Grundlagen", title: "Arbeitsblatt A – Grundlagen", desc: "Kopieren, Einfügen, Rückgängig, Suchen und Drucken.", theme: CYAN },
-            B: { name: "Fenster", title: "Arbeitsblatt B – Speichern & Fenster", desc: "Speichern, Formatieren, Fenster und Tabs wechseln.", theme: CYAN },
-            C: { name: "Repetition", title: "Arbeitsblatt C – Repetition", desc: "Gemischte Wiederholung der wichtigsten Kürzel.", theme: CYAN },
-            D: { name: "Programme", title: "Arbeitsblatt D – Programme & Browser", desc: "Formatieren, Tabs, Druckdialog und Task-Manager.", theme: CYAN },
-            E: { name: "Windows", title: "Arbeitsblatt E – Windows & Navigation", desc: "Startmenü, Sprünge im Dokument und Fenster andocken.", theme: CYAN },
-            F: { name: "Profi", title: "Arbeitsblatt F – Windows-Profi", desc: "Explorer, Screenshots, Aufgabenansicht und Verlauf.", theme: CYAN },
-            G: { name: "AltGr", title: "Arbeitsblatt G – Sonderzeichen mit AltGr", desc: "Schweizer Tastatur: @, #, €, |, \\, [, ], {, } und ° – passend zu Arbeitsblatt A2.", theme: AMBER }
+            A: { name: "Grundlagen", title: "Q8: Grundlagen", desc: "Kopieren, Einfügen, Rückgängig, Suchen und Drucken.", theme: CYAN },
+            B: { name: "Fenster", title: "Q9: Speichern & Fenster", desc: "Speichern, Formatieren, Fenster und Tabs wechseln.", theme: CYAN },
+            C: { name: "Repetition", title: "Q10: Repetition", desc: "Gemischte Wiederholung der wichtigsten Kürzel.", theme: CYAN },
+            D: { name: "Programme", title: "Q11: Programme & Browser", desc: "Formatieren, Tabs, Druckdialog und Task-Manager.", theme: CYAN },
+            E: { name: "Windows", title: "Q12: Windows & Navigation", desc: "Startmenü, Sprünge im Dokument und Fenster andocken.", theme: CYAN },
+            F: { name: "Profi", title: "Q13: Windows-Profi", desc: "Explorer, Screenshots, Aufgabenansicht und Verlauf.", theme: CYAN },
+            G: { name: "AltGr", title: "Q14: Sonderzeichen mit AltGr", desc: "Schweizer Tastatur: @, #, €, |, \\, [, ], {, } und ° – passend zu Arbeitsblatt A2.", theme: AMBER }
         };
 
         /* --- Datenbasis --- */
@@ -567,7 +634,9 @@
                 { text: "Du möchtest ein Fenster maximieren (oben andocken).", correct: "Win + Pfeil nach oben", wrong: ["Win + Pfeil nach unten", "Alt + Pfeil nach oben"] },
                 { text: "Du hast aus Versehen einen Browser-Tab geschlossen und willst ihn sofort zurückholen.", correct: "Ctrl + Shift + T", wrong: ["Ctrl + T", "Ctrl + Shift + N"] },
                 { text: "Du willst das aktuell aktive Fenster/Programm beenden.", correct: "Alt + F4", wrong: ["Ctrl + F4", "Win + F4"] },
-                { text: "Du möchtest im Browser die Verlauf-/Chronik-Ansicht öffnen.", correct: "Ctrl + H", wrong: ["Ctrl + J", "Ctrl + L"] }
+                { text: "Du möchtest im Browser die Verlauf-/Chronik-Ansicht öffnen.", correct: "Ctrl + H", wrong: ["Ctrl + J", "Ctrl + L"] },
+                { text: "Du willst schnell ein Emoji oder Sonderzeichen einfügen, ganz ohne extra App.", correct: "Win + .", wrong: ["Win + E", "AltGr + E"] },
+                { text: "Du bist am Beamer im Schulzimmer und willst den Bildschirm nur duplizieren statt erweitern.", correct: "Win + P", wrong: ["Win + D", "Win + Tab"] }
             ],
             /* Arbeitsblatt G: nur AltGr-Sonderzeichen (Schweizer Tastatur, Inhalte aus A2) */
             G: [
@@ -587,6 +656,12 @@
         var SETS = Object.keys(DATA);
         var STORAGE_KEY = "tastaturkuerzel-progress-v1";
         var currentSet = "A";
+
+        /* A4 knüpft nahtlos an die globale Quest-Nummerierung aus xp.js an:
+           A1 = q1-q3, A2 = q4-q6, A3 Boss-Challenge = q7, A4 = q8-q14 (Set 1-7). */
+        function globalQuestId(setKey) {
+            return "q" + (SETS.indexOf(setKey) + 8);
+        }
 
         var sheetWrap = document.getElementById("sheetWrap");
         var setTabsEl = document.getElementById("setTabs");
@@ -624,7 +699,7 @@
 
         function renderTabs() {
             setTabsEl.innerHTML = "";
-            SETS.forEach(function (key) {
+            SETS.forEach(function (key, idx) {
                 var theme = themeOf(key);
                 var btn = document.createElement("button");
                 btn.className = "set-tab" + (key === currentSet ? " active" : "");
@@ -634,7 +709,7 @@
 
                 var letter = document.createElement("span");
                 letter.className = "tab-letter";
-                letter.textContent = key;
+                letter.textContent = "Q" + (idx + 8);
 
                 var name = document.createElement("span");
                 name.className = "tab-name";
@@ -788,7 +863,7 @@
 
                 var letter = document.createElement("div");
                 letter.className = "summary-letter";
-                letter.textContent = key;
+                letter.textContent = "Q" + (SETS.indexOf(key) + 8);
                 letter.style.background = "rgba(" + theme.rgb + ", 0.18)";
                 letter.style.color = theme.accent;
 
@@ -863,6 +938,15 @@
             scoreBox.textContent = correctCount + " / " + selects.length + " richtig (" + percent + "%)";
             scoreBox.style.color = scoreColor(percent);
             saveProgress(currentSet, percent, chosen);
+
+            // Nahtlose Anbindung ans globale Quest-System (q8-q14), parallel zum eigenen A4-Zeugnis
+            if (typeof saveQuestScore === "function") {
+                saveQuestScore(globalQuestId(currentSet), percent);
+            }
+            if (typeof addGlobalXP === "function") {
+                addGlobalXP(correctCount * 5);
+            }
+
             renderSummary();
         });
 
@@ -883,6 +967,140 @@
                 alert("Konnte kein neues Fenster öffnen. Bitte Popups erlauben oder JSON manuell aus der Konsole kopieren.");
             }
         });
+
+        /* --- Eigenes A4-Zeugnis (Vorher/Nachher pro Set), unabhängig vom A1-A3 Quest-System --- */
+        function downloadA4CertificatePDF() {
+            var studentName = prompt("Bitte gib deinen Vornamen ein:", "Vorname");
+            if (!studentName) return;
+
+            var data = loadProgress();
+            var rows = SETS.map(function (key, idx) {
+                var stored = data[key] || {};
+                var first = typeof stored.first === "number" ? stored.first : null;
+                var last = typeof stored.last === "number" ? stored.last : null;
+                return { num: idx + 8, name: META[key].name, first: first, last: last };
+            });
+
+            var attempted = rows.filter(function (r) { return r.last !== null; });
+            var avg = attempted.length
+                ? Math.round(attempted.reduce(function (s, r) { return s + r.last; }, 0) / attempted.length)
+                : 0;
+
+            var canvas = document.createElement("canvas");
+            canvas.width = 1200;
+            canvas.height = 850;
+            var ctx = canvas.getContext("2d");
+
+            var bgGrad = ctx.createLinearGradient(0, 0, 1200, 850);
+            bgGrad.addColorStop(0, "#0f172a");
+            bgGrad.addColorStop(1, "#1e293b");
+            ctx.fillStyle = bgGrad;
+            ctx.fillRect(0, 0, 1200, 850);
+
+            ctx.strokeStyle = "#06b6d4";
+            ctx.lineWidth = 6;
+            ctx.strokeRect(30, 30, 1140, 790);
+            ctx.strokeStyle = "rgba(6, 182, 212, 0.3)";
+            ctx.lineWidth = 2;
+            ctx.strokeRect(42, 42, 1116, 766);
+
+            ctx.textAlign = "center";
+            ctx.fillStyle = "#67e8f9";
+            ctx.font = '800 20px "Space Grotesk", sans-serif';
+            ctx.fillText("INFORMATIK B25 – ARBEITSBLATT A4", 600, 95);
+
+            ctx.fillStyle = "#ffffff";
+            ctx.font = '800 36px "Space Grotesk", sans-serif';
+            ctx.fillText("ZEUGNIS TASTENKÜRZEL-QUIZ", 600, 160);
+
+            ctx.fillStyle = "#94a3b8";
+            ctx.font = "500 18px sans-serif";
+            ctx.fillText("Vorher/Nachher-Vergleich je Quest (8–14)", 600, 200);
+
+            ctx.fillStyle = "rgba(6, 182, 212, 0.15)";
+            ctx.strokeStyle = "#06b6d4";
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.roundRect(250, 225, 700, 65, 16);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.fillStyle = "#67e8f9";
+            var nameFontSize = 28;
+            ctx.font = '800 ' + nameFontSize + 'px "Space Grotesk", sans-serif';
+            while (ctx.measureText(studentName).width > 640 && nameFontSize > 14) {
+                nameFontSize -= 2;
+                ctx.font = '800 ' + nameFontSize + 'px "Space Grotesk", sans-serif';
+            }
+            ctx.fillText(studentName, 600, 266);
+
+            var today = new Date().toLocaleDateString("de-CH", { day: "2-digit", month: "2-digit", year: "numeric" });
+            ctx.fillStyle = "#f59e0b";
+            ctx.font = "700 18px sans-serif";
+            ctx.fillText("Datum: " + today, 600, 325);
+
+            ctx.fillStyle = "rgba(15, 23, 42, 0.85)";
+            ctx.strokeStyle = "rgba(255, 255, 255, 0.15)";
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.roundRect(90, 360, 1020, 400, 20);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.textAlign = "left";
+            var rowY = 405;
+            rows.forEach(function (r) {
+                ctx.fillStyle = "#e2e8f0";
+                ctx.font = '700 19px "Space Grotesk", sans-serif';
+                ctx.fillText("Q" + r.num + " (" + r.name + ")", 130, rowY);
+
+                var valText = r.last === null ? "noch offen" : (r.first + "% → " + r.last + "%");
+                var valColor = r.last === null ? "#64748b" : (r.last >= 80 ? "#10b981" : (r.last >= 50 ? "#f59e0b" : "#ef4444"));
+                ctx.fillStyle = valColor;
+                ctx.font = "700 19px sans-serif";
+                ctx.textAlign = "right";
+                ctx.fillText(valText, 1070, rowY);
+                ctx.textAlign = "left";
+
+                rowY += 48;
+            });
+
+            ctx.strokeStyle = "rgba(255, 255, 255, 0.1)";
+            ctx.beginPath();
+            ctx.moveTo(130, rowY - 10);
+            ctx.lineTo(1070, rowY - 10);
+            ctx.stroke();
+
+            ctx.textAlign = "center";
+            ctx.fillStyle = "#06b6d4";
+            ctx.font = '800 22px "Space Grotesk", sans-serif';
+            ctx.fillText("Ø letzter Versuch: " + avg + "%", 600, rowY + 30);
+
+            ctx.fillStyle = "#94a3b8";
+            ctx.font = "500 15px sans-serif";
+            ctx.fillText("Leistungsnachweis Tastenkürzel-Quiz Informatik B25", 600, 800);
+
+            function generatePDF() {
+                var jsPDF = window.jspdf.jsPDF;
+                var pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: [297, 210] });
+                var imgData = canvas.toDataURL("image/png");
+                pdf.addImage(imgData, "PNG", 0, 0, 297, 210);
+                var sanitizedFileName = "A4_Zeugnis_" + studentName.replace(/[^a-zA-Z0-9]/g, "_") + ".pdf";
+                pdf.save(sanitizedFileName);
+            }
+
+            if (window.jspdf) {
+                generatePDF();
+            } else {
+                var script = document.createElement("script");
+                script.src = "vendor/jspdf.umd.min.js";
+                script.onload = generatePDF;
+                document.head.appendChild(script);
+            }
+        }
+
+        var downloadA4PdfBtn = document.getElementById("downloadA4PdfBtn");
+        downloadA4PdfBtn.addEventListener("click", downloadA4CertificatePDF);
 
         // initial
         renderQuestions();

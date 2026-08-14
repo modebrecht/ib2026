@@ -41,7 +41,7 @@ function isQuestUnlocked(questId) {
     if (questId === 'q5') return (scores.q4 || 0) >= 80;
     if (questId === 'q6') return (scores.q5 || 0) >= 70;
     if (questId === 'q7') return (scores.q6 || 0) >= 70; // A3 Boss Challenge
-    return true;
+    return true; // q8-q14 (A4 Sets 1-7): frei navigierbares Quiz, kein Freischalt-Zwang
 }
 
 // SECRET TEACHER CHEAT CODE
@@ -66,7 +66,7 @@ document.addEventListener('keydown', (e) => {
 });
 
 function unlockAllQuests() {
-    let scores = { q1: 100, q2: 100, q3: 100, q4: 100, q5: 100, q6: 100, q7: 100 };
+    let scores = { q1: 100, q2: 100, q3: 100, q4: 100, q5: 100, q6: 100, q7: 100, q8: 100, q9: 100, q10: 100, q11: 100, q12: 100, q13: 100, q14: 100 };
     localStorage.setItem(QUEST_SCORES_KEY, JSON.stringify(scores));
     addGlobalXP(500);
     alert("🔑 LEHRER-MODUS: Alle Quests freigeschaltet.");
@@ -270,6 +270,9 @@ function downloadCertificatePDF(studentName) {
         
         const sanitizedFileName = `Leistungsnachweis_${studentName.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
         pdf.save(sanitizedFileName);
+
+        localStorage.setItem('tk_pdf_downloaded_v1', 'true');
+        if (typeof updatePdfSharedUI === 'function') updatePdfSharedUI();
     }
 
     if (window.jspdf) {

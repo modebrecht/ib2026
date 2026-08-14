@@ -316,6 +316,10 @@
                     <button onclick="downloadCertificatePDF()" class="btn-module btn-m4">
                         <i class="fa-solid fa-file-pdf"></i> PDF Herunterladen
                     </button>
+                    <label id="pdfSharedWrap" style="display: none; align-items: center; gap: 8px; margin-top: 0.9rem; font-size: 0.88rem; color: var(--text-muted); cursor: pointer;">
+                        <input type="checkbox" id="pdfSharedCheckbox" style="width: 18px; height: 18px; accent-color: var(--accent-green); cursor: pointer;">
+                        PDF mit Lehrperson geteilt
+                    </label>
                 </div>
             </div>
         </div>
@@ -325,13 +329,17 @@
     <!-- Global XP Engine -->
     <script src="xp.js"></script>
     <script>
+        const PDF_DOWNLOADED_KEY = 'tk_pdf_downloaded_v1';
+        const PDF_SHARED_KEY = 'tk_pdf_shared_v1';
+
         // Mark modules as "Erledigt" based on saved quest scores
         function checkModuleCompletion() {
             const scores = getQuestScores();
+            const pdfShared = localStorage.getItem(PDF_SHARED_KEY) === 'true';
             const done = {
-                m1: (scores.q3 || 0) >= 70,   // A1 done: Quest 3 passed (also unlocks A2)
-                m2: (scores.q6 || 0) >= 70,   // A2 done: Quest 6 passed (also unlocks A3)
-                m3: scores.q7 === 100         // A3 done: Boss-Timer wurde tatsächlich gestoppt
+                m1: (scores.q3 || 0) >= 70,                  // A1 done: Quest 3 passed (also unlocks A2)
+                m2: (scores.q6 || 0) >= 70,                  // A2 done: Quest 6 passed (also unlocks A3)
+                m3: scores.q7 === 100 && pdfShared           // A3 done: Boss-Timer gestoppt UND PDF mit Lehrperson geteilt
             };
             Object.keys(done).forEach(id => {
                 const pill = document.getElementById('done-' + id);
@@ -340,8 +348,30 @@
                 if (card) card.classList.toggle('done', done[id]);
             });
         }
-        document.addEventListener('DOMContentLoaded', checkModuleCompletion);
-        window.addEventListener('focus', checkModuleCompletion);
+
+        // "PDF mit Lehrperson geteilt"-Checkbox: erscheint erst nach dem ersten PDF-Download
+        function updatePdfSharedUI() {
+            const wrap = document.getElementById('pdfSharedWrap');
+            const checkbox = document.getElementById('pdfSharedCheckbox');
+            if (!wrap || !checkbox) return;
+            const downloaded = localStorage.getItem(PDF_DOWNLOADED_KEY) === 'true';
+            wrap.style.display = downloaded ? 'flex' : 'none';
+            checkbox.checked = localStorage.getItem(PDF_SHARED_KEY) === 'true';
+        }
+
+        document.getElementById('pdfSharedCheckbox').addEventListener('change', function () {
+            localStorage.setItem(PDF_SHARED_KEY, this.checked ? 'true' : 'false');
+            checkModuleCompletion();
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            checkModuleCompletion();
+            updatePdfSharedUI();
+        });
+        window.addEventListener('focus', () => {
+            checkModuleCompletion();
+            updatePdfSharedUI();
+        });
     </script>
     <script>
         // Hover Particle Animation drifting Left
