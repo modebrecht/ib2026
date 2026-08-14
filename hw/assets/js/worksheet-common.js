@@ -137,6 +137,11 @@ function checkAndPromptVorname() {
 
 /* ---------- Default Klasse/Datum + readonly student-metadata fields ---------- */
 function applyDefaultClassAndDate() {
+    var classInput = document.getElementById('studentClass');
+    if (classInput && !classInput.value.trim()) {
+        classInput.value = 'B24';
+    }
+
     var dateInput = document.getElementById('studentDate');
     if (!dateInput) return;
 

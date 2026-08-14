@@ -701,11 +701,11 @@
             if (hdrBtn) {
                 if (percent === 100) {
                     hdrBtn.className = 'p-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition shadow-sm cursor-pointer';
-                    hdrBtn.title = "Dokument als PDF exportieren oder drucken";
-                    if (printIcon) printIcon.className = "fa-solid fa-print text-sm";
+                    hdrBtn.title = "Arbeitsblatt als PDF herunterladen";
+                    if (printIcon) printIcon.className = "fa-solid fa-file-pdf text-sm";
                 } else {
                     hdrBtn.className = 'p-2 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 transition border border-slate-200 dark:border-slate-700 opacity-60 cursor-not-allowed';
-                    hdrBtn.title = "Drucken erst bei 100% Ausfüllung möglich";
+                    hdrBtn.title = "Erst bei 100% Ausfüllung möglich";
                     if (printIcon) printIcon.className = "fa-solid fa-lock text-sm";
                 }
             }
@@ -715,14 +715,29 @@
 
         function handlePrint() {
             const percentText = document.getElementById('headerPercentText').innerText;
-            if (percentText.includes('100%')) {
-                const originalTitle = document.title;
-                document.title = 'A2';
-                safePrint();
-                document.title = originalTitle;
-            } else {
-                showToast('Fülle bitte zuerst alle Felder aus (100%), um das Dokument zu drucken.');
+            if (!percentText.includes('100%')) {
+                showToast('Fülle bitte zuerst alle Felder aus (100%), um das PDF herunterzuladen.');
+                return;
             }
+
+            const sections = [];
+            for (let i = 1; i <= 6; i++) {
+                const name = (document.getElementById(`ex${i}_name`) || {}).value || '';
+                sections.push({
+                    heading: `Beispiel ${i}: ${name || '(kein Gerät angegeben)'}`,
+                    fields: [
+                        { label: 'Eingabe (E)', value: (document.getElementById(`ex${i}_in`) || {}).value || '' },
+                        { label: 'Verarbeitung (V)', value: (document.getElementById(`ex${i}_proc`) || {}).value || '' },
+                        { label: 'Ausgabe (A)', value: (document.getElementById(`ex${i}_out`) || {}).value || '' }
+                    ]
+                });
+            }
+
+            downloadTextWorksheetPDF({
+                title: 'Das EVA-Prinzip im Alltag',
+                filenamePrefix: 'A2_EVA_Prinzip',
+                sections: sections
+            });
         }
 
         function saveProgressToStorage(notify = true, percent) {
@@ -1075,6 +1090,7 @@
     </script>
 
     <script src="assets/js/worksheet-common.js"></script>
+    <script src="assets/js/pdf-engine.js"></script>
 </body>
 </html>
 

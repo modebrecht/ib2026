@@ -87,7 +87,7 @@
                 <button onclick="toggleDarkMode()" title="Dunkelmodus umschalten" class="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
                     <i id="themeIcon" class="fa-solid fa-moon text-sm"></i>
                 </button>
-                <button id="hdrPdfBtn" onclick="handlePrint()" class="p-2 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 transition border border-slate-200 dark:border-slate-700 opacity-60 cursor-not-allowed" title="Erst bei 100% Ausfüllung möglich">
+                <button id="hdrPdfBtn" onclick="handleDownloadPdf()" class="p-2 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 transition border border-slate-200 dark:border-slate-700 opacity-60 cursor-not-allowed" title="Erst bei 100% Ausfüllung möglich">
                     <i id="printIcon" class="fa-solid fa-file-pdf text-sm"></i>
                 </button>
                 <button onclick="confirmReset()" title="Zurücksetzen" class="p-2 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/50 rounded-lg border border-rose-200 dark:border-rose-900/50">
@@ -536,6 +536,7 @@
     </main>
 
 
+    <script src="assets/js/pdf-engine.js"></script>
     <script>
         let currentPercentage = 0;
 
@@ -568,14 +569,19 @@
         });
 
 function applyDefaultClassAndDate() {
+            var classInput = document.getElementById('studentClass');
+            if (classInput) {
+                classInput.value = 'B24';
+            }
+
             var dateInput = document.getElementById('studentDate');
-            
+
             var d = new Date();
             var yyyy = d.getFullYear();
             var mm = String(d.getMonth() + 1).padStart(2, '0');
             var dd = String(d.getDate()).padStart(2, '0');
             var todayStr = dd + '.' + mm + '.' + yyyy;
-            
+
             if (dateInput) {
                 dateInput.value = todayStr;
             }
@@ -773,7 +779,7 @@ function applyDefaultClassAndDate() {
 
         function carouselNext() {
             if (carouselIndex === CAROUSEL_TOTAL - 1) {
-                if (currentPercentage === 100) handlePrint();
+                if (currentPercentage === 100) handleDownloadPdf();
                 return;
             }
             carouselShow(carouselIndex + 1);
@@ -819,29 +825,14 @@ function applyDefaultClassAndDate() {
 
             const pBar = document.getElementById('progressBar');
             const headerPText = document.getElementById('headerPercentText');
-            const badge = document.getElementById('headerPercentText');
             const percentNum = document.getElementById('headerPercentNumber');
-            
-            if (pBar) pBar.style.width = currentPercentage + '%';
+            const svgCircle = document.getElementById('headerSvgCircle');
 
-            var hdrSvgCircle = document.getElementById('headerSvgCircle');
-            if (hdrSvgCircle) {
-                var offset = 100.53 - (100.53 * currentPercentage / 100);
-                hdrSvgCircle.style.strokeDashoffset = offset;
-            }
-            var hdrPercentNum = document.getElementById('headerPercentNumber');
-            if (hdrPercentNum) {
-                hdrPercentNum.innerText = currentPercentage + '%';
-            }
-            
+            if (pBar) pBar.style.width = currentPercentage + '%';
             if (headerPText) headerPText.innerText = currentPercentage + '% erledigt';
-            if (badge) badge.innerText = currentPercentage + '% erledigt';
             if (percentNum) percentNum.innerText = currentPercentage + '%';
-            
-            var svgCircle = document.getElementById('headerSvgCircle');
             if (svgCircle) {
-                var offset = 100.53 - (100.53 * currentPercentage / 100);
-                svgCircle.style.strokeDashoffset = offset;
+                svgCircle.style.strokeDashoffset = 100.53 - (100.53 * currentPercentage / 100);
             }
 
             // Print button lock/unlock state
@@ -851,7 +842,7 @@ function applyDefaultClassAndDate() {
                 if (currentPercentage === 100) {
                     hdrPdfBtn.className = 'p-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white transition border border-emerald-600 shadow-sm cursor-pointer animate-pulse';
                     printIcon.className = 'fa-solid fa-file-pdf text-sm';
-                    hdrPdfBtn.title = 'Arbeitsblatt als PDF drucken';
+                    hdrPdfBtn.title = 'Arbeitsblatt als PDF herunterladen';
                 } else {
                     hdrPdfBtn.className = 'p-2 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 transition border border-slate-200 dark:border-slate-700 opacity-60 cursor-not-allowed';
                     printIcon.className = 'fa-solid fa-file-pdf text-sm';
@@ -887,22 +878,44 @@ function applyDefaultClassAndDate() {
             }
         }
 
-        function handlePrint() {
+        const A3_COMPONENTS = [
+            { heading: '1. Prozessor (CPU – Central Processing Unit)', key: 'comp_cpu' },
+            { heading: '2. Mainboard (Motherboard / Hauptplatine)', key: 'comp_mb' },
+            { heading: '3. PC-Gehäuse (Computer Case / Chassis)', key: 'comp_case' },
+            { heading: '4. Arbeitsspeicher (RAM – Random Access Memory)', key: 'comp_ram' },
+            { heading: '5. Solid State Drive (SSD)', key: 'comp_ssd' },
+            { heading: '6. NVMe-SSD (M.2)', key: 'comp_nvme' },
+            { heading: '7. Festplatte (HDD – Hard Disk Drive)', key: 'comp_hdd' },
+            { heading: '8. Grafikkarte (GPU – Graphics Processing Unit)', key: 'comp_gpu' },
+            { heading: '9. Netzteil (PSU – Power Supply Unit)', key: 'comp_psu' },
+            { heading: '10. Kühlung (CPU-Kühler & Gehäuselüfter)', key: 'comp_cool' },
+            { heading: '11. Netzwerkkarte / WLAN-Modul (NIC)', key: 'comp_net' },
+            { heading: '12. Soundkarte (Audio-Interface)', key: 'comp_sound' },
+            { heading: '13. CD-/DVD-Laufwerk (optisches Laufwerk)', key: 'comp_cddvd' },
+            { heading: '14. CMOS-Batterie (BIOS-Pufferbatterie)', key: 'comp_cmos' },
+            { heading: '15. Sockel-Kompatibilität (CPU ↔ Kühler ↔ Mainboard)', key: 'comp_socket' }
+        ];
+
+        function handleDownloadPdf() {
             const percentNum = document.getElementById('headerPercentNumber');
-            if (percentNum && percentNum.innerText === '100%') {
-                const originalTitle = document.title;
-                document.title = 'A3';
-                // Dunkelmodus für den Druck immer ausschalten: sonst bleiben die
-                // dark:-Tailwind-Farben (dunkle Karten, helle Schrift) im PDF aktiv,
-                // da @media print nur body zurücksetzt, nicht die .dark-Klasse selbst.
-                const wasDark = document.documentElement.classList.contains('dark');
-                if (wasDark) document.documentElement.classList.remove('dark');
-                window.print();
-                if (wasDark) document.documentElement.classList.add('dark');
-                document.title = originalTitle;
-            } else {
-                showToast('Fülle bitte zuerst alle Felder aus (100%), um das Dokument zu drucken.');
+            if (!percentNum || percentNum.innerText !== '100%') {
+                showToast('Fülle bitte zuerst alle Felder aus (100%), um das PDF herunterzuladen.');
+                return;
             }
+
+            const sections = A3_COMPONENTS.map(c => ({
+                heading: c.heading,
+                fields: [
+                    { label: 'Funktion', value: (document.getElementById(c.key + '_func') || {}).value || '' },
+                    { label: 'Alltags-Vergleich (Analogie)', value: (document.getElementById(c.key + '_ana') || {}).value || '', optional: true }
+                ]
+            }));
+
+            downloadTextWorksheetPDF({
+                title: 'Die Bauteile im PC-Gehäuse (Hardware-Analyse)',
+                filenamePrefix: 'A3_Computeraufbau',
+                sections: sections
+            });
         }
 
         function loadProgress() {
