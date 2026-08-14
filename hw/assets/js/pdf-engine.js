@@ -184,3 +184,220 @@ function downloadTextWorksheetPDF(opts) {
         pdf.save((opts.filenamePrefix || 'Arbeitsblatt') + '_' + safeName + '.pdf');
     });
 }
+
+/*
+ * Rendert ein kompaktes Ergebnis-Zertifikat (Kopf + Schüler-Info + beliebige
+ * Ergebnis-Blöcke: Tabelle / Statistik-Kacheln / Zusammenfassung / Fliesstext)
+ * als direkt herunterladbares PDF - kein window.print(). Gedacht für
+ * Spiel-/Quiz-Auswertungen wie A1 (Memory) und A4 (Kabel-Quiz), im Gegensatz
+ * zu downloadTextWorksheetPDF() für volle Arbeitsblätter mit Freitextfeldern.
+ *
+ * opts = {
+ *   icon: '🏆', title: 'Leistungsnachweis • IT-Hardware Memory',
+ *   subtitle: 'Informatische Bildung • IT-Hardware • A1',
+ *   badge: '✅ Modi absolviert', badgeOk: true,
+ *   filenamePrefix: 'A1_Leistungsnachweis',
+ *   blocks: [
+ *     { type: 'table', heading: '...', headers: [...], colWidths: [...], rows: [[...], ...] },
+ *     { type: 'stats', items: [{ label, value, color }] },
+ *     { type: 'summary', label: '...', value: '...', note: '...' },
+ *     { type: 'text', heading: '...', lines: ['...'] }
+ *   ]
+ * }
+ */
+function downloadCertificatePDF(opts) {
+    var studentName = (document.getElementById('studentName') || {}).value || 'Unbekannt';
+    var studentClass = (document.getElementById('studentClass') || {}).value || 'B24';
+    var studentDate = (document.getElementById('studentDate') || {}).value || '';
+
+    pdfEnsureJsPdfLoaded(function () {
+        var pages = [];
+        var page = pdfCreatePageCanvas();
+        var ctx = page.ctx;
+        var contentW = PDF_PAGE_W - PDF_MARGIN * 2;
+        var y = PDF_MARGIN;
+
+        function drawFooter() {
+            var footerY = PDF_PAGE_H - PDF_MARGIN - 12;
+            ctx.strokeStyle = '#e2e8f0';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(PDF_MARGIN, footerY - 18);
+            ctx.lineTo(PDF_PAGE_W - PDF_MARGIN, footerY - 18);
+            ctx.stroke();
+
+            ctx.textAlign = 'left';
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = '400 9px "Segoe UI", Arial, sans-serif';
+            ctx.fillText('Generiert am ' + new Date().toLocaleString('de-CH') + ' • Digitaler Leistungsnachweis IB2026', PDF_MARGIN, footerY);
+
+            ctx.textAlign = 'right';
+            ctx.fillText('Unterschrift Lehrperson: ______________________', PDF_PAGE_W - PDF_MARGIN, footerY);
+            ctx.textAlign = 'left';
+        }
+
+        function finalizePage() {
+            drawFooter();
+            pages.push(page.canvas.toDataURL('image/png'));
+        }
+
+        function newPage() {
+            finalizePage();
+            page = pdfCreatePageCanvas();
+            ctx = page.ctx;
+            y = PDF_MARGIN;
+        }
+
+        function ensureSpace(neededHeight) {
+            if (y + neededHeight > PDF_PAGE_H - PDF_MARGIN - 40) newPage(); // -40: Platz fuer Fusszeile reservieren
+        }
+
+        // Kopfbereich: Icon + Titel/Untertitel links, Status-Badge rechts
+        ctx.textAlign = 'left';
+        ctx.fillStyle = '#0f172a';
+        ctx.font = '800 22px "Segoe UI", Arial, sans-serif';
+        ctx.fillText((opts.icon ? opts.icon + '  ' : '') + opts.title, PDF_MARGIN, y + 18);
+        ctx.font = '600 12px "Segoe UI", Arial, sans-serif';
+        ctx.fillStyle = '#64748b';
+        ctx.fillText(opts.subtitle || '', PDF_MARGIN, y + 38);
+
+        ctx.textAlign = 'right';
+        ctx.fillStyle = opts.badgeOk ? '#059669' : '#dc2626';
+        ctx.font = '700 13px "Segoe UI", Arial, sans-serif';
+        ctx.fillText(opts.badge || '', PDF_PAGE_W - PDF_MARGIN, y + 18);
+        ctx.textAlign = 'left';
+
+        y += 55;
+        ctx.strokeStyle = '#cbd5e1';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(PDF_MARGIN, y);
+        ctx.lineTo(PDF_PAGE_W - PDF_MARGIN, y);
+        ctx.stroke();
+        y += 30;
+
+        // Schüler-Info-Zeile (Name / Klasse / Datum)
+        var infoColW = contentW / 3;
+        [['Schüler / Schülerin', studentName], ['Klasse', studentClass], ['Datum', studentDate]].forEach(function (pair, i) {
+            var x = PDF_MARGIN + i * infoColW;
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = '700 10px "Segoe UI", Arial, sans-serif';
+            ctx.fillText(pair[0].toUpperCase(), x, y);
+            ctx.fillStyle = '#0f172a';
+            ctx.font = '800 14px "Segoe UI", Arial, sans-serif';
+            ctx.fillText(pair[1], x, y + 20);
+        });
+        y += 50;
+
+        (opts.blocks || []).forEach(function (block) {
+            if (block.type === 'table') {
+                if (block.heading) {
+                    ensureSpace(24);
+                    ctx.fillStyle = '#0f172a';
+                    ctx.font = '800 14px "Segoe UI", Arial, sans-serif';
+                    ctx.fillText(block.heading, PDF_MARGIN, y);
+                    y += 24;
+                }
+                var cols = block.headers.length;
+                var colWidths = block.colWidths || block.headers.map(function () { return contentW / cols; });
+                var rowH = 26;
+
+                ensureSpace(rowH);
+                ctx.fillStyle = '#1d4ed8';
+                ctx.fillRect(PDF_MARGIN, y - 17, contentW, rowH);
+                ctx.fillStyle = '#ffffff';
+                ctx.font = '700 10px "Segoe UI", Arial, sans-serif';
+                var hx = PDF_MARGIN + 8;
+                block.headers.forEach(function (h, i) {
+                    ctx.fillText(h, hx, y);
+                    hx += colWidths[i];
+                });
+                y += rowH;
+
+                block.rows.forEach(function (row, ri) {
+                    ensureSpace(rowH);
+                    if (ri % 2 === 1) {
+                        ctx.fillStyle = '#f8fafc';
+                        ctx.fillRect(PDF_MARGIN, y - 17, contentW, rowH);
+                    }
+                    ctx.fillStyle = '#1e293b';
+                    ctx.font = '600 10px "Segoe UI", Arial, sans-serif';
+                    var cx = PDF_MARGIN + 8;
+                    row.forEach(function (cell, i) {
+                        ctx.fillText(String(cell), cx, y);
+                        cx += colWidths[i];
+                    });
+                    y += rowH;
+                });
+                y += 20;
+
+            } else if (block.type === 'stats') {
+                ensureSpace(55);
+                var n = block.items.length;
+                var sw = contentW / n;
+                ctx.textAlign = 'center';
+                block.items.forEach(function (item, i) {
+                    var x = PDF_MARGIN + i * sw + sw / 2;
+                    ctx.fillStyle = '#94a3b8';
+                    ctx.font = '700 10px "Segoe UI", Arial, sans-serif';
+                    ctx.fillText(String(item.label).toUpperCase(), x, y);
+                    ctx.fillStyle = item.color || '#0f172a';
+                    ctx.font = '800 20px "Segoe UI", Arial, sans-serif';
+                    ctx.fillText(String(item.value), x, y + 26);
+                });
+                ctx.textAlign = 'left';
+                y += 60;
+
+            } else if (block.type === 'summary') {
+                ensureSpace(55);
+                ctx.fillStyle = '#eff6ff';
+                ctx.fillRect(PDF_MARGIN, y - 15, contentW, 50);
+                ctx.fillStyle = '#0f172a';
+                ctx.font = '700 11px "Segoe UI", Arial, sans-serif';
+                ctx.fillText(block.label || '', PDF_MARGIN + 14, y + 3);
+                ctx.font = '400 10px "Segoe UI", Arial, sans-serif';
+                ctx.fillStyle = '#475569';
+                ctx.fillText(block.note || '', PDF_MARGIN + 14, y + 22);
+                ctx.textAlign = 'right';
+                ctx.fillStyle = '#1d4ed8';
+                ctx.font = '800 19px "Segoe UI", Arial, sans-serif';
+                ctx.fillText(block.value || '', PDF_PAGE_W - PDF_MARGIN - 14, y + 15);
+                ctx.textAlign = 'left';
+                y += 65;
+
+            } else if (block.type === 'text') {
+                if (block.heading) {
+                    ensureSpace(22);
+                    ctx.fillStyle = '#be123c';
+                    ctx.font = '800 12px "Segoe UI", Arial, sans-serif';
+                    ctx.fillText(block.heading, PDF_MARGIN, y);
+                    y += 22;
+                }
+                ctx.font = '400 11px "Segoe UI", Arial, sans-serif';
+                ctx.fillStyle = '#334155';
+                (block.lines || []).forEach(function (line) {
+                    var wrapped = pdfWrapText(ctx, line, contentW - 10);
+                    wrapped.forEach(function (l) {
+                        ensureSpace(17);
+                        ctx.fillText(l, PDF_MARGIN + 10, y);
+                        y += 17;
+                    });
+                    y += 5;
+                });
+                y += 8;
+            }
+        });
+
+        finalizePage();
+
+        var jsPDF = window.jspdf.jsPDF;
+        var pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+        pages.forEach(function (imgData, i) {
+            if (i > 0) pdf.addPage();
+            pdf.addImage(imgData, 'PNG', 0, 0, 210, 297);
+        });
+
+        var safeName = (studentName || 'Unbenannt').replace(/[^a-zA-Z0-9]/g, '_');
+        pdf.save((opts.filenamePrefix || 'Zertifikat') + '_' + safeName + '.pdf');
+    });
+}

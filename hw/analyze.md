@@ -314,3 +314,74 @@ A1 und A4 sind strukturell näher an `tk/xp.js`s eigenem Zertifikat (fixe, kompa
 | 4 | A1, A4, A5, A8, A9, AEXAM | 🔵 Umbau | noch mit `window.print()` | offen, siehe Tabelle oben |
 
 Verifiziert per `node --check` auf `pdf-engine.js`, `worksheet-common.js` und allen Inline-Scripts von A2.html/A3.html sowie zwei vollständigen Headless-Chrome-Durchläufen (A2 + A3) mit echter jsPDF-Erzeugung, Instanz-Patching von `save`/`addImage` und **visueller Kontrolle der exportierten Canvas-Seiten als PNG** — nicht nur Seitenzahl/Dateiname, sondern der tatsächliche Textinhalt wurde angesehen. Genau diese visuelle Kontrolle hat den kritischen Seitenumbruch-Bug oben aufgedeckt, den ein reiner "keine Fehler in der Konsole"-Test nicht gefunden hätte — Grund, warum Punkt 5 im Analyse-Workflow oben ("tatsächlich herunterladen, nicht nur Druckvorschau ansehen") jetzt fester Bestandteil des Minimalstandards ist.
+
+---
+---
+
+# Runde 5: A1 & A4 fertiggestellt (Fokus: A1–A4 für nächste Woche) — 2026-08-14
+
+Auf Anfrage alle in der letzten Runde offen notierten Punkte für A1 und A4 behoben (A2/A3 waren bereits fertig, siehe Runde 4). A5/A8/A9/AEXAM bleiben wie in Runde 4 beschrieben offen — nicht Teil des heutigen Fokus.
+
+## Neue Infrastruktur: `downloadCertificatePDF()` in `pdf-engine.js`
+
+Zusätzlich zu `downloadTextWorksheetPDF()` (volle Arbeitsblätter) jetzt auch `downloadCertificatePDF()` (kompakte Ein-Seiten-Ergebniszertifikate wie A1/A4 — Kopf mit Icon/Titel/Status-Badge, Schüler-Info-Zeile, dann eine Liste generischer "Blöcke": `table` (Tabelle mit Kopfzeile), `stats` (Kachel-Statistiken nebeneinander), `summary` (hervorgehobene Zusammenfassungs-Box), `text` (Fliesstext mit Zeilenumbruch) — inkl. automatischer Seitenumbruch mit Fusszeile auf jeder Seite.
+
+**Beim Bauen direkt vermiedener Fehler:** Die Fusszeile sollte ursprünglich nachträglich per `new Image(); img.src = dataUrl; ctx.drawImage(img, 0, 0)` auf die bereits fertigen Canvas-Seiten "aufgemalt" werden — das ist unsicher, weil `Image.onload` auch bei `data:`-URLs asynchron ist und `drawImage` direkt danach ein leeres/unfertiges Bild gezeichnet hätte (still-schweigend, kein Fehler). Vor dem ersten Test korrigiert: Fusszeile wird jetzt direkt auf dem Original-Canvas gezeichnet, bevor `toDataURL()` aufgerufen wird (`drawFooter()` als Teil von `finalizePage()`), kein Zwischenschritt über ein neues `Image`-Objekt nötig.
+
+## ✅ A1.html: PDF konvertiert, verifiziert
+
+`handlePdfPrint()` → `handleDownloadPdf()`, baut jetzt Tabellen-Zeilen (Schwierigkeitsgrad/Status/Punkte/Zeit/Züge/Bewertung) aus `getScoresFor()`/`topN()` und ruft `downloadCertificatePDF()`. Das alte druckbasierte `#printCertificate`-DOM (~80 Zeilen), die zugehörige `preparePrintCertificate()`-Funktion und die `@media print`-CSS-Regel vollständig entfernt (nicht nur deaktiviert) — sie wären nach der Umstellung nur noch toter Code gewesen. `<script src="assets/js/pdf-engine.js">` ergänzt. UI-Text "Als PDF drucken" → "PDF herunterladen", Icon `fa-print` → `fa-file-pdf`.
+
+**Verifiziert:** Headless-Test mit 3 abgeschlossenen Modi (unterschiedliche Punkte/Zeiten/Züge) + 1 offenem Modus, Name mit Akzent ("Léa Fürst") — Tabelle korrekt (4 Zeilen, richtige Status-Symbole ⚪/✅), Gesamtpunktzahl korrekt summiert (340+610+480=1430), Akzentzeichen korrekt gerendert, Emoji (🏆📊) korrekt. PNG der generierten Seite visuell geprüft.
+
+## ✅ A4.html: zwei echte Bugs behoben + PDF konvertiert, verifiziert
+
+**Bug 1 (🔴 kritisch):** `@media print { body * { visibility: hidden !important; } ... }` — exakt das gleiche kaputte Muster, das für A1 schon in Runde 1 gefunden und auf `display: none` umgestellt wurde. A4 hatte nie den gleichen Fix bekommen. Da A4 jetzt komplett auf direkten PDF-Download umgestellt ist, wurde die gesamte `@media print`-Regel und das zugehörige `#printCertificate`-DOM ersatzlos entfernt statt nur repariert — beides war ausschliesslich für `window.print()` da.
+
+**Bug 2 (🔴 wichtig):** `syncInputs()` fragte anders als auf jeder anderen Seite **nie** nach dem Vornamen — fehlte `studentVorname` in `localStorage`, blieb das Namensfeld für immer stumm auf `"Gast"` stehen (kein `prompt()`, keine Möglichkeit, das je zu korrigieren, ausser über eine andere Seite). Betrifft z. B. jeden Schüler, der A4 als allererstes Arbeitsblatt öffnet. **Fix:** gleiches Erstbesuch-Prompt-Muster wie auf allen anderen Seiten ergänzt (300ms-Delay, gleicher Prompt-Text, schreibt in `studentVorname` **und** `student_vorname`). Bewusst **nicht** auf `worksheet-common.js` migriert (gleiche Begründung wie bei A3 in Runde 3: grösseres, separates Vorhaben mit eigenem Verifikationsaufwand) — nur die eine tatsächlich fehlende Verhaltensweise ergänzt.
+
+**PDF-Umstellung:** `handlePdfPrint()` → `handleDownloadPdf()`, baut einen `stats`-Block (Richtige Antworten/Zeit/Punkte) plus je nach Ergebnis entweder einen `text`-Block (Fehleranalyse, HTML-Tags aus den Fehlertexten entfernt) oder einen `summary`-Block ("Fehlerfreie Leistung!"). Da der PDF-Button nur nach einem **fehlerfreien** Durchlauf überhaupt aktiv wird, ist der Fehleranalyse-Zweig in der Praxis kaum erreichbar (bestehende Design-Eigenheit, nicht neu eingeführt) — trotzdem funktional mitgebaut und separat getestet.
+
+**Verifiziert:** Zwei Headless-Durchläufe — (a) fehlerfreier Durchlauf (16/16, "Björn Weiss" mit Umlaut korrekt gerendert, "Fehlerfreie Leistung!"-Box), (b) künstlich mit 2 Fehlern befüllt, um den `text`-Block-Pfad zu testen (HTML-Tags korrekt entfernt, Zeilenumbruch korrekt, "Fehleranalyse"-Überschrift korrekt). Beide PNGs visuell geprüft.
+
+## Aktualisierter Gesamtstatus A1–A4 (siehe auch Checkliste in der Konversation)
+
+| # | Checkpunkt | A1 | A2 | A3 | A4 |
+|---|---|---|---|---|---|
+| PDF-Erstellung (Download, nicht Print) | ✅ erledigt & verifiziert | ✅ erledigt & verifiziert (Runde 4) | ✅ erledigt & verifiziert (Runde 4) | ✅ erledigt & verifiziert |
+| Autofill Vorname/Klasse/Datum | ✅ via `worksheet-common.js` | ✅ via `worksheet-common.js` | ⚠️ eigene Kopie, funktioniert (Runde 2/3) | ✅ eigene Kopie, jetzt mit Erstbesuch-Prompt |
+| Print-CSS-Altlasten | ✅ entfernt | – (nie betroffen) | – (nie betroffen) | ✅ entfernt |
+
+**A1–A4 sind damit für den Einsatz nächste Woche durchgängig auf direkten PDF-Download umgestellt und funktional verifiziert.** Offene, bewusst nicht angefasste Punkte: A3 und A4 nutzen weiterhin ihre eigene (funktionierende) Autofill-Logik statt `worksheet-common.js` — reines Architektur-Aufräumen, kein bekannter Bug, kein Blocker für nächste Woche.
+
+## Zusammenfassung Runde 5
+
+| # | Datei | Schweregrad | Kurzbeschreibung | Status |
+|---|---|---|---|---|
+| 1 | hw/assets/js/pdf-engine.js | 🔵 Neu | `downloadCertificatePDF()` ergänzt (Tabellen/Statistik/Zusammenfassung/Text-Blöcke) | ✅ hinzugefügt & verifiziert |
+| 2 | hw/assets/js/pdf-engine.js | 🟡 Vermieden | Riskante Fusszeilen-Nachbearbeitung über `new Image()` durch direktes Zeichnen ersetzt, bevor es zum Bug wurde | ✅ korrekt gebaut |
+| 3 | hw/A1.html | 🔵 Umbau | `window.print()` → `downloadCertificatePDF()`, totes Print-DOM entfernt | ✅ umgesetzt & verifiziert |
+| 4 | hw/A4.html | 🔴 Kritisch | Gleicher `visibility:hidden`-Print-Bug wie A1 (Runde 1) | ✅ behoben (Feature entfernt, da nicht mehr gebraucht) |
+| 5 | hw/A4.html | 🔴 Wichtig | Vorname-Prompt fehlte komplett — Name blieb für immer "Gast" | ✅ behoben |
+| 6 | hw/A4.html | 🔵 Umbau | `window.print()` → `downloadCertificatePDF()`, totes Print-DOM entfernt | ✅ umgesetzt & verifiziert |
+
+Verifiziert per `node --check` auf allen Inline-Scripts von A1.html/A4.html (je 2 Blöcke, alle fehlerfrei) und `pdf-engine.js`, sowie drei vollständigen Headless-Chrome-Durchläufen (A1, A4 fehlerfrei, A4 mit Fehlern) mit echter jsPDF-Erzeugung und **visueller Kontrolle jeder exportierten Seite als PNG**.
+
+---
+---
+
+# Runde 6: A4-Bestehensgrenze gelockert (16/16 → 13/16) — 2026-08-14
+
+Auf Anfrage: A4 verlangte bisher zwingend alle 16 Fragen fehlerfrei (0 Fehler), was strenger war als A1–A3. Auf **13 von 16 richtig** (max. 3 Fehler) gelockert.
+
+**Umsetzung** ([hw/A4.html:302-303](A4.html#L302-L303)): zwei neue Konstanten `TOTAL_QUESTIONS = 16` und `MIN_CORRECT_TO_PASS = 13` ergänzt, statt die Zahlen an jeder Stelle einzeln zu ändern. `endQuiz()`s Bestehens-Prüfung von `errorCount === 0` auf `correctAnswers >= MIN_CORRECT_TO_PASS` umgestellt ([hw/A4.html:545-546](A4.html#L545-L546)). Alle Texte, die vorher hart "16/16" bzw. "fehlerfrei" sagten, jetzt dynamisch: Modal-Titel/-Untertitel, Header-Button-Tooltip, der Sperr-Alert in `handleDownloadPdf()`, und das PDF-Zertifikat selbst (Badge + Statistik-Kachel zeigen jetzt die tatsächliche Trefferzahl, z. B. "13/16", statt fest "16/16").
+
+**Verifiziert:** Code-Pfad direkt gelesen und bestätigt (einfache Arithmetik: `16 - errorCount >= 13`). Zusätzlich per Headless-Test die Grenze selbst geprüft — ein Durchlauf mit genau 3 Fehlern (13 richtig, exakt die neue Grenze) wurde simuliert und das erzeugte PDF visuell kontrolliert: Badge zeigt korrekt "✅ Praxis-Test bestanden (13/16)", Statistik-Kachel "13 / 16", Fehleranalyse-Block mit den 3 Fehlern. (Ein Versuch, die Schwelle über einen echten simulierten Quiz-Durchlauf mit erzwungener Fehlerzahl zu testen, scheiterte an `let errorCount`, das wie `currentPercentage` in Runde 4 von aussen nicht überschreibbar ist — daher stattdessen der oben beschriebene, direktere Weg über einen vorbelegten `localStorage`-Zustand.)
+
+## Zusammenfassung Runde 6
+
+| # | Datei | Schweregrad | Kurzbeschreibung | Status |
+|---|---|---|---|---|
+| 1 | hw/A4.html | 🔵 Änderung | Bestehensgrenze 16/16 → 13/16, alle Texte/PDF dynamisch angepasst | ✅ umgesetzt & verifiziert |
+
+Verifiziert per `node --check` (fehlerfrei) und Headless-Chrome-Test der neuen Bestehensgrenze inkl. visueller PNG-Kontrolle des erzeugten PDFs.

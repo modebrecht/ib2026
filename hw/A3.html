@@ -55,15 +55,29 @@
                Schrift, weil @media print sonst nur body zurücksetzt, nicht die .dark-Klasse selbst. */
             .dark, .dark * { background-color: #fff !important; color: #000 !important; border-color: #cbd5e1 !important; }
         }
+
+        @keyframes pulseScale {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 4px 12px rgba(0, 120, 212, 0.25);
+            }
+            50% {
+                transform: scale(1.10);
+                box-shadow: 0 8px 24px rgba(0, 120, 212, 0.55);
+            }
+        }
+        .btn-pulse-scale {
+            animation: pulseScale 1.4s ease-in-out infinite !important;
+        }
     </style>
 </head>
 <body class="bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-full flex flex-col font-sans antialiased">
 
-    <header class="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm no-print">
+    <header class="sticky top-0 z-40 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm no-print">
         <div class="max-w-[1920px] w-full mx-auto px-4 sm:px-8 py-2.5 flex items-center justify-between gap-4">
             <div class="flex items-center gap-3 min-w-0">
                 <div class="w-9 h-9 rounded-lg bg-onedrive-500 text-white flex items-center justify-center font-black shadow-md shadow-onedrive-500/20 shrink-0">
-                    <span class="text-[13px] tracking-wider">EVA</span>
+                    <i class="fa-solid fa-desktop text-base"></i>
                 </div>
                 <div class="flex items-center gap-3">
                     <div>
@@ -81,6 +95,9 @@
             </div>
 
             <div class="flex items-center gap-2 shrink-0">
+                <button onclick="showInfoModal()" title="Anleitung &amp; Hinweise" class="p-2 text-onedrive-600 dark:text-onedrive-400 hover:bg-onedrive-50 dark:hover:bg-onedrive-950/50 rounded-lg border border-onedrive-200 dark:border-onedrive-800">
+                    <i class="fa-solid fa-circle-info text-sm"></i>
+                </button>
                 <button id="viewToggleBtn" onclick="toggleCarouselView()" title="Listenansicht umschalten" class="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
                     <i id="viewToggleIcon" class="fa-solid fa-list text-sm"></i>
                 </button>
@@ -137,14 +154,11 @@
                             <input type="text" id="studentDate" readonly tabindex="-1" style="pointer-events: none;" class="w-full px-3.5 py-2 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl font-medium text-slate-500 dark:text-slate-400 opacity-90 cursor-not-allowed">
                         </div>
                     </div>
-                    <div class="mt-5 flex items-center justify-center gap-3">
-                        <kbd class="inline-flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-lg bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 border-b-[3px] border-b-slate-300 dark:border-b-slate-900 shadow-sm text-slate-700 dark:text-slate-100 text-sm sm:text-base font-sans">
-                            <i class="fa-solid fa-arrow-left"></i>
-                        </kbd>
-                        <span class="text-xs sm:text-sm font-bold text-slate-500 dark:text-slate-400 text-center">Mit Pfeiltasten durch die Bauteile blättern</span>
-                        <kbd class="inline-flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-lg bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 border-b-[3px] border-b-slate-300 dark:border-b-slate-900 shadow-sm text-slate-700 dark:text-slate-100 text-sm sm:text-base font-sans">
-                            <i class="fa-solid fa-arrow-right"></i>
-                        </kbd>
+                    <div class="mt-5 flex items-center justify-center">
+                        <button type="button" onclick="showInfoModal()" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-onedrive-500 hover:bg-onedrive-600 text-white text-xs sm:text-sm font-bold shadow-md shadow-onedrive-500/25 transition-all transform hover:scale-105 active:scale-95 cursor-pointer" title="Anleitung &amp; Tipps anzeigen">
+                            <i class="fa-solid fa-circle-info text-base"></i>
+                            <span>Anleitung &amp; Hinweise</span>
+                        </button>
                     </div>
                 </div>
 
@@ -528,7 +542,7 @@
             <div class="flex items-center gap-1.5 flex-wrap justify-center" id="carouselDots">
                 <!-- Dots werden per JS für alle 15 Bauteile erzeugt -->
             </div>
-            <button id="carouselNextBtn" onclick="carouselNext()" type="button" class="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-bold rounded-xl bg-onedrive-500 hover:bg-onedrive-600 text-white shadow-sm transition disabled:opacity-30 disabled:cursor-not-allowed">
+            <button id="carouselNextBtn" onclick="carouselNext()" type="button" class="btn-pulse-scale inline-flex items-center gap-2 px-4 py-2.5 text-sm font-bold rounded-xl bg-onedrive-500 hover:bg-onedrive-600 text-white shadow-sm transition disabled:opacity-30 disabled:cursor-not-allowed">
                 <span class="hidden sm:inline">Weiter</span> <i class="fa-solid fa-chevron-right"></i>
             </button>
         </div>
@@ -740,7 +754,8 @@ function applyDefaultClassAndDate() {
                     }
                 } else {
                     nextBtn.disabled = isList;
-                    nextBtn.className = 'inline-flex items-center gap-2 px-4 py-2.5 text-sm font-bold rounded-xl bg-onedrive-500 hover:bg-onedrive-600 text-white shadow-sm transition disabled:opacity-30 disabled:cursor-not-allowed';
+                    var pulseClass = (!isList && carouselIndex === 0) ? ' btn-pulse-scale' : '';
+                    nextBtn.className = 'inline-flex items-center gap-2 px-4 py-2.5 text-sm font-bold rounded-xl bg-onedrive-500 hover:bg-onedrive-600 text-white shadow-sm transition disabled:opacity-30 disabled:cursor-not-allowed' + pulseClass;
                     nextBtn.innerHTML = '<span class="hidden sm:inline">Weiter</span> <i class="fa-solid fa-chevron-right"></i>';
                 }
             }
@@ -808,9 +823,13 @@ function applyDefaultClassAndDate() {
 
         function updateProgress() {
             const allInputs = document.querySelectorAll('input[type="text"], textarea, select');
-            /* Analogie-Felder (_ana) sind optional und zaehlen nicht zur Fortschritts-Berechnung */
+            /* Nur die 15 Funktions-Beschreibungen zaehlen zur Fortschritts-Berechnung:
+               - Analogie-Felder (_ana) sind optional
+               - Vorname/Klasse/Datum werden automatisch beim Laden befuellt (keine eigene
+                 Leistung der Schueler:innen) und wuerden sonst schon bei 0 bearbeiteten
+                 Feldern einen unehrlichen Startwert > 0% erzeugen */
             const textInputs = Array.prototype.filter.call(allInputs, function (el) {
-                return !(el.id && el.id.endsWith('_ana'));
+                return el.id && el.id.indexOf('comp_') === 0 && el.id.endsWith('_func');
             });
             let filled = 0;
             let total = textInputs.length;
@@ -1010,6 +1029,64 @@ function applyDefaultClassAndDate() {
             };
         }
 
+        /* Custom Info Modal */
+        function showInfoModal() {
+            let modal = document.getElementById('infoModal');
+            if (!modal) {
+                modal = document.createElement('div');
+                modal.id = 'infoModal';
+                modal.className = 'fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4';
+                document.body.appendChild(modal);
+            }
+
+            modal.innerHTML = `
+                <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 max-w-md w-full p-6 space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+                        <div class="flex items-center gap-3 text-onedrive-600 dark:text-onedrive-400 font-bold text-base">
+                            <div class="w-8 h-8 rounded-lg bg-onedrive-50 dark:bg-onedrive-900/50 flex items-center justify-center">
+                                <i class="fa-solid fa-circle-info text-lg text-onedrive-500"></i>
+                            </div>
+                            <span>Anleitung &amp; Hinweise</span>
+                        </div>
+                        <button id="infoModalCloseX" class="w-7 h-7 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center transition">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                    <div class="space-y-3 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                        <div class="flex items-start gap-2.5">
+                            <span class="w-5 h-5 rounded-full bg-onedrive-100 dark:bg-onedrive-900/60 text-onedrive-600 dark:text-onedrive-400 text-[11px] font-extrabold flex items-center justify-center shrink-0 mt-0.5">1</span>
+                            <p><strong>15 Bauteile erforschen:</strong> Gehe der Reihe nach alle 15 Bauteil-Karten durch.</p>
+                        </div>
+                        <div class="flex items-start gap-2.5">
+                            <span class="w-5 h-5 rounded-full bg-onedrive-100 dark:bg-onedrive-900/60 text-onedrive-600 dark:text-onedrive-400 text-[11px] font-extrabold flex items-center justify-center shrink-0 mt-0.5">2</span>
+                            <p><strong>Eintragen:</strong> Beschreibe jeweils die <em>Funktion</em> und überlege dir eine passende <em>Alltags-Analogie</em>.</p>
+                        </div>
+                        <div class="flex items-start gap-2.5">
+                            <span class="w-5 h-5 rounded-full bg-amber-100 dark:bg-amber-900/60 text-amber-600 dark:text-amber-400 text-[11px] font-extrabold flex items-center justify-center shrink-0 mt-0.5">3</span>
+                            <p><strong>3D-Modell:</strong> Klicke bei CPU und Sockel auf <span class="text-amber-500 font-bold">3D-Modell</span>, um die Hardware interaktiv in 3D zu erforschen.</p>
+                        </div>
+                        <div class="flex items-start gap-2.5">
+                            <span class="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-600 dark:text-emerald-400 text-[11px] font-extrabold flex items-center justify-center shrink-0 mt-0.5">4</span>
+                            <p><strong>Abschluss:</strong> Bei 100% Fortschritt kannst du dein persönliches PDF-Arbeitsblatt herunterladen.</p>
+                        </div>
+                    </div>
+                    <div class="flex justify-end pt-2">
+                        <button id="infoModalOkBtn" class="px-4 py-2 text-xs font-bold rounded-xl bg-onedrive-500 hover:bg-onedrive-600 text-white shadow-md shadow-onedrive-500/20 transition cursor-pointer">
+                            Verstanden
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            modal.style.display = 'flex';
+
+            document.getElementById('infoModalCloseX').onclick = () => { modal.style.display = 'none'; };
+            document.getElementById('infoModalOkBtn').onclick = () => { modal.style.display = 'none'; };
+            modal.onclick = (e) => {
+                if (e.target === modal) modal.style.display = 'none';
+            };
+        }
+
         /* 3D Model Modal Handlers */
         function open3dModal(url) {
             const modal = document.getElementById('modal3D');
@@ -1035,9 +1112,17 @@ function applyDefaultClassAndDate() {
 
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
-                const modal = document.getElementById('modal3D');
-                if (modal && !modal.classList.contains('hidden')) {
+                const modal3d = document.getElementById('modal3D');
+                if (modal3d && !modal3d.classList.contains('hidden')) {
                     close3dModal();
+                }
+                const infoModal = document.getElementById('infoModal');
+                if (infoModal && infoModal.style.display === 'flex') {
+                    infoModal.style.display = 'none';
+                }
+                const customModal = document.getElementById('customModal');
+                if (customModal && customModal.style.display === 'flex') {
+                    customModal.style.display = 'none';
                 }
             }
         });

@@ -85,12 +85,6 @@
             0% { width: 100%; }
             100% { width: 0%; }
         }
-
-        @media print {
-            body * { visibility: hidden !important; }
-            #printCertificate, #printCertificate * { visibility: visible !important; }
-            #printCertificate { position: absolute !important; left: 0 !important; top: 0 !important; width: 100% !important; display: block !important; }
-        }
     </style>
 </head>
 <body class="bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-full flex flex-col font-sans antialiased">
@@ -121,7 +115,7 @@
                 <button onclick="toggleDarkMode()" title="Dunkelmodus umschalten" class="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
                     <i id="themeIcon" class="fa-solid fa-moon text-sm"></i>
                 </button>
-                <button id="hdrPdfBtn" onclick="handlePdfPrint()" class="p-2 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 transition border border-slate-200 dark:border-slate-700 opacity-60 cursor-not-allowed" title="Alle 16 Fragen müssen fehlerfrei beantwortet werden">
+                <button id="hdrPdfBtn" onclick="handleDownloadPdf()" class="p-2 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 transition border border-slate-200 dark:border-slate-700 opacity-60 cursor-not-allowed" title="Mindestens 13 von 16 Fragen müssen richtig beantwortet werden">
                     <i class="fa-solid fa-file-pdf text-sm"></i>
                 </button>
                 <button onclick="confirmReset()" title="Zurücksetzen" class="p-2 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/50 rounded-lg border border-rose-200 dark:border-rose-900/50">
@@ -270,7 +264,7 @@
             </div>
 
             <div class="flex gap-2 pt-4 justify-center">
-                <button id="modalPdfBtn" onclick="handlePdfPrint()" class="px-5 py-3 text-sm font-bold rounded-xl bg-onedrive-500 text-white hover:bg-onedrive-600 transition shadow-md w-full">
+                <button id="modalPdfBtn" onclick="handleDownloadPdf()" class="px-5 py-3 text-sm font-bold rounded-xl bg-onedrive-500 text-white hover:bg-onedrive-600 transition shadow-md w-full">
                     📄 PDF Zertifikat
                 </button>
             </div>
@@ -281,76 +275,6 @@
                 <button onclick="document.getElementById('modal').classList.add('hidden'); startQuiz()" class="flex-1 py-3 text-sm font-semibold rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition">
                     Nochmal Testen
                 </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- DEDICATED PRINT CERTIFICATE -->
-    <div id="printCertificate" class="hidden print:block p-8 bg-white text-slate-900 font-sans max-w-4xl mx-auto border-2 border-onedrive-500 rounded-2xl space-y-6">
-        <div class="flex items-center justify-between border-b-2 border-onedrive-500 pb-4">
-            <div class="flex items-center gap-3">
-                <div class="w-12 h-12 rounded-xl bg-onedrive-500 text-white flex items-center justify-center font-bold text-2xl">
-                    🔌
-                </div>
-                <div>
-                    <h1 class="text-lg font-extrabold text-onedrive-600 uppercase tracking-wide">Leistungsnachweis A4 • Kabel & Anschlüsse</h1>
-                    <p class="text-xs text-slate-500">Informatische Bildung • IT-Hardware • A4</p>
-                </div>
-            </div>
-            <div class="text-right">
-                <span class="inline-block px-3 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-full border border-emerald-300">
-                    ✅ Praxis-Test fehlerfrei bestanden (16/16)
-                </span>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-3 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs">
-            <div>
-                <span class="block text-slate-400 font-bold uppercase text-[10px]">Schüler / Schülerin:</span>
-                <span id="printName" class="font-extrabold text-slate-800 text-sm">--</span>
-            </div>
-            <div>
-                <span class="block text-slate-400 font-bold uppercase text-[10px]">Klasse:</span>
-                <span id="printClass" class="font-extrabold text-slate-800 text-sm">--</span>
-            </div>
-            <div>
-                <span class="block text-slate-400 font-bold uppercase text-[10px]">Datum:</span>
-                <span id="printDate" class="font-extrabold text-slate-800 text-sm">--</span>
-            </div>
-        </div>
-
-        <div class="p-6 border border-slate-200 rounded-xl text-center space-y-4">
-            <h3 class="text-lg font-bold text-slate-800">Ergebnis Praxis-Test (Szenarien)</h3>
-            <div class="flex justify-center gap-12">
-                <div>
-                    <span class="block text-xs uppercase font-bold text-slate-400">Richtige Antworten</span>
-                    <span id="printCorrect" class="text-2xl font-black text-emerald-600">0/16</span>
-                </div>
-                <div>
-                    <span class="block text-xs uppercase font-bold text-slate-400">Benötigte Zeit</span>
-                    <span id="printTime" class="text-2xl font-black text-slate-800">00:00</span>
-                </div>
-                <div>
-                    <span class="block text-xs uppercase font-bold text-slate-400">Punkte</span>
-                    <span id="printPoints" class="text-2xl font-black text-onedrive-600">0</span>
-                </div>
-            </div>
-        </div>
-
-        <div id="printErrorSection" class="p-6 border border-rose-200 bg-rose-50 rounded-xl text-left space-y-2 mt-4 hidden">
-            <h3 class="text-sm font-bold text-rose-800 uppercase tracking-wider"><i class="fa-solid fa-magnifying-glass-chart mr-1"></i> Fehleranalyse</h3>
-            <ul id="printErrorList" class="list-disc pl-5 text-rose-700 text-xs space-y-1"></ul>
-        </div>
-        
-        <div id="printFlawlessSection" class="p-4 border border-emerald-200 bg-emerald-50 rounded-xl text-center mt-4 hidden">
-            <h3 class="text-sm font-bold text-emerald-800 uppercase tracking-wider"><i class="fa-solid fa-star mr-1"></i> Fehlerfreie Leistung!</h3>
-            <p class="text-xs text-emerald-600 mt-1">Es wurden alle Kabel auf Anhieb korrekt zugeordnet.</p>
-        </div>
-
-        <div class="pt-6 border-t border-slate-200 flex justify-between items-end text-[10px] text-slate-400">
-            <div>Generiert am <span id="printGeneratedDate"></span> • Digitaler Leistungsnachweis IB2026</div>
-            <div class="text-right border-t border-slate-300 pt-1 w-44 text-center text-slate-600 font-semibold">
-                Unterschrift Lehrperson
             </div>
         </div>
     </div>
@@ -375,6 +299,9 @@
             { id: 'usb-hub', name: 'USB-Hub', desc: 'Ein Verteiler, der aus einem USB-Anschluss mehrere macht.', img: 'assets/usb_hub_item.jpg', scenarioText: 'Dein Laptop hat nur einen USB-Anschluss, aber du möchtest Maus, Tastatur und Headset gleichzeitig anschließen.', scenarioImg: 'assets/usb_hub_scenario.jpg' }
         ];
 
+        const TOTAL_QUESTIONS = 16;
+        const MIN_CORRECT_TO_PASS = 13; // von 16 (max. 3 Fehler erlaubt)
+
         let timerInterval, startTime;
         let quizQueue = [];
         let currentQuestion = null;
@@ -393,12 +320,25 @@
 
         // Student Data Sync
         function syncInputs(){
-            const sName = localStorage.getItem('studentVorname') || localStorage.getItem('student_vorname') || 'Gast';
-            const sClass = 'B24';
-            
-            document.getElementById('studentName').value = sName;
-            document.getElementById('studentClass').value = sClass;
+            const sName = localStorage.getItem('studentVorname') || localStorage.getItem('student_vorname') || '';
+
+            document.getElementById('studentName').value = sName || 'Gast';
+            document.getElementById('studentClass').value = 'B24';
             document.getElementById('studentDate').value = new Date().toLocaleDateString('de-CH');
+
+            // Anders als bei den anderen Arbeitsblättern fehlte hier bisher der Erstbesuch-Prompt:
+            // ohne gespeicherten Vornamen blieb das Feld für immer auf "Gast" stehen.
+            if (!sName) {
+                setTimeout(() => {
+                    const entered = prompt("Willkommen! Wie lautet dein Vorname?");
+                    if (entered && entered.trim()) {
+                        const clean = entered.trim();
+                        localStorage.setItem('studentVorname', clean);
+                        localStorage.setItem('student_vorname', clean);
+                        document.getElementById('studentName').value = clean;
+                    }
+                }, 300);
+            }
         }
 
         // Utility
@@ -602,17 +542,17 @@
             clearInterval(timerInterval);
             const elapsed = performance.now() - startTime;
             
-            const correctAnswers = 16 - errorCount;
-            const passedThisRun = (errorCount === 0);
-            
+            const correctAnswers = TOTAL_QUESTIONS - errorCount;
+            const passedThisRun = (correctAnswers >= MIN_CORRECT_TO_PASS);
+
             // Score Logic (Max 1600, -50 per error, -time bonus)
             let base = 1600;
             let errPenalty = errorCount * 100;
             let timePenalty = Math.max(0, Math.floor(elapsed / 1000) - 30) * 5; // Penalty after 30s
             finalScore = Math.max(0, base - errPenalty - timePenalty);
-            
+
             document.getElementById('statPunkte').textContent = finalScore;
-            
+
             if(passedThisRun) {
                 hasPassed = true;
                 localStorage.setItem('a4_passed', 'true');
@@ -622,15 +562,15 @@
                 localStorage.setItem('a4_last_time', formatTime(elapsed));
                 localStorage.setItem('a4_last_errdetails', JSON.stringify(errorDetails));
                 updateProgress();
-                
-                document.getElementById('modalTitle').textContent = "Test fehlerfrei bestanden! 🎉";
-                document.getElementById('modalSubtitle').textContent = "Perfekt! Alle 16 von 16 Fragen wurden richtig beantwortet.";
+
+                document.getElementById('modalTitle').textContent = errorCount === 0 ? "Test fehlerfrei bestanden! 🎉" : "Test bestanden! 🎉";
+                document.getElementById('modalSubtitle').textContent = `${correctAnswers} von ${TOTAL_QUESTIONS} Fragen richtig beantwortet.`;
                 document.getElementById('modalIcon').className = "fa-solid fa-award";
                 document.getElementById('modalIconWrapper').className = "w-16 h-16 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-3xl font-bold mx-auto mb-2 shadow-inner";
                 document.getElementById('modalPdfBtn').classList.remove('hidden');
             } else {
                 document.getElementById('modalTitle').textContent = "Nicht bestanden";
-                document.getElementById('modalSubtitle').textContent = `Für das Zertifikat müssen ALLE 16 Fragen fehlerfrei beantwortet werden (Du hattest ${errorCount} Fehler).`;
+                document.getElementById('modalSubtitle').textContent = `Für das Zertifikat müssen mindestens ${MIN_CORRECT_TO_PASS} von ${TOTAL_QUESTIONS} Fragen richtig beantwortet werden (Du hattest ${errorCount} Fehler, nur ${correctAnswers} richtig).`;
                 document.getElementById('modalIcon').className = "fa-solid fa-xmark";
                 document.getElementById('modalIconWrapper').className = "w-16 h-16 rounded-full bg-rose-100 dark:bg-rose-950 text-rose-600 dark:text-rose-400 flex items-center justify-center text-3xl font-bold mx-auto mb-2 shadow-inner";
                 document.getElementById('modalPdfBtn').classList.add('hidden');
@@ -665,12 +605,12 @@
             }
         }
 
-        function handlePdfPrint() {
+        function handleDownloadPdf() {
             if(!hasPassed) {
-                alert("Bitte schließe zuerst den Praxis-Test fehlerfrei mit allen 16 richtigen Antworten ab.");
+                alert(`Bitte schließe zuerst den Praxis-Test mit mindestens ${MIN_CORRECT_TO_PASS} von ${TOTAL_QUESTIONS} richtigen Antworten ab.`);
                 return;
             }
-            
+
             // Load from storage if available, else use current vars (if they just finished)
             const savedScore = localStorage.getItem('a4_last_score') || finalScore;
             const savedErrors = localStorage.getItem('a4_last_errors') || errorCount;
@@ -679,37 +619,46 @@
             if (localStorage.getItem('a4_last_errdetails')) {
                 try { details = JSON.parse(localStorage.getItem('a4_last_errdetails')); } catch(e) {}
             }
-            
-            // Populate Print Certificate Data
-            document.getElementById('printName').textContent = document.getElementById('studentName').value || 'Unbekannt';
-            document.getElementById('printClass').textContent = document.getElementById('studentClass').value || '--';
-            document.getElementById('printDate').textContent = document.getElementById('studentDate').value || new Date().toLocaleDateString('de-CH');
-            
-            document.getElementById('printPoints').textContent = savedScore + " Pkt.";
-            document.getElementById('printCorrect').textContent = (16 - savedErrors) + " / 16";
-            document.getElementById('printTime').textContent = savedTime;
-            
-            document.getElementById('printGeneratedDate').textContent = new Date().toLocaleString('de-CH');
-            
-            // Populate PDF Error Section
-            const printErrorSec = document.getElementById('printErrorSection');
-            const printFlawlessSec = document.getElementById('printFlawlessSection');
-            const printErrorList = document.getElementById('printErrorList');
-            
-            if(details.length > 0) {
-                printFlawlessSec.classList.add('hidden');
-                printErrorSec.classList.remove('hidden');
-                printErrorList.innerHTML = details.map(e => `<li>${e}</li>`).join('');
+
+            const savedCorrect = TOTAL_QUESTIONS - savedErrors;
+
+            const blocks = [
+                {
+                    type: 'stats',
+                    items: [
+                        { label: 'Richtige Antworten', value: savedCorrect + ' / ' + TOTAL_QUESTIONS, color: '#059669' },
+                        { label: 'Benötigte Zeit', value: savedTime },
+                        { label: 'Punkte', value: String(savedScore) }
+                    ]
+                }
+            ];
+
+            if (details.length > 0) {
+                blocks.push({
+                    type: 'text',
+                    heading: '🔍 Fehleranalyse',
+                    lines: details.map(e => e.replace(/<[^>]+>/g, '')) // HTML-Tags aus den Fehlertexten entfernen
+                });
             } else {
-                printErrorSec.classList.add('hidden');
-                printFlawlessSec.classList.remove('hidden');
+                blocks.push({
+                    type: 'summary',
+                    label: '⭐ Fehlerfreie Leistung!',
+                    note: 'Es wurden alle Kabel auf Anhieb korrekt zugeordnet.',
+                    value: ''
+                });
             }
-            
+
             document.getElementById('modal').classList.add('hidden');
-            const originalTitle = document.title;
-            document.title = 'A4';
-            window.print();
-            document.title = originalTitle;
+
+            downloadCertificatePDF({
+                icon: '🔌',
+                title: 'Leistungsnachweis A4 • Kabel & Anschlüsse',
+                subtitle: 'Informatische Bildung • IT-Hardware • A4',
+                badge: '✅ Praxis-Test bestanden (' + savedCorrect + '/' + TOTAL_QUESTIONS + ')',
+                badgeOk: true,
+                filenamePrefix: 'A4_Kabel_Anschluesse',
+                blocks: blocks
+            });
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -723,6 +672,7 @@
             renderStudyMode();
         });
     </script>
+    <script src="assets/js/pdf-engine.js"></script>
 </body>
 </html>
 
