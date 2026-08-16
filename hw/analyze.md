@@ -511,3 +511,130 @@ Verifiziert per `node --check` auf allen Inline-Skripten und `pdf-engine.js`, As
 | 5 | **Mainboard Dual-Image** | `VL-MB1.webp` und `VL-MB2.webp` (Perspektive und Draufsicht) nebeneinander in A3 integriert (Qualität 95 %, max-width 1376px, zentrierter Zoom auf Platine 2). | ✅ umgesetzt & visuell geprüft |
 | 6 | **Netzwerkkarte (VL-Network)** | Bild physikalisch korrigiert: Genau 2 WLAN-Antennen an der Außenseite des Slotblechs nach oben gerichtet; Ethernet-Karte mit frontaler Sicht auf den goldenen RJ45-Port (Kontakte & LEDs sichtbar) im Velocity-Look neu generiert. | ✅ umgesetzt & visuell geprüft |
 
+---
+---
+
+# Runde 11: Nachprüfung der PDF-Engine nach 3 weiteren Commits — keine Regression, echte End-to-End-Verifikation nachgeholt — 2026-08-16
+
+**Anlass:** Seit Runde 10 kamen drei weitere Commits dazu, die `hw/A3.html` und `hw/assets/js/pdf-engine.js` erneut angefasst haben: `5c5f900` ("Pdf generation" — Umstellung der Text-Engine von px- auf mm-Koordinaten samt `pdfSafeText()`), `351ed84` ("A3 & PDF" — Bauteil-Foto-Thumbnails im PDF via `pdfPreloadImages()`, neue Datei `hw/assets/js/a3-thumbnails.js`, Klassen-Anzeige "B24"/"B25" → "9. Klasse" im PDF-Kopf) und `87e1397` ("A3" — Bild-Zoom-Regler, `object-contain`, Mainboard-Dual-Bild, 0 %-Start). Die Texte zu Runde 9 und Runde 10 oben wurden tatsächlich **innerhalb** von `351ed84` bzw. `87e1397` mitcommittet, decken die jeweiligen Commits inhaltlich also schon ab — heute ging es darum, das mit echten End-to-End-Tests (echter PDF-Download, `pdftotext`, Screenshot) gegenzuprüfen statt nur den Code zu lesen, weil genau in diesem Bereich (PDF-Engine) die schwersten Bugs der bisherigen Runden steckten (17 MB Raster-PDFs, `colWidths` in falschen Einheiten, `textAlign`-Leck auf Folgeseiten).
+
+## 7-Punkte-Checkliste A3.html (Fokus: Punkte 1, 2, 5, 7)
+
+| # | Checkpunkt | Ergebnis |
+|---|---|---|
+| 1 | Progression & localStorage | ✅ Startet bei **0 %** (frischer `localStorage`, per Headless-Test bestätigt). Erster Klick auf "Weiter" (Karte 1) springt korrekt auf **7 %** (1/14, CPU-Beispiel). Alle 14 Felder ausgefüllt → **100 %**, PDF-Button schaltet frei. Nach Reload bleibt der Zustand (Prozent, Name, Klasse, alle 14 Texte) exakt erhalten. |
+| 2 | Funktioniert alles wie erwartet? | ✅ `node --check` auf allen 3 Inline-Script-Blöcken von A3.html sowie auf `pdf-engine.js` und `a3-thumbnails.js` — alle fehlerfrei. Alle 21 von A3.html referenzierten lokalen Assets (16 Bilder, `cpu-3d.html`, `tailwind.min.js`, `fontawesome.min.css`, `a3-thumbnails.js`, `pdf-engine.js`) sowie das dynamisch nachgeladene `jspdf.umd.min.js` existieren auf der Platte. Neuer Bild-Zoom-Regler (`setGlobalImageZoom()`, 100–160 %) per Headless-Test geprüft: setzt `--img-zoom` korrekt als CSS-Variable, speichert in `localStorage['a3_img_zoom']` und überlebt einen Reload. Keine Konsolenfehler während des kompletten Testlaufs (Laden, Ausfüllen, Reset, PDF-Erzeugung). |
+| 5 | PDF-Erstellung | ✅ **Echter Download ausgelöst und geprüft** (siehe Detail-Abschnitt unten) — kein Regressions-Fund. Alle vier historisch kritischen Bugs bleiben behoben: keine Raster-Seiten (PDF bleibt < 1 MB), `colWidths` nicht betroffen (A3 nutzt keine Tabellen-Blöcke), kein `textAlign`-Leck auf Folgeseiten (Screenshot zeigt Seite 2+ weiterhin sauber linksbündig), Fusszeile/Bild wird vor `toDataURL()`/`addImage()` fertig gezeichnet (keine Halbbilder). |
+| 7 | Autofill Vorname/Klasse/Datum | ✅ Erstbesuch-`prompt()` erscheint zuverlässig und schreibt in `studentVorname`/`student_vorname`. Klasse defaultet auf "B24", Datum auf heute. **Reset-Zyklus real über den UI-Bestätigungsdialog getestet** (nicht nur `confirmReset()` direkt aufgerufen, sondern echter Klick auf `#modalConfirmBtn`): Fortschritt → 0 %, CPU-Referenzbeispiel wird wiederhergestellt, Mainboard-Feld korrekt geleert, Klasse/Datum korrekt neu gesetzt, Vorname bleibt (globaler Sync) erhalten — und 100 % ist von dort aus wieder erreichbar. Kein Rückfall auf den A3-"Klasse bleibt leer"-Bug aus Runde 2. |
+
+## Detailprüfung PDF-Erstellung (echter Download, nicht nur Codelesen)
+
+**Methodik-Hinweis:** Das bisher in Runde 4/8 verwendete Muster ("jsPDF-Konstruktor patchen, Instanz-Ebene statt Prototyp") ist weiterhin korrekt — `save`/`text`/`addImage` sind bei diesem jsPDF-Bundle tatsächlich **Instanz-Eigenschaften** (aus `jsPDF.API` beim Konstruktor-Aufruf auf `this` kopiert), nicht auf `jsPDF.prototype` vorhanden. Ein per `setInterval` nachträglich gepatchter Konstruktor lief in einem eigenen Testaufbau heute in eine Race Condition (die Bauteil-Vorschaubilder sind alle schon vorab als Base64 in `a3-thumbnails.js` vorhanden, wodurch `pdfPreloadImages()` synchron durchläuft und `new jsPDF()` schneller ausgeführt wird, als ein `setInterval`-Poll reagieren kann — der Patch kam nie zum Einsatz, das Zeichnen lief mit der echten, ungepatchten `save()`, die in Headless-Chrome lautlos "hängen" liess, weil kein Downloadziel konfiguriert war). Das ist kein Bug im Produktcode, sondern eine Testfallen-Erkenntnis für künftige Audits: statt der Konstruktor-Patch-Technik wurde heute stattdessen `Browser.setDownloadBehavior` (Chrome DevTools Protocol) verwendet, um Chrome einen **echten** Download in einen Zielordner ausführen zu lassen — robuster, weil unabhängig von Zeitpunkt/Reihenfolge des Skript-Ladens.
+
+**Testablauf:** A3.html frisch geladen, alle 14 Bauteil-Felder mit realistisch langen Testantworten (inkl. Umlauten und Gedankenstrich) befüllt, echten `handleDownloadPdf()`-Button-Handler ausgelöst, die von Chrome tatsächlich heruntergeladene Datei von der Platte gelesen.
+
+- **Dateigrösse:** 663'532 Bytes (648 KB) bei langen Testantworten, 644'128 Bytes (629 KB) bei kurzen, realistischen Antworten — die Grösse wird also fast vollständig von den 14 eingebetteten JPEG-Vorschaubildern dominiert (nicht vom Text). Deckt sich mit der in Runde 9 genannten Grössenordnung ("< 650 KB"); die dortige Checklisten-Angabe "< 400 KB" war demgegenüber zu optimistisch — keine Regression, nur eine genauere Messung heute. Weiterhin um Grössenordnungen kleiner als der ursprüngliche 17-MB-Bug aus Runde 8.
+- **Textinhalt:** `pdftotext -enc UTF-8 -layout` auf die echte heruntergeladene Datei angewendet — alle 14 Bauteil-Überschriften, alle Funktions- und Analogie-Texte vollständig und unverstümmelt vorhanden, kein abgeschnittener Text, korrekte Seitenumbrüche (5 Seiten bei langen, 4 bei kurzen Antworten). Umlaute (ä/ö/ü) und der Gedankenstrich (normalisiert zu "-") korrekt. *Hinweis: `pdftotext` ohne `-enc UTF-8`-Flag liefert auf diesem System Latin-1-Bytes statt UTF-8 und zeigt Umlaute fälschlich als "�" an — das ist ein Artefakt der Kommandozeilen-Flag-Wahl, nicht des PDFs (per Hex-Dump und PDF-interner `/Encoding /WinAnsiEncoding`-Deklaration verifiziert).*
+- **Visuelle Kontrolle:** Screenshot der Chrome-eigenen PDF-Vorschau (Seite 1+2) angesehen — Layout sauber, Bauteil-Fotos korrekt zugeordnet (CPU/Mainboard/Gehäuse), Kopfzeile mit Vorname/Klasse/Datum weiterhin linksbündiger Fliesstext auf Folgeseiten (kein `textAlign`-Rückfall).
+- **Neu bestätigt, bisher nicht explizit dokumentiert:** Die Klassen-Anzeige im PDF-Kopf zeigt "9. Klasse" statt des rohen Codes "B24"/"B25" (Umsetzung aus `351ed84`, [pdf-engine.js:156](assets/js/pdf-engine.js#L156)). Das *Formularfeld* auf der Seite selbst zeigt weiterhin "B24" (unverändert, nur die PDF-Ausgabe wird für Schüler/Eltern lesbarer umbenannt) — funktioniert wie vorgesehen, war aber in den Runde-9/10-Checklisten noch nicht vermerkt.
+
+## Kleinere, nicht behobene Beobachtungen (kein Bug, nur notiert)
+
+- **Kosmetisch:** In `87e1397` wurden bei allen 14 Bauteil-`<img>`-Tags vor dem Tag eine Leerzeile plus Einrückung auf Spalte 0 eingefügt (vermutlich Nebeneffekt eines automatisierten Such-/Ersetzen-Laufs beim Hinzufügen des Zoom-Reglers). Rein optisch im Quelltext, keine funktionale Auswirkung, nicht behoben (14 Fundstellen anzufassen wäre unnötiges Diff-Rauschen für ein reines Whitespace-Detail).
+- **Mainboard-PDF-Thumbnail:** Auf der Seite werden für "2. Mainboard" zwei Bilder nebeneinander angezeigt (`VL-MB1.webp` + `VL-MB2.webp`, seit Runde 10). Im PDF wird weiterhin nur ein einziges Bild eingebettet (`VL-MB1.webp`, [A3.html:1040](A3.html#L1040)) — bekannte, bewusste Einschränkung der Thumbnail-Engine (ein Bild pro Sektion), keine Regression seit Runde 9/10, aber nicht explizit dokumentiert gewesen.
+
+## Zusammenfassung Runde 11
+
+| # | Datei | Schweregrad | Kurzbeschreibung | Status |
+|---|---|---|---|---|
+| 1 | hw/A3.html, hw/assets/js/pdf-engine.js | 🟢 Verifikation | Alle 3 Commits seit Runde 10 (`5c5f900`, `351ed84`, `87e1397`) per echtem PDF-Download + `pdftotext` + Screenshot nachgeprüft — keine Regression bei den 4 historisch kritischen PDF-Bugs (Raster-Grösse, `colWidths`, `textAlign`-Leck, Fusszeilen-Timing) | ✅ bestätigt, kein Fund |
+| 2 | hw/A3.html | 🟢 Verifikation | Progression (0 % Start → 7 % nach CPU → 100 %), Reload-Persistenz und echter Reset-Zyklus (via UI-Klick auf Bestätigungsdialog) funktionieren durchgängig, 100 % nach Reset wieder erreichbar | ✅ bestätigt, kein Fund |
+| 3 | hw/assets/js/pdf-engine.js | 🔵 Dokumentiert | "9. Klasse"-Anzeige im PDF-Kopf statt "B24"/"B25" (aus `351ed84`) war bisher nicht in der Checkliste vermerkt | ✅ nachdokumentiert |
+| 4 | — | 🔵 Methodik | jsPDF-Instanz-Patching per `setInterval` ist race-anfällig, wenn Vorschaubilder bereits vorgeladen sind; `Browser.setDownloadBehavior` (CDP) als robusterer Weg für künftige Audits notiert | ✅ Erkenntnis dokumentiert |
+| 5 | hw/A3.html | 🟢 Kosmetisch | Whitespace-Artefakt vor 14 `<img>`-Tags aus `87e1397` | offen, nicht behoben (kein funktionaler Effekt) |
+| 6 | hw/A3.html / pdf-engine.js | 🟢 Bekannt | Mainboard-PDF-Thumbnail zeigt nur eines von zwei Bildern | offen, bewusste Einschränkung, nicht behoben |
+
+Verifiziert per `node --check` (A3.html: 3 Inline-Blöcke, `pdf-engine.js`, `a3-thumbnails.js` — alle fehlerfrei), Asset-Vollständigkeitsprüfung (21 lokale Referenzen plus dynamisch geladenes `jspdf.umd.min.js`, nichts fehlt), zwei vollständigen Headless-Chrome-End-to-End-Läufen mit **echtem** Datei-Download über `Browser.setDownloadBehavior` (CDP) — einmal mit langen, einmal mit kurzen Testantworten —, `pdftotext -enc UTF-8`-Inhaltsprüfung beider PDFs, einem Screenshot-Vergleich der gerenderten PDF-Seiten sowie einem separaten Test des neuen Bild-Zoom-Reglers (CSS-Variable + `localStorage`-Persistenz über Reload).
+
+---
+---
+
+# Runde 12: Vom Nutzer gefundener Bug — veraltete Bauteil-Fotos im PDF (13 von 14 Thumbnails stale) — 2026-08-16
+
+**Anlass:** Nutzer hat ein echtes A3-PDF heruntergeladen und manuell durchgesehen (nicht nur den Text, sondern die Bilder selbst angeschaut) und bei "11. Netzwerkkarte / WLAN-Modul (NIC)" ein Foto mit **3 Antennen** in einer anderen Anordnung entdeckt — nicht das aktuelle, in Runde 10 korrigierte Bild mit genau 2 Antennen, das auf der Arbeitsblatt-Seite selbst korrekt angezeigt wird.
+
+## Ursache (strukturell, nicht nur ein Einzelbild betroffen)
+
+`hw/A3.html` übergibt für jedes Bauteil sowohl `imageData: thumbnails[c.key]` (aus dem vorab gebündelten `window.A3_THUMBNAILS`, Datei `hw/assets/js/a3-thumbnails.js`) als auch `image: c.image` (der Live-Pfad zum aktuellen `.webp`) an `downloadTextWorksheetPDF()`. In `pdfPreloadImages()` ([hw/assets/js/pdf-engine.js:71-82](assets/js/pdf-engine.js#L71-L82)) hat `sec.imageData` **Vorrang**: Ist es gesetzt, wird es unverändert verwendet und `sec.image` nie angefasst — das Live-Bild wird also nie neu geladen/gerendert, solange die vorab gebündelte Version existiert.
+
+`a3-thumbnails.js` wurde in Commit `351ed84` einmalig aus den damaligen Bildern erzeugt. Der direkt folgende Commit `87e1397` hat danach **fast alle** `VL-*.webp`-Quellbilder ersetzt (neue, höher aufgelöste Renderings inkl. der Antennen-Korrektur der Netzwerkkarte aus Runde 10) — aber in `a3-thumbnails.js` selbst wurde laut `git show 87e1397 -- hw/assets/js/a3-thumbnails.js` nur **ein einziger** Eintrag (`comp_cpu`) aktualisiert. Die übrigen 13 Bauteile (inkl. Netzwerkkarte) blieben auf dem alten Bildstand eingefroren. Das PDF zeigte damit für 13 von 14 Bauteilen faktisch veraltete Fotos, während die Arbeitsblatt-Seite selbst überall die aktuellen Bilder zeigt — ein stiller Stand/Live-Mismatch, der im Quelltext nicht auffällt (`node --check` findet so etwas naturgemäss nicht) und in Runde 11 trotz echtem PDF-Download nicht auffiel, weil dort Textinhalt (`pdftotext`) und Seitenlayout (Screenshot der Gesamtseite) geprüft wurden, aber nicht jedes einzelne eingebettete Bauteil-Foto Pixel für Pixel mit dem aktuellen Quellbild verglichen wurde — eine Lücke in der bisherigen Verifikationsmethode.
+
+**Fix:** `a3-thumbnails.js` komplett neu generiert (Python/Pillow, exakt dieselben Parameter wie `pdfPreloadImages()` im Browser: `maxDim = 360`, `Lanczos`-Resize, JPEG-Qualität `0.82`) aus den 14 aktuell im Repo liegenden `VL-*.webp`-Quellbildern. Alle 14 Einträge neu geschrieben, Struktur/Format unverändert (`{ dataUrl, ratio }` je Bauteil). Datei wächst dabei von vorher (gemischter Bildstand) auf 253'070 Bytes — weiterhin unproblematisch klein gegenüber dem finalen PDF (< 700 KB laut Runde 11).
+
+**Verifiziert:** `node --check` auf der neu geschriebenen Datei fehlerfrei, alle 14 Keys vorhanden. `comp_net`-Eintrag extrahiert und visuell mit dem aktuellen `assets/VL-Network.webp` verglichen — jetzt identisch (2 Antennen, korrekte Kartenanordnung). Die übrigen 13 Einträge wurden aus denselben, aktuell im Repo befindlichen Quellbildern erzeugt wie die Live-Seite selbst nutzt — Live/PDF können damit nicht mehr auseinanderlaufen, solange `a3-thumbnails.js` nach künftigen Bildänderungen erneut regeneriert wird (siehe offener Punkt unten).
+
+## Offener Punkt: Bündelungs-Mechanismus bleibt fehleranfällig für künftige Bildänderungen
+
+Das eigentliche Architekturproblem ist nicht behoben, nur der aktuelle Stand repariert: Jedes Mal, wenn künftig eines der 14 `VL-*.webp`-Bilder ersetzt wird, muss jemand daran denken, `a3-thumbnails.js` manuell neu zu generieren — es gibt keine automatische Kopplung und kein Build-Skript dafür im Repo (das heutige Regenerierungs-Skript war ein Einmal-Skript, nicht eingecheckt). Zwei Optionen für später, nicht heute umgesetzt, da grösserer Eingriff:
+1. Ein kleines, eingechecktes Node/Python-Skript (`hw/scripts/generate_a3_thumbnails.py` o.ä.), das bei jeder Bildänderung manuell erneut ausgeführt wird.
+2. `imageData`-Vorrang in `pdfPreloadImages()` aufheben und stattdessen immer frisch von `sec.image` laden (`a3-thumbnails.js` und das Pre-Bundling komplett entfernen) — einfacher und unmöglich zu vergessen, aber der ursprüngliche Grund für das Pre-Bundling (vermutlich synchrones/robustes Laden ohne Netzwerk-Race beim PDF-Export) müsste dafür geprüft und ggf. anders gelöst werden.
+
+## Zusammenfassung Runde 12
+
+| # | Datei | Schweregrad | Kurzbeschreibung | Status |
+|---|---|---|---|---|
+| 1 | hw/assets/js/a3-thumbnails.js | 🔴 Wichtig | 13 von 14 PDF-Bauteil-Thumbnails zeigten veraltete Bilder (u.a. Netzwerkkarte mit falscher Antennenzahl), weil `a3-thumbnails.js` nach der Bilder-Aktualisierung in `87e1397` nicht mitregeneriert wurde | ✅ behoben (alle 14 Thumbnails neu generiert) |
+| 2 | hw/assets/js/pdf-engine.js | 🔵 Notiert | Pre-Bundling-Mechanismus (`imageData` hat Vorrang vor `image`) bleibt strukturell anfällig für erneutes Veralten bei künftigen Bildänderungen — kein automatischer Regenerierungs-Mechanismus im Repo | offen, nicht behoben (Architekturentscheidung, siehe zwei Optionen oben) |
+
+Verifiziert per `node --check` auf `a3-thumbnails.js`, visuellem Vergleich des extrahierten `comp_net`-Thumbnails gegen das aktuelle Quellbild sowie Kontrolle, dass alle 14 Bauteil-Schlüssel vorhanden und die Dateigrösse plausibel ist.
+
+---
+---
+
+# Runde 13: A4 Voll-Audit (Kabel & Anschlüsse) — erster kompletter 7-Punkte-Durchgang — 2026-08-16
+
+**Anlass:** `hw/A4.html` (687 Zeilen, Lern-Modus mit 16 Flip-Karten + Praxis-Test-Quiz mit 16 Fragen, Bestehensgrenze 13/16) wurde bisher in keiner Runde vollständig nach dem 7-Punkte-Standard geprüft — nur gezielte Einzel-Fixes (PDF-Umstellung & Vorname-Prompt in Runde 5, Bestehensgrenze in Runde 6). Heute erster echter Vollaudit, inkl. Nachprüfung von Commit `fd6f135` (2026-08-11, "Fix localStorage key collisions ... across A4/A5/A7"), der A4s Speicher-Key geändert hatte, ohne dass das in `analyze.md` je dokumentiert wurde.
+
+## Vorab: Verifikation von `fd6f135`
+
+`git show fd6f135 -- hw/A4.html` bestätigt: Der gespeicherte Fortschritts-Key wurde von `onedrive_cables_worksheet_8sek` (kollidierte mit A5, das denselben Key nutzte) auf `onedrive_a4_worksheet_8sek` umbenannt — sowohl beim Speichern (`endQuiz()`) als auch beim Löschen (`confirmReset()`). Keine Altlasten: `A4.html` enthält keine Referenz mehr auf den alten Key. `index.html` (`checkCompletionStatus()`, [index.html:1841-1846](../index.html#L1841-L1846)) prüft exakt `onedrive_a4_worksheet_8sek` (plus zusätzlich `a4_passed === 'true'` als zweiten, redundanten Erfolgsindikator) — beide Seiten sind konsistent, kein Mismatch.
+
+## 7-Punkte-Checkliste A4.html
+
+| # | Checkpunkt | Ergebnis |
+|---|---|---|
+| 1 | Progression & localStorage | ✅ **Solide, per echtem Headless-Durchlauf verifiziert.** Bestehen bei ≥13/16 schreibt korrekt `a4_passed`, `onedrive_a4_worksheet_8sek` (`{percent:100}`), `a4_last_score/_errors/_time/_errdetails`. Ein Fehlversuch (10/16, unter der Grenze) schreibt **nichts** in diese Keys, `handleDownloadPdf()` zeigt korrekt den Sperr-Alert statt einen Download auszulösen. "Zurücksetzen" (`confirmReset()`) löscht alle 6 Keys zuverlässig, Klasse/Datum werden nach Reload korrekt neu befüllt (kein Rückfall auf den A3-"Klasse bleibt leer"-Bug aus Runde 2), Vorname bleibt (globaler Sync) erhalten, und **100 % ist von 0 % aus erneut erreichbar** — im selben Testlauf per echtem Reset-Klick nachgestellt und verifiziert. Es gibt keine separate "Fortschritts"-Anzeige für den Lern-Modus (nur Kopfzeile "0/1" bzw. "1/1 Praxis-Test absolviert") — bewusstes, einfaches Design, kein Fund. |
+| 2 | Funktioniert alles wie erwartet? | ✅ `node --check` auf beiden Inline-Script-Blöcken sowie auf `pdf-engine.js` — fehlerfrei. Alle 32 von A4.html referenzierten lokalen Assets (Item- und Szenario-Bilder, Vendor-Skripte) existieren auf der Platte — keine toten `placehold.co`-Links mehr (die im Footer-Kommentar erwähnte Bildgenerierungs-Aufgabe ist inzwischen offenbar erledigt, siehe Fund unten). Lern-Modus: alle 16 Flip-Karten rendern und lassen sich umdrehen. Praxis-Test: Szenario-Anzeige, 4 Antwort-Buttons pro Frage, Dunkelmodus-Umschalter (inkl. Persistenz über Reload) — alles per Headless-Test durchgespielt, **null** Konsolen-/Seitenfehler über den gesamten Testlauf (Laden, Erstbesuch-Prompt, Quiz spielen, Reset, Reload, Moduswechsel). |
+| 3 | Rechtschreibung & Vollständigkeit | ✅ Alle 16 Kabel/Anschlüsse (Name, Beschreibung, Szenario-Text) gelesen — keine Rechtschreibfehler gefunden. Alle UI-Texte (Buttons, Modal, Statistik-Kacheln, Tooltips) sauber und vollständig. |
+| 4 | Kein KI-Wording | ✅ Sachliche, direkte Formulierungen ("Du möchtest deine neue externe Festplatte an den PC anschließen.", "Das WLAN ist zu langsam..."), keine Marketing-Floskeln, gezielt nach bekannten Mustern gesucht ("Tauche ein...", "In der heutigen..." etc.) — keine Treffer. |
+| 5 | PDF-Erstellung | 🔧 **1 kleiner Bug gefunden & behoben** (siehe unten). Ansonsten sauber: echter Download per `Browser.setDownloadBehavior` (CDP) ausgelöst (nicht nur die Funktion aufgerufen), Datei von der Platte gelesen, `pdftotext -enc UTF-8 -layout` angewendet und zusätzlich als Chrome-PDF-Vorschau gescreenshottet. Inhalt stimmt exakt mit dem tatsächlich erspielten Ergebnis überein (13/16, "Björn Müller" mit korrektem Umlaut, "9. Klasse", Zeit, Punkte, alle 3 tatsächlich gemachten Fehler). Dateigrösse **6457 Bytes** — deckungsgleich mit dem Runde-8-Referenzwert (6223 Bytes), keine Grössen-Regression. Der Fehlschlag-Fall (<13/16) ist bewusst **nicht** PDF-fähig: Button bleibt gesperrt, `handleDownloadPdf()` zeigt nur den Alert — verifiziert, kein eigenes PDF für diesen Fall erzeugbar (Absicht, kein Bug). |
+| 6 | Alle Eingabefelder → localStorage | ✅ A4 hat keine Freitextfelder — Vorname/Klasse/Datum sind `readonly` und werden automatisch befüllt, Quiz-Antworten sind Button-Klicks ohne Einzelspeicherung, das Endergebnis wird vollständig in `a4_last_*` gesichert und nach Reload/PDF-Download korrekt wiederverwendet. Kein fehlendes Feld gefunden. |
+| 7 | Autofill Vorname/Klasse/Datum | ✅ Erstbesuch-Prompt (aus Runde 5) funktioniert weiterhin zuverlässig — per echtem Dialog-Event ausgelöst und verifiziert, schreibt in `studentVorname` **und** `student_vorname`, Feld aktualisiert sich sofort. Klasse defaultet auf "B24" (im PDF-Kopf als "9. Klasse" angezeigt, wie bei A3 in Runde 11 dokumentiert). Datum wird automatisch auf heute gesetzt. Nach "Zurücksetzen" bleiben Klasse/Datum korrekt, Vorname bleibt global erhalten. A4 nutzt weiterhin seine eigene inline Kopie statt `worksheet-common.js` (bereits in Runde 5 als bewusst offener Punkt dokumentiert, keine neue Erkenntnis, keine Regression). |
+
+## End-to-End-Verifikation von `fd6f135` (nicht nur Code gelesen)
+
+Mit einem persistenten Browser-Profil: A4.html frisch geladen → Erstbesuch-Prompt beantwortet → Praxis-Test mit exakt 3 absichtlichen Fehlern gespielt (13/16, genau die Bestehensgrenze) → Modal zeigt "Test bestanden!", `localStorage` enthält `a4_passed: "true"` und `onedrive_a4_worksheet_8sek: {"percent":100}` → Seite neu geladen, Zustand (100 %, PDF-Button aktiv) bleibt erhalten → **`index.html` mit demselben Profil geöffnet: A4-Kachel zeigt automatisch den grünen Häkchen-Button** (`btn-done`-Klasse, Check-SVG, Tooltip "Erfolgreich abgeschlossen!"). Der komplette Kreislauf von `fd6f135`s Fix bis zur Startseiten-Erkennung funktioniert nachweislich durchgehend.
+
+## Gefundener & behobener Bug: Fehlertext im PDF lief zusammenhanglos ineinander
+
+**Ursache** ([hw/A4.html:502](A4.html#L502) alt): Jeder Fehlereintrag wird als HTML-String gebaut: `<span class="... block ...">Szenario: "..."</span>Du hast <b>X</b> gewählt...`. Im Browser-Modal ist das unauffällig, weil die Klasse `block` den Span auf eine eigene Zeile zwingt — der fehlende Leerraum zwischen `</span>` und `Du` fällt nicht auf. Für das PDF wird derselbe String aber in `handleDownloadPdf()` per `.replace(/<[^>]+>/g, '')` von allen HTML-Tags befreit (nötig, weil jsPDF kein HTML rendert) — dabei verschwindet auch die Zeilenumbruch-Wirkung des `block`-Spans ersatzlos, und Szenario-Satz und Antwort-Satz kleben ohne Trennzeichen aneinander: *"...zur Verfügung."Du hast DisplayPort gewählt..."* (per Screenshot der generierten PDF-Vorschau bestätigt).
+
+**Fix** ([hw/A4.html:502](A4.html#L502)): Ein Leerzeichen direkt im Template-Literal zwischen `</span>` und `Du hast` ergänzt. Im Modal ändert das nichts sichtbar (das führende Leerzeichen vor Blocktext wird beim Rendern ignoriert), im PDF trennt es die beiden Sätze jetzt sauber.
+
+**Verifiziert:** Vorher/Nachher-PDF erzeugt (echter Download, `pdftotext` + Screenshot) — vorher `zur Verfügung."Du hast DisplayPort...`, nachher `zur Verfügung." Du hast VGA...` mit korrektem Leerzeichen. `node --check` nach dem Fix weiterhin fehlerfrei.
+
+## Kleinere Beobachtung (kein Bug, nur notiert)
+
+Der auskommentierte TODO-Block am Dateiende ([hw/A4.html:679-687](A4.html#L679-L687)) verweist auf eine frühere Aufgabe ("19 fehlende Bilder generieren, sobald Kontingent zurückgesetzt ist" inkl. eines an einen KI-Assistenten gerichteten Prompt-Texts) — die Aufgabe ist inzwischen erledigt: kein `placehold.co`-Link mehr im Dokument, alle 32 Asset-Referenzen lösen real auf. Der Kommentar ist damit reine tote Dokumentation ohne funktionale Auswirkung. Nicht entfernt, da rein kosmetisch und ausserhalb des heutigen Scopes (kein Verhaltensrisiko).
+
+## Zusammenfassung Runde 13
+
+| # | Datei | Schweregrad | Kurzbeschreibung | Status |
+|---|---|---|---|---|
+| 1 | hw/A4.html | 🟡 Klein | Fehlertext im PDF lief ohne Leerzeichen/Trennzeichen zusammen (Szenario-Satz + Antwort-Satz), weil das HTML-Tag-Strippen die `block`-Zeilenumbruch-Wirkung des Original-Spans nicht ersetzte | ✅ behoben (ein Leerzeichen im Template-Literal ergänzt) |
+| 2 | hw/A4.html | 🟢 Verifikation | Vollständiger 7-Punkte-Audit erstmals durchgeführt — Progression/Reset/Wiedererreichbarkeit, alle Assets, Rechtschreibung, PDF-Inhalt & -Grösse, Autofill — keine weiteren Bugs gefunden | ✅ bestätigt |
+| 3 | hw/A4.html, index.html | 🟢 Verifikation | `fd6f135` (Key-Umbenennung `onedrive_cables_worksheet_8sek` → `onedrive_a4_worksheet_8sek`) per echtem End-to-End-Test bestätigt: Quiz bestehen → localStorage → Reload → `index.html`-Kachel zeigt korrekt "erledigt" | ✅ bestätigt, kein Fund |
+| 4 | hw/A4.html | 🔵 Notiert | Toter TODO-Kommentar am Dateiende (Bildgenerierungs-Auftrag, bereits erledigt) | offen, rein kosmetisch, nicht behoben |
+
+Verifiziert per `node --check` auf allen Inline-Script-Blöcken von A4.html sowie `pdf-engine.js` (fehlerfrei), Asset-Vollständigkeitsprüfung aller 32 lokalen Referenzen (nichts fehlt), mehreren vollständigen Headless-Chrome-End-to-End-Läufen mit **echtem** Datei-Download über `Browser.setDownloadBehavior` (CDP) für den Bestehens-Fall, `pdftotext -enc UTF-8`-Inhaltsprüfung plus Screenshot-Kontrolle der PDF-Vorschau vor und nach dem Fehlertext-Fix, einem separaten Fehlschlag-Lauf (10/16, Sperr-Alert korrekt, kein Download), einem vollständigen Reset-Zyklus mit erneuter 100-%-Erreichung, sowie einem UI-Smoke-Test (16 Lernkarten, Flip, Dunkelmodus-Persistenz, Moduswechsel) — durchgehend null Konsolen-/Seitenfehler.
+

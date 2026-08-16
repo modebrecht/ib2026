@@ -499,7 +499,7 @@
             } else {
                 errorCount++;
                 // Track specific error for the modal and PDF
-                errorDetails.push(`<span class="text-[10px] text-slate-500 block uppercase tracking-wider mt-1">Szenario: "${currentQuestion.scenarioText}"</span>Du hast <b>${clickedName}</b> gewählt, gesucht war aber <b>${currentQuestion.name}</b>.`);
+                errorDetails.push(`<span class="text-[10px] text-slate-500 block uppercase tracking-wider mt-1">Szenario: "${currentQuestion.scenarioText}"</span> Du hast <b>${clickedName}</b> gewählt, gesucht war aber <b>${currentQuestion.name}</b>.`);
                 
                 document.getElementById('statFehler').textContent = errorCount;
                 btnElement.classList.add('border-rose-500', 'ring-4', 'ring-rose-500/50', 'wiggle', 'z-10');
