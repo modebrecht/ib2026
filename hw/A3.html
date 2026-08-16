@@ -56,6 +56,15 @@
             .dark, .dark * { background-color: #fff !important; color: #000 !important; border-color: #cbd5e1 !important; }
         }
 
+        :root {
+            --img-zoom: 1;
+        }
+        .comp-img {
+            transform: scale(var(--img-zoom, 1));
+            transform-origin: center center;
+            transition: transform 0.15s ease-out;
+        }
+
         @keyframes pulseScale {
             0%, 100% {
                 transform: scale(1);
@@ -165,13 +174,19 @@
                 <!-- 1. Prozessor -->
                 <div class="comp-card rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative group overflow-hidden">
                     <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
-                    <div class="w-full h-64 sm:h-96 overflow-hidden bg-slate-900 relative">
-                        <img src="assets/VL-CPU.webp" alt="Prozessor (CPU)" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="w-full aspect-[720/393] max-h-[520px] overflow-hidden bg-slate-900 relative">
+                        
+<img src="assets/VL-CPU.webp" alt="Prozessor (CPU)" loading="lazy" class="comp-img w-full h-full object-contain">
+                        <div class="no-print absolute top-3 left-3 z-10 flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-900/85 text-slate-200 shadow-lg border border-white/20 backdrop-blur-md text-xs font-semibold select-none" title="Bild-Zoom anpassen">
+                            <i class="fa-solid fa-magnifying-glass text-onedrive-400 text-[11px]"></i>
+                            <input type="range" min="100" max="160" value="100" step="1" oninput="setGlobalImageZoom(this.value)" class="zoom-slider-input w-14 sm:w-20 h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-onedrive-500" title="Zoom">
+                            <span class="zoom-val-badge text-[10px] font-mono text-slate-300 w-7 text-right">100%</span>
+                        </div>
                         <button onclick="open3dModal('assets/3d/cpu-3d.html')" type="button" class="no-print absolute top-3 right-3 px-3 py-1.5 rounded-xl bg-slate-900/85 hover:bg-onedrive-500 text-slate-200 hover:text-white font-bold text-xs flex items-center gap-1.5 shadow-lg border border-white/20 transition-all transform hover:scale-105 backdrop-blur-md cursor-pointer z-10" title="Interaktives 3D-Modell der CPU öffnen">
                             <i class="fa-solid fa-cube text-onedrive-400"></i>
                             <span>3D-Modell</span>
                         </button>
-                        <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-900/90 via-slate-900/50 to-transparent p-3 pt-8">
+                        <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent px-3.5 py-2 pt-5">
                             <h4 class="font-bold text-white text-[15px] drop-shadow-md">1. Prozessor (CPU - Central Processing Unit)</h4>
                             <span class="text-xs text-slate-200 font-mono drop-shadow-md">Kürzel: CPU</span>
                         </div>
@@ -193,9 +208,15 @@
                 <!-- 2. Mainboard -->
                 <div class="comp-card rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative group overflow-hidden">
                     <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
-                    <div class="w-full h-64 sm:h-96 overflow-hidden bg-slate-900 relative">
-                        <img src="assets/VL-Motherboard.webp" alt="Mainboard" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-900/90 via-slate-900/50 to-transparent p-3 pt-8">
+                    <div class="w-full aspect-[720/393] max-h-[520px] overflow-hidden bg-slate-900 grid grid-cols-2 gap-px relative">
+                        <img src="assets/VL-MB1.webp" alt="Mainboard (Ansicht 1)" loading="lazy" class="comp-img w-full h-full object-contain">
+                        <img src="assets/VL-MB2.webp" alt="Mainboard (Ansicht 2)" loading="lazy" class="comp-img w-full h-full object-contain">
+                        <div class="no-print absolute top-3 left-3 z-10 flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-900/85 text-slate-200 shadow-lg border border-white/20 backdrop-blur-md text-xs font-semibold select-none" title="Bild-Zoom anpassen">
+                            <i class="fa-solid fa-magnifying-glass text-onedrive-400 text-[11px]"></i>
+                            <input type="range" min="100" max="160" value="100" step="1" oninput="setGlobalImageZoom(this.value)" class="zoom-slider-input w-14 sm:w-20 h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-onedrive-500" title="Zoom">
+                            <span class="zoom-val-badge text-[10px] font-mono text-slate-300 w-7 text-right">100%</span>
+                        </div>
+                        <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent px-3.5 py-2 pt-5">
                             <h4 class="font-bold text-white text-[15px] drop-shadow-md">2. Mainboard (Motherboard / Hauptplatine)</h4>
                             <span class="text-xs text-slate-200 font-mono drop-shadow-md">Kürzel: MB</span>
                         </div>
@@ -217,9 +238,15 @@
                 <!-- 3. PC-Gehäuse -->
                 <div class="comp-card rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative group overflow-hidden">
                     <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
-                    <div class="w-full h-64 sm:h-96 overflow-hidden bg-slate-900 relative">
-                        <img src="assets/VL-Chassis.webp" alt="PC-Gehäuse" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-900/90 via-slate-900/50 to-transparent p-3 pt-8">
+                    <div class="w-full aspect-[720/393] max-h-[520px] overflow-hidden bg-slate-900 relative">
+                        
+<img src="assets/VL-Chassis.webp" alt="PC-Gehäuse" loading="lazy" class="comp-img w-full h-full object-contain">
+                        <div class="no-print absolute top-3 left-3 z-10 flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-900/85 text-slate-200 shadow-lg border border-white/20 backdrop-blur-md text-xs font-semibold select-none" title="Bild-Zoom anpassen">
+                            <i class="fa-solid fa-magnifying-glass text-onedrive-400 text-[11px]"></i>
+                            <input type="range" min="100" max="160" value="100" step="1" oninput="setGlobalImageZoom(this.value)" class="zoom-slider-input w-14 sm:w-20 h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-onedrive-500" title="Zoom">
+                            <span class="zoom-val-badge text-[10px] font-mono text-slate-300 w-7 text-right">100%</span>
+                        </div>
+                        <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent px-3.5 py-2 pt-5">
                             <h4 class="font-bold text-white text-[15px] drop-shadow-md">3. PC-Gehäuse (Computer Case / Chassis)</h4>
                             <span class="text-xs text-slate-200 font-mono drop-shadow-md">Formfaktoren: Tower, Desktop, Mini-ITX</span>
                         </div>
@@ -241,9 +268,15 @@
                 <!-- 4. Arbeitsspeicher -->
                 <div class="comp-card rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative group overflow-hidden">
                     <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
-                    <div class="w-full h-64 sm:h-96 overflow-hidden bg-slate-900 relative">
-                        <img src="assets/VL-RAM.webp" alt="Arbeitsspeicher (RAM)" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-900/90 via-slate-900/50 to-transparent p-3 pt-8">
+                    <div class="w-full aspect-[720/393] max-h-[520px] overflow-hidden bg-slate-900 relative">
+                        
+<img src="assets/VL-RAM.webp" alt="Arbeitsspeicher (RAM)" loading="lazy" class="comp-img w-full h-full object-contain">
+                        <div class="no-print absolute top-3 left-3 z-10 flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-900/85 text-slate-200 shadow-lg border border-white/20 backdrop-blur-md text-xs font-semibold select-none" title="Bild-Zoom anpassen">
+                            <i class="fa-solid fa-magnifying-glass text-onedrive-400 text-[11px]"></i>
+                            <input type="range" min="100" max="160" value="100" step="1" oninput="setGlobalImageZoom(this.value)" class="zoom-slider-input w-14 sm:w-20 h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-onedrive-500" title="Zoom">
+                            <span class="zoom-val-badge text-[10px] font-mono text-slate-300 w-7 text-right">100%</span>
+                        </div>
+                        <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent px-3.5 py-2 pt-5">
                             <h4 class="font-bold text-white text-[15px] drop-shadow-md">4. Arbeitsspeicher (RAM - Random Access Memory)</h4>
                             <span class="text-xs text-slate-200 font-mono drop-shadow-md">Kürzel: RAM</span>
                         </div>
@@ -265,9 +298,15 @@
                 <!-- 5. SSD -->
                 <div class="comp-card rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative group overflow-hidden">
                     <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
-                    <div class="w-full h-64 sm:h-96 overflow-hidden bg-slate-900 relative">
-                        <img src="assets/VL-SSD.webp" alt="Solid State Drive (SSD)" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-900/90 via-slate-900/50 to-transparent p-3 pt-8">
+                    <div class="w-full aspect-[720/393] max-h-[520px] overflow-hidden bg-slate-900 relative">
+                        
+<img src="assets/VL-SSD.webp" alt="Solid State Drive (SSD)" loading="lazy" class="comp-img w-full h-full object-contain">
+                        <div class="no-print absolute top-3 left-3 z-10 flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-900/85 text-slate-200 shadow-lg border border-white/20 backdrop-blur-md text-xs font-semibold select-none" title="Bild-Zoom anpassen">
+                            <i class="fa-solid fa-magnifying-glass text-onedrive-400 text-[11px]"></i>
+                            <input type="range" min="100" max="160" value="100" step="1" oninput="setGlobalImageZoom(this.value)" class="zoom-slider-input w-14 sm:w-20 h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-onedrive-500" title="Zoom">
+                            <span class="zoom-val-badge text-[10px] font-mono text-slate-300 w-7 text-right">100%</span>
+                        </div>
+                        <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent px-3.5 py-2 pt-5">
                             <h4 class="font-bold text-white text-[15px] drop-shadow-md">5. Solid State Drive (SSD)</h4>
                             <span class="text-xs text-slate-200 font-mono drop-shadow-md">Typ: Elektronischer Flash-Massenspeicher (2.5" SATA)</span>
                         </div>
@@ -289,9 +328,15 @@
                 <!-- 6. NVMe-SSD -->
                 <div class="comp-card rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative group overflow-hidden">
                     <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
-                    <div class="w-full h-64 sm:h-96 overflow-hidden bg-slate-900 relative">
-                        <img src="assets/VL-NVMe.webp" alt="NVMe-SSD (M.2)" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-900/90 via-slate-900/50 to-transparent p-3 pt-8">
+                    <div class="w-full aspect-[720/393] max-h-[520px] overflow-hidden bg-slate-900 relative">
+                        
+<img src="assets/VL-NVMe.webp" alt="NVMe-SSD (M.2)" loading="lazy" class="comp-img w-full h-full object-contain">
+                        <div class="no-print absolute top-3 left-3 z-10 flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-900/85 text-slate-200 shadow-lg border border-white/20 backdrop-blur-md text-xs font-semibold select-none" title="Bild-Zoom anpassen">
+                            <i class="fa-solid fa-magnifying-glass text-onedrive-400 text-[11px]"></i>
+                            <input type="range" min="100" max="160" value="100" step="1" oninput="setGlobalImageZoom(this.value)" class="zoom-slider-input w-14 sm:w-20 h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-onedrive-500" title="Zoom">
+                            <span class="zoom-val-badge text-[10px] font-mono text-slate-300 w-7 text-right">100%</span>
+                        </div>
+                        <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent px-3.5 py-2 pt-5">
                             <h4 class="font-bold text-white text-[15px] drop-shadow-md">6. NVMe-SSD (M.2)</h4>
                             <span class="text-xs text-slate-200 font-mono drop-shadow-md">Typ: Flash-Speicher direkt über die PCIe-Schnittstelle</span>
                         </div>
@@ -313,9 +358,15 @@
                 <!-- 7. Festplatte -->
                 <div class="comp-card rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative group overflow-hidden">
                     <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
-                    <div class="w-full h-64 sm:h-96 overflow-hidden bg-slate-900 relative">
-                        <img src="assets/VL-HDD.webp" alt="Festplatte (HDD)" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-900/90 via-slate-900/50 to-transparent p-3 pt-8">
+                    <div class="w-full aspect-[720/393] max-h-[520px] overflow-hidden bg-slate-900 relative">
+                        
+<img src="assets/VL-HDD.webp" alt="Festplatte (HDD)" loading="lazy" class="comp-img w-full h-full object-contain">
+                        <div class="no-print absolute top-3 left-3 z-10 flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-900/85 text-slate-200 shadow-lg border border-white/20 backdrop-blur-md text-xs font-semibold select-none" title="Bild-Zoom anpassen">
+                            <i class="fa-solid fa-magnifying-glass text-onedrive-400 text-[11px]"></i>
+                            <input type="range" min="100" max="160" value="100" step="1" oninput="setGlobalImageZoom(this.value)" class="zoom-slider-input w-14 sm:w-20 h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-onedrive-500" title="Zoom">
+                            <span class="zoom-val-badge text-[10px] font-mono text-slate-300 w-7 text-right">100%</span>
+                        </div>
+                        <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent px-3.5 py-2 pt-5">
                             <h4 class="font-bold text-white text-[15px] drop-shadow-md">7. Festplatte (HDD - Hard Disk Drive)</h4>
                             <span class="text-xs text-slate-200 font-mono drop-shadow-md">Typ: Magnetischer Massenspeicher</span>
                         </div>
@@ -337,9 +388,15 @@
                 <!-- 8. Grafikkarte -->
                 <div class="comp-card rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative group overflow-hidden">
                     <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
-                    <div class="w-full h-64 sm:h-96 overflow-hidden bg-slate-900 relative">
-                        <img src="assets/VL-GPU.webp" alt="Grafikkarte (GPU)" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-900/90 via-slate-900/50 to-transparent p-3 pt-8">
+                    <div class="w-full aspect-[720/393] max-h-[520px] overflow-hidden bg-slate-900 relative">
+                        
+<img src="assets/VL-GPU.webp" alt="Grafikkarte (GPU)" loading="lazy" class="comp-img w-full h-full object-contain">
+                        <div class="no-print absolute top-3 left-3 z-10 flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-900/85 text-slate-200 shadow-lg border border-white/20 backdrop-blur-md text-xs font-semibold select-none" title="Bild-Zoom anpassen">
+                            <i class="fa-solid fa-magnifying-glass text-onedrive-400 text-[11px]"></i>
+                            <input type="range" min="100" max="160" value="100" step="1" oninput="setGlobalImageZoom(this.value)" class="zoom-slider-input w-14 sm:w-20 h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-onedrive-500" title="Zoom">
+                            <span class="zoom-val-badge text-[10px] font-mono text-slate-300 w-7 text-right">100%</span>
+                        </div>
+                        <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent px-3.5 py-2 pt-5">
                             <h4 class="font-bold text-white text-[15px] drop-shadow-md">8. Grafikkarte (GPU - Graphics Processing Unit)</h4>
                             <span class="text-xs text-slate-200 font-mono drop-shadow-md">Kürzel: GPU</span>
                         </div>
@@ -361,9 +418,15 @@
                 <!-- 9. Netzteil -->
                 <div class="comp-card rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative group overflow-hidden">
                     <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
-                    <div class="w-full h-64 sm:h-96 overflow-hidden bg-slate-900 relative">
-                        <img src="assets/VL-PSU.webp" alt="Netzteil (PSU)" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-900/90 via-slate-900/50 to-transparent p-3 pt-8">
+                    <div class="w-full aspect-[720/393] max-h-[520px] overflow-hidden bg-slate-900 relative">
+                        
+<img src="assets/VL-PSU.webp" alt="Netzteil (PSU)" loading="lazy" class="comp-img w-full h-full object-contain">
+                        <div class="no-print absolute top-3 left-3 z-10 flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-900/85 text-slate-200 shadow-lg border border-white/20 backdrop-blur-md text-xs font-semibold select-none" title="Bild-Zoom anpassen">
+                            <i class="fa-solid fa-magnifying-glass text-onedrive-400 text-[11px]"></i>
+                            <input type="range" min="100" max="160" value="100" step="1" oninput="setGlobalImageZoom(this.value)" class="zoom-slider-input w-14 sm:w-20 h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-onedrive-500" title="Zoom">
+                            <span class="zoom-val-badge text-[10px] font-mono text-slate-300 w-7 text-right">100%</span>
+                        </div>
+                        <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent px-3.5 py-2 pt-5">
                             <h4 class="font-bold text-white text-[15px] drop-shadow-md">9. Netzteil (PSU - Power Supply Unit)</h4>
                             <span class="text-xs text-slate-200 font-mono drop-shadow-md">Kürzel: PSU</span>
                         </div>
@@ -385,13 +448,19 @@
                 <!-- 10. CPU-Kühler -->
                 <div class="comp-card rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative group overflow-hidden">
                     <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
-                    <div class="w-full h-64 sm:h-96 overflow-hidden bg-slate-900 relative">
-                        <img src="assets/VL-CPUCOOLER.webp" alt="CPU-Kühler (Prozessorkühler)" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="w-full aspect-[720/393] max-h-[520px] overflow-hidden bg-slate-900 relative">
+                        
+<img src="assets/VL-CPUCOOLER.webp" alt="CPU-Kühler (Prozessorkühler)" loading="lazy" class="comp-img w-full h-full object-contain">
+                        <div class="no-print absolute top-3 left-3 z-10 flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-900/85 text-slate-200 shadow-lg border border-white/20 backdrop-blur-md text-xs font-semibold select-none" title="Bild-Zoom anpassen">
+                            <i class="fa-solid fa-magnifying-glass text-onedrive-400 text-[11px]"></i>
+                            <input type="range" min="100" max="160" value="100" step="1" oninput="setGlobalImageZoom(this.value)" class="zoom-slider-input w-14 sm:w-20 h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-onedrive-500" title="Zoom">
+                            <span class="zoom-val-badge text-[10px] font-mono text-slate-300 w-7 text-right">100%</span>
+                        </div>
                         <button onclick="open3dModal('assets/3d/cpu-3d.html')" type="button" class="no-print absolute top-3 right-3 px-3 py-1.5 rounded-xl bg-slate-900/85 hover:bg-onedrive-500 text-slate-200 hover:text-white font-bold text-xs flex items-center gap-1.5 shadow-lg border border-white/20 transition-all transform hover:scale-105 backdrop-blur-md cursor-pointer z-10" title="Interaktives 3D-Modell öffnen">
                             <i class="fa-solid fa-cube text-onedrive-400"></i>
                             <span>3D-Modell</span>
                         </button>
-                        <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-900/90 via-slate-900/50 to-transparent p-3 pt-8">
+                        <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent px-3.5 py-2 pt-5">
                             <h4 class="font-bold text-white text-[15px] drop-shadow-md">10. CPU-Kühler (Prozessorkühler / CPU-Cooler)</h4>
                             <span class="text-xs text-slate-200 font-mono drop-shadow-md">Varianten: Luftkühlung (Kühlkörper &amp; Lüfter) oder Wasserkühlung (AIO)</span>
                         </div>
@@ -413,9 +482,15 @@
                 <!-- 11. Netzwerkkarte -->
                 <div class="comp-card rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative group overflow-hidden">
                     <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
-                    <div class="w-full h-64 sm:h-96 overflow-hidden bg-slate-900 relative">
-                        <img src="assets/VL-Network.webp" alt="Netzwerkkarte / WLAN-Modul" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-900/90 via-slate-900/50 to-transparent p-3 pt-8">
+                    <div class="w-full aspect-[720/393] max-h-[520px] overflow-hidden bg-slate-900 relative">
+                        
+<img src="assets/VL-Network.webp" alt="Netzwerkkarte / WLAN-Modul" loading="lazy" class="comp-img w-full h-full object-contain">
+                        <div class="no-print absolute top-3 left-3 z-10 flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-900/85 text-slate-200 shadow-lg border border-white/20 backdrop-blur-md text-xs font-semibold select-none" title="Bild-Zoom anpassen">
+                            <i class="fa-solid fa-magnifying-glass text-onedrive-400 text-[11px]"></i>
+                            <input type="range" min="100" max="160" value="100" step="1" oninput="setGlobalImageZoom(this.value)" class="zoom-slider-input w-14 sm:w-20 h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-onedrive-500" title="Zoom">
+                            <span class="zoom-val-badge text-[10px] font-mono text-slate-300 w-7 text-right">100%</span>
+                        </div>
+                        <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent px-3.5 py-2 pt-5">
                             <h4 class="font-bold text-white text-[15px] drop-shadow-md">11. Netzwerkkarte / WLAN-Modul (NIC)</h4>
                             <span class="text-xs text-slate-200 font-mono drop-shadow-md">Typ: LAN (Ethernet) / Wi-Fi Karte</span>
                         </div>
@@ -437,9 +512,15 @@
                 <!-- 12. Soundkarte -->
                 <div class="comp-card rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative group overflow-hidden">
                     <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
-                    <div class="w-full h-64 sm:h-96 overflow-hidden bg-slate-900 relative">
-                        <img src="assets/VL-Sound.webp" alt="Soundkarte" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-900/90 via-slate-900/50 to-transparent p-3 pt-8">
+                    <div class="w-full aspect-[720/393] max-h-[520px] overflow-hidden bg-slate-900 relative">
+                        
+<img src="assets/VL-Sound.webp" alt="Soundkarte" loading="lazy" class="comp-img w-full h-full object-contain">
+                        <div class="no-print absolute top-3 left-3 z-10 flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-900/85 text-slate-200 shadow-lg border border-white/20 backdrop-blur-md text-xs font-semibold select-none" title="Bild-Zoom anpassen">
+                            <i class="fa-solid fa-magnifying-glass text-onedrive-400 text-[11px]"></i>
+                            <input type="range" min="100" max="160" value="100" step="1" oninput="setGlobalImageZoom(this.value)" class="zoom-slider-input w-14 sm:w-20 h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-onedrive-500" title="Zoom">
+                            <span class="zoom-val-badge text-[10px] font-mono text-slate-300 w-7 text-right">100%</span>
+                        </div>
+                        <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent px-3.5 py-2 pt-5">
                             <h4 class="font-bold text-white text-[15px] drop-shadow-md">12. Soundkarte (Audio-Interface)</h4>
                             <span class="text-xs text-slate-200 font-mono drop-shadow-md">Typ: PCIe-Erweiterungskarte für Audio-Ein-/Ausgabe</span>
                         </div>
@@ -461,10 +542,16 @@
                 <!-- 13. CD/DVD-Laufwerk (zusammengefasst) -->
                 <div class="comp-card rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative group overflow-hidden">
                     <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
-                    <div class="w-full h-64 sm:h-96 overflow-hidden bg-slate-900 grid grid-cols-2 gap-px relative">
-                        <img src="assets/VL-CD.webp" alt="CD-Laufwerk" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        <img src="assets/VL-DVD.webp" alt="DVD-Laufwerk" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-900/90 via-slate-900/50 to-transparent p-3 pt-8">
+                    <div class="w-full aspect-[720/393] max-h-[520px] overflow-hidden bg-slate-900 grid grid-cols-2 gap-px relative">
+                        
+<img src="assets/VL-CD.webp" alt="CD-Laufwerk" loading="lazy" class="comp-img w-full h-full object-contain">
+<img src="assets/VL-DVD.webp" alt="DVD-Laufwerk" loading="lazy" class="comp-img w-full h-full object-contain">
+                        <div class="no-print absolute top-3 left-3 z-10 flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-900/85 text-slate-200 shadow-lg border border-white/20 backdrop-blur-md text-xs font-semibold select-none" title="Bild-Zoom anpassen">
+                            <i class="fa-solid fa-magnifying-glass text-onedrive-400 text-[11px]"></i>
+                            <input type="range" min="100" max="160" value="100" step="1" oninput="setGlobalImageZoom(this.value)" class="zoom-slider-input w-14 sm:w-20 h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-onedrive-500" title="Zoom">
+                            <span class="zoom-val-badge text-[10px] font-mono text-slate-300 w-7 text-right">100%</span>
+                        </div>
+                        <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent px-3.5 py-2 pt-5">
                             <h4 class="font-bold text-white text-[15px] drop-shadow-md">13. CD-/DVD-Laufwerk (optisches Laufwerk)</h4>
                             <span class="text-xs text-slate-200 font-mono drop-shadow-md">Speichermedium: Compact Disc (CD) / Digital Versatile Disc (DVD)</span>
                         </div>
@@ -486,9 +573,15 @@
                 <!-- 14. CMOS-Batterie -->
                 <div class="comp-card rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative group overflow-hidden">
                     <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
-                    <div class="w-full h-64 sm:h-96 overflow-hidden bg-slate-900 relative">
-                        <img src="assets/VL-CMOS.webp" alt="CMOS-Batterie" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-900/90 via-slate-900/50 to-transparent p-3 pt-8">
+                    <div class="w-full aspect-[720/393] max-h-[520px] overflow-hidden bg-slate-900 relative">
+                        
+<img src="assets/VL-CMOS.webp" alt="CMOS-Batterie" loading="lazy" class="comp-img w-full h-full object-contain">
+                        <div class="no-print absolute top-3 left-3 z-10 flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-900/85 text-slate-200 shadow-lg border border-white/20 backdrop-blur-md text-xs font-semibold select-none" title="Bild-Zoom anpassen">
+                            <i class="fa-solid fa-magnifying-glass text-onedrive-400 text-[11px]"></i>
+                            <input type="range" min="100" max="160" value="100" step="1" oninput="setGlobalImageZoom(this.value)" class="zoom-slider-input w-14 sm:w-20 h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-onedrive-500" title="Zoom">
+                            <span class="zoom-val-badge text-[10px] font-mono text-slate-300 w-7 text-right">100%</span>
+                        </div>
+                        <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent px-3.5 py-2 pt-5">
                             <h4 class="font-bold text-white text-[15px] drop-shadow-md">14. CMOS-Batterie (BIOS-Pufferbatterie)</h4>
                             <span class="text-xs text-slate-200 font-mono drop-shadow-md">Typ: Knopfzelle (meist CR2032)</span>
                         </div>
@@ -557,10 +650,27 @@
 
             setupUniversalAutoSave();
             initCarousel();
+            initImageZoom();
             updateProgress();
         });
 
-function applyDefaultClassAndDate() {
+                function setGlobalImageZoom(val) {
+            val = parseInt(val, 10) || 100;
+            if (val < 100) val = 100;
+            var actualScale = val / 100;
+            document.documentElement.style.setProperty('--img-zoom', actualScale.toFixed(2));
+            localStorage.setItem('a3_img_zoom', String(val));
+            document.querySelectorAll('.zoom-slider-input').forEach(function(el) { el.value = val; });
+            document.querySelectorAll('.zoom-val-badge').forEach(function(el) { el.textContent = val + '%'; });
+        }
+
+        function initImageZoom() {
+            var savedZoom = parseInt(localStorage.getItem('a3_img_zoom'), 10) || 100;
+            if (savedZoom < 100) savedZoom = 100;
+            setGlobalImageZoom(savedZoom);
+        }
+
+        function applyDefaultClassAndDate() {
             var classInput = document.getElementById('studentClass');
             if (classInput) {
                 classInput.value = 'B24';
@@ -927,7 +1037,7 @@ function applyDefaultClassAndDate() {
 
         const A3_COMPONENTS = [
             { heading: '1. Prozessor (CPU – Central Processing Unit)', key: 'comp_cpu', image: 'assets/VL-CPU.webp' },
-            { heading: '2. Mainboard (Motherboard / Hauptplatine)', key: 'comp_mb', image: 'assets/VL-Motherboard.webp' },
+            { heading: '2. Mainboard (Motherboard / Hauptplatine)', key: 'comp_mb', image: 'assets/VL-MB1.webp' },
             { heading: '3. PC-Gehäuse (Computer Case / Chassis)', key: 'comp_case', image: 'assets/VL-Chassis.webp' },
             { heading: '4. Arbeitsspeicher (RAM – Random Access Memory)', key: 'comp_ram', image: 'assets/VL-RAM.webp' },
             { heading: '5. Solid State Drive (SSD)', key: 'comp_ssd', image: 'assets/VL-SSD.webp' },

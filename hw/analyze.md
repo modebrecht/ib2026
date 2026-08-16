@@ -494,3 +494,19 @@ Vollaudit von `hw/A3.html` nach den aktuellen Anpassungen (Einführung des modal
 | 6 | hw/A3.html | 🟢 Didaktik | Konsolidierung auf 14 eindeutige Bauteile (Dopplung CPU-Kühler/Sockel behoben) | ✅ umgesetzt |
 
 Verifiziert per `node --check` auf allen Inline-Skripten und `pdf-engine.js`, Asset-Vollständigkeitsprüfung aller verlinkten Dateien sowie Verifikation der Progression (Startwert 14 % bei 2/14) und des 14-Komponenten-PDF-Generators.
+
+---
+---
+
+# Runde 10: A3 Feinschliff (0% Start, Mainboard-Prefill entfernt & Bild-Zoom-Regler auf 95%) — 2026-08-16
+
+## Zusammenfassung Runde 10
+
+| # | Bereich | Anpassung | Status |
+|---|---|---|---|
+| 1 | **Progression** | Startet initial bei **0 %**. Erst beim ersten Klick auf «Weiter» (oder Navigation zu Karte 1) springt der Fortschritt auf **7 %** (1/14, CPU-Beispiel). Bei Reset kehrt er zu 0 % zurück. | ✅ umgesetzt & getestet |
+| 2 | **Didaktik** | Mainboard-Vorausfüllung entfernt, sodass SuS die Funktion und Analogie selbst erarbeiten. Nur die CPU bleibt als Referenzbeispiel vorausgefüllt. | ✅ umgesetzt |
+| 3 | **Unbeschnittene Bilddarstellung (`object-contain`)** | Umstellung von `object-cover` auf `object-contain`. Bilder werden niemals automatisch beschnitten oder ungefragt vergrößert; die gesamte Platine/Komponente ist immer zu 100 % vollständig sichtbar. | ✅ umgesetzt |
+| 4 | **Zoom-Slider (100 %–160 %)** | Interaktiver Vergrößerungsregler oben links in jeder Bauteil-Karte. Ermöglicht optionales stufenloses Hineinzoomen in Detailbereiche bei 100 % nativer Basisskalierung. | ✅ umgesetzt & visuell geprüft |
+| 5 | **Mainboard Dual-Image** | `VL-MB1.webp` und `VL-MB2.webp` (Perspektive und Draufsicht) nebeneinander in A3 integriert (Qualität 95 %, max-width 1376px). | ✅ umgesetzt & visuell geprüft |
+

@@ -8,7 +8,7 @@ The output is intended for worksheet cards, not full-resolution downloads.
 Usage:
     python3 hw/create_hq_webp.py
     python3 hw/create_hq_webp.py --force
-    python3 hw/create_hq_webp.py --max-width 720 --quality 90
+    python3 hw/create_hq_webp.py --max-width 1376 --quality 95
 """
 
 from pathlib import Path
@@ -25,9 +25,12 @@ except ImportError:
 ASSETS_DIR = Path(__file__).resolve().parent / "assets"
 HQ_DIR = ASSETS_DIR / "hq"
 SOURCE_EXTENSIONS = {".png", ".jpg", ".jpeg"}
+CUSTOM_CROPS = {
+    "VL-MB2.jpg": (189, 107, 1221, 683),  # Zoom in on center motherboard
+}
 
 
-def convert_hq_images(force: bool = False, max_width: int = 720, quality: int = 90) -> int:
+def convert_hq_images(force: bool = False, max_width: int = 1376, quality: int = 95) -> int:
     if not HQ_DIR.is_dir():
         print(f"Missing folder: {HQ_DIR}")
         return 1
@@ -54,6 +57,8 @@ def convert_hq_images(force: bool = False, max_width: int = 720, quality: int = 
 
         try:
             with Image.open(source) as image:
+                if source.name in CUSTOM_CROPS:
+                    image = image.crop(CUSTOM_CROPS[source.name])
                 image = image.convert("RGBA")
                 if image.width > max_width:
                     max_height = round(image.height * (max_width / image.width))
@@ -81,8 +86,8 @@ def convert_hq_images(force: bool = False, max_width: int = 720, quality: int = 
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--force", action="store_true", help="Overwrite existing WebP files")
-    parser.add_argument("--max-width", type=int, default=720, help="Maximum output width in pixels")
-    parser.add_argument("--quality", type=int, default=90, help="WebP quality, 1-100")
+    parser.add_argument("--max-width", type=int, default=1376, help="Maximum output width in pixels")
+    parser.add_argument("--quality", type=int, default=95, help="WebP quality, 1-100")
     args = parser.parse_args()
     return convert_hq_images(force=args.force, max_width=args.max_width, quality=args.quality)
 
