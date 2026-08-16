@@ -1,9 +1,19 @@
 /*
- * Standalone PDF direct-download engine (canvas + jsPDF, no window.print()).
- * Same technique as tk/xp.js: draw onto an offscreen canvas, embed it into a
- * jsPDF document, and trigger pdf.save() directly - no OS print dialog, no
- * "Save as PDF" destination picker. That dialog is what confuses students
- * into thinking the download failed or into printing a physical page.
+ * Standalone PDF direct-download engine (native jsPDF text, no window.print()).
+ * Draws real PDF text/lines/rectangles via jsPDF's own drawing API - NOT an
+ * HTML canvas rasterized into a per-page image. Rasterizing full pages as PNG
+ * (the first version of this file) produced multi-page worksheets in the
+ * double-digit megabytes for pure text content, because every page - even
+ * ones with nothing but a few lines of text - was a full-resolution
+ * screenshot. Native text is typically kilobytes regardless of page count,
+ * and is selectable/searchable/copyable as a side benefit.
+ *
+ * Trade-off: the 14 standard PDF fonts (Helvetica etc.) only support the
+ * Latin-1 range (covers German umlauts ä/ö/ü/ß fine) - no emoji, no bullet
+ * "•". pdfSafeText() strips anything outside that range so unsupported
+ * glyphs never silently corrupt layout; callers should avoid emoji in
+ * strings passed here and use "·" (middle dot, U+00B7) instead of "•" for
+ * separators.
  *
  * Deliberately has zero page-lifecycle side effects (no DOMContentLoaded
  * listeners, no globals besides the functions below) so it can be included
@@ -11,39 +21,38 @@
  * without risking double-initialization.
  */
 
-var PDF_PAGE_W = 1240;   // A4 @ ~150dpi, portrait
-var PDF_PAGE_H = 1754;
-var PDF_MARGIN = 70;
+var PDF_PAGE_W = 210;   // A4 portrait, mm
+var PDF_PAGE_H = 297;
+var PDF_MARGIN = 18;
 
-function pdfWrapText(ctx, text, maxWidth) {
-    var paragraphs = String(text || '').split('\n');
+function pdfSafeText(str) {
+    var s = String(str == null ? '' : str)
+        // Typografische Zeichen (aus Word-Copy-Paste, Emoji-Trennzeichen, etc.), die es in
+        // WinAnsiEncoding/Latin-1 nicht gibt, durch ASCII-Entsprechungen ersetzen, statt sie
+        // ersatzlos zu verschlucken:
+        .replace(/[‒-―]/g, '-')      // Gedankenstriche -> Bindestrich
+        .replace(/[‘’]/g, "'")       // typografische einfache Anfuehrungszeichen
+        .replace(/[“”]/g, '"')       // typografische doppelte Anfuehrungszeichen
+        .replace(/…/g, '...')             // Ellipse
+        .replace(/•/g, '-')               // Aufzaehlungspunkt -> Bindestrich
+        .replace(/↔/g, '<->')             // Pfeil links-rechts
+        .replace(/→/g, '->')              // Pfeil rechts
+        .replace(/←/g, '<-');             // Pfeil links
+
+    return s
+        .replace(/[^\x00-\xFF\n]/g, '') // alles ausserhalb Latin-1 verwerfen (u.a. Emoji)
+        .replace(/[ \t]{2,}/g, ' ')
+        .trim();
+}
+
+function pdfWrapText(pdf, text, maxWidth) {
+    var paragraphs = pdfSafeText(text).split('\n');
     var lines = [];
     paragraphs.forEach(function (para) {
         if (para.trim() === '') { lines.push(''); return; }
-        var words = para.split(' ');
-        var current = '';
-        words.forEach(function (word) {
-            var test = current ? current + ' ' + word : word;
-            if (current && ctx.measureText(test).width > maxWidth) {
-                lines.push(current);
-                current = word;
-            } else {
-                current = test;
-            }
-        });
-        if (current) lines.push(current);
+        pdf.splitTextToSize(para, maxWidth).forEach(function (l) { lines.push(l); });
     });
     return lines;
-}
-
-function pdfCreatePageCanvas() {
-    var canvas = document.createElement('canvas');
-    canvas.width = PDF_PAGE_W;
-    canvas.height = PDF_PAGE_H;
-    var ctx = canvas.getContext('2d');
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, PDF_PAGE_W, PDF_PAGE_H);
-    return { canvas: canvas, ctx: ctx };
 }
 
 function pdfEnsureJsPdfLoaded(callback) {
@@ -75,51 +84,41 @@ function downloadTextWorksheetPDF(opts) {
     var studentDate = (document.getElementById('studentDate') || {}).value || '';
 
     pdfEnsureJsPdfLoaded(function () {
-        var pages = [];
-        var page = pdfCreatePageCanvas();
-        var ctx = page.ctx;
+        var jsPDF = window.jspdf.jsPDF;
+        var pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
         var contentW = PDF_PAGE_W - PDF_MARGIN * 2;
         var y;
 
         function drawPageHeader(isFirst) {
-            ctx.textAlign = 'left';
-            ctx.fillStyle = '#0f172a';
-            ctx.font = '700 15px "Segoe UI", Arial, sans-serif';
-            ctx.fillText('INFORMATIK B25', PDF_MARGIN, 40);
+            pdf.setFont('helvetica', 'bold');
+            pdf.setFontSize(10);
+            pdf.setTextColor(15, 23, 42);
+            pdf.text(pdfSafeText('INFORMATIK B25'), PDF_MARGIN, PDF_MARGIN);
 
-            ctx.textAlign = 'right';
-            ctx.fillStyle = '#64748b';
-            ctx.font = '600 13px "Segoe UI", Arial, sans-serif';
-            ctx.fillText((studentName || 'Unbenannt') + '  ·  Klasse ' + studentClass + '  ·  ' + studentDate, PDF_PAGE_W - PDF_MARGIN, 40);
+            pdf.setFont('helvetica', 'normal');
+            pdf.setFontSize(9);
+            pdf.setTextColor(100, 116, 139);
+            var metaText = (studentName || 'Unbenannt') + '  ·  Klasse ' + studentClass + '  ·  ' + studentDate;
+            pdf.text(pdfSafeText(metaText), PDF_PAGE_W - PDF_MARGIN, PDF_MARGIN, { align: 'right' });
 
-            ctx.strokeStyle = '#cbd5e1';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(PDF_MARGIN, 55);
-            ctx.lineTo(PDF_PAGE_W - PDF_MARGIN, 55);
-            ctx.stroke();
-
-            ctx.textAlign = 'left'; // reset - all content below is left-aligned, regardless of page
+            pdf.setDrawColor(203, 213, 225);
+            pdf.setLineWidth(0.3);
+            pdf.line(PDF_MARGIN, PDF_MARGIN + 3, PDF_PAGE_W - PDF_MARGIN, PDF_MARGIN + 3);
 
             if (isFirst) {
-                ctx.fillStyle = '#0f172a';
-                ctx.font = '800 30px "Segoe UI", Arial, sans-serif';
-                ctx.fillText(opts.title, PDF_MARGIN, 100);
-                return 130;
+                pdf.setFont('helvetica', 'bold');
+                pdf.setFontSize(19);
+                pdf.setTextColor(15, 23, 42);
+                pdf.text(pdfSafeText(opts.title), PDF_MARGIN, PDF_MARGIN + 14);
+                return PDF_MARGIN + 22;
             }
-            return 80;
+            return PDF_MARGIN + 10;
         }
 
         y = drawPageHeader(true);
 
-        function finalizePage() {
-            pages.push(page.canvas.toDataURL('image/png'));
-        }
-
         function newPage() {
-            finalizePage();
-            page = pdfCreatePageCanvas();
-            ctx = page.ctx;
+            pdf.addPage();
             y = drawPageHeader(false);
         }
 
@@ -128,59 +127,50 @@ function downloadTextWorksheetPDF(opts) {
         }
 
         (opts.sections || []).forEach(function (section) {
-            ctx.font = '800 16px "Segoe UI", Arial, sans-serif';
-            var headingLines = pdfWrapText(ctx, section.heading, contentW);
-            ensureSpace(22 * headingLines.length + 6);
-            ctx.fillStyle = '#1d4ed8';
+            pdf.setFont('helvetica', 'bold');
+            pdf.setFontSize(13);
+            var headingLines = pdfWrapText(pdf, section.heading, contentW);
+            ensureSpace(6 * headingLines.length + 2);
+            pdf.setTextColor(29, 78, 216);
             headingLines.forEach(function (line) {
-                ensureSpace(22);
-                ctx.fillText(line, PDF_MARGIN, y);
-                y += 22;
+                ensureSpace(6);
+                pdf.text(line, PDF_MARGIN, y);
+                y += 6;
             });
-            y += 6;
+            y += 2;
 
             (section.fields || []).forEach(function (field) {
-                var value = (field.value || '').trim();
+                var value = pdfSafeText(field.value || '');
                 if (!value && field.optional) return; // leere optionale Felder werden ausgelassen
 
-                ctx.font = '700 12px "Segoe UI", Arial, sans-serif';
-                ensureSpace(18);
-                ctx.fillStyle = '#475569';
-                ctx.fillText(field.label + ':', PDF_MARGIN, y);
-                y += 18;
+                pdf.setFont('helvetica', 'bold');
+                pdf.setFontSize(9);
+                ensureSpace(5);
+                pdf.setTextColor(71, 85, 105);
+                pdf.text(pdfSafeText(field.label) + ':', PDF_MARGIN, y);
+                y += 5;
 
-                ctx.font = '400 13px "Segoe UI", Arial, sans-serif';
-                var lines = pdfWrapText(ctx, value || '(keine Angabe)', contentW - 10);
-                ctx.fillStyle = value ? '#0f172a' : '#94a3b8';
+                pdf.setFont('helvetica', 'normal');
+                pdf.setFontSize(10);
+                var lines = pdfWrapText(pdf, value || '(keine Angabe)', contentW - 3);
+                if (value) { pdf.setTextColor(15, 23, 42); } else { pdf.setTextColor(148, 163, 184); }
                 lines.forEach(function (line) {
-                    ensureSpace(19);
-                    ctx.fillText(line, PDF_MARGIN + 10, y);
-                    y += 19;
+                    ensureSpace(5);
+                    pdf.text(line, PDF_MARGIN + 3, y);
+                    y += 5;
                 });
-                y += 10;
+                y += 3;
             });
 
-            y += 12;
+            y += 3;
             ensureSpace(1);
-            ctx.strokeStyle = '#e2e8f0';
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(PDF_MARGIN, y);
-            ctx.lineTo(PDF_PAGE_W - PDF_MARGIN, y);
-            ctx.stroke();
-            y += 18;
+            pdf.setDrawColor(226, 232, 240);
+            pdf.setLineWidth(0.2);
+            pdf.line(PDF_MARGIN, y, PDF_PAGE_W - PDF_MARGIN, y);
+            y += 5;
         });
 
-        finalizePage();
-
-        var jsPDF = window.jspdf.jsPDF;
-        var pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-        pages.forEach(function (imgData, i) {
-            if (i > 0) pdf.addPage();
-            pdf.addImage(imgData, 'PNG', 0, 0, 210, 297);
-        });
-
-        var safeName = (studentName || 'Unbenannt').replace(/[^a-zA-Z0-9]/g, '_');
+        var safeName = pdfSafeText(studentName || 'Unbenannt').replace(/[^a-zA-Z0-9]/g, '_');
         pdf.save((opts.filenamePrefix || 'Arbeitsblatt') + '_' + safeName + '.pdf');
     });
 }
@@ -193,9 +183,9 @@ function downloadTextWorksheetPDF(opts) {
  * zu downloadTextWorksheetPDF() für volle Arbeitsblätter mit Freitextfeldern.
  *
  * opts = {
- *   icon: '🏆', title: 'Leistungsnachweis • IT-Hardware Memory',
- *   subtitle: 'Informatische Bildung • IT-Hardware • A1',
- *   badge: '✅ Modi absolviert', badgeOk: true,
+ *   title: 'Leistungsnachweis - IT-Hardware Memory',
+ *   subtitle: 'Informatische Bildung · IT-Hardware · A1',
+ *   badge: 'Modi absolviert', badgeOk: true,
  *   filenamePrefix: 'A1_Leistungsnachweis',
  *   blocks: [
  *     { type: 'table', heading: '...', headers: [...], colWidths: [...], rows: [[...], ...] },
@@ -211,105 +201,102 @@ function downloadCertificatePDF(opts) {
     var studentDate = (document.getElementById('studentDate') || {}).value || '';
 
     pdfEnsureJsPdfLoaded(function () {
-        var pages = [];
-        var page = pdfCreatePageCanvas();
-        var ctx = page.ctx;
+        var jsPDF = window.jspdf.jsPDF;
+        var pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
         var contentW = PDF_PAGE_W - PDF_MARGIN * 2;
         var y = PDF_MARGIN;
 
         function drawFooter() {
-            var footerY = PDF_PAGE_H - PDF_MARGIN - 12;
-            ctx.strokeStyle = '#e2e8f0';
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(PDF_MARGIN, footerY - 18);
-            ctx.lineTo(PDF_PAGE_W - PDF_MARGIN, footerY - 18);
-            ctx.stroke();
+            var footerY = PDF_PAGE_H - PDF_MARGIN + 4;
+            pdf.setDrawColor(226, 232, 240);
+            pdf.setLineWidth(0.2);
+            pdf.line(PDF_MARGIN, footerY - 5, PDF_PAGE_W - PDF_MARGIN, footerY - 5);
 
-            ctx.textAlign = 'left';
-            ctx.fillStyle = '#94a3b8';
-            ctx.font = '400 9px "Segoe UI", Arial, sans-serif';
-            ctx.fillText('Generiert am ' + new Date().toLocaleString('de-CH') + ' • Digitaler Leistungsnachweis IB2026', PDF_MARGIN, footerY);
-
-            ctx.textAlign = 'right';
-            ctx.fillText('Unterschrift Lehrperson: ______________________', PDF_PAGE_W - PDF_MARGIN, footerY);
-            ctx.textAlign = 'left';
-        }
-
-        function finalizePage() {
-            drawFooter();
-            pages.push(page.canvas.toDataURL('image/png'));
+            pdf.setFont('helvetica', 'normal');
+            pdf.setFontSize(7);
+            pdf.setTextColor(148, 163, 184);
+            pdf.text(pdfSafeText('Generiert am ' + new Date().toLocaleString('de-CH') + '  ·  Digitaler Leistungsnachweis IB2026'), PDF_MARGIN, footerY);
+            pdf.text(pdfSafeText('Unterschrift Lehrperson: ______________________'), PDF_PAGE_W - PDF_MARGIN, footerY, { align: 'right' });
         }
 
         function newPage() {
-            finalizePage();
-            page = pdfCreatePageCanvas();
-            ctx = page.ctx;
+            drawFooter();
+            pdf.addPage();
             y = PDF_MARGIN;
         }
 
         function ensureSpace(neededHeight) {
-            if (y + neededHeight > PDF_PAGE_H - PDF_MARGIN - 40) newPage(); // -40: Platz fuer Fusszeile reservieren
+            if (y + neededHeight > PDF_PAGE_H - PDF_MARGIN - 12) newPage(); // -12: Platz fuer Fusszeile reservieren
         }
 
-        // Kopfbereich: Icon + Titel/Untertitel links, Status-Badge rechts
-        ctx.textAlign = 'left';
-        ctx.fillStyle = '#0f172a';
-        ctx.font = '800 22px "Segoe UI", Arial, sans-serif';
-        ctx.fillText((opts.icon ? opts.icon + '  ' : '') + opts.title, PDF_MARGIN, y + 18);
-        ctx.font = '600 12px "Segoe UI", Arial, sans-serif';
-        ctx.fillStyle = '#64748b';
-        ctx.fillText(opts.subtitle || '', PDF_MARGIN, y + 38);
+        // Kopfbereich: Titel/Untertitel links, Status-Badge rechts
+        pdf.setFont('helvetica', 'bold');
+        pdf.setFontSize(16);
+        pdf.setTextColor(15, 23, 42);
+        pdf.text(pdfSafeText(opts.title), PDF_MARGIN, y + 6);
 
-        ctx.textAlign = 'right';
-        ctx.fillStyle = opts.badgeOk ? '#059669' : '#dc2626';
-        ctx.font = '700 13px "Segoe UI", Arial, sans-serif';
-        ctx.fillText(opts.badge || '', PDF_PAGE_W - PDF_MARGIN, y + 18);
-        ctx.textAlign = 'left';
+        pdf.setFont('helvetica', 'normal');
+        pdf.setFontSize(9);
+        pdf.setTextColor(100, 116, 139);
+        pdf.text(pdfSafeText(opts.subtitle || ''), PDF_MARGIN, y + 13);
 
-        y += 55;
-        ctx.strokeStyle = '#cbd5e1';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.moveTo(PDF_MARGIN, y);
-        ctx.lineTo(PDF_PAGE_W - PDF_MARGIN, y);
-        ctx.stroke();
-        y += 30;
+        pdf.setFont('helvetica', 'bold');
+        pdf.setFontSize(10);
+        if (opts.badgeOk) { pdf.setTextColor(5, 150, 105); } else { pdf.setTextColor(220, 38, 38); }
+        pdf.text(pdfSafeText(opts.badge || ''), PDF_PAGE_W - PDF_MARGIN, y + 6, { align: 'right' });
+
+        y += 20;
+        pdf.setDrawColor(203, 213, 225);
+        pdf.setLineWidth(0.3);
+        pdf.line(PDF_MARGIN, y, PDF_PAGE_W - PDF_MARGIN, y);
+        y += 10;
 
         // Schüler-Info-Zeile (Name / Klasse / Datum)
         var infoColW = contentW / 3;
-        [['Schüler / Schülerin', studentName], ['Klasse', studentClass], ['Datum', studentDate]].forEach(function (pair, i) {
+        [['Schueler / Schuelerin', studentName], ['Klasse', studentClass], ['Datum', studentDate]].forEach(function (pair, i) {
             var x = PDF_MARGIN + i * infoColW;
-            ctx.fillStyle = '#94a3b8';
-            ctx.font = '700 10px "Segoe UI", Arial, sans-serif';
-            ctx.fillText(pair[0].toUpperCase(), x, y);
-            ctx.fillStyle = '#0f172a';
-            ctx.font = '800 14px "Segoe UI", Arial, sans-serif';
-            ctx.fillText(pair[1], x, y + 20);
+            pdf.setFont('helvetica', 'bold');
+            pdf.setFontSize(7);
+            pdf.setTextColor(148, 163, 184);
+            pdf.text(pdfSafeText(pair[0]).toUpperCase(), x, y);
+            pdf.setFont('helvetica', 'bold');
+            pdf.setFontSize(11);
+            pdf.setTextColor(15, 23, 42);
+            pdf.text(pdfSafeText(pair[1]), x, y + 6);
         });
-        y += 50;
+        y += 16;
 
         (opts.blocks || []).forEach(function (block) {
             if (block.type === 'table') {
                 if (block.heading) {
-                    ensureSpace(24);
-                    ctx.fillStyle = '#0f172a';
-                    ctx.font = '800 14px "Segoe UI", Arial, sans-serif';
-                    ctx.fillText(block.heading, PDF_MARGIN, y);
-                    y += 24;
+                    ensureSpace(8);
+                    pdf.setFont('helvetica', 'bold');
+                    pdf.setFontSize(11);
+                    pdf.setTextColor(15, 23, 42);
+                    pdf.text(pdfSafeText(block.heading), PDF_MARGIN, y);
+                    y += 8;
                 }
                 var cols = block.headers.length;
                 var colWidths = block.colWidths || block.headers.map(function () { return contentW / cols; });
-                var rowH = 26;
+                // Sicherheitsnetz: colWidths muessen in mm sein und zur contentW passen - eine
+                // falsch skalierte (z.B. versehentlich in Pixel statt mm angegebene) Breitenliste
+                // wuerde spaetere Spalten sonst lautlos ausserhalb der Seite zeichnen.
+                var colWidthsSum = colWidths.reduce(function (a, b) { return a + b; }, 0);
+                if (colWidthsSum > contentW * 1.05 || colWidthsSum < contentW * 0.5) {
+                    var scale = contentW / colWidthsSum;
+                    colWidths = colWidths.map(function (w) { return w * scale; });
+                }
+                var rowH = 8;
 
                 ensureSpace(rowH);
-                ctx.fillStyle = '#1d4ed8';
-                ctx.fillRect(PDF_MARGIN, y - 17, contentW, rowH);
-                ctx.fillStyle = '#ffffff';
-                ctx.font = '700 10px "Segoe UI", Arial, sans-serif';
-                var hx = PDF_MARGIN + 8;
+                pdf.setFillColor(29, 78, 216);
+                pdf.rect(PDF_MARGIN, y - 5.5, contentW, rowH, 'F');
+                pdf.setFont('helvetica', 'bold');
+                pdf.setFontSize(8);
+                pdf.setTextColor(255, 255, 255);
+                var hx = PDF_MARGIN + 2;
                 block.headers.forEach(function (h, i) {
-                    ctx.fillText(h, hx, y);
+                    pdf.text(pdfSafeText(h), hx, y);
                     hx += colWidths[i];
                 });
                 y += rowH;
@@ -317,87 +304,91 @@ function downloadCertificatePDF(opts) {
                 block.rows.forEach(function (row, ri) {
                     ensureSpace(rowH);
                     if (ri % 2 === 1) {
-                        ctx.fillStyle = '#f8fafc';
-                        ctx.fillRect(PDF_MARGIN, y - 17, contentW, rowH);
+                        pdf.setFillColor(248, 250, 252);
+                        pdf.rect(PDF_MARGIN, y - 5.5, contentW, rowH, 'F');
                     }
-                    ctx.fillStyle = '#1e293b';
-                    ctx.font = '600 10px "Segoe UI", Arial, sans-serif';
-                    var cx = PDF_MARGIN + 8;
+                    pdf.setFont('helvetica', 'normal');
+                    pdf.setFontSize(8);
+                    pdf.setTextColor(30, 41, 59);
+                    var cx = PDF_MARGIN + 2;
                     row.forEach(function (cell, i) {
-                        ctx.fillText(String(cell), cx, y);
+                        pdf.text(pdfSafeText(String(cell)), cx, y);
                         cx += colWidths[i];
                     });
                     y += rowH;
                 });
-                y += 20;
+                y += 6;
 
             } else if (block.type === 'stats') {
-                ensureSpace(55);
+                ensureSpace(18);
                 var n = block.items.length;
                 var sw = contentW / n;
-                ctx.textAlign = 'center';
                 block.items.forEach(function (item, i) {
-                    var x = PDF_MARGIN + i * sw + sw / 2;
-                    ctx.fillStyle = '#94a3b8';
-                    ctx.font = '700 10px "Segoe UI", Arial, sans-serif';
-                    ctx.fillText(String(item.label).toUpperCase(), x, y);
-                    ctx.fillStyle = item.color || '#0f172a';
-                    ctx.font = '800 20px "Segoe UI", Arial, sans-serif';
-                    ctx.fillText(String(item.value), x, y + 26);
+                    var cx = PDF_MARGIN + i * sw + sw / 2;
+                    pdf.setFont('helvetica', 'bold');
+                    pdf.setFontSize(7);
+                    pdf.setTextColor(148, 163, 184);
+                    pdf.text(pdfSafeText(String(item.label)).toUpperCase(), cx, y, { align: 'center' });
+                    var c = item.color ? pdfHexToRgb(item.color) : [15, 23, 42];
+                    pdf.setFont('helvetica', 'bold');
+                    pdf.setFontSize(15);
+                    pdf.setTextColor(c[0], c[1], c[2]);
+                    pdf.text(pdfSafeText(String(item.value)), cx, y + 8, { align: 'center' });
                 });
-                ctx.textAlign = 'left';
-                y += 60;
+                y += 20;
 
             } else if (block.type === 'summary') {
-                ensureSpace(55);
-                ctx.fillStyle = '#eff6ff';
-                ctx.fillRect(PDF_MARGIN, y - 15, contentW, 50);
-                ctx.fillStyle = '#0f172a';
-                ctx.font = '700 11px "Segoe UI", Arial, sans-serif';
-                ctx.fillText(block.label || '', PDF_MARGIN + 14, y + 3);
-                ctx.font = '400 10px "Segoe UI", Arial, sans-serif';
-                ctx.fillStyle = '#475569';
-                ctx.fillText(block.note || '', PDF_MARGIN + 14, y + 22);
-                ctx.textAlign = 'right';
-                ctx.fillStyle = '#1d4ed8';
-                ctx.font = '800 19px "Segoe UI", Arial, sans-serif';
-                ctx.fillText(block.value || '', PDF_PAGE_W - PDF_MARGIN - 14, y + 15);
-                ctx.textAlign = 'left';
-                y += 65;
+                ensureSpace(18);
+                pdf.setFillColor(239, 246, 255);
+                pdf.rect(PDF_MARGIN, y - 5, contentW, 16, 'F');
+                pdf.setFont('helvetica', 'bold');
+                pdf.setFontSize(8);
+                pdf.setTextColor(15, 23, 42);
+                pdf.text(pdfSafeText(block.label || ''), PDF_MARGIN + 3, y);
+                pdf.setFont('helvetica', 'normal');
+                pdf.setFontSize(7);
+                pdf.setTextColor(71, 85, 105);
+                pdf.text(pdfSafeText(block.note || ''), PDF_MARGIN + 3, y + 6);
+                if (block.value) {
+                    pdf.setFont('helvetica', 'bold');
+                    pdf.setFontSize(13);
+                    pdf.setTextColor(29, 78, 216);
+                    pdf.text(pdfSafeText(block.value), PDF_PAGE_W - PDF_MARGIN - 3, y + 3, { align: 'right' });
+                }
+                y += 20;
 
             } else if (block.type === 'text') {
                 if (block.heading) {
-                    ensureSpace(22);
-                    ctx.fillStyle = '#be123c';
-                    ctx.font = '800 12px "Segoe UI", Arial, sans-serif';
-                    ctx.fillText(block.heading, PDF_MARGIN, y);
-                    y += 22;
+                    ensureSpace(6);
+                    pdf.setFont('helvetica', 'bold');
+                    pdf.setFontSize(10);
+                    pdf.setTextColor(190, 18, 60);
+                    pdf.text(pdfSafeText(block.heading), PDF_MARGIN, y);
+                    y += 6;
                 }
-                ctx.font = '400 11px "Segoe UI", Arial, sans-serif';
-                ctx.fillStyle = '#334155';
+                pdf.setFont('helvetica', 'normal');
+                pdf.setFontSize(9);
+                pdf.setTextColor(51, 65, 85);
                 (block.lines || []).forEach(function (line) {
-                    var wrapped = pdfWrapText(ctx, line, contentW - 10);
-                    wrapped.forEach(function (l) {
-                        ensureSpace(17);
-                        ctx.fillText(l, PDF_MARGIN + 10, y);
-                        y += 17;
+                    pdfWrapText(pdf, line, contentW - 3).forEach(function (l) {
+                        ensureSpace(5);
+                        pdf.text(l, PDF_MARGIN + 3, y);
+                        y += 5;
                     });
-                    y += 5;
+                    y += 1.5;
                 });
-                y += 8;
+                y += 2;
             }
         });
 
-        finalizePage();
+        drawFooter();
 
-        var jsPDF = window.jspdf.jsPDF;
-        var pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-        pages.forEach(function (imgData, i) {
-            if (i > 0) pdf.addPage();
-            pdf.addImage(imgData, 'PNG', 0, 0, 210, 297);
-        });
-
-        var safeName = (studentName || 'Unbenannt').replace(/[^a-zA-Z0-9]/g, '_');
+        var safeName = pdfSafeText(studentName || 'Unbenannt').replace(/[^a-zA-Z0-9]/g, '_');
         pdf.save((opts.filenamePrefix || 'Zertifikat') + '_' + safeName + '.pdf');
     });
+}
+
+function pdfHexToRgb(hex) {
+    var m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return m ? [parseInt(m[1], 16), parseInt(m[2], 16), parseInt(m[3], 16)] : [15, 23, 42];
 }

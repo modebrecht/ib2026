@@ -385,3 +385,80 @@ Auf Anfrage: A4 verlangte bisher zwingend alle 16 Fragen fehlerfrei (0 Fehler), 
 | 1 | hw/A4.html | 🔵 Änderung | Bestehensgrenze 16/16 → 13/16, alle Texte/PDF dynamisch angepasst | ✅ umgesetzt & verifiziert |
 
 Verifiziert per `node --check` (fehlerfrei) und Headless-Chrome-Test der neuen Bestehensgrenze inkl. visueller PNG-Kontrolle des erzeugten PDFs.
+
+---
+---
+
+# Runde 7: Zwei Funde aus dem manuellen Test (A3) — 2026-08-14
+
+Nutzer ist auf manuelle Prüfung umgestiegen und fand direkt zwei echte Probleme in A3.html.
+
+## ✅ Fund 1: A3 zeigte beim allerersten Öffnen bereits 33% Fortschritt — unehrlich
+
+**Ursache:** `updateProgress()` zählte alle Felder ausser `_ana` mit — das schloss `studentName`/`studentClass`/`studentDate` mit ein, die aber automatisch beim Laden befüllt werden (Klasse/Datum immer, Vorname sobald einmal irgendwo eingegeben) und **keine eigene Leistung der Schüler:innen** sind. Zusammen mit den 2 als Beispiel vorausgefüllten Bauteilen (CPU, Mainboard) ergab das einen Startwert deutlich über 0%, ohne dass die Schüler:innen irgendetwas getan hatten.
+
+**Fix** ([hw/A3.html:821-829](A3.html#L821-L829)): Filter von "alles ausser `_ana`" auf "nur `comp_*_func`-Felder" geändert — Metadaten zählen jetzt gar nicht mehr mit, nur die 15 tatsächlichen Funktions-Beschreibungen. Speichern/Laden (`saveProgressToStorage`/`loadProgress`) bleiben unverändert, die betrifft nur die Prozent-**Anzeige**.
+
+**Verifiziert:** Headless-Test mit komplett geleertem `localStorage` (nur Vorname vorbelegt, um den blockierenden Erstbesuch-Prompt zu umgehen) — Startwert jetzt **13%** (= 2 von 15 Beispiel-Feldern vorausgefüllt, mathematisch korrekt: 2/15 = 13,3̄%) statt vorher 33%.
+
+*Zur Rückfrage "erst nach Klick auf Weiter hochzählen?":* Bewusst **nicht** so umgesetzt — das hätte den wahren Zustand nur kurz versteckt (ploetzlicher Sprung beim ersten Klick), statt die eigentliche Ursache zu beheben. Die jetzige Lösung entfernt stattdessen genau die Felder aus der Rechnung, die nie "erarbeitet" werden. Falls die 13% wegen der 2 Beispiel-Antworten immer noch störender Fixwert sein sollen, bitte Bescheid geben — das wäre eine bewusste Zusatz-Änderung (Beispiele erst nach Ansehen/Klick mitzählen), kein Bugfix mehr.
+
+## ✅ Fund 2: "EVA"-Icon im Header war ein Relikt aus der alten A3-Version
+
+**Ursache:** Kleines Logo-Badge oben links zeigte den Text "EVA" ([hw/A3.html:79-81](A3.html#L79-L81)) — Rest einer früheren A3-Fassung, die noch eine EVA-Drag&Drop-Aufgabe enthielt (siehe Runde-1-Notiz zu `A3_backup.html`/`A3_merged.html`). Die aktuelle A3 (15-Bauteile-Karussell) hat inhaltlich nichts mehr mit dem EVA-Prinzip zu tun (das ist A2s Thema) — das Badge war irreführend.
+
+**Fix:** "EVA"-Text durch ein Desktop-PC-Icon (`fa-solid fa-desktop`) ersetzt, passend zum tatsächlichen Thema (Hardware-Analyse) und konsistent mit dem gleichen Icon, das schon in der ersten Bauteil-Karte verwendet wird.
+
+## Zusammenfassung Runde 7
+
+| # | Datei | Schweregrad | Kurzbeschreibung | Status |
+|---|---|---|---|---|
+| 1 | hw/A3.html | 🟠 Wichtig | Fortschritt startete unehrlich bei 33% statt bei tatsächlich Erarbeitetem | ✅ behoben (33% → 13%) |
+| 2 | hw/A3.html | 🟡 Klein | "EVA"-Header-Icon war ein Relikt der alten A3-Version, inhaltlich falsch | ✅ behoben |
+
+Verifiziert per `node --check` (3 Inline-Script-Blöcke, alle fehlerfrei) und Headless-Chrome-Test des Startwerts nach vollständigem `localStorage`-Reset.
+
+---
+---
+
+# Runde 8: PDF-Engine komplett auf echten PDF-Text umgestellt (17 MB → ~30 KB) — 2026-08-14
+
+Nutzer lud ein ausgefülltes A3-PDF herunter: **17 MB, ohne ein einziges Bild**. Zu Recht als unplausibel gemeldet.
+
+## 🔴 Ursache (architektonisch, nicht nur ein Bug): jede Seite war heimlich ein Vollbild-Screenshot
+
+`downloadTextWorksheetPDF()`/`downloadCertificatePDF()` zeichneten den kompletten Seiteninhalt auf ein unsichtbares `<canvas>` und betteten **jede Seite als PNG-Rasterbild** ins PDF ein (`canvas.toDataURL('image/png')` → `pdf.addImage(...)`). Für `tk/xp.js`s einzelnes, kompaktes Zertifikat (eine feste Seite) ist das unproblematisch — für ein mehrseitiges Arbeitsblatt mit viel Freitext skaliert es katastrophal: jede zusätzliche beantwortete Frage bedeutet potenziell eine weitere volle Seiten-Rastergrafik. Ein vollständig ausgefülltes A3 mit 15 ausführlichen Antworten landet so leicht im zweistelligen MB-Bereich, obwohl der eigentliche Inhalt nur Text ist.
+
+## ✅ Fix: `pdf-engine.js` komplett neu geschrieben — echter PDF-Text statt Raster
+
+Beide Funktionen zeichnen jetzt direkt über jsPDFs native Text-/Grafik-API (`pdf.text()`, `pdf.splitTextToSize()`, `pdf.line()`, `pdf.rect()`) statt über ein Canvas. Kein `<canvas>`, kein `toDataURL()`, kein `addImage()` mehr in der Text-Engine. Nebeneffekt: der Text ist jetzt echter, auswählbarer/durchsuchbarer/kopierbarer PDF-Text statt eines Fotos vom Text.
+
+**Kompromiss:** Die 14 Standard-PDF-Schriften (Helvetica etc.) unterstützen nur Latin-1 (deckt deutsche Umlaute ä/ö/ü/ß ab) — kein Emoji, kein "•". Dafür wurde `pdfSafeText()` ergänzt: typografische Zeichen aus Word-Copy-Paste oder Emoji-Trennzeichen (Gedankenstriche, „…", ↔, →, •) werden zu ASCII-Entsprechungen normalisiert statt kommentarlos zu verschwinden; alles, was danach noch ausserhalb Latin-1 liegt (im Wesentlichen nur Emoji), wird verworfen. Betrifft z. B. das vorausgefüllte CPU-Beispiel in A3 (enthielt einen Gedankenstrich) und potenziell echte Schüler-Antworten, die aus Word kopiert wurden.
+
+## 🔴 Zweiter Bug, direkt beim ersten Test gefunden: A1s Tabellen-Spalten liefen von der Seite
+
+Der alte Canvas-Engine arbeitete in Pixeln (Seite 1240×1754px), die neue arbeitet in mm (Seite 210×297mm, wie es jsPDFs `unit: 'mm'` verlangt). A1.html übergab weiterhin die **alten Pixel-Werte** für `colWidths: [270, 170, 150, 130, 110, 130]` (Summe 960) — im neuen mm-Koordinatensystem (Inhaltsbreite nur 174mm) liess das schon die zweite Spalte weit ausserhalb der sichtbaren Seite zeichnen. Sichtbares Symptom: Tabelle zeigte nur noch die erste Spalte ("Schwierigkeitsgrad"), der Rest (Status/Punkte/Zeit/Züge/Bewertung) verschwand lautlos von der Seite.
+
+**Gefunden durch:** `pdftotext` auf das erzeugte Test-PDF angewendet und den extrahierten Text mit dem erwarteten Inhalt verglichen — genau die Art Test, die eine reine Bild-Sichtprüfung (wie in Runde 4) nicht zuverlässig aufgedeckt hätte, weil fehlender Text schwerer auffällt als sichtbar falsch positionierter Text.
+
+**Fix:** `colWidths` in A1.html auf mm umgerechnet (proportional zur alten Verteilung: `[49, 31, 27, 24, 20, 23]`, Summe 174mm). **Zusätzlich** ein Sicherheitsnetz in `pdf-engine.js` selbst ergänzt: Wenn die Summe der übergebenen `colWidths` deutlich von der tatsächlichen Inhaltsbreite abweicht (>105% oder <50%), skaliert die Engine sie automatisch proportional zurecht, statt lautlos Spalten von der Seite laufen zu lassen. Schützt vor genau dieser Fehlerklasse, falls A5/A8/A9/AEXAM später mit denselben (dann eventuell wieder falsch skalierten) Werten umgestellt werden.
+
+## Verifikation
+
+Da die neue Engine keine Canvas-Bilder mehr erzeugt, funktionierte die bisherige Verifikationsmethode (Seiten als PNG exportieren und ansehen) nicht mehr. Neue Methode: `jsPDF`-Konstruktor gepatcht, um die rohen PDF-Bytes vor dem Download abzugreifen, als echte `.pdf`-Datei auf die Platte geschrieben, dann mit `pdftotext` (Git-Bash bringt es mit, `poppler-utils` war sonst nicht installiert) der tatsächliche Textinhalt extrahiert und mit dem erwarteten Inhalt verglichen. Zusätzlich Dateigrösse gemessen.
+
+- **A3** (5 Seiten, alle 15 Funktionsfelder + einige Analogie-Felder mit realistisch langen Antworten befüllt): **33'808 Bytes** (vorher: 17 MB beim Nutzer). Text korrekt, Umlaute korrekt ("Müller", "Gehäuse"), Seitenumbrüche an sinnvollen Stellen, Gedankenstrich korrekt zu "-" normalisiert.
+- **A1** (Zertifikat mit Tabelle, akzentuierter Name "Léa Fürst"): **8785 Bytes**, nach dem `colWidths`-Fix alle 6 Spalten vollständig vorhanden.
+- **A4** (Zertifikat mit Statistik-Kacheln + Fehleranalyse-Textblock, 3 künstliche Fehler): **6223 Bytes**, HTML-Tags aus den Fehlertexten korrekt entfernt, Umlaute korrekt ("Björn").
+
+A2 nutzt denselben Codepfad wie A3 (`downloadTextWorksheetPDF`, keine `colWidths`) und wurde nicht erneut einzeln getestet — hohe Zuversicht durch den identischen, bereits verifizierten Mechanismus.
+
+## Zusammenfassung Runde 8
+
+| # | Datei | Schweregrad | Kurzbeschreibung | Status |
+|---|---|---|---|---|
+| 1 | hw/assets/js/pdf-engine.js | 🔴 Kritisch | Canvas-Rasterisierung pro Seite → PDFs im zweistelligen MB-Bereich für reinen Text | ✅ behoben (komplett neu geschrieben, echter PDF-Text) |
+| 2 | hw/A1.html | 🔴 Kritisch | `colWidths` noch in alten Pixel-Werten → Tabellenspalten 2-6 liefen von der Seite | ✅ behoben |
+| 3 | hw/assets/js/pdf-engine.js | 🟡 Robustheit | Sicherheitsnetz gegen falsch skalierte `colWidths` ergänzt | ✅ ergänzt |
+
+Verifiziert per `node --check` (fehlerfrei) und drei vollständigen Headless-Chrome-Durchläufen (A3, A1, A4) mit echter jsPDF-Byte-Extraktion, Datei-Speicherung als `.pdf` und `pdftotext`-Inhaltsprüfung statt Bild-Export.
