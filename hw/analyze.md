@@ -508,5 +508,6 @@ Verifiziert per `node --check` auf allen Inline-Skripten und `pdf-engine.js`, As
 | 2 | **Didaktik** | Mainboard-Vorausfüllung entfernt, sodass SuS die Funktion und Analogie selbst erarbeiten. Nur die CPU bleibt als Referenzbeispiel vorausgefüllt. | ✅ umgesetzt |
 | 3 | **Unbeschnittene Bilddarstellung (`object-contain`)** | Umstellung von `object-cover` auf `object-contain`. Bilder werden niemals automatisch beschnitten oder ungefragt vergrößert; die gesamte Platine/Komponente ist immer zu 100 % vollständig sichtbar. | ✅ umgesetzt |
 | 4 | **Zoom-Slider (100 %–160 %)** | Interaktiver Vergrößerungsregler oben links in jeder Bauteil-Karte. Ermöglicht optionales stufenloses Hineinzoomen in Detailbereiche bei 100 % nativer Basisskalierung. | ✅ umgesetzt & visuell geprüft |
-| 5 | **Mainboard Dual-Image** | `VL-MB1.webp` und `VL-MB2.webp` (Perspektive und Draufsicht) nebeneinander in A3 integriert (Qualität 95 %, max-width 1376px). | ✅ umgesetzt & visuell geprüft |
+| 5 | **Mainboard Dual-Image** | `VL-MB1.webp` und `VL-MB2.webp` (Perspektive und Draufsicht) nebeneinander in A3 integriert (Qualität 95 %, max-width 1376px, zentrierter Zoom auf Platine 2). | ✅ umgesetzt & visuell geprüft |
+| 6 | **Netzwerkkarte (VL-Network)** | Bild physikalisch korrigiert: Genau 2 WLAN-Antennen an der Außenseite des Slotblechs nach oben gerichtet; Ethernet-Karte mit frontaler Sicht auf den goldenen RJ45-Port (Kontakte & LEDs sichtbar) im Velocity-Look neu generiert. | ✅ umgesetzt & visuell geprüft |
 
