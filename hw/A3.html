@@ -133,7 +133,7 @@
                             <i class="fa-solid fa-desktop"></i>
                         </div>
                     </div>
-                    <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">Recherchiere die 15 Bauteile eines Computers. Beschreibe jeweils die <strong>Funktion</strong> und erstelle einen passenden <strong>Alltags-Vergleich (Analogie)</strong>. Die ersten beiden sind als Beispiel bereits ausgefüllt.</p>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">Recherchiere die 14 Bauteile eines Computers. Beschreibe jeweils die <strong>Funktion</strong> und erstelle einen passenden <strong>Alltags-Vergleich (Analogie)</strong>. Das erste Bauteil (CPU) ist als Beispiel bereits ausgefüllt.</p>
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <div>
                             <label class="block text-xs font-bold uppercase text-slate-500 dark:text-slate-400 mb-1">
@@ -204,11 +204,11 @@
                         <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
-                                <textarea id="comp_mb_func" oninput="updateProgress()" rows="4" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all">Das Mainboard verbindet alle Komponenten miteinander und ermöglicht den Datenaustausch zwischen ihnen.</textarea>
+                                <textarea id="comp_mb_func" oninput="updateProgress()" rows="4" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie) <span class="text-slate-400 dark:text-slate-500 font-normal normal-case">(optional)</span></label>
-                                <textarea id="comp_mb_ana" oninput="updateProgress()" rows="4" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all">Das Mainboard ist wie ein Bahnhof: Alle Bauteile laufen hier zusammen und tauschen über die Gleise (Leiterbahnen) Informationen aus.</textarea>
+                                <textarea id="comp_mb_ana" oninput="updateProgress()" rows="4" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
                             </div>
                         </div>
                     </div>
@@ -382,14 +382,18 @@
                     </div>
                 </div>
 
-                <!-- 10. Kühlung -->
+                <!-- 10. CPU-Kühler -->
                 <div class="comp-card rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative group overflow-hidden">
                     <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
                     <div class="w-full h-64 sm:h-96 overflow-hidden bg-slate-900 relative">
-                        <img src="assets/VL-CPUCOOLER.webp" alt="CPU-Kühler" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <img src="assets/VL-CPUCOOLER.webp" alt="CPU-Kühler (Prozessorkühler)" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <button onclick="open3dModal('assets/3d/cpu-3d.html')" type="button" class="no-print absolute top-3 right-3 px-3 py-1.5 rounded-xl bg-slate-900/85 hover:bg-onedrive-500 text-slate-200 hover:text-white font-bold text-xs flex items-center gap-1.5 shadow-lg border border-white/20 transition-all transform hover:scale-105 backdrop-blur-md cursor-pointer z-10" title="Interaktives 3D-Modell öffnen">
+                            <i class="fa-solid fa-cube text-onedrive-400"></i>
+                            <span>3D-Modell</span>
+                        </button>
                         <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-900/90 via-slate-900/50 to-transparent p-3 pt-8">
-                            <h4 class="font-bold text-white text-[15px] drop-shadow-md">10. Kühlung (CPU-Kühler & Gehäuselüfter)</h4>
-                            <span class="text-xs text-slate-200 font-mono drop-shadow-md">Varianten: Luftkühlung oder Wasserkühlung (AIO)</span>
+                            <h4 class="font-bold text-white text-[15px] drop-shadow-md">10. CPU-Kühler (Prozessorkühler / CPU-Cooler)</h4>
+                            <span class="text-xs text-slate-200 font-mono drop-shadow-md">Varianten: Luftkühlung (Kühlkörper &amp; Lüfter) oder Wasserkühlung (AIO)</span>
                         </div>
                     </div>
                     <div class="relative z-10 p-3">
@@ -503,34 +507,6 @@
                     </div>
                 </div>
 
-                <!-- 15. Sockel-Kompatibilität -->
-                <div class="comp-card rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative group overflow-hidden">
-                    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
-                    <div class="w-full h-64 sm:h-96 overflow-hidden bg-slate-900 relative">
-                        <img src="assets/VL-CPU-C.webp" alt="Sockel-Kompatibilität von CPU und Kühler" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        <button onclick="open3dModal('assets/3d/cpu-3d.html')" type="button" class="no-print absolute top-3 right-3 px-3 py-1.5 rounded-xl bg-slate-900/85 hover:bg-onedrive-500 text-slate-200 hover:text-white font-bold text-xs flex items-center gap-1.5 shadow-lg border border-white/20 transition-all transform hover:scale-105 backdrop-blur-md cursor-pointer z-10" title="Interaktives 3D-Modell (Sockel & LGA-Kontakte) öffnen">
-                            <i class="fa-solid fa-cube text-onedrive-400"></i>
-                            <span>3D-CPU &amp; Kontakte</span>
-                        </button>
-                        <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-900/90 via-slate-900/50 to-transparent p-3 pt-8">
-                            <h4 class="font-bold text-white text-[15px] drop-shadow-md">15. Sockel-Kompatibilität (CPU ↔ Kühler ↔ Mainboard)</h4>
-                            <span class="text-xs text-slate-200 font-mono drop-shadow-md">Beispiel: Sockel LGA1700 (Intel) / AM5 (AMD)</span>
-                        </div>
-                    </div>
-                    <div class="relative z-10 p-3">
-                        <div class="grid grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-microchip text-onedrive-500"></i> Funktion (Was macht es?)</label>
-                                <textarea id="comp_socket_func" oninput="updateProgress()" rows="4" placeholder="Funktion beschreiben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-500"></i> Alltags-Vergleich (Analogie) <span class="text-slate-400 dark:text-slate-500 font-normal normal-case">(optional)</span></label>
-                                <textarea id="comp_socket_ana" oninput="updateProgress()" rows="4" placeholder="Analogie angeben..." class="w-full p-3 text-sm bg-white/50 dark:bg-black/20 border border-slate-300 dark:border-slate-700/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none dark:text-slate-100 backdrop-blur-sm transition-all"></textarea>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
             </div>
         </section>
 
@@ -550,14 +526,16 @@
     </main>
 
 
+    <script src="assets/js/a3-thumbnails.js"></script>
     <script src="assets/js/pdf-engine.js"></script>
     <script>
         let currentPercentage = 0;
 
-        /* Carousel state (A3: Slide 0 = Einführung/Vorname/Klasse/Datum, Slides 1-15 = Bauteile) */
-        const CAROUSEL_TOTAL = 16;
+        /* Carousel state (A3: Slide 0 = Einführung/Vorname/Klasse/Datum, Slides 1-14 = Bauteile) */
+        const CAROUSEL_TOTAL = 15;
         let carouselIndex = 0;
         let carouselMode = 'carousel'; // 'carousel' | 'list'
+        let hasStarted = false;
 
         /* On page load initialization */
         window.addEventListener('DOMContentLoaded', () => {
@@ -699,6 +677,7 @@ function applyDefaultClassAndDate() {
 
         /* Check if a slide/component has been completed */
         function isSlideCompleted(idx) {
+            if (!hasStarted) return false;
             if (idx === 0) {
                 var nameEl = document.getElementById('studentName');
                 return nameEl ? (nameEl.value.trim() !== '') : false;
@@ -817,6 +796,11 @@ function applyDefaultClassAndDate() {
             if (carouselMode === 'list') return;
             if (i < 0) i = 0;
             if (i > CAROUSEL_TOTAL - 1) i = CAROUSEL_TOTAL - 1;
+            if (i > 0 && !hasStarted) {
+                hasStarted = true;
+                localStorage.setItem('a3_has_started', 'true');
+                updateProgress();
+            }
             carouselIndex = i;
             renderCarousel();
             var trackEl = document.getElementById('carouselTrack');
@@ -824,6 +808,11 @@ function applyDefaultClassAndDate() {
         }
 
         function carouselNext() {
+            if (!hasStarted) {
+                hasStarted = true;
+                localStorage.setItem('a3_has_started', 'true');
+                updateProgress();
+            }
             if (carouselIndex === CAROUSEL_TOTAL - 1) {
                 if (currentPercentage === 100) handleDownloadPdf();
                 return;
@@ -854,7 +843,7 @@ function applyDefaultClassAndDate() {
 
         function updateProgress() {
             const allInputs = document.querySelectorAll('input[type="text"], textarea, select');
-            /* Nur die 15 Funktions-Beschreibungen zaehlen zur Fortschritts-Berechnung:
+            /* Nur die 14 Funktions-Beschreibungen zaehlen zur Fortschritts-Berechnung:
                - Analogie-Felder (_ana) sind optional
                - Vorname/Klasse/Datum werden automatisch beim Laden befuellt (keine eigene
                  Leistung der Schueler:innen) und wuerden sonst schon bei 0 bearbeiteten
@@ -868,10 +857,18 @@ function applyDefaultClassAndDate() {
             textInputs.forEach(input => {
                 if (input.value.trim() !== '') {
                     filled++;
+                    if (input.id !== 'comp_cpu_func' && !hasStarted) {
+                        hasStarted = true;
+                        localStorage.setItem('a3_has_started', 'true');
+                    }
                 }
             });
 
-            currentPercentage = Math.min(100, Math.round((filled / total) * 100));
+            if (!hasStarted) {
+                currentPercentage = 0;
+            } else {
+                currentPercentage = Math.min(100, Math.round((filled / total) * 100));
+            }
 
             const pBar = document.getElementById('progressBar');
             const headerPText = document.getElementById('headerPercentText');
@@ -929,21 +926,20 @@ function applyDefaultClassAndDate() {
         }
 
         const A3_COMPONENTS = [
-            { heading: '1. Prozessor (CPU – Central Processing Unit)', key: 'comp_cpu' },
-            { heading: '2. Mainboard (Motherboard / Hauptplatine)', key: 'comp_mb' },
-            { heading: '3. PC-Gehäuse (Computer Case / Chassis)', key: 'comp_case' },
-            { heading: '4. Arbeitsspeicher (RAM – Random Access Memory)', key: 'comp_ram' },
-            { heading: '5. Solid State Drive (SSD)', key: 'comp_ssd' },
-            { heading: '6. NVMe-SSD (M.2)', key: 'comp_nvme' },
-            { heading: '7. Festplatte (HDD – Hard Disk Drive)', key: 'comp_hdd' },
-            { heading: '8. Grafikkarte (GPU – Graphics Processing Unit)', key: 'comp_gpu' },
-            { heading: '9. Netzteil (PSU – Power Supply Unit)', key: 'comp_psu' },
-            { heading: '10. Kühlung (CPU-Kühler & Gehäuselüfter)', key: 'comp_cool' },
-            { heading: '11. Netzwerkkarte / WLAN-Modul (NIC)', key: 'comp_net' },
-            { heading: '12. Soundkarte (Audio-Interface)', key: 'comp_sound' },
-            { heading: '13. CD-/DVD-Laufwerk (optisches Laufwerk)', key: 'comp_cddvd' },
-            { heading: '14. CMOS-Batterie (BIOS-Pufferbatterie)', key: 'comp_cmos' },
-            { heading: '15. Sockel-Kompatibilität (CPU ↔ Kühler ↔ Mainboard)', key: 'comp_socket' }
+            { heading: '1. Prozessor (CPU – Central Processing Unit)', key: 'comp_cpu', image: 'assets/VL-CPU.webp' },
+            { heading: '2. Mainboard (Motherboard / Hauptplatine)', key: 'comp_mb', image: 'assets/VL-Motherboard.webp' },
+            { heading: '3. PC-Gehäuse (Computer Case / Chassis)', key: 'comp_case', image: 'assets/VL-Chassis.webp' },
+            { heading: '4. Arbeitsspeicher (RAM – Random Access Memory)', key: 'comp_ram', image: 'assets/VL-RAM.webp' },
+            { heading: '5. Solid State Drive (SSD)', key: 'comp_ssd', image: 'assets/VL-SSD.webp' },
+            { heading: '6. NVMe-SSD (M.2)', key: 'comp_nvme', image: 'assets/VL-NVMe.webp' },
+            { heading: '7. Festplatte (HDD – Hard Disk Drive)', key: 'comp_hdd', image: 'assets/VL-HDD.webp' },
+            { heading: '8. Grafikkarte (GPU – Graphics Processing Unit)', key: 'comp_gpu', image: 'assets/VL-GPU.webp' },
+            { heading: '9. Netzteil (PSU – Power Supply Unit)', key: 'comp_psu', image: 'assets/VL-PSU.webp' },
+            { heading: '10. CPU-Kühler (Prozessorkühler / CPU-Cooler)', key: 'comp_cool', image: 'assets/VL-CPUCOOLER.webp' },
+            { heading: '11. Netzwerkkarte / WLAN-Modul (NIC)', key: 'comp_net', image: 'assets/VL-Network.webp' },
+            { heading: '12. Soundkarte (Audio-Interface)', key: 'comp_sound', image: 'assets/VL-Sound.webp' },
+            { heading: '13. CD-/DVD-Laufwerk (optisches Laufwerk)', key: 'comp_cddvd', image: 'assets/VL-CD.webp' },
+            { heading: '14. CMOS-Batterie (BIOS-Pufferbatterie)', key: 'comp_cmos', image: 'assets/VL-CMOS.webp' }
         ];
 
         function handleDownloadPdf() {
@@ -953,8 +949,12 @@ function applyDefaultClassAndDate() {
                 return;
             }
 
+            const thumbnails = window.A3_THUMBNAILS || {};
+
             const sections = A3_COMPONENTS.map(c => ({
                 heading: c.heading,
+                imageData: thumbnails[c.key] || null,
+                image: c.image,
                 fields: [
                     { label: 'Funktion', value: (document.getElementById(c.key + '_func') || {}).value || '' },
                     { label: 'Alltags-Vergleich (Analogie)', value: (document.getElementById(c.key + '_ana') || {}).value || '', optional: true }
@@ -969,18 +969,27 @@ function applyDefaultClassAndDate() {
         }
 
         function loadProgress() {
+            hasStarted = (localStorage.getItem('a3_has_started') === 'true');
             const saved = localStorage.getItem('onedrive_hardware_worksheet_8sek');
             if (!saved) return;
 
             try {
                 const data = JSON.parse(saved);
+                if (data.percent > 0) {
+                    hasStarted = true;
+                }
                 if (data.form) {
                     Object.keys(data.form).forEach(id => {
                         const el = document.getElementById(id);
                         if (el) {
                             if (id === 'studentClass' && (!data.form[id] || !data.form[id].trim())) el.value = 'B24';
                             else if (id === 'studentDate' && !data.form[id]) el.value = new Date().toISOString().split('T')[0];
-                            else if (data.form[id]) el.value = data.form[id];
+                            else if (data.form[id]) {
+                                el.value = data.form[id];
+                                if (id.indexOf('comp_') === 0 && id !== 'comp_cpu_func' && id !== 'comp_cpu_ana' && data.form[id].trim()) {
+                                    hasStarted = true;
+                                }
+                            }
                         }
                     });
                 }
@@ -991,14 +1000,23 @@ function applyDefaultClassAndDate() {
 
         function confirmReset() {
             showConfirmModal('Möchtest du wirklich alle Eingaben auf diesem Arbeitsblatt zurücksetzen?', () => {
+                hasStarted = false;
+                localStorage.removeItem('a3_has_started');
                 localStorage.removeItem('onedrive_hardware_worksheet_8sek');
                 localStorage.removeItem('hw_autosave_' + location.pathname.split('/').pop());
                 document.querySelectorAll('input[type="text"], textarea').forEach(i => i.value = '');
+                // CPU als Referenzbeispiel wiederherstellen
+                var cpuFunc = document.getElementById('comp_cpu_func');
+                if (cpuFunc) cpuFunc.value = 'Die CPU (der Prozessor) führt alle Berechnungen und logischen Befehle aus – sie ist die zentrale Recheneinheit des Computers.';
+                var cpuAna = document.getElementById('comp_cpu_ana');
+                if (cpuAna) cpuAna.value = 'Die CPU ist wie das Gehirn des Computers: Sie denkt, trifft Entscheidungen und steuert alle anderen Bauteile.';
                 applyDefaultClassAndDate();
                 var nameEl = document.getElementById('studentName');
                 var globalVorname = localStorage.getItem('studentVorname') || localStorage.getItem('student_vorname');
                 if (nameEl && globalVorname) nameEl.value = globalVorname;
+                carouselIndex = 0;
                 updateProgress();
+                renderCarousel();
                 showToast('Arbeitsblatt wurde zurückgesetzt.');
             });
         }
@@ -1086,7 +1104,7 @@ function applyDefaultClassAndDate() {
                     <div class="space-y-3 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
                         <div class="flex items-start gap-2.5">
                             <span class="w-5 h-5 rounded-full bg-onedrive-100 dark:bg-onedrive-900/60 text-onedrive-600 dark:text-onedrive-400 text-[11px] font-extrabold flex items-center justify-center shrink-0 mt-0.5">1</span>
-                            <p><strong>15 Bauteile erforschen:</strong> Gehe der Reihe nach alle 15 Bauteil-Karten durch.</p>
+                            <p><strong>14 Bauteile erforschen:</strong> Gehe der Reihe nach alle 14 Bauteil-Karten durch.</p>
                         </div>
                         <div class="flex items-start gap-2.5">
                             <span class="w-5 h-5 rounded-full bg-onedrive-100 dark:bg-onedrive-900/60 text-onedrive-600 dark:text-onedrive-400 text-[11px] font-extrabold flex items-center justify-center shrink-0 mt-0.5">2</span>
@@ -1094,7 +1112,7 @@ function applyDefaultClassAndDate() {
                         </div>
                         <div class="flex items-start gap-2.5">
                             <span class="w-5 h-5 rounded-full bg-amber-100 dark:bg-amber-900/60 text-amber-600 dark:text-amber-400 text-[11px] font-extrabold flex items-center justify-center shrink-0 mt-0.5">3</span>
-                            <p><strong>3D-Modell:</strong> Klicke bei CPU und Sockel auf <span class="text-amber-500 font-bold">3D-Modell</span>, um die Hardware interaktiv in 3D zu erforschen.</p>
+                            <p><strong>3D-Modell:</strong> Klicke bei CPU und CPU-Kühler auf <span class="text-amber-500 font-bold">3D-Modell</span>, um die Hardware interaktiv in 3D zu erforschen.</p>
                         </div>
                         <div class="flex items-start gap-2.5">
                             <span class="w-5 h-5 rounded-full bg-onedrive-100 dark:bg-onedrive-900/60 text-onedrive-600 dark:text-onedrive-400 text-[11px] font-extrabold flex items-center justify-center shrink-0 mt-0.5">4</span>

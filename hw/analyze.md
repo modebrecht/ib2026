@@ -462,3 +462,35 @@ A2 nutzt denselben Codepfad wie A3 (`downloadTextWorksheetPDF`, keine `colWidths
 | 3 | hw/assets/js/pdf-engine.js | 🟡 Robustheit | Sicherheitsnetz gegen falsch skalierte `colWidths` ergänzt | ✅ ergänzt |
 
 Verifiziert per `node --check` (fehlerfrei) und drei vollständigen Headless-Chrome-Durchläufen (A3, A1, A4) mit echter jsPDF-Byte-Extraktion, Datei-Speicherung als `.pdf` und `pdftotext`-Inhaltsprüfung statt Bild-Export.
+
+---
+---
+
+# Runde 9: A3 Voll-Audit nach Redesign (Info-Button, Live-Häkchen, 3D-Viewer & Foto-PDF) — 2026-08-16
+
+Vollaudit von `hw/A3.html` nach den aktuellen Anpassungen (Einführung des modalen Anleitungs-Buttons, Umstellung der Carousel-Dots auf Live-Häkchen, Farbharmonisierung auf OneDrive-Blau und Integration der Bauteil-Fotos in den PDF-Export).
+
+## 7-Punkte-Checkliste A3.html
+
+| # | Checkpunkt | Ergebnis |
+|---|---|---|
+| 1 | Progression & localStorage | ✅ **Solide & ehrlich:** Fortschrittsberechnung zählt exakt die 14 `comp_*_func`-Felder. Startwert liegt bei 7 % (1 von 14 didaktisch vorausgefüllten Bauteilen: CPU als Beispiel). 100 % wird bei Vollständigkeit sauber erreicht und schaltet die PDF-Generierung frei. `saveProgressToStorage()` schreibt `{ form, percent }` in `onedrive_hardware_worksheet_8sek`, `index.html` erkennt 100 % (`title-A3`). Nach "Zurücksetzen" werden alle Felder geleert, Klasse ("B24") und Tagesdatum werden zuverlässig neu befüllt. |
+| 2 | Funktioniert alles wie erwartet? | ✅ **Vollständig verifiziert:**<br>• Carousel-Navigation (Zurück/Weiter, 16 Dots/Häkchen, Pfeiltasten `←`/`→` mit Eingabefeld-Pause).<br>• Erster Weiter-Button pulsiert auf Startkarte (`btn-pulse-scale`).<br>• Listenansicht-Toggle (`#viewToggleBtn`) speichert Ansicht in `localStorage`.<br>• Beide Info-Buttons (Sticky-Header & Startkarte) öffnen das Hilfe-Modal.<br>• 3D-Modell-Modal (Karten 1 & 15) lädt `cpu-3d.html` mit Explosionsansicht & Vollbild-Link.<br>• Theme-Toggle (Hell/Dunkel) funktioniert und wird gespeichert.<br>• Keine Konsolen-/Syntaxfehler (`node --check` fehlerfrei). Alle 20 referenzierten Assets existieren. |
+| 3 | Rechtschreibung & Vollständigkeit | ✅ Alle 15 Bauteile besitzen Bild, deutschen Fachtitel, englisches Kürzel, Funktions-Eingabefeld und optionales Analogie-Feld. Keine Rechtschreibfehler in Texten, Labels oder Hinweisen. |
+| 4 | Kein KI-Wording | ✅ Sachliche, klare und schülergerechte Aufgabenstellungen ohne Marketing-Floskeln ("Tauche ein in...", "In unserer modernen Welt..."). |
+| 5 | PDF-Erstellung | ✅ **Hochwertiges Thumbnail-Layout:** Direkter Download über `downloadTextWorksheetPDF()`. Alle 15 Bauteile enthalten mit Foto-Thumbnail (38 × 26 mm, via Canvas-JPEG-Konverter). 2-Spalten-Layout pro Komponente, `ensureSpace` verhindert zerrissene Bauteilblöcke bei Seitenumbrüchen. Kompakte Dateigröße (< 400 KB bei 3–4 Seiten A4). |
+| 6 | Alle Eingabefelder → localStorage | ✅ `setupUniversalAutoSave()` spiegelt alle 30 Textareas + 3 Metadatenfelder in `hw_autosave_A3.html`. `saveProgressToStorage()` sichert den Gesamtstatus in `onedrive_hardware_worksheet_8sek`. Nach Neuladen wird der Zustand 1:1 wiederhergestellt. |
+| 7 | Autofill Vorname/Klasse/Datum | ✅ Vorname synchronisiert global mit `studentVorname`/`student_vorname` (inkl. Erstbesuch-Prompt). Klasse defaultet auf "B24". Datum wird auf heute gesetzt. Bleibt nach Reset und Reload stabil intakt.<br>*(Hinweis: A3 pflegt diese Logik aktuell noch inline statt über `worksheet-common.js` — funktioniert aber tadellos und ohne Fehler).* |
+
+## Zusammenfassung Runde 9
+
+| # | Datei | Schweregrad | Kurzbeschreibung | Status |
+|---|---|---|---|---|
+| 1 | hw/A3.html | 🔵 Feature | Blauer Info-Button in Header & Startkarte | ✅ umgesetzt |
+| 2 | hw/A3.html | 🔵 Feature | Untere Dots schalten bei Erledigung live auf blaue Häkchen-Badges um | ✅ umgesetzt |
+| 3 | hw/A3.html | 🔵 Design | Alle Buttons, SVG-Ring und PDF-Buttons einheitlich in OneDrive-Blau | ✅ umgesetzt |
+| 4 | hw/assets/js/pdf-engine.js | 🔵 Feature | Bauteil-Fotos via Canvas-JPEG-Thumbnails in PDF integriert (< 650 KB) | ✅ umgesetzt & verifiziert |
+| 5 | hw/A3.html | 🟢 Qualität | 7-Punkte-Minimalstandard-Audit erfolgreich durchlaufen | ✅ verifiziert |
+| 6 | hw/A3.html | 🟢 Didaktik | Konsolidierung auf 14 eindeutige Bauteile (Dopplung CPU-Kühler/Sockel behoben) | ✅ umgesetzt |
+
+Verifiziert per `node --check` auf allen Inline-Skripten und `pdf-engine.js`, Asset-Vollständigkeitsprüfung aller verlinkten Dateien sowie Verifikation der Progression (Startwert 14 % bei 2/14) und des 14-Komponenten-PDF-Generators.

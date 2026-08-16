@@ -45,7 +45,9 @@ function pdfSafeText(str) {
         .trim();
 }
 
-function pdfWrapText(pdf, text, maxWidth) {
+function pdfWrapText(pdf, text, maxWidth, fontSize, fontStyle) {
+    if (fontStyle) pdf.setFont('helvetica', fontStyle);
+    if (fontSize) pdf.setFontSize(fontSize);
     var paragraphs = pdfSafeText(text).split('\n');
     var lines = [];
     paragraphs.forEach(function (para) {
@@ -63,6 +65,76 @@ function pdfEnsureJsPdfLoaded(callback) {
     document.head.appendChild(script);
 }
 
+function pdfPreloadImages(sections, callback) {
+    var imagesToLoad = [];
+    (sections || []).forEach(function (sec) {
+        if (sec.imageData) {
+            if (typeof sec.imageData === 'object' && sec.imageData.dataUrl) {
+                sec._imgData = {
+                    dataUrl: sec.imageData.dataUrl,
+                    ratio: sec.imageData.ratio || (720 / 393)
+                };
+            } else {
+                sec._imgData = {
+                    dataUrl: sec.imageData,
+                    ratio: (720 / 393)
+                };
+            }
+        } else if (sec.image) {
+            imagesToLoad.push(sec);
+        }
+    });
+
+    if (imagesToLoad.length === 0) {
+        callback();
+        return;
+    }
+
+    var loadedCount = 0;
+    function checkDone() {
+        loadedCount++;
+        if (loadedCount >= imagesToLoad.length) {
+            callback();
+        }
+    }
+
+    imagesToLoad.forEach(function (sec) {
+        var img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = function () {
+            try {
+                var maxDim = 360;
+                var w = img.naturalWidth || img.width || 300;
+                var h = img.naturalHeight || img.height || 200;
+                var scale = Math.min(1, maxDim / Math.max(w, h));
+                var targetW = Math.max(1, Math.round(w * scale));
+                var targetH = Math.max(1, Math.round(h * scale));
+
+                var canvas = document.createElement('canvas');
+                canvas.width = targetW;
+                canvas.height = targetH;
+                var ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, targetW, targetH);
+                var dataUrl = canvas.toDataURL('image/jpeg', 0.82);
+                sec._imgData = {
+                    dataUrl: dataUrl,
+                    ratio: targetW / targetH
+                };
+            } catch (e) {
+                console.warn('Could not rasterize image for PDF:', sec.image, e);
+                sec._imgData = null;
+            }
+            checkDone();
+        };
+        img.onerror = function () {
+            console.warn('Image failed to load for PDF:', sec.image);
+            sec._imgData = null;
+            checkDone();
+        };
+        img.src = sec.image;
+    });
+}
+
 /*
  * Rendert ein vollständiges Arbeitsblatt als direkt herunterladbares,
  * mehrseitiges PDF - kein window.print(), kein Druckdialog.
@@ -71,7 +143,7 @@ function pdfEnsureJsPdfLoaded(callback) {
  *   title: 'Aufbau eines Computers',
  *   filenamePrefix: 'A3_Computeraufbau',
  *   sections: [
- *     { heading: '1. Prozessor (CPU)', fields: [
+ *     { heading: '1. Prozessor (CPU)', image: 'assets/VL-CPU.webp', fields: [
  *       { label: 'Funktion', value: '...' },
  *       { label: 'Analogie', value: '...', optional: true }
  *     ] }
@@ -80,98 +152,141 @@ function pdfEnsureJsPdfLoaded(callback) {
  */
 function downloadTextWorksheetPDF(opts) {
     var studentName = (document.getElementById('studentName') || {}).value || '';
-    var studentClass = (document.getElementById('studentClass') || {}).value || 'B24';
+    var rawClass = (document.getElementById('studentClass') || {}).value || '';
+    var studentClass = (!rawClass || rawClass === 'B24' || rawClass === 'B25') ? '9. Klasse' : rawClass;
     var studentDate = (document.getElementById('studentDate') || {}).value || '';
 
     pdfEnsureJsPdfLoaded(function () {
-        var jsPDF = window.jspdf.jsPDF;
-        var pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-        var contentW = PDF_PAGE_W - PDF_MARGIN * 2;
-        var y;
+        pdfPreloadImages(opts.sections, function () {
+            var jsPDF = window.jspdf.jsPDF;
+            var pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+            var contentW = PDF_PAGE_W - PDF_MARGIN * 2;
+            var y;
 
-        function drawPageHeader(isFirst) {
-            pdf.setFont('helvetica', 'bold');
-            pdf.setFontSize(10);
-            pdf.setTextColor(15, 23, 42);
-            pdf.text(pdfSafeText('INFORMATIK B25'), PDF_MARGIN, PDF_MARGIN);
-
-            pdf.setFont('helvetica', 'normal');
-            pdf.setFontSize(9);
-            pdf.setTextColor(100, 116, 139);
-            var metaText = (studentName || 'Unbenannt') + '  ·  Klasse ' + studentClass + '  ·  ' + studentDate;
-            pdf.text(pdfSafeText(metaText), PDF_PAGE_W - PDF_MARGIN, PDF_MARGIN, { align: 'right' });
-
-            pdf.setDrawColor(203, 213, 225);
-            pdf.setLineWidth(0.3);
-            pdf.line(PDF_MARGIN, PDF_MARGIN + 3, PDF_PAGE_W - PDF_MARGIN, PDF_MARGIN + 3);
-
-            if (isFirst) {
+            function drawPageHeader(isFirst) {
                 pdf.setFont('helvetica', 'bold');
-                pdf.setFontSize(19);
+                pdf.setFontSize(10);
                 pdf.setTextColor(15, 23, 42);
-                pdf.text(pdfSafeText(opts.title), PDF_MARGIN, PDF_MARGIN + 14);
-                return PDF_MARGIN + 22;
-            }
-            return PDF_MARGIN + 10;
-        }
-
-        y = drawPageHeader(true);
-
-        function newPage() {
-            pdf.addPage();
-            y = drawPageHeader(false);
-        }
-
-        function ensureSpace(neededHeight) {
-            if (y + neededHeight > PDF_PAGE_H - PDF_MARGIN) newPage();
-        }
-
-        (opts.sections || []).forEach(function (section) {
-            pdf.setFont('helvetica', 'bold');
-            pdf.setFontSize(13);
-            var headingLines = pdfWrapText(pdf, section.heading, contentW);
-            ensureSpace(6 * headingLines.length + 2);
-            pdf.setTextColor(29, 78, 216);
-            headingLines.forEach(function (line) {
-                ensureSpace(6);
-                pdf.text(line, PDF_MARGIN, y);
-                y += 6;
-            });
-            y += 2;
-
-            (section.fields || []).forEach(function (field) {
-                var value = pdfSafeText(field.value || '');
-                if (!value && field.optional) return; // leere optionale Felder werden ausgelassen
-
-                pdf.setFont('helvetica', 'bold');
-                pdf.setFontSize(9);
-                ensureSpace(5);
-                pdf.setTextColor(71, 85, 105);
-                pdf.text(pdfSafeText(field.label) + ':', PDF_MARGIN, y);
-                y += 5;
+                pdf.text(pdfSafeText('Informatik 9. Klasse'), PDF_MARGIN, PDF_MARGIN);
 
                 pdf.setFont('helvetica', 'normal');
-                pdf.setFontSize(10);
-                var lines = pdfWrapText(pdf, value || '(keine Angabe)', contentW - 3);
-                if (value) { pdf.setTextColor(15, 23, 42); } else { pdf.setTextColor(148, 163, 184); }
-                lines.forEach(function (line) {
-                    ensureSpace(5);
-                    pdf.text(line, PDF_MARGIN + 3, y);
-                    y += 5;
+                pdf.setFontSize(9);
+                pdf.setTextColor(100, 116, 139);
+                var classDisplay = studentClass.toLowerCase().includes('klasse') ? studentClass : ('Klasse ' + studentClass);
+                var metaText = (studentName || 'Unbenannt') + '  ·  ' + classDisplay + '  ·  ' + studentDate;
+                pdf.text(pdfSafeText(metaText), PDF_PAGE_W - PDF_MARGIN, PDF_MARGIN, { align: 'right' });
+
+                pdf.setDrawColor(203, 213, 225);
+                pdf.setLineWidth(0.3);
+                pdf.line(PDF_MARGIN, PDF_MARGIN + 3, PDF_PAGE_W - PDF_MARGIN, PDF_MARGIN + 3);
+
+                if (isFirst) {
+                    pdf.setFont('helvetica', 'bold');
+                    pdf.setFontSize(18);
+                    pdf.setTextColor(15, 23, 42);
+                    pdf.text(pdfSafeText(opts.title), PDF_MARGIN, PDF_MARGIN + 13);
+                    return PDF_MARGIN + 21;
+                }
+                return PDF_MARGIN + 10;
+            }
+
+            y = drawPageHeader(true);
+
+            function newPage() {
+                pdf.addPage();
+                y = drawPageHeader(false);
+            }
+
+            function ensureSpace(neededHeight) {
+                if (y + neededHeight > PDF_PAGE_H - PDF_MARGIN) newPage();
+            }
+
+            (opts.sections || []).forEach(function (section) {
+                var hasImg = !!section._imgData;
+                var imgRatio = (hasImg && section._imgData.ratio) ? section._imgData.ratio : (720 / 393);
+                var thumbW = hasImg ? 85 : 0;
+                var thumbH = hasImg ? Math.round((thumbW / imgRatio) * 10) / 10 : 0;
+                var textOffsetLeft = hasImg ? (thumbW + 6) : 0;
+                var textW = contentW - textOffsetLeft;
+
+                // Berechne Gesamthöhe für den Block (Überschrift + ggf. Bild + Textfelder),
+                // damit die Komponente niemals unschön mitten im Block über den Seitenumbruch gerissen wird.
+                var headingLines = pdfWrapText(pdf, section.heading, contentW, 12, 'bold');
+                var headingH = headingLines.length * 5.5 + 2;
+
+                var textLinesTotal = 0;
+                var fieldData = [];
+                (section.fields || []).forEach(function (field) {
+                    var value = pdfSafeText(field.value || '');
+                    if (!value && field.optional) return;
+                    var lines = pdfWrapText(pdf, value || '(keine Angabe)', textW - 2, 9.5, 'normal');
+                    fieldData.push({ label: field.label, value: value, lines: lines });
+                    textLinesTotal += (lines.length * 4.2) + 6.5;
                 });
-                y += 3;
+
+                var bodyH = hasImg ? Math.max(thumbH + 2, textLinesTotal) : textLinesTotal;
+                var totalSectionH = headingH + bodyH + 6;
+
+                ensureSpace(totalSectionH);
+
+                // Überschrift
+                pdf.setFont('helvetica', 'bold');
+                pdf.setFontSize(12);
+                pdf.setTextColor(29, 78, 216);
+                headingLines.forEach(function (line) {
+                    pdf.text(line, PDF_MARGIN, y);
+                    y += 5.5;
+                });
+                y += 1.5;
+
+                var blockStartY = y;
+
+                // Bauteil-Foto Thumbnail zeichnen (falls vorhanden)
+                if (hasImg) {
+                    try {
+                        // Dezent abgerundeter Hintergrund/Rahmen
+                        pdf.setFillColor(248, 250, 252);
+                        pdf.roundedRect(PDF_MARGIN, blockStartY, thumbW, thumbH, 1.5, 1.5, 'F');
+                        pdf.addImage(section._imgData.dataUrl, 'JPEG', PDF_MARGIN, blockStartY, thumbW, thumbH);
+                        pdf.setDrawColor(203, 213, 225);
+                        pdf.setLineWidth(0.2);
+                        pdf.roundedRect(PDF_MARGIN, blockStartY, thumbW, thumbH, 1.5, 1.5, 'D');
+                    } catch (err) {
+                        console.warn('PDF image add failed:', err);
+                    }
+                }
+
+                // Textfelder (Funktion & Analogie)
+                var currentTextY = blockStartY;
+                fieldData.forEach(function (f) {
+                    pdf.setFont('helvetica', 'bold');
+                    pdf.setFontSize(8.5);
+                    pdf.setTextColor(71, 85, 105);
+                    pdf.text(pdfSafeText(f.label) + ':', PDF_MARGIN + textOffsetLeft, currentTextY + 3);
+                    currentTextY += 4.2;
+
+                    pdf.setFont('helvetica', 'normal');
+                    pdf.setFontSize(9.5);
+                    if (f.value) { pdf.setTextColor(15, 23, 42); } else { pdf.setTextColor(148, 163, 184); }
+                    f.lines.forEach(function (line) {
+                        pdf.text(line, PDF_MARGIN + textOffsetLeft, currentTextY + 3);
+                        currentTextY += 4.2;
+                    });
+                    currentTextY += 2;
+                });
+
+                y = Math.max(blockStartY + thumbH, currentTextY) + 3;
+
+                // Trennlinie
+                pdf.setDrawColor(226, 232, 240);
+                pdf.setLineWidth(0.2);
+                pdf.line(PDF_MARGIN, y, PDF_PAGE_W - PDF_MARGIN, y);
+                y += 4.5;
             });
 
-            y += 3;
-            ensureSpace(1);
-            pdf.setDrawColor(226, 232, 240);
-            pdf.setLineWidth(0.2);
-            pdf.line(PDF_MARGIN, y, PDF_PAGE_W - PDF_MARGIN, y);
-            y += 5;
+            var safeName = pdfSafeText(studentName || 'Unbenannt').replace(/[^a-zA-Z0-9]/g, '_');
+            pdf.save((opts.filenamePrefix || 'Arbeitsblatt') + '_' + safeName + '.pdf');
         });
-
-        var safeName = pdfSafeText(studentName || 'Unbenannt').replace(/[^a-zA-Z0-9]/g, '_');
-        pdf.save((opts.filenamePrefix || 'Arbeitsblatt') + '_' + safeName + '.pdf');
     });
 }
 
@@ -197,7 +312,8 @@ function downloadTextWorksheetPDF(opts) {
  */
 function downloadCertificatePDF(opts) {
     var studentName = (document.getElementById('studentName') || {}).value || 'Unbekannt';
-    var studentClass = (document.getElementById('studentClass') || {}).value || 'B24';
+    var rawClass = (document.getElementById('studentClass') || {}).value || '';
+    var studentClass = (!rawClass || rawClass === 'B24' || rawClass === 'B25') ? '9. Klasse' : rawClass;
     var studentDate = (document.getElementById('studentDate') || {}).value || '';
 
     pdfEnsureJsPdfLoaded(function () {
