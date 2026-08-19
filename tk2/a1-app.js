@@ -124,6 +124,7 @@
   window.switchPhase=switchPhase;window.resetQ1=resetQ1;window.resetQ2=resetQ2;window.resetQ3=resetQ3;window.useQ2Hint=useQ2Hint;window.useQ3Hint=useQ3Hint;
   document.addEventListener('DOMContentLoaded',function(){
     var next=byId('q3-to-a2-btn');if(next)next.setAttribute('href','A2.html');
+    var back=document.querySelector('.top-bar .back-link');if(back)back.setAttribute('href','index.html');
     switchPhase(1);
   });
 })();
