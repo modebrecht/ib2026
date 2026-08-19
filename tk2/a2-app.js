@@ -32,6 +32,7 @@
     var unlocked=isQuestUnlocked('q4');
     byId('a2-lock-screen').style.display=unlocked?'none':'flex';
     byId('a2-content-wrap').style.display=unlocked?'block':'none';
+    var next=byId('q6-to-a3-btn');if(next)next.setAttribute('href','A3.html');
     ['q4-char-input','q5-char-input','q6-char-input'].forEach(function(id){
       var input=byId(id);if(!input)return;
       input.addEventListener('paste',function(e){e.preventDefault();});
@@ -59,15 +60,6 @@
     byId(prefix+'-symbol-box').textContent=item.char;byId(prefix+'-title').textContent=item.title;byId(prefix+'-desc').textContent=item.desc;
     byId(prefix+'-counter-label').textContent='Zeichen '+(index+1)+' von '+total;byId(prefix+'-progress-bar').style.width=((index+1)/total*100)+'%';byId(prefix+'-score-live').textContent='Richtig: '+accuracy(correct,attempts)+' %';
     var input=byId(prefix+'-char-input');input.value='';setTimeout(function(){input.focus();},0);
-  }
-
-  function handleInput(prefix,item,onCorrect,onWrong){
-    var input=byId(prefix+'-char-input');
-    input.addEventListener('input',function(e){
-      if(!e.target.value)return;
-      var ok=e.target.value.indexOf(item().char)!==-1;
-      if(ok)onCorrect(e);else onWrong(e);
-    });
   }
 
   function resetQ4(){q4Items=shuffle(altgrItems);q4Index=0;q4Correct=0;q4Attempts=0;q4Locked=false;byId('q4-card').style.display='block';byId('q4-trophy-view').style.display='none';updateQ4();}
