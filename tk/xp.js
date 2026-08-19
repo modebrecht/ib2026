@@ -270,6 +270,84 @@ function startTkLanguageNormalization() {
     });
 }
 
+function applyTkQuizAttemptPolish() {
+    const page = location.pathname.split('/').pop() || '';
+    if (!['A4.html', 'A5.html'].includes(page)) return;
+
+    const questionsContainer = document.getElementById('questionsContainer');
+    if (!questionsContainer) return;
+
+    let shuffleScheduled = false;
+
+    const randomizeVisibleQuestionOrder = () => {
+        const cards = Array.from(questionsContainer.children)
+            .filter((child) => child.classList && child.classList.contains('question-card'));
+        if (cards.length < 2) return;
+
+        const shuffledCards = cards
+            .map((card) => ({ card, sort: Math.random() }))
+            .sort((a, b) => a.sort - b.sort)
+            .map((entry) => entry.card);
+
+        shuffledCards.forEach((card, index) => {
+            card.style.order = String(index);
+            const label = card.querySelector('.question-label');
+            if (label) label.textContent = `Frage ${index + 1}`;
+        });
+    };
+
+    const scheduleQuestionShuffle = () => {
+        if (shuffleScheduled) return;
+        shuffleScheduled = true;
+        queueMicrotask(() => {
+            shuffleScheduled = false;
+            randomizeVisibleQuestionOrder();
+        });
+    };
+
+    new MutationObserver((mutations) => {
+        if (mutations.some((mutation) => mutation.type === 'childList')) {
+            scheduleQuestionShuffle();
+        }
+    }).observe(questionsContainer, { childList: true });
+
+    // Shuffle the questions already rendered before DOMContentLoaded.
+    scheduleQuestionShuffle();
+
+    if (page !== 'A4.html') return;
+
+    const lessonCard = document.querySelector('.lesson-card');
+    const checkBtn = document.getElementById('checkBtn');
+    const setTabs = document.getElementById('setTabs');
+    if (!lessonCard || !checkBtn) return;
+
+    let wasRetryClick = false;
+
+    // A retry starts from the "Neuer Versuch" button. Hide the theory before
+    // A4 re-renders so the student has to retrieve the shortcuts from memory.
+    checkBtn.addEventListener('click', () => {
+        wasRetryClick = checkBtn.textContent.includes('Neuer Versuch');
+        if (wasRetryClick) lessonCard.style.display = 'none';
+    }, true);
+
+    // After checking a retry, show the theory again so students can compare
+    // their answers with the learning cards before deciding on another attempt.
+    checkBtn.addEventListener('click', () => {
+        const retryStarted = wasRetryClick;
+        wasRetryClick = false;
+        setTimeout(() => {
+            if (!retryStarted) lessonCard.style.display = 'block';
+        }, 0);
+    });
+
+    // Changing to another quest always restores that quest's theory cards.
+    if (setTabs) {
+        setTabs.addEventListener('click', (event) => {
+            if (event.target.closest('.set-tab')) lessonCard.style.display = 'block';
+        }, true);
+    }
+}
+
 function isQuestUnlocked(questId) {
     let scores = getQuestScores();
     if (questId === 'q1') return true; // Quest 1 always unlocked
@@ -355,6 +433,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateXPDisplays();
     applyTkPagePolish();
     startTkLanguageNormalization();
+    applyTkQuizAttemptPolish();
 });
 
 // PDF CERTIFICATE GENERATOR FOR TEACHER (1 PAGE SUMMARY)
