@@ -9,7 +9,7 @@
   var META={
     A:{q:11,name:'A1',title:'Quest 11 – Wiederholung A1',desc:'Allgemeine Tastenkürzel aus A1.',theme:BLUE},
     B:{q:12,name:'A2',title:'Quest 12 – Wiederholung A2',desc:'Sonderzeichen mit AltGr aus A2. Das Zielzeichen bleibt immer sichtbar.',theme:AMBER},
-    C:{q:13,name:'A4',title:'Quest 13 – Wiederholung A4',desc:'Programme, Browser und Windows aus A4.',theme:CYAN},
+    C:{q:13,name:'A4',title:'Quest 13 – Wiederholung A4',desc:'Alle zwölf Browser-, Programm- und Windows-Kürzel aus A4.',theme:CYAN},
     D:{q:14,name:'Gemischt',title:'Quest 14 – Alles gemischt',desc:'A1, A2 und A4 in gemischten Alltagssituationen.',theme:GREEN}
   };
 
@@ -35,14 +35,18 @@
       {char:'°',text:'Gradzeichen',correct:'AltGr + 4',wrong:['AltGr + 3','Shift + ^']}
     ],
     C:[
-      {text:'Du möchtest Text in Word fett formatieren.',correct:'Ctrl + B',wrong:['Ctrl + F','Ctrl + N']},
       {text:'Du möchtest einen neuen Browser-Tab öffnen.',correct:'Ctrl + T',wrong:['Ctrl + N','Ctrl + W']},
-      {text:'Du möchtest einen geschlossenen Browser-Tab wieder öffnen.',correct:'Ctrl + Shift + T',wrong:['Ctrl + T','Ctrl + N']},
-      {text:'Du möchtest den Computer sperren.',correct:'Win + L',wrong:['Win + D','Ctrl + L']},
-      {text:'Du möchtest den Datei-Explorer öffnen.',correct:'Win + E',wrong:['Win + D','Ctrl + E']},
-      {text:'Du möchtest zwischen geöffneten Programmen wechseln.',correct:'Alt + Tab',wrong:['Ctrl + Tab','Win + D']},
+      {text:'Du willst den Datei-Explorer öffnen.',correct:'Win + E',wrong:['Win + D','Ctrl + E']},
+      {text:'Du möchtest eine Webseite neu laden.',correct:'F5',wrong:['Ctrl + F','Win + L']},
+      {text:'Du willst den Computer sperren.',correct:'Win + L',wrong:['Win + D','Ctrl + L']},
+      {text:'Du hast einen Browser-Tab geschlossen und möchtest ihn wieder öffnen.',correct:'Ctrl + Shift + T',wrong:['Ctrl + T','Ctrl + N']},
+      {text:'Du möchtest zwischen zwei geöffneten Programmen wechseln.',correct:'Alt + Tab',wrong:['Ctrl + Tab','Ctrl + W']},
+      {text:'Du möchtest Text in Word fett formatieren.',correct:'Ctrl + B',wrong:['Ctrl + F','Ctrl + N']},
       {text:'Du möchtest einen Bildschirmausschnitt aufnehmen.',correct:'Win + Shift + S',wrong:['Win + D','F5']},
-      {text:'Du möchtest den Task-Manager direkt öffnen.',correct:'Ctrl + Shift + Esc',wrong:['Alt + Tab','Ctrl + Shift + T']}
+      {text:'Du möchtest ein neues Dokument erstellen.',correct:'Ctrl + N',wrong:['Ctrl + T','Ctrl + W']},
+      {text:'Du möchtest den Task-Manager direkt öffnen.',correct:'Ctrl + Shift + Esc',wrong:['Alt + Tab','Ctrl + Shift + T']},
+      {text:'Du möchtest den Desktop anzeigen.',correct:'Win + D',wrong:['Win + E','Win + L']},
+      {text:'Du möchtest den aktuellen Browser-Tab schliessen.',correct:'Ctrl + W',wrong:['Ctrl + T','Alt + Tab']}
     ],
     D:[
       {text:'Du hast einen Text kopiert und möchtest ihn einfügen.',correct:'Ctrl + V',wrong:['Ctrl + C','Ctrl + X']},
