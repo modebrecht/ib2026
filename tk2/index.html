@@ -56,16 +56,16 @@
     </article>
 
     <article class="module" id="module-a4" style="--accent:#06b6d4;--accent-dark:#0891b2;--rgb:6,182,212;--glow:rgba(6,182,212,.065)">
-      <div class="module-head"><span class="module-badge">A4 · Quests 8–10</span><span class="module-state">offen</span></div>
-      <div><h2>Browser & Windows</h2><p>12 neue Kürzel. Erster Durchgang mit Animationen, zweiter Durchgang bewusst ohne Lernkarten.</p></div>
-      <div class="module-tags"><span>12 Animationen</span><span>2 Durchgänge</span><span>Abruf</span></div>
+      <div class="module-head"><span class="module-badge">A4 · Quests 8–9</span><span class="module-state">offen</span></div>
+      <div><h2>Browser & Windows</h2><p>12 neue Kürzel in zwei Blöcken: zuerst Theorie zu Q8, dann Q8; danach Theorie zu Q9 und direkt Q9.</p></div>
+      <div class="module-tags"><span>12 Animationen</span><span>Theorie → Quest</span><span>2 Lernblöcke</span></div>
       <div class="module-action"><span class="module-meta">Ctrl + T · Win + E · Alt + Tab …</span><a href="A4.html" class="module-btn">A4 öffnen ➔</a></div>
     </article>
 
     <article class="module module-wide" id="module-a5" style="--accent:#10b981;--accent-dark:#047857;--rgb:16,185,129;--glow:rgba(16,185,129,.065)">
       <div class="module-head"><span class="module-badge">A5 · Quests 11–14</span><span class="module-state">offen</span></div>
-      <div><h2>Wiederholen & festigen</h2><p>Kein neuer Stoff und bewusst keine Theorie-Animationen: späterer Wiederabruf aus A1, A2 und A4 mit PDF-Auswertung.</p></div>
-      <div class="module-tags"><span>A1 wiederholen</span><span>A2 wiederholen</span><span>A4 wiederholen</span><span>Alles gemischt</span><span>PDF</span></div>
+      <div><h2>Wiederholen & festigen</h2><p>Kein neuer Stoff und bewusst keine Theorie-Animationen: späterer Wiederabruf aus A1, A2 und A4. Q13 deckt alle zwölf A4-Kürzel ab.</p></div>
+      <div class="module-tags"><span>A1 wiederholen</span><span>A2 wiederholen</span><span>alle 12 aus A4</span><span>Alles gemischt</span><span>PDF</span></div>
       <div class="module-action"><span class="module-meta">Erster Versuch → Bestwert</span><a href="A5.html" class="module-btn">A5 öffnen ➔</a></div>
     </article>
   </section>
@@ -77,55 +77,32 @@
 <script>
 (function(){
   function parse(key){try{return JSON.parse(localStorage.getItem(key)||'{}');}catch(e){return{};}}
-  function a4Attempts(entry){if(!entry)return 0;if(typeof entry.attempts==='number')return entry.attempts;return typeof entry.first==='number'?1:0;}
   var scores=typeof getQuestScores==='function'?getQuestScores():{};
   var a4=parse('tk_a4_progress_v1'),a5=parse('tk_a5_progress_v1');
   var done={
     a1:(scores.q3||0)>=70,
     a2:(scores.q6||0)>=70,
     a3:(scores.q7||0)>=100,
-    a4:['A','B','C'].every(function(k){return a4Attempts(a4[k])>=2;}),
+    a4:['A','B'].every(function(k){return a4[k]&&typeof a4[k].first==='number';}),
     a5:['A','B','C','D'].every(function(k){return a5[k]&&typeof a5[k].first==='number';})
   };
-  var unlocked={
-    a1:true,
-    a2:done.a1||done.a2,
-    a3:done.a2||done.a3,
-    a4:true,
-    a5:true
-  };
+  var unlocked={a1:true,a2:done.a1||done.a2,a3:done.a2||done.a3,a4:true,a5:true};
   var labels={a1:'A1 öffnen ➔',a2:'A2 öffnen ➔',a3:'A3 öffnen ➔',a4:'A4 öffnen ➔',a5:'A5 öffnen ➔'};
   var lockLabels={a2:'🔒 Nach A1',a3:'🔒 Nach A2'};
   var order=['a1','a2','a3','a4','a5'],count=order.filter(function(k){return done[k];}).length;
-
   order.forEach(function(k){
-    var card=document.getElementById('module-'+k),state=card.querySelector('.module-state'),btn=card.querySelector('.module-btn');
-    card.classList.toggle('done',done[k]);
-    card.classList.toggle('locked',!unlocked[k]);
-    if(done[k]){
-      state.textContent='✓ abgeschlossen';
-      btn.removeAttribute('aria-disabled');
-      btn.textContent=labels[k];
-    }else if(unlocked[k]){
-      state.textContent='offen';
-      btn.removeAttribute('aria-disabled');
-      btn.textContent=labels[k];
-    }else{
-      state.textContent='🔒 gesperrt';
-      btn.setAttribute('aria-disabled','true');
-      btn.textContent=lockLabels[k]||'🔒 gesperrt';
-    }
+    var card=document.getElementById('module-'+k),state=card.querySelector('.module-state'),btn=card.querySelector('.module-btn');card.classList.toggle('done',done[k]);card.classList.toggle('locked',!unlocked[k]);
+    if(done[k]){state.textContent='✓ abgeschlossen';btn.removeAttribute('aria-disabled');btn.textContent=labels[k];}
+    else if(unlocked[k]){state.textContent='offen';btn.removeAttribute('aria-disabled');btn.textContent=labels[k];}
+    else{state.textContent='🔒 gesperrt';btn.setAttribute('aria-disabled','true');btn.textContent=lockLabels[k]||'🔒 gesperrt';}
   });
-
-  document.getElementById('progressText').textContent=count+' / 5';
-  document.getElementById('progressFill').style.width=(count/5*100)+'%';
-
+  document.getElementById('progressText').textContent=count+' / 5';document.getElementById('progressFill').style.width=(count/5*100)+'%';
   var next=order.find(function(k){return !done[k]&&unlocked[k];});
   var map={
     a1:['A1.html','Kurs starten ➔','Beginne mit A1 und den allgemeinen Tastenkürzeln.'],
     a2:['A2.html','Weiter mit A2 ➔','A1 ist abgeschlossen. Als Nächstes kommen die AltGr-Sonderzeichen.'],
     a3:['A3.html','Weiter mit A3 ➔','A1 und A2 sitzen. Jetzt folgt die Praxisaufgabe in Word.'],
-    a4:['A4.html','Weiter mit A4 ➔','Als Nächstes kannst du Browser- und Windows-Kürzel trainieren.'],
+    a4:['A4.html','Weiter mit A4 ➔','Als Nächstes kannst du Browser- und Windows-Kürzel lernen.'],
     a5:['A5.html','Weiter mit A5 ➔','Als Nächstes folgt die Wiederholung von A1, A2 und A4.']
   };
   if(next){document.getElementById('resumeBtn').href=map[next][0];document.getElementById('resumeBtn').textContent=map[next][1];document.getElementById('progressNote').textContent=map[next][2];}
@@ -135,56 +112,17 @@
 <script>
 (function(){
   if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
-
-  var TWO_PI=Math.PI*2;
-  var flow={from:Math.PI,to:Math.PI,start:performance.now(),duration:1500};
+  var TWO_PI=Math.PI*2;var flow={from:Math.PI,to:Math.PI,start:performance.now(),duration:1500};
   function shortestDelta(a,b){return Math.atan2(Math.sin(b-a),Math.cos(b-a));}
-  function currentAngle(now){
-    var t=Math.max(0,Math.min(1,(now-flow.start)/flow.duration));
-    var eased=t*t*(3-2*t);
-    return flow.from+shortestDelta(flow.from,flow.to)*eased;
-  }
-  function chooseDirection(){
-    var now=performance.now(),angle=currentAngle(now),next=Math.random()*TWO_PI;
-    if(Math.abs(shortestDelta(angle,next))<Math.PI/4)next=(next+Math.PI/2+Math.random()*Math.PI)%TWO_PI;
-    flow.from=angle;flow.to=next;flow.start=now;
-  }
+  function currentAngle(now){var t=Math.max(0,Math.min(1,(now-flow.start)/flow.duration)),eased=t*t*(3-2*t);return flow.from+shortestDelta(flow.from,flow.to)*eased;}
+  function chooseDirection(){var now=performance.now(),angle=currentAngle(now),next=Math.random()*TWO_PI;if(Math.abs(shortestDelta(angle,next))<Math.PI/4)next=(next+Math.PI/2+Math.random()*Math.PI)%TWO_PI;flow.from=angle;flow.to=next;flow.start=now;}
   setInterval(chooseDirection,5000);
-
   document.querySelectorAll('.module').forEach(function(card){
-    var canvas=document.createElement('canvas');canvas.className='card-canvas';card.appendChild(canvas);
-    var ctx=canvas.getContext('2d'),particles=[],hovered=false,raf=null,dpr=Math.min(window.devicePixelRatio||1,2);
-    var rgb=(getComputedStyle(card).getPropertyValue('--rgb')||'56,189,248').trim();
-
-    function resize(){
-      var r=card.getBoundingClientRect();
-      canvas.width=Math.max(1,Math.round(r.width*dpr));canvas.height=Math.max(1,Math.round(r.height*dpr));
-      canvas.style.width=r.width+'px';canvas.style.height=r.height+'px';ctx.setTransform(dpr,0,0,dpr,0,0);
-    }
-    function spawn(dir,w,h){
-      var margin=14,x,y;
-      if(Math.abs(dir.x)>=Math.abs(dir.y)){
-        x=dir.x>0?-margin:w+margin;y=Math.random()*h;
-      }else{
-        y=dir.y>0?-margin:h+margin;x=Math.random()*w;
-      }
-      particles.push({x:x,y:y,s:1.15+Math.random()*2.1,r:1.8+Math.random()*2.8,a:.58+Math.random()*.34});
-    }
-    function draw(now){
-      var w=canvas.width/dpr,h=canvas.height/dpr,angle=currentAngle(now||performance.now()),dir={x:Math.cos(angle),y:Math.sin(angle)};
-      ctx.clearRect(0,0,w,h);
-      if(hovered&&Math.random()<.52)spawn(dir,w,h);
-      for(var i=particles.length-1;i>=0;i--){
-        var p=particles[i];p.x+=dir.x*p.s;p.y+=dir.y*p.s;p.a-=.008;
-        if(p.a<=0||p.x<-24||p.x>w+24||p.y<-24||p.y>h+24){particles.splice(i,1);continue;}
-        ctx.save();ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,TWO_PI);ctx.fillStyle='rgba('+rgb+','+p.a+')';ctx.shadowColor='rgba('+rgb+','+p.a+')';ctx.shadowBlur=10;ctx.fill();ctx.restore();
-      }
-      if(hovered||particles.length){raf=requestAnimationFrame(draw);}else{raf=null;ctx.clearRect(0,0,w,h);}
-    }
-    resize();
-    if(window.ResizeObserver)new ResizeObserver(resize).observe(card);else window.addEventListener('resize',resize);
-    card.addEventListener('mouseenter',function(){hovered=true;if(!raf)raf=requestAnimationFrame(draw);});
-    card.addEventListener('mouseleave',function(){hovered=false;});
+    var canvas=document.createElement('canvas');canvas.className='card-canvas';card.appendChild(canvas);var ctx=canvas.getContext('2d'),particles=[],hovered=false,raf=null,dpr=Math.min(window.devicePixelRatio||1,2);var rgb=(getComputedStyle(card).getPropertyValue('--rgb')||'56,189,248').trim();
+    function resize(){var r=card.getBoundingClientRect();canvas.width=Math.max(1,Math.round(r.width*dpr));canvas.height=Math.max(1,Math.round(r.height*dpr));canvas.style.width=r.width+'px';canvas.style.height=r.height+'px';ctx.setTransform(dpr,0,0,dpr,0,0);}
+    function spawn(dir,w,h){var margin=14,x,y;if(Math.abs(dir.x)>=Math.abs(dir.y)){x=dir.x>0?-margin:w+margin;y=Math.random()*h;}else{y=dir.y>0?-margin:h+margin;x=Math.random()*w;}particles.push({x:x,y:y,s:1.15+Math.random()*2.1,r:1.8+Math.random()*2.8,a:.58+Math.random()*.34});}
+    function draw(now){var w=canvas.width/dpr,h=canvas.height/dpr,angle=currentAngle(now||performance.now()),dir={x:Math.cos(angle),y:Math.sin(angle)};ctx.clearRect(0,0,w,h);if(hovered&&Math.random()<.52)spawn(dir,w,h);for(var i=particles.length-1;i>=0;i--){var p=particles[i];p.x+=dir.x*p.s;p.y+=dir.y*p.s;p.a-=.008;if(p.a<=0||p.x<-24||p.x>w+24||p.y<-24||p.y>h+24){particles.splice(i,1);continue;}ctx.save();ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,TWO_PI);ctx.fillStyle='rgba('+rgb+','+p.a+')';ctx.shadowColor='rgba('+rgb+','+p.a+')';ctx.shadowBlur=10;ctx.fill();ctx.restore();}if(hovered||particles.length){raf=requestAnimationFrame(draw);}else{raf=null;ctx.clearRect(0,0,w,h);}}
+    resize();if(window.ResizeObserver)new ResizeObserver(resize).observe(card);else window.addEventListener('resize',resize);card.addEventListener('mouseenter',function(){hovered=true;if(!raf)raf=requestAnimationFrame(draw);});card.addEventListener('mouseleave',function(){hovered=false;});
   });
 })();
 </script>
