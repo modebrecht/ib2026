@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A4: Tastenkürzel-Quiz - Arbeitsblätter A bis G</title>
+    <title>A4: Tastenkürzel – Quest 8 bis 14</title>
     <link rel="stylesheet" href="vendor/fonts.css">
     <link rel="stylesheet" href="shared.css">
     <style>
@@ -17,7 +17,6 @@
             overflow-x: hidden;
         }
 
-        /* Akzentfarbe pro Arbeitsblatt (A-F Cyan, G Amber wie A2) */
         .sheet-wrap {
             --sheet-accent: #06b6d4;
             --sheet-accent-dark: #0891b2;
@@ -27,18 +26,12 @@
             gap: 1.5rem;
         }
 
-        .back-link:hover {
-            color: var(--accent-cyan);
-        }
+        .back-link:hover { color: var(--accent-cyan); }
 
         .badge-a4 {
-            background: rgba(6, 182, 212, 0.2);
-            border: 1px solid var(--accent-cyan);
-            color: #67e8f9;
-            padding: 4px 12px;
-            border-radius: 50px;
-            font-size: 0.85rem;
-            font-weight: 700;
+            --badge-accent: var(--accent-cyan);
+            --badge-accent-rgb: 6, 182, 212;
+            --badge-text: #67e8f9;
         }
 
         .set-tabs {
@@ -96,9 +89,7 @@
             box-shadow: 0 4px 15px rgba(var(--tab-accent-rgb), 0.4);
         }
 
-        .theory-block {
-            border-color: rgba(6, 182, 212, 0.35);
-        }
+        .theory-block { border-color: rgba(6, 182, 212, 0.35); }
 
         .theory-title {
             font-family: 'Space Grotesk', sans-serif;
@@ -111,6 +102,19 @@
             font-size: 0.98rem;
             line-height: 1.55;
         }
+
+        .context-note {
+            margin-top: 1rem;
+            padding: 12px 14px;
+            border-radius: 14px;
+            border: 1px solid rgba(245, 158, 11, 0.35);
+            background: rgba(245, 158, 11, 0.08);
+            color: var(--text-muted);
+            line-height: 1.5;
+            font-size: 0.92rem;
+        }
+
+        .context-note strong { color: #fde047; }
 
         .theory-grid {
             display: grid;
@@ -129,9 +133,7 @@
             gap: 7px;
         }
 
-        .theory-item kbd {
-            align-self: flex-start;
-        }
+        .theory-item kbd { align-self: flex-start; }
 
         .theory-item span {
             font-size: 0.88rem;
@@ -159,47 +161,11 @@
             font-size: 1.02rem;
         }
 
-        .btn-summary {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            padding: 10px 18px;
-            border-radius: 12px;
-            font-family: inherit;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            white-space: nowrap;
-        }
-
-        .btn-summary:hover {
-            border-color: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
-        }
-
         .btn-accent {
-            background: linear-gradient(135deg, var(--sheet-accent) 0%, var(--sheet-accent-dark) 100%);
+            --btn-accent: var(--sheet-accent);
+            --btn-accent-dark: var(--sheet-accent-dark);
+            --btn-accent-rgb: var(--sheet-accent-rgb);
             color: #0f172a;
-            padding: 11px 26px;
-            font-size: 1rem;
-            font-family: inherit;
-            font-weight: 800;
-            border: none;
-            border-radius: 14px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 10px 25px rgba(var(--sheet-accent-rgb), 0.35);
-        }
-
-        .btn-accent:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 30px rgba(var(--sheet-accent-rgb), 0.5);
-        }
-
-        button:active, a:active {
-            transform: translateY(3px) scale(0.97) !important;
-            box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.4) !important;
-            transition: transform 0.05s ease, box-shadow 0.05s ease !important;
         }
 
         .questions {
@@ -290,10 +256,8 @@
             transition: all 0.15s ease;
         }
 
-        .answer-select option {
-            background: #0f172a;
-            color: var(--text-main);
-        }
+        .answer-select:disabled { cursor: default; opacity: 0.95; }
+        .answer-select option { background: #0f172a; color: var(--text-main); }
 
         .answer-select:focus {
             border-color: rgba(var(--sheet-accent-rgb), 0.7);
@@ -341,37 +305,6 @@
             color: var(--text-muted);
         }
 
-        /* Auswertungs-Modal */
-        .overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(15, 23, 42, 0.7);
-            backdrop-filter: blur(4px);
-            z-index: 40;
-        }
-
-        .summary-panel {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: min(460px, calc(100vw - 2rem));
-            max-height: calc(100vh - 3rem);
-            overflow-y: auto;
-            background: #111c33;
-            border: 1px solid var(--border-color);
-            border-radius: 24px;
-            padding: 1.5rem;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
-            z-index: 50;
-        }
-
-        .summary-panel.open {
-            display: block;
-        }
-
         .summary-head {
             display: flex;
             justify-content: space-between;
@@ -383,19 +316,6 @@
         .summary-head h2 {
             font-family: 'Space Grotesk', sans-serif;
             font-size: 1.35rem;
-        }
-
-        .btn-close {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            width: 32px;
-            height: 32px;
-            border-radius: 10px;
-            font-size: 1.1rem;
-            line-height: 1;
-            cursor: pointer;
-            flex-shrink: 0;
         }
 
         .summary-rows {
@@ -457,32 +377,29 @@
             font-weight: 700;
         }
 
+        .pdf-hint {
+            margin-top: 0.7rem;
+            color: var(--text-muted);
+            font-size: 0.86rem;
+            text-align: center;
+        }
+
         @media (max-width: 640px) {
-            .set-tabs {
-                grid-template-columns: repeat(4, 1fr);
-            }
-
-            .set-tab .tab-name {
-                display: none;
-            }
-
-            .actions {
-                justify-content: center;
-            }
+            .set-tabs { grid-template-columns: repeat(4, 1fr); }
+            .set-tab .tab-name { display: none; }
+            .actions { justify-content: center; }
+            .summary-row { grid-template-columns: 38px 1fr; }
+            .summary-vals { grid-column: 2; }
         }
     </style>
 </head>
 <body>
 
     <header class="top-bar">
-        <a href="index.html" class="back-link">
-            ← Zurück zur Übersicht
-        </a>
+        <a href="index.html" class="back-link">← Zurück zur Übersicht</a>
         <div style="display: flex; align-items: center; gap: 12px;">
-            <div class="xp-pill">
-                ⚡ XP: <span class="global-xp-val">0</span>
-            </div>
-            <span class="badge-a4">Arbeitsblatt A4</span>
+            <div class="xp-pill">⚡ XP: <span class="global-xp-val">0</span></div>
+            <span class="tk-badge badge-a4">Arbeitsblatt A4</span>
         </div>
     </header>
 
@@ -490,20 +407,25 @@
         <div class="sheet-wrap" id="sheetWrap">
 
             <div class="card theory-block">
-                <h2 class="theory-title">📘 Bevor du loslegst: Diese Kürzel gehören zu Windows selbst</h2>
+                <h2 class="theory-title">📘 Windows-Tastenkürzel für Quest 8–14</h2>
                 <p class="theory-intro">
-                    Die folgenden Tastenkombinationen funktionieren systemweit – egal, welches Programm gerade offen ist. Windows verarbeitet sie direkt, bevor eine Webseite sie überhaupt sehen könnte. Deshalb kannst du sie hier nicht "live" ausprobieren – lerne sie zuerst als Theorie, das Quiz danach prüft, ob du sie erkennst.
+                    Einige Tastenkombinationen steuern Windows direkt. Deshalb können wir sie hier nicht zuverlässig als Live-Übung abfangen.
+                    Lies sie zuerst durch – danach prüfst du sie im Quiz.
                 </p>
+                <div class="context-note">
+                    <strong>Wichtig:</strong> Manche Kürzel hängen vom Programm ab. Zum Beispiel bedeutet <kbd>Ctrl + H</kbd>
+                    in Word <strong>Suchen und Ersetzen</strong>, im Browser dagegen meist <strong>Verlauf</strong>.
+                </div>
                 <div class="theory-grid">
                     <div class="theory-item"><kbd>Win + L</kbd><span>Bildschirm sperren, wenn du den Platz verlässt</span></div>
-                    <div class="theory-item"><kbd>Win + D</kbd><span>Alle Fenster minimieren, Desktop anzeigen</span></div>
+                    <div class="theory-item"><kbd>Win + D</kbd><span>Desktop anzeigen</span></div>
                     <div class="theory-item"><kbd>Win + E</kbd><span>Datei-Explorer öffnen</span></div>
                     <div class="theory-item"><kbd>Win + S</kbd><span>Windows-Suche öffnen</span></div>
-                    <div class="theory-item"><kbd>Win + Shift + S</kbd><span>Bildschirmausschnitt fotografieren</span></div>
-                    <div class="theory-item"><kbd>Win + Tab</kbd><span>Aufgabenansicht: alle offenen Fenster anzeigen</span></div>
+                    <div class="theory-item"><kbd>Win + Shift + S</kbd><span>Bildschirmausschnitt aufnehmen</span></div>
+                    <div class="theory-item"><kbd>Win + Tab</kbd><span>Aufgabenansicht mit offenen Fenstern anzeigen</span></div>
                     <div class="theory-item"><kbd>Win + .</kbd><span>Emoji- und Sonderzeichen-Menü öffnen</span></div>
-                    <div class="theory-item"><kbd>Win + P</kbd><span>Beamer/zweiten Bildschirm einstellen (Duplizieren, Erweitern, …)</span></div>
-                    <div class="theory-item"><kbd>Win + Pfeiltasten</kbd><span>Fenster links/rechts andocken oder maximieren</span></div>
+                    <div class="theory-item"><kbd>Win + P</kbd><span>Anzeige für Beamer oder zweiten Bildschirm wählen</span></div>
+                    <div class="theory-item"><kbd>Win + Pfeiltasten</kbd><span>Fenster anordnen oder maximieren</span></div>
                     <div class="theory-item"><kbd>Alt + Tab</kbd><span>Zwischen offenen Programmen wechseln</span></div>
                     <div class="theory-item"><kbd>Ctrl + Shift + Esc</kbd><span>Task-Manager direkt öffnen</span></div>
                     <div class="theory-item"><kbd>Ctrl + Esc</kbd><span>Startmenü per Tastatur öffnen</span></div>
@@ -515,10 +437,10 @@
             <div class="card">
                 <div class="sheet-head">
                     <div>
-                        <h1 class="sheet-title" id="sheetTitle">Arbeitsblatt A</h1>
+                        <h1 class="sheet-title" id="sheetTitle">Quest 8 – Grundlagen</h1>
                         <p class="sheet-desc" id="sheetDesc">Wähle für jede Frage das passende Tastenkürzel aus.</p>
                     </div>
-                    <button class="btn-summary" id="showSummaryBtn">📊 Auswertung</button>
+                    <button class="tk-btn-secondary" id="showSummaryBtn">📊 Auswertung</button>
                 </div>
 
                 <div class="progress-bar-wrap">
@@ -528,117 +450,112 @@
                 <div class="questions" id="questionsContainer"></div>
 
                 <div class="actions">
-                    <button class="btn-accent" id="checkBtn">✅ Überprüfen</button>
+                    <button class="tk-btn-primary btn-accent" id="checkBtn">✅ Überprüfen</button>
                     <div class="score-box" id="scoreBox">0 / 8 richtig</div>
-                    <button class="btn-summary" id="downloadJsonBtn" style="display: none;">JSON anzeigen</button>
                 </div>
             </div>
 
         </div>
     </div>
 
-    <!-- Auswertungs-Modal -->
-    <div class="overlay" id="overlay"></div>
-    <div class="summary-panel" id="summaryPanel" role="dialog" aria-modal="true" aria-labelledby="summaryTitle">
+    <div class="tk-modal-overlay" id="overlay"></div>
+    <div class="tk-modal-panel" id="summaryPanel" role="dialog" aria-modal="true" aria-labelledby="summaryTitle">
         <div class="summary-head">
             <h2 id="summaryTitle">📊 Auswertung</h2>
-            <button class="btn-close" id="closeSummary" aria-label="Auswertung schliessen">×</button>
+            <button class="tk-btn-close" id="closeSummary" aria-label="Auswertung schliessen">×</button>
         </div>
         <p style="color: var(--text-muted); font-size: 0.92rem;">
-            Pro Arbeitsblatt: <strong>erster Versuch → letzter Versuch</strong>.
+            Pro Quest: <strong>erster Versuch → bester Versuch</strong>.
         </p>
         <div class="summary-rows" id="summaryRows"></div>
         <div class="summary-total">
-            <span style="color: var(--text-muted);">Ø letzter Versuch</span>
-            <span id="summaryAvg" style="font-family: 'Space Grotesk', monospace;">0%</span>
+            <span style="color: var(--text-muted);">Ø bester Versuch</span>
+            <span id="summaryAvg" style="font-family: 'Space Grotesk', monospace;">0 %</span>
         </div>
-        <button class="btn-accent" id="downloadA4PdfBtn" style="width: 100%; margin-top: 1rem;">
-            📄 Eigenes Zeugnis als PDF herunterladen
+        <button class="tk-btn-primary btn-accent" id="downloadA4PdfBtn" style="width: 100%; margin-top: 1rem;">
+            📄 Auswertung als PDF herunterladen
         </button>
+        <div class="pdf-hint" id="pdfHint"></div>
     </div>
 
-    <!-- Global XP Engine (nur XP-Anzeige im Header) -->
     <script src="xp.js"></script>
     <script>
-        /* --- Arbeitsblatt-Metadaten (Titel, Kurzbeschrieb, Akzentfarbe) --- */
         var CYAN = { accent: "#06b6d4", dark: "#0891b2", rgb: "6, 182, 212" };
         var AMBER = { accent: "#f59e0b", dark: "#d97706", rgb: "245, 158, 11" };
 
         var META = {
-            A: { name: "Grundlagen", title: "Q8: Grundlagen", desc: "Kopieren, Einfügen, Rückgängig, Suchen und Drucken.", theme: CYAN },
-            B: { name: "Fenster", title: "Q9: Speichern & Fenster", desc: "Speichern, Formatieren, Fenster und Tabs wechseln.", theme: CYAN },
-            C: { name: "Repetition", title: "Q10: Repetition", desc: "Gemischte Wiederholung der wichtigsten Kürzel.", theme: CYAN },
-            D: { name: "Programme", title: "Q11: Programme & Browser", desc: "Formatieren, Tabs, Druckdialog und Task-Manager.", theme: CYAN },
-            E: { name: "Windows", title: "Q12: Windows & Navigation", desc: "Startmenü, Sprünge im Dokument und Fenster andocken.", theme: CYAN },
-            F: { name: "Profi", title: "Q13: Windows-Profi", desc: "Explorer, Screenshots, Aufgabenansicht und Verlauf.", theme: CYAN },
-            G: { name: "AltGr", title: "Q14: Sonderzeichen mit AltGr", desc: "Schweizer Tastatur: @, #, €, |, \\, [, ], {, } und ° – passend zu Arbeitsblatt A2.", theme: AMBER }
+            A: { name: "Grundlagen", title: "Quest 8 – Grundlagen", desc: "Kopieren, Einfügen, Rückgängig, Suchen und Drucken.", theme: CYAN },
+            B: { name: "Fenster", title: "Quest 9 – Fenster & Speichern", desc: "Speichern, Formatieren, Fenster und Tabs wechseln.", theme: CYAN },
+            C: { name: "Wiederholung", title: "Quest 10 – Wiederholung", desc: "Gemischte Wiederholung der wichtigsten Kürzel.", theme: CYAN },
+            D: { name: "Programme", title: "Quest 11 – Programme & Browser", desc: "Formatieren, Tabs, Druckdialog und Task-Manager.", theme: CYAN },
+            E: { name: "Windows", title: "Quest 12 – Windows & Navigation", desc: "Startmenü, Sprünge im Dokument und Fenster anordnen.", theme: CYAN },
+            F: { name: "Erweitert", title: "Quest 13 – Windows erweitert", desc: "Explorer, Screenshots, Aufgabenansicht und Browser-Verlauf.", theme: CYAN },
+            G: { name: "AltGr", title: "Quest 14 – Sonderzeichen mit AltGr", desc: "Schweizer Tastatur: @, #, €, |, \\, [, ], {, } und °.", theme: AMBER }
         };
 
-        /* --- Datenbasis --- */
         var DATA = {
             A: [
                 { text: "Du möchtest einen Textabschnitt kopieren. Welche Tastenkombination ist dafür zuständig?", correct: "Ctrl + C", wrong: ["Ctrl + X", "Ctrl + V"] },
                 { text: "Wie kannst du deinen Computer sperren, wenn du deinen Platz kurz verlässt?", correct: "Win + L", wrong: ["Ctrl + L", "Alt + F4"] },
                 { text: "Welche Tastenkombination macht eine Aktion rückgängig?", correct: "Ctrl + Z", wrong: ["Ctrl + Y", "Ctrl + U"] },
-                { text: "Mit welchem Kürzel kannst du nach einem Wort suchen?", correct: "Ctrl + F", wrong: ["Ctrl + S", "Ctrl + H"] },
-                { text: "Welches Kürzel fügt den zuletzt kopierten/ausgeschnittenen Inhalt ein?", correct: "Ctrl + V", wrong: ["Ctrl + C", "Ctrl + A"] },
-                { text: "Du willst das gerade Geöffnete schnell drucken. Welche Tastenkombination nimmst du?", correct: "Ctrl + P", wrong: ["Ctrl + D", "Ctrl + Shift + P"] },
+                { text: "Mit welchem Kürzel kannst du in einem Dokument nach einem Wort suchen?", correct: "Ctrl + F", wrong: ["Ctrl + S", "Ctrl + H"] },
+                { text: "Welches Kürzel fügt den zuletzt kopierten oder ausgeschnittenen Inhalt ein?", correct: "Ctrl + V", wrong: ["Ctrl + C", "Ctrl + A"] },
+                { text: "Du willst das gerade geöffnete Dokument schnell drucken. Welche Tastenkombination nimmst du?", correct: "Ctrl + P", wrong: ["Ctrl + D", "Ctrl + Shift + P"] },
                 { text: "Wie wählst du alles in einem Dokument aus?", correct: "Ctrl + A", wrong: ["Ctrl + E", "Ctrl + Q"] },
-                { text: "Du hast etwas rückgängig gemacht, möchtest es aber wiederholen. Welches Kürzel?", correct: "Ctrl + Y", wrong: ["Ctrl + Z", "Ctrl + R"] }
+                { text: "Du hast in Word etwas rückgängig gemacht und möchtest es wiederherstellen. Welches Kürzel?", correct: "Ctrl + Y", wrong: ["Ctrl + Z", "Ctrl + R"] }
             ],
             B: [
-                { text: "Welche Tastenkombination drückst du, um deine Arbeit zu sichern?", correct: "Ctrl + S", wrong: ["Ctrl + A", "Ctrl + D"] },
-                { text: "Wie kannst du Text fett formatieren?", correct: "Ctrl + B", wrong: ["Ctrl + I", "Ctrl + F"] },
-                { text: "Wie schliesst du das aktive Fenster oder den aktuellen Tab?", correct: "Ctrl + W", wrong: ["Ctrl + Q", "Alt + Tab"] },
+                { text: "Welche Tastenkombination drückst du, um deine Arbeit zu speichern?", correct: "Ctrl + S", wrong: ["Ctrl + A", "Ctrl + D"] },
+                { text: "Wie kannst du Text in Word oder einem Textprogramm fett formatieren?", correct: "Ctrl + B", wrong: ["Ctrl + I", "Ctrl + F"] },
+                { text: "Wie schliesst du im Browser den aktuellen Tab?", correct: "Ctrl + W", wrong: ["Ctrl + Q", "Alt + Tab"] },
                 { text: "Welches Kürzel wechselt zwischen geöffneten Programmen?", correct: "Alt + Tab", wrong: ["Ctrl + Tab", "Win + D"] },
                 { text: "Welche Tastenkombination nutzt du zum Ausschneiden?", correct: "Ctrl + X", wrong: ["Ctrl + C", "Ctrl + V"] },
-                { text: "Mit welchem Kürzel startest du ein neues Dokument?", correct: "Ctrl + N", wrong: ["Ctrl + M", "Ctrl + Shift + N"] },
-                { text: "Welches Kürzel stellt eine Aktion wieder her (Redo)?", correct: "Ctrl + Y", wrong: ["Ctrl + Z", "Ctrl + Shift + Z"] },
+                { text: "Du möchtest in Word ein neues Dokument erstellen. Welches Kürzel?", correct: "Ctrl + N", wrong: ["Ctrl + M", "Ctrl + Shift + N"] },
+                { text: "Welches Kürzel stellt in Word eine rückgängig gemachte Aktion wieder her?", correct: "Ctrl + Y", wrong: ["Ctrl + Z", "Ctrl + Shift + Z"] },
                 { text: "Wie öffnest du eine neue Browser-Registerkarte?", correct: "Ctrl + T", wrong: ["Ctrl + N", "Ctrl + Shift + T"] }
             ],
             C: [
                 { text: "Du hast etwas kopiert. Wie fügst du es ein?", correct: "Ctrl + V", wrong: ["Ctrl + C", "Ctrl + X"] },
                 { text: "Welches Kürzel öffnet direkt den Task-Manager?", correct: "Ctrl + Shift + Esc", wrong: ["Ctrl + Alt + Del", "Alt + F4"] },
                 { text: "Wie aktualisierst du eine Webseite?", correct: "F5", wrong: ["Ctrl + E", "Win + R"] },
-                { text: "Wie markierst du den gesamten Inhalt einer Seite?", correct: "Ctrl + A", wrong: ["Ctrl + Shift + A", "Ctrl + E"] },
-                { text: "Welches Kürzel erstellt eine Kopie eines markierten Textes?", correct: "Ctrl + C", wrong: ["Ctrl + X", "Ctrl + V"] },
-                { text: "Mit welchem Kürzel speicherst du schnell?", correct: "Ctrl + S", wrong: ["Ctrl + P", "Ctrl + Shift + S"] },
+                { text: "Wie markierst du den gesamten Inhalt einer Seite oder eines Dokuments?", correct: "Ctrl + A", wrong: ["Ctrl + Shift + A", "Ctrl + E"] },
+                { text: "Welches Kürzel kopiert markierten Text?", correct: "Ctrl + C", wrong: ["Ctrl + X", "Ctrl + V"] },
+                { text: "Mit welchem Kürzel speicherst du in vielen Programmen schnell?", correct: "Ctrl + S", wrong: ["Ctrl + P", "Ctrl + Shift + S"] },
                 { text: "Welches Kürzel macht den letzten Schritt rückgängig?", correct: "Ctrl + Z", wrong: ["Ctrl + Y", "Ctrl + U"] },
-                { text: "Wie kannst du ein neues Dokument/Fenster öffnen?", correct: "Ctrl + N", wrong: ["Ctrl + O", "Ctrl + Shift + N"] }
+                { text: "Welches Kürzel erstellt in vielen Programmen ein neues Dokument oder Fenster?", correct: "Ctrl + N", wrong: ["Ctrl + O", "Ctrl + Shift + N"] }
             ],
             D: [
-                { text: "Welche Tastenkombination macht Text fett?", correct: "Ctrl + B", wrong: ["Ctrl + I", "Ctrl + U"] },
-                { text: "Wie aktivierst du die Suchfunktion?", correct: "Ctrl + F", wrong: ["Ctrl + H", "Ctrl + S"] },
+                { text: "Welche Tastenkombination macht Text in Word oder einem Textprogramm fett?", correct: "Ctrl + B", wrong: ["Ctrl + I", "Ctrl + U"] },
+                { text: "Wie aktivierst du in einem Dokument oder Browser die Suchfunktion?", correct: "Ctrl + F", wrong: ["Ctrl + H", "Ctrl + S"] },
                 { text: "Welches Kürzel dient dazu, Text auszuschneiden?", correct: "Ctrl + X", wrong: ["Ctrl + C", "Ctrl + V"] },
                 { text: "Wie wechselst du schnell zwischen laufenden Anwendungen?", correct: "Alt + Tab", wrong: ["Ctrl + Tab", "Win + Tab"] },
-                { text: "Welche Tastenkombination schliesst den aktuellen Tab?", correct: "Ctrl + W", wrong: ["Ctrl + Q", "Alt + F4"] },
-                { text: "Welches Kürzel öffnet den Druckdialog?", correct: "Ctrl + P", wrong: ["Ctrl + D", "Ctrl + Shift + P"] },
+                { text: "Welche Tastenkombination schliesst im Browser den aktuellen Tab?", correct: "Ctrl + W", wrong: ["Ctrl + Q", "Alt + F4"] },
+                { text: "Welches Kürzel öffnet in vielen Programmen den Druckdialog?", correct: "Ctrl + P", wrong: ["Ctrl + D", "Ctrl + Shift + P"] },
                 { text: "Du willst im Browser einen neuen Tab öffnen. Welche Tastenkombination?", correct: "Ctrl + T", wrong: ["Ctrl + N", "Ctrl + Shift + T"] },
-                { text: "Dein PC hängt ein bisschen und du willst schnell sehen, was läuft. Welche Tastenkombination öffnet den Task-Manager direkt?", correct: "Ctrl + Shift + Esc", wrong: ["Ctrl + Alt + Del", "Alt + F4"] }
+                { text: "Dein PC hängt ein bisschen und du willst schnell sehen, was läuft. Welches Kürzel öffnet den Task-Manager direkt?", correct: "Ctrl + Shift + Esc", wrong: ["Ctrl + Alt + Del", "Alt + F4"] }
             ],
             E: [
-                { text: "Du möchtest eine bereits gespeicherte Datei öffnen. Welche Tastenkombination?", correct: "Ctrl + O", wrong: ["Ctrl + Shift + O", "Win + O"] },
+                { text: "Du möchtest in einem Programm eine bereits gespeicherte Datei öffnen. Welche Tastenkombination?", correct: "Ctrl + O", wrong: ["Ctrl + Shift + O", "Win + O"] },
                 { text: "Du möchtest das Windows-Startmenü per Tastatur öffnen.", correct: "Ctrl + Esc", wrong: ["Win + F1", "Win + Esc"] },
                 { text: "Du bist am Ende eines längeren Dokuments und willst ganz nach oben zum Anfang springen.", correct: "Ctrl + Home", wrong: ["Ctrl + End", "Win + Pfeil nach oben"] },
                 { text: "Du willst in einem langen Dokument direkt ans Ende springen.", correct: "Ctrl + End", wrong: ["Ctrl + Home", "Win + Pfeil nach unten"] },
                 { text: "Du möchtest alle Fenster minimieren und den Desktop sehen.", correct: "Win + D", wrong: ["Win + Pfeil rechts", "Win + S"] },
-                { text: "Du willst ein Fenster links am Bildschirm andocken.", correct: "Win + Pfeil nach links", wrong: ["Win + Pfeil nach rechts", "Win + Pfeil nach oben"] },
+                { text: "Du willst ein Fenster links am Bildschirm anordnen.", correct: "Win + Pfeil nach links", wrong: ["Win + Pfeil nach rechts", "Win + Pfeil nach oben"] },
                 { text: "Du möchtest schnell die Windows-Suche öffnen.", correct: "Win + S", wrong: ["Win + F1", "Ctrl + O"] },
-                { text: "Du willst einen Screenshot vom gesamten Bildschirm machen.", correct: "Taste Printscreen (Prt Scr)", wrong: ["Win + F1", "Win + S"] }
+                { text: "Welche Taste wird häufig für einen Screenshot des gesamten Bildschirms verwendet?", correct: "Taste Printscreen (Prt Scr)", wrong: ["Win + F1", "Win + S"] }
             ],
             F: [
                 { text: "Du möchtest den Datei-Explorer sofort öffnen.", correct: "Win + E", wrong: ["Win + X", "Ctrl + E"] },
                 { text: "Du möchtest nur einen Bildausschnitt als Screenshot aufnehmen. Welche Tastenkombination benutzt du?", correct: "Win + Shift + S", wrong: ["Taste Printscreen (Prt Scr)", "Win + S"] },
                 { text: "Du willst alle geöffneten Fenster als Übersicht sehen (Aufgabenansicht).", correct: "Win + Tab", wrong: ["Alt + Tab", "Ctrl + Tab"] },
-                { text: "Du möchtest ein Fenster an die rechte Bildschirmhälfte andocken.", correct: "Win + Pfeil nach rechts", wrong: ["Win + Pfeil nach oben", "Ctrl + Pfeil nach rechts"] },
-                { text: "Du möchtest ein Fenster maximieren (oben andocken).", correct: "Win + Pfeil nach oben", wrong: ["Win + Pfeil nach unten", "Alt + Pfeil nach oben"] },
+                { text: "Du möchtest ein Fenster an die rechte Bildschirmhälfte anordnen.", correct: "Win + Pfeil nach rechts", wrong: ["Win + Pfeil nach oben", "Ctrl + Pfeil nach rechts"] },
+                { text: "Du möchtest ein Fenster maximieren.", correct: "Win + Pfeil nach oben", wrong: ["Win + Pfeil nach unten", "Alt + Pfeil nach oben"] },
                 { text: "Du hast aus Versehen einen Browser-Tab geschlossen und willst ihn sofort zurückholen.", correct: "Ctrl + Shift + T", wrong: ["Ctrl + T", "Ctrl + Shift + N"] },
-                { text: "Du willst das aktuell aktive Fenster/Programm beenden.", correct: "Alt + F4", wrong: ["Ctrl + F4", "Win + F4"] },
-                { text: "Du möchtest im Browser die Verlauf-/Chronik-Ansicht öffnen.", correct: "Ctrl + H", wrong: ["Ctrl + J", "Ctrl + L"] },
-                { text: "Du willst schnell ein Emoji oder Sonderzeichen einfügen, ganz ohne extra App.", correct: "Win + .", wrong: ["Win + E", "AltGr + E"] },
-                { text: "Du bist am Beamer im Schulzimmer und willst den Bildschirm nur duplizieren statt erweitern.", correct: "Win + P", wrong: ["Win + D", "Win + Tab"] }
+                { text: "Du willst das aktuell aktive Fenster oder Programm beenden.", correct: "Alt + F4", wrong: ["Ctrl + F4", "Win + F4"] },
+                { text: "Du möchtest im Browser die Verlauf-Ansicht öffnen. Welches Kürzel?", correct: "Ctrl + H", wrong: ["Ctrl + J", "Ctrl + L"] },
+                { text: "Du willst schnell ein Emoji oder Sonderzeichen einfügen, ohne eine zusätzliche App zu öffnen.", correct: "Win + .", wrong: ["Win + E", "AltGr + E"] },
+                { text: "Du bist am Beamer im Schulzimmer und willst die Anzeige duplizieren statt erweitern. Welches Menü öffnest du?", correct: "Win + P", wrong: ["Win + D", "Win + Tab"] }
             ],
-            /* Arbeitsblatt G: nur AltGr-Sonderzeichen (Schweizer Tastatur, Inhalte aus A2) */
             G: [
                 { char: "@", text: "Klammeraffe – wichtig für jede E-Mail-Adresse. Welche Tastenkombination erzeugt dieses Zeichen?", correct: "AltGr + 2", wrong: ["AltGr + Q", "AltGr + 3"] },
                 { char: "#", text: "Hashtag / Raute – für Social Media und Programmierung. Welche Tastenkombination brauchst du?", correct: "AltGr + 3", wrong: ["AltGr + 4", "Shift + 3"] },
@@ -654,11 +571,12 @@
         };
 
         var SETS = Object.keys(DATA);
-        var STORAGE_KEY = "tastaturkuerzel-progress-v1";
+        var STORAGE_KEY = "tastaturkuerzel-progress-v2";
+        var LEGACY_STORAGE_KEY = "tastaturkuerzel-progress-v1";
         var currentSet = "A";
+        var attemptFinished = false;
+        var freshAttempt = false;
 
-        /* A4 knüpft nahtlos an die globale Quest-Nummerierung aus xp.js an:
-           A1 = q1-q3, A2 = q4-q6, A3 Boss-Challenge = q7, A4 = q8-q14 (Set 1-7). */
         function globalQuestId(setKey) {
             return "q" + (SETS.indexOf(setKey) + 8);
         }
@@ -677,7 +595,8 @@
         var summaryRowsEl = document.getElementById("summaryRows");
         var summaryAvgEl = document.getElementById("summaryAvg");
         var closeSummary = document.getElementById("closeSummary");
-        var downloadJsonBtn = document.getElementById("downloadJsonBtn");
+        var downloadA4PdfBtn = document.getElementById("downloadA4PdfBtn");
+        var pdfHint = document.getElementById("pdfHint");
 
         function shuffle(arr) {
             return arr
@@ -695,6 +614,73 @@
             sheetWrap.style.setProperty("--sheet-accent", theme.accent);
             sheetWrap.style.setProperty("--sheet-accent-dark", theme.dark);
             sheetWrap.style.setProperty("--sheet-accent-rgb", theme.rgb);
+        }
+
+        function normalizeProgressEntry(entry) {
+            if (!entry || typeof entry !== "object") return null;
+            var first = typeof entry.first === "number" ? entry.first : null;
+            var last = typeof entry.last === "number" ? entry.last : first;
+            var best = typeof entry.best === "number"
+                ? entry.best
+                : Math.max(first === null ? 0 : first, last === null ? 0 : last);
+            return {
+                first: first,
+                last: last,
+                best: best,
+                answers: Array.isArray(entry.answers) ? entry.answers : [],
+                lastCorrect: typeof entry.lastCorrect === "number" ? entry.lastCorrect : null
+            };
+        }
+
+        function loadProgress() {
+            try {
+                var raw = localStorage.getItem(STORAGE_KEY);
+                if (raw) return JSON.parse(raw);
+
+                var legacyRaw = localStorage.getItem(LEGACY_STORAGE_KEY);
+                if (!legacyRaw) return {};
+
+                var legacy = JSON.parse(legacyRaw);
+                var migrated = {};
+                Object.keys(legacy).forEach(function (key) {
+                    var normalized = normalizeProgressEntry(legacy[key]);
+                    if (normalized) migrated[key] = normalized;
+                });
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(migrated));
+                return migrated;
+            } catch (e) {
+                return {};
+            }
+        }
+
+        function saveProgress(setKey, percent, answersArr, correctCount) {
+            var data = loadProgress();
+            var existing = normalizeProgressEntry(data[setKey]);
+            if (!existing) {
+                data[setKey] = {
+                    first: percent,
+                    last: percent,
+                    best: percent,
+                    answers: answersArr,
+                    lastCorrect: correctCount
+                };
+            } else {
+                if (typeof existing.first !== "number") existing.first = percent;
+                existing.last = percent;
+                existing.best = Math.max(existing.best || 0, percent);
+                existing.answers = answersArr;
+                existing.lastCorrect = correctCount;
+                data[setKey] = existing;
+            }
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            } catch (e) {}
+        }
+
+        function scoreColor(pct) {
+            if (pct >= 80) return "var(--accent-green)";
+            if (pct >= 50) return "var(--accent-amber)";
+            return "var(--accent-red)";
         }
 
         function renderTabs() {
@@ -719,6 +705,7 @@
                 btn.appendChild(name);
                 btn.addEventListener("click", function () {
                     currentSet = key;
+                    freshAttempt = false;
                     renderQuestions();
                 });
                 setTabsEl.appendChild(btn);
@@ -734,7 +721,24 @@
             answerProgress.style.width = (selects.length ? (answered / selects.length) * 100 : 0) + "%";
         }
 
-        function renderQuestions() {
+        function setStoredScoreText(stored, questionCount) {
+            if (stored && typeof stored.last === "number") {
+                var correct = typeof stored.lastCorrect === "number"
+                    ? stored.lastCorrect
+                    : Math.round((stored.last / 100) * questionCount);
+                scoreBox.textContent = "Letzter Versuch: " + correct + " / " + questionCount + " richtig (" + stored.last + " %)";
+                scoreBox.style.color = scoreColor(stored.last);
+                checkBtn.textContent = "↻ Neuer Versuch";
+                attemptFinished = true;
+            } else {
+                scoreBox.textContent = "0 / " + questionCount + " richtig";
+                scoreBox.style.color = "var(--text-muted)";
+                checkBtn.textContent = "✅ Überprüfen";
+                attemptFinished = false;
+            }
+        }
+
+        function renderQuestions(forceFresh) {
             applyTheme(currentSet);
             renderTabs();
 
@@ -743,9 +747,10 @@
 
             questionsContainer.innerHTML = "";
             var progress = loadProgress();
-            var stored = progress[currentSet] || {};
-            var storedAnswers = Array.isArray(stored.answers) ? stored.answers : [];
+            var stored = normalizeProgressEntry(progress[currentSet]);
+            var storedAnswers = stored && Array.isArray(stored.answers) ? stored.answers : [];
             var questions = DATA[currentSet];
+            var startFresh = Boolean(forceFresh || freshAttempt);
 
             questions.forEach(function (q, idx) {
                 var card = document.createElement("div");
@@ -787,9 +792,7 @@
                     select.appendChild(o);
                 });
 
-                if (storedAnswers[idx]) {
-                    select.value = storedAnswers[idx];
-                }
+                if (!startFresh && storedAnswers[idx]) select.value = storedAnswers[idx];
 
                 var feedback = document.createElement("div");
                 feedback.className = "q-feedback";
@@ -806,39 +809,23 @@
                 questionsContainer.appendChild(card);
             });
 
-            scoreBox.textContent = "0 / " + questions.length + " richtig";
+            if (startFresh) {
+                scoreBox.textContent = "Neuer Versuch: 0 / " + questions.length + " richtig";
+                scoreBox.style.color = "var(--text-muted)";
+                checkBtn.textContent = "✅ Überprüfen";
+                attemptFinished = false;
+                freshAttempt = true;
+            } else {
+                setStoredScoreText(stored, questions.length);
+            }
+
             updateAnswerProgress();
         }
 
-        function loadProgress() {
-            try {
-                var raw = localStorage.getItem(STORAGE_KEY);
-                return raw ? JSON.parse(raw) : {};
-            } catch (e) {
-                return {};
-            }
-        }
-
-        function saveProgress(setKey, percent, answersArr) {
-            var data = loadProgress();
-            if (!data[setKey]) {
-                data[setKey] = { first: percent, last: percent, answers: answersArr };
-            } else {
-                if (typeof data[setKey].first !== "number") {
-                    data[setKey].first = percent;
-                }
-                data[setKey].last = percent;
-                data[setKey].answers = answersArr;
-            }
-            try {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-            } catch (e) {}
-        }
-
-        function scoreColor(pct) {
-            if (pct >= 80) return "var(--accent-green)";
-            if (pct >= 50) return "var(--accent-amber)";
-            return "var(--accent-red)";
+        function startNewAttempt() {
+            freshAttempt = true;
+            attemptFinished = false;
+            renderQuestions(true);
         }
 
         function renderSummary() {
@@ -850,11 +837,12 @@
 
             SETS.forEach(function (key) {
                 var theme = themeOf(key);
-                var stored = data[key] || {};
-                var first = typeof stored.first === "number" ? stored.first : null;
-                var last = typeof stored.last === "number" ? stored.last : null;
-                if (last !== null) {
-                    sum += last;
+                var stored = normalizeProgressEntry(data[key]);
+                var first = stored && typeof stored.first === "number" ? stored.first : null;
+                var best = stored && typeof stored.best === "number" ? stored.best : null;
+
+                if (best !== null) {
+                    sum += best;
                     counted++;
                 }
 
@@ -871,17 +859,17 @@
                 barWrap.className = "summary-bar-wrap";
                 var barFill = document.createElement("div");
                 barFill.className = "summary-bar-fill";
-                barFill.style.width = (last === null ? 0 : last) + "%";
-                barFill.style.background = last === null ? "rgba(255,255,255,0.15)" : scoreColor(last);
+                barFill.style.width = (best === null ? 0 : best) + "%";
+                barFill.style.background = best === null ? "rgba(255,255,255,0.15)" : scoreColor(best);
                 barWrap.appendChild(barFill);
 
                 var vals = document.createElement("div");
                 vals.className = "summary-vals";
-                if (last === null) {
+                if (best === null) {
                     vals.textContent = "noch offen";
                 } else {
-                    vals.textContent = first + "% → " + last + "%";
-                    vals.style.color = scoreColor(last);
+                    vals.textContent = first + " % → " + best + " %";
+                    vals.style.color = scoreColor(best);
                 }
 
                 row.appendChild(letter);
@@ -891,8 +879,32 @@
             });
 
             var avg = counted ? Math.round(sum / counted) : 0;
-            summaryAvgEl.textContent = avg + "%";
+            summaryAvgEl.textContent = avg + " %";
             summaryAvgEl.style.color = counted ? scoreColor(avg) : "var(--text-muted)";
+            updatePdfAvailability(data);
+        }
+
+        function allSetsAttempted(data) {
+            return SETS.every(function (key) {
+                var stored = normalizeProgressEntry(data[key]);
+                return stored && typeof stored.first === "number";
+            });
+        }
+
+        function updatePdfAvailability(data) {
+            var progress = data || loadProgress();
+            var attemptedCount = SETS.filter(function (key) {
+                var stored = normalizeProgressEntry(progress[key]);
+                return stored && typeof stored.first === "number";
+            }).length;
+            var complete = attemptedCount === SETS.length;
+
+            downloadA4PdfBtn.disabled = !complete;
+            if (complete) {
+                pdfHint.textContent = "Alle Quests wurden mindestens einmal bearbeitet.";
+            } else {
+                pdfHint.textContent = "PDF verfügbar nach dem ersten Versuch in allen 7 Quests (" + attemptedCount + "/7).";
+            }
         }
 
         function openSummary() {
@@ -906,7 +918,7 @@
             summaryPanel.classList.remove("open");
         }
 
-        checkBtn.addEventListener("click", function () {
+        function evaluateCurrentAttempt() {
             var selects = questionsContainer.querySelectorAll("select");
             var correctCount = 0;
             var chosen = [];
@@ -921,33 +933,50 @@
                 if (sel.value && sel.value === correctVal) {
                     sel.classList.add("correct");
                     correctCount++;
-                    feedback.innerHTML = '<span style="color: var(--accent-green);">✅ Richtig!</span>';
+                    feedback.innerHTML = '<span style="color: var(--accent-green);">✅ Richtig</span>';
                 } else {
                     sel.classList.add("wrong");
                     feedback.innerHTML = '<span style="color: var(--accent-red);">❌ ' +
-                        (sel.value ? "Leider falsch." : "Keine Antwort.") +
+                        (sel.value ? "Falsch" : "Keine Antwort") +
                         '</span><span style="color: var(--text-muted);">Richtig wäre:</span>';
                     var answerKbd = document.createElement("kbd");
                     answerKbd.textContent = correctVal;
                     feedback.appendChild(answerKbd);
                 }
+
                 feedback.classList.add("show");
+                sel.disabled = true;
             }
 
             var percent = Math.round((correctCount / selects.length) * 100);
-            scoreBox.textContent = correctCount + " / " + selects.length + " richtig (" + percent + "%)";
+            scoreBox.textContent = correctCount + " / " + selects.length + " richtig (" + percent + " %)";
             scoreBox.style.color = scoreColor(percent);
-            saveProgress(currentSet, percent, chosen);
+            saveProgress(currentSet, percent, chosen, correctCount);
 
-            // Nahtlose Anbindung ans globale Quest-System (q8-q14), parallel zum eigenen A4-Zeugnis
-            if (typeof saveQuestScore === "function") {
-                saveQuestScore(globalQuestId(currentSet), percent);
-            }
-            if (typeof addGlobalXP === "function") {
-                addGlobalXP(correctCount * 5);
+            var questId = globalQuestId(currentSet);
+            if (typeof saveQuestScore === "function") saveQuestScore(questId, percent);
+
+            var awardedXP = 0;
+            if (typeof awardQuestImprovementXP === "function") {
+                awardedXP = awardQuestImprovementXP(questId, correctCount, 5);
             }
 
+            if (awardedXP > 0) {
+                scoreBox.textContent += " · +" + awardedXP + " XP";
+            }
+
+            attemptFinished = true;
+            freshAttempt = false;
+            checkBtn.textContent = "↻ Neuer Versuch";
             renderSummary();
+        }
+
+        checkBtn.addEventListener("click", function () {
+            if (attemptFinished) {
+                startNewAttempt();
+                return;
+            }
+            evaluateCurrentAttempt();
         });
 
         showSummaryBtn.addEventListener("click", openSummary);
@@ -957,34 +986,29 @@
             if (e.key === "Escape") hideSummary();
         });
 
-        downloadJsonBtn.addEventListener("click", function () {
-            var jsonStr = JSON.stringify(loadProgress(), null, 2);
-            var win = window.open();
-            if (win) {
-                win.document.write("<pre style='white-space:pre-wrap;word-break:break-word;font-family:monospace;padding:12px;background:#0f172a;color:#e2e8f0;'>" +
-                    jsonStr.replace(/</g, "&lt;") + "</pre>");
-            } else {
-                alert("Konnte kein neues Fenster öffnen. Bitte Popups erlauben oder JSON manuell aus der Konsole kopieren.");
-            }
-        });
-
-        /* --- Eigenes A4-Zeugnis (Vorher/Nachher pro Set), unabhängig vom A1-A3 Quest-System --- */
         function downloadA4CertificatePDF() {
-            var studentName = prompt("Bitte gib deinen Vornamen ein:", "Vorname");
+            var data = loadProgress();
+            if (!allSetsAttempted(data)) {
+                alert("Bearbeite zuerst Quest 8 bis 14 mindestens einmal.");
+                return;
+            }
+
+            var studentName = typeof requireStudentName === "function" ? requireStudentName() : "";
             if (!studentName) return;
 
-            var data = loadProgress();
             var rows = SETS.map(function (key, idx) {
-                var stored = data[key] || {};
-                var first = typeof stored.first === "number" ? stored.first : null;
-                var last = typeof stored.last === "number" ? stored.last : null;
-                return { num: idx + 8, name: META[key].name, first: first, last: last };
+                var stored = normalizeProgressEntry(data[key]);
+                return {
+                    num: idx + 8,
+                    name: META[key].name,
+                    first: stored ? stored.first : null,
+                    best: stored ? stored.best : null
+                };
             });
 
-            var attempted = rows.filter(function (r) { return r.last !== null; });
-            var avg = attempted.length
-                ? Math.round(attempted.reduce(function (s, r) { return s + r.last; }, 0) / attempted.length)
-                : 0;
+            var avg = Math.round(rows.reduce(function (sum, row) {
+                return sum + (row.best || 0);
+            }, 0) / rows.length);
 
             var canvas = document.createElement("canvas");
             canvas.width = 1200;
@@ -1011,11 +1035,11 @@
 
             ctx.fillStyle = "#ffffff";
             ctx.font = '800 36px "Space Grotesk", sans-serif';
-            ctx.fillText("ZEUGNIS TASTENKÜRZEL-QUIZ", 600, 160);
+            ctx.fillText("AUSWERTUNG TASTENKÜRZEL", 600, 160);
 
             ctx.fillStyle = "#94a3b8";
             ctx.font = "500 18px sans-serif";
-            ctx.fillText("Vorher/Nachher-Vergleich je Quest (8–14)", 600, 200);
+            ctx.fillText("Erster Versuch → bester Versuch · Quest 8–14", 600, 200);
 
             ctx.fillStyle = "rgba(6, 182, 212, 0.15)";
             ctx.strokeStyle = "#06b6d4";
@@ -1049,19 +1073,18 @@
 
             ctx.textAlign = "left";
             var rowY = 405;
-            rows.forEach(function (r) {
+            rows.forEach(function (row) {
                 ctx.fillStyle = "#e2e8f0";
                 ctx.font = '700 19px "Space Grotesk", sans-serif';
-                ctx.fillText("Q" + r.num + " (" + r.name + ")", 130, rowY);
+                ctx.fillText("Q" + row.num + " (" + row.name + ")", 130, rowY);
 
-                var valText = r.last === null ? "noch offen" : (r.first + "% → " + r.last + "%");
-                var valColor = r.last === null ? "#64748b" : (r.last >= 80 ? "#10b981" : (r.last >= 50 ? "#f59e0b" : "#ef4444"));
-                ctx.fillStyle = valColor;
+                var valueText = row.first + " % → " + row.best + " %";
+                var valueColor = row.best >= 80 ? "#10b981" : (row.best >= 50 ? "#f59e0b" : "#ef4444");
+                ctx.fillStyle = valueColor;
                 ctx.font = "700 19px sans-serif";
                 ctx.textAlign = "right";
-                ctx.fillText(valText, 1070, rowY);
+                ctx.fillText(valueText, 1070, rowY);
                 ctx.textAlign = "left";
-
                 rowY += 48;
             });
 
@@ -1074,19 +1097,21 @@
             ctx.textAlign = "center";
             ctx.fillStyle = "#06b6d4";
             ctx.font = '800 22px "Space Grotesk", sans-serif';
-            ctx.fillText("Ø letzter Versuch: " + avg + "%", 600, rowY + 30);
+            ctx.fillText("Ø bester Versuch: " + avg + " %", 600, rowY + 30);
 
             ctx.fillStyle = "#94a3b8";
             ctx.font = "500 15px sans-serif";
-            ctx.fillText("Leistungsnachweis Tastenkürzel-Quiz Informatik B25", 600, 800);
+            ctx.fillText("Auswertung Tastenkürzel · Informatik B25", 600, 800);
 
             function generatePDF() {
                 var jsPDF = window.jspdf.jsPDF;
                 var pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: [297, 210] });
                 var imgData = canvas.toDataURL("image/png");
                 pdf.addImage(imgData, "PNG", 0, 0, 297, 210);
-                var sanitizedFileName = "A4_Zeugnis_" + studentName.replace(/[^a-zA-Z0-9]/g, "_") + ".pdf";
-                pdf.save(sanitizedFileName);
+                var safeStudentName = typeof sanitizeStudentNameForFileName === "function"
+                    ? sanitizeStudentNameForFileName(studentName)
+                    : studentName.replace(/[^a-zA-Z0-9]/g, "_");
+                pdf.save("A4_Auswertung_" + safeStudentName + ".pdf");
             }
 
             if (window.jspdf) {
@@ -1099,10 +1124,8 @@
             }
         }
 
-        var downloadA4PdfBtn = document.getElementById("downloadA4PdfBtn");
         downloadA4PdfBtn.addEventListener("click", downloadA4CertificatePDF);
 
-        // initial
         renderQuestions();
         renderSummary();
     </script>
