@@ -15,6 +15,14 @@ function setGlobalXP(val) {
 }
 
 function addGlobalXP(amount) {
+    // A3 Boss Challenge: the 50 XP completion reward may only be granted once.
+    // Q7 is saved immediately after the first successful stop, so later retries
+    // can still be timed without allowing students to farm additional XP.
+    const isA3CompletionReward = amount === 50 && document.getElementById('boss-timer');
+    if (isA3CompletionReward && (getQuestScores().q7 || 0) >= 100) {
+        return;
+    }
+
     let current = getGlobalXP();
     setGlobalXP(current + amount);
 }
