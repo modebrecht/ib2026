@@ -13,7 +13,7 @@
     4:'Geführt',5:'Kürzel-Rätsel',6:'Ohne Hilfe',
     7:'Praxis: Maus weglegen',
     8:'Programme & Browser',9:'Windows & Arbeitsalltag',
-    11:'Wiederholung A1',12:'Wiederholung A2',13:'Wiederholung A4',14:'Alles gemischt'
+    10:'Wiederholung A1',11:'Wiederholung A2',12:'Wiederholung A4',13:'Alles gemischt'
   };
   var SHEET_TITLES={A1:'Allgemeine Tastenkürzel',A2:'Sonderzeichen mit AltGr',A3:'Praxis: Maus weglegen',A4:'Browser & Windows',A5:'Wiederholen & festigen'};
 
@@ -21,16 +21,17 @@
   function owns(obj,key){return Object.prototype.hasOwnProperty.call(obj,key);}
   function num(value){return typeof value==='number'&&isFinite(value);}
   function getScores(){return typeof getQuestScores==='function'?getQuestScores():parse('tk_quest_scores_v1');}
+  function attemptCount(entry){if(!entry)return 0;if(num(entry.attempts))return entry.attempts;return num(entry.first)?1:0;}
 
   function simpleRows(from,to){var scores=getScores(),rows=[];for(var q=from;q<=to;q++){var key='q'+q;if(!owns(scores,key))continue;rows.push({q:q,label:QUEST_LABELS[q],value:String(scores[key])+' %'});}return rows;}
   function a3Rows(){var scores=getScores();if(!owns(scores,'q7'))return[];var time=parse(A3_TIME_KEY),value=(scores.q7>=100?'Absolviert':String(scores.q7)+' %');if(time&&time.last)value+=' · Zeit '+time.last;if(time&&time.best&&time.best!==time.last)value+=' · Beste Zeit '+time.best;return[{q:7,label:QUEST_LABELS[7],value:value}];}
-  function richRows(storageKey,defs){var data=parse(storageKey),rows=[];defs.forEach(function(def){var entry=data[def.key];if(!entry||!num(entry.first))return;var parts=['1. Versuch '+entry.first+' %'];if(num(entry.best))parts.push('Best '+entry.best+' %');rows.push({q:def.q,label:QUEST_LABELS[def.q],value:parts.join(' · ')});});return rows;}
+  function richRows(storageKey,defs,isA4){var data=parse(storageKey),rows=[];defs.forEach(function(def){var entry=data[def.key];if(!entry||!num(entry.first))return;var parts=['1. Versuch '+entry.first+' %'];if(isA4&&attemptCount(entry)>=2&&num(entry.second))parts.push('2. Versuch '+entry.second+' %');if(num(entry.best))parts.push('Best '+entry.best+' %');rows.push({q:def.q,label:QUEST_LABELS[def.q],value:parts.join(' · ')});});return rows;}
   function collectSheets(){return[
     {id:'A1',title:SHEET_TITLES.A1,rows:simpleRows(1,3)},
     {id:'A2',title:SHEET_TITLES.A2,rows:simpleRows(4,6)},
     {id:'A3',title:SHEET_TITLES.A3,rows:a3Rows()},
-    {id:'A4',title:SHEET_TITLES.A4,rows:richRows(A4_KEY,[{key:'A',q:8},{key:'B',q:9}])},
-    {id:'A5',title:SHEET_TITLES.A5,rows:richRows(A5_KEY,[{key:'A',q:11},{key:'B',q:12},{key:'C',q:13},{key:'D',q:14}])}
+    {id:'A4',title:SHEET_TITLES.A4,rows:richRows(A4_KEY,[{key:'A',q:8},{key:'B',q:9}],true)},
+    {id:'A5',title:SHEET_TITLES.A5,rows:richRows(A5_KEY,[{key:'A',q:10},{key:'B',q:11},{key:'C',q:12},{key:'D',q:13}],false)}
   ];}
   function selectedSheets(which){var sheets=collectSheets();if(which==='all')return sheets.filter(function(s){return s.rows.length;});return sheets.filter(function(s){return s.id===which&&s.rows.length;});}
 
