@@ -3,325 +3,152 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>A1 – Animierte Theorie · Prototyp</title>
+  <title>A1: Allgemeine Tastenkürzel – animierte Theorie</title>
   <link rel="stylesheet" href="../tk/vendor/fonts.css">
   <link rel="stylesheet" href="../tk/shared.css">
   <style>
-    :root{
-      --tk2-card:#0b1220;
-      --tk2-panel:#0f172a;
-      --tk2-line:rgba(148,163,184,.18);
-      --tk2-blue:#38bdf8;
-      --tk2-blue2:#3b82f6;
-      --tk2-green:#10b981;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      min-height:100vh;
-      background:
-        radial-gradient(circle at 12% 0%,rgba(59,130,246,.12),transparent 32rem),
-        radial-gradient(circle at 92% 24%,rgba(6,182,212,.08),transparent 26rem),
-        var(--bg-dark);
-      color:var(--text-main);
-      font-family:'Outfit',sans-serif;
-    }
-    .tk2-topbar{
-      min-height:68px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:14px;
-      padding:14px clamp(16px,4vw,36px);
-      border-bottom:1px solid var(--border-color);
-      background:rgba(8,15,28,.82);
-      backdrop-filter:blur(12px);
-      position:sticky;
-      top:0;
-      z-index:10;
-    }
-    .tk2-back{
-      color:var(--text-muted);
-      text-decoration:none;
-      font-weight:700;
-    }
-    .tk2-back:hover{color:var(--tk2-blue)}
-    .tk2-badge{
-      border:1px solid rgba(56,189,248,.35);
-      background:rgba(56,189,248,.09);
-      color:#7dd3fc;
-      padding:7px 11px;
-      border-radius:999px;
-      font-size:.82rem;
-      font-weight:800;
-      white-space:nowrap;
-    }
-    main{
-      width:min(1120px,calc(100% - 28px));
-      margin:0 auto;
-      padding:clamp(26px,5vw,54px) 0 60px;
-    }
-    .tk2-intro{
-      max-width:780px;
-      margin-bottom:28px;
-    }
-    .tk2-eyebrow{
-      color:#7dd3fc;
-      font-family:'Space Grotesk',sans-serif;
-      font-size:.78rem;
-      font-weight:800;
-      letter-spacing:.1em;
-      text-transform:uppercase;
-      margin-bottom:8px;
-    }
-    h1{
-      font-family:'Space Grotesk',sans-serif;
-      font-size:clamp(2rem,6vw,3.3rem);
-      line-height:1.02;
-      margin:0 0 12px;
-      letter-spacing:-.035em;
-    }
-    .tk2-intro p{
-      margin:0;
-      max-width:700px;
-      color:var(--text-muted);
-      font-size:clamp(1rem,2vw,1.12rem);
-      line-height:1.6;
-    }
-    .theory-card{
-      position:relative;
-      overflow:hidden;
-      border:1px solid rgba(56,189,248,.28);
-      border-radius:26px;
-      background:linear-gradient(145deg,rgba(15,23,42,.97),rgba(7,16,31,.98));
-      box-shadow:0 26px 80px rgba(0,0,0,.28),0 0 0 1px rgba(255,255,255,.02) inset;
-    }
-    .theory-card:before{
-      content:'';
-      position:absolute;
-      width:330px;
-      height:330px;
-      border-radius:50%;
-      background:rgba(59,130,246,.08);
-      filter:blur(6px);
-      right:-150px;
-      top:-180px;
-      pointer-events:none;
-    }
-    .theory-head{
-      display:grid;
-      grid-template-columns:minmax(0,1fr) auto;
-      gap:18px;
-      align-items:start;
-      padding:clamp(20px,4vw,34px);
-      border-bottom:1px solid var(--tk2-line);
-    }
-    .theory-number{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      color:#94a3b8;
-      font-size:.84rem;
-      font-weight:800;
-      margin-bottom:10px;
-    }
-    .theory-number:before{
-      content:'';
-      width:8px;
-      height:8px;
-      border-radius:50%;
-      background:var(--tk2-green);
-      box-shadow:0 0 14px rgba(16,185,129,.75);
-    }
-    .theory-title{
-      margin:0 0 8px;
-      font-family:'Space Grotesk',sans-serif;
-      font-size:clamp(1.65rem,4vw,2.35rem);
-      letter-spacing:-.025em;
-    }
-    .theory-desc{
-      margin:0;
-      max-width:630px;
-      color:var(--text-muted);
-      font-size:1rem;
-      line-height:1.58;
-    }
-    .shortcut{
-      display:flex;
-      align-items:center;
-      gap:7px;
-      padding-top:3px;
-    }
-    kbd{
-      min-width:52px;
-      min-height:46px;
-      display:grid;
-      place-items:center;
-      padding:8px 12px;
-      border:1px solid rgba(125,211,252,.32);
-      border-bottom-color:rgba(125,211,252,.5);
-      border-radius:11px;
-      background:linear-gradient(#1e293b,#111827);
-      box-shadow:0 4px 0 #020617,0 10px 22px rgba(0,0,0,.22);
-      color:#dbeafe;
-      font-family:'Space Grotesk',monospace;
-      font-weight:800;
-      font-size:1rem;
-    }
-    .plus{color:#64748b;font-weight:900}
-    .theory-body{
-      display:grid;
-      grid-template-columns:minmax(0,1.65fr) minmax(230px,.72fr);
-      gap:0;
-      min-height:430px;
-    }
-    .animation-panel{
-      padding:clamp(18px,3vw,30px);
-      display:grid;
-      place-items:center;
-      border-right:1px solid var(--tk2-line);
-    }
-    #copyScene{width:100%;max-width:760px}
-    .tk2-doc-scene{display:block;width:100%;height:auto}
-    .explain-panel{
-      padding:clamp(22px,4vw,34px);
-      display:flex;
-      flex-direction:column;
-      justify-content:center;
-      gap:22px;
-    }
-    .step-list{
-      display:grid;
-      gap:13px;
-    }
-    .step{
-      display:grid;
-      grid-template-columns:30px 1fr;
-      gap:11px;
-      align-items:start;
-      color:#cbd5e1;
-      line-height:1.45;
-    }
-    .step-num{
-      width:30px;
-      height:30px;
-      border-radius:9px;
-      display:grid;
-      place-items:center;
-      background:rgba(56,189,248,.1);
-      border:1px solid rgba(56,189,248,.24);
-      color:#7dd3fc;
-      font-family:'Space Grotesk',sans-serif;
-      font-size:.8rem;
-      font-weight:800;
-    }
-    .important{
-      padding:13px 14px;
-      border:1px solid rgba(16,185,129,.25);
-      background:rgba(16,185,129,.07);
-      border-radius:13px;
-      color:#a7f3d0;
-      font-size:.92rem;
-      line-height:1.45;
-    }
-    .replay-btn{
-      border:1px solid rgba(56,189,248,.3);
-      background:rgba(56,189,248,.1);
-      color:#bae6fd;
-      font-family:inherit;
-      font-weight:800;
-      border-radius:12px;
-      padding:11px 14px;
-      cursor:pointer;
-      transition:transform .12s ease,background .12s ease,border-color .12s ease;
-    }
-    .replay-btn:hover{background:rgba(56,189,248,.16);border-color:rgba(56,189,248,.5)}
-    .replay-btn:active{transform:translateY(2px)}
-    .prototype-note{
-      margin-top:18px;
-      color:#64748b;
-      font-size:.86rem;
-      text-align:center;
-    }
-    @media(max-width:820px){
-      .theory-head{grid-template-columns:1fr}
-      .shortcut{justify-self:start}
-      .theory-body{grid-template-columns:1fr}
-      .animation-panel{border-right:0;border-bottom:1px solid var(--tk2-line)}
-      .explain-panel{padding-top:24px}
-    }
-    @media(max-width:520px){
-      main{width:min(100% - 18px,1120px);padding-top:20px}
-      .tk2-topbar{padding:12px 12px}
-      .tk2-badge{font-size:.74rem}
-      .theory-card{border-radius:20px}
-      .theory-head{padding:20px 18px}
-      .animation-panel{padding:12px 8px}
-      .explain-panel{padding:20px 18px}
-      kbd{min-width:46px;min-height:42px}
-    }
-    @media(prefers-reduced-motion:reduce){
-      *,*:before,*:after{scroll-behavior:auto!important}
-    }
+    body{font-family:'Outfit',sans-serif;background:radial-gradient(circle at 10% 0,rgba(59,130,246,.10),transparent 28rem),var(--bg-dark);color:var(--text-main);min-height:100vh;overflow-x:hidden}
+    .tab-btn{min-width:0;padding:10px 7px;text-align:center;border:0;background:none;color:var(--text-muted);font-family:inherit;font-weight:700;font-size:clamp(.78rem,2.5vw,.94rem);border-radius:12px;cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:center;gap:6px}
+    .tab-btn.active{background:var(--accent-blue);color:#fff;box-shadow:0 4px 15px rgba(59,130,246,.4)}
+    .progress-bar-fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent-blue),var(--accent-green));transition:width .3s ease}
+    .carousel-card{background:#090d16;border:2px solid var(--accent-blue);border-radius:24px;padding:clamp(1.5rem,4vw,2.5rem) clamp(.8rem,3vw,2rem);width:100%;max-width:650px;box-shadow:0 0 40px rgba(59,130,246,.25);position:relative;overflow:hidden;transition:.3s}
+    .carousel-card.q2-card{border-color:var(--accent-amber);box-shadow:0 0 40px rgba(245,158,11,.25)}
+    .carousel-card.q3-card{border-color:var(--accent-purple);box-shadow:0 0 40px rgba(139,92,246,.25)}
+    .big-kbd{background:#1e293b;border:2px solid rgba(255,255,255,.25);box-shadow:0 6px 0 rgba(0,0,0,.6);color:#38bdf8;flex:1 1 auto;max-width:115px;min-width:60px;height:clamp(55px,12vh,78px);padding:0 6px;border-radius:14px;font-family:'Space Grotesk',monospace;font-size:clamp(1.1rem,4.5vw,1.8rem);font-weight:800;white-space:nowrap;display:flex;align-items:center;justify-content:center;transition:.15s}
+    .big-kbd.pressed{background:var(--accent-blue)!important;border-color:#93c5fd!important;color:#fff!important;box-shadow:0 0 30px rgba(59,130,246,.9)!important;transform:translateY(3px)}
+    .big-kbd.pressed-success{background:linear-gradient(135deg,#10b981,#047857)!important;border-color:#34d399!important;color:#fff!important;box-shadow:0 0 35px rgba(16,185,129,.95),0 2px 0 rgba(0,0,0,.8)!important;transform:translateY(3px)}
+    .action-label{font-size:clamp(1.6rem,5vw,2.2rem);font-weight:800;color:#f8fafc;font-family:'Space Grotesk',sans-serif}
+    .btn-start-course{background:linear-gradient(135deg,#10b981,#047857);color:#fff;padding:12px 28px;font-size:1.05rem;font-weight:700;border:0;border-radius:14px;cursor:pointer;transition:.2s;box-shadow:0 10px 25px rgba(16,185,129,.35);margin-top:1rem}
+    .btn-start-course:hover{transform:translateY(-2px);box-shadow:0 15px 30px rgba(16,185,129,.5)}
+    button:active,.btn-start-course:active,.btn-hint:active,.btn-reset-game:active,a.btn-start-course:active{transform:translateY(3px) scale(.97)!important;box-shadow:inset 0 3px 6px rgba(0,0,0,.4)!important;transition:transform .05s ease,box-shadow .05s ease!important}
+
+    .theory-intro{margin-bottom:1.35rem;padding:clamp(18px,3vw,26px);border:1px solid rgba(56,189,248,.24);background:linear-gradient(145deg,rgba(15,23,42,.9),rgba(7,16,31,.94));border-radius:20px}
+    .theory-intro h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(1.55rem,4vw,2.15rem);margin:0 0 .45rem}
+    .theory-intro p{margin:0;color:var(--text-muted);line-height:1.55;max-width:780px}
+    .theory-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+    .anim-card{position:relative;overflow:hidden;border:1px solid rgba(148,163,184,.18);background:linear-gradient(145deg,rgba(15,23,42,.96),rgba(7,16,31,.98));border-radius:20px;box-shadow:0 16px 42px rgba(0,0,0,.18)}
+    .anim-card:before{content:'';position:absolute;width:180px;height:180px;border-radius:50%;right:-100px;top:-100px;background:rgba(59,130,246,.06);pointer-events:none}
+    .anim-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:16px 17px 13px;border-bottom:1px solid rgba(148,163,184,.14)}
+    .anim-number{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:#64748b;font-weight:800;margin-bottom:3px}
+    .anim-title{font-family:'Space Grotesk',sans-serif;font-size:1.12rem;font-weight:800;margin:0;color:#f8fafc}
+    .anim-keys{display:flex;align-items:center;gap:4px;flex-wrap:wrap;justify-content:flex-end}
+    .anim-keys kbd{background:#182235;border:1px solid rgba(125,211,252,.28);box-shadow:0 3px 0 #020617;color:#dbeafe;padding:4px 7px;border-radius:6px;font-family:'Space Grotesk',monospace;font-size:.72rem;font-weight:800;white-space:nowrap}
+    .anim-plus{color:#64748b;font-size:.72rem;font-weight:900}
+    .anim-scene{padding:10px 10px 4px;min-height:205px;display:grid;place-items:center}
+    .anim-scene svg{width:100%;height:auto;display:block}
+    .anim-foot{padding:0 16px 16px;display:grid;gap:9px}
+    .anim-desc{margin:0;color:#cbd5e1;font-size:.9rem;line-height:1.45}
+    .anim-remember{margin:0;padding:9px 10px;border-radius:10px;background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.18);color:#a7f3d0;font-size:.82rem;line-height:1.4}
+    .anim-actions{display:flex;justify-content:flex-end}
+    .replay-btn{border:1px solid rgba(56,189,248,.25);background:rgba(56,189,248,.08);color:#bae6fd;font-family:inherit;font-size:.8rem;font-weight:800;border-radius:10px;padding:8px 10px;cursor:pointer}
+    .replay-btn:hover{background:rgba(56,189,248,.14)}
+    .theory-finish{text-align:center;margin-top:1.4rem;padding-top:.4rem}
+    .theory-finish p{color:var(--text-muted);margin:0 0 .5rem}
+
+    @media(max-width:780px){.theory-grid{grid-template-columns:1fr}.anim-scene{min-height:0}.anim-card{border-radius:18px}}
+    @media(max-width:520px){.anim-head{padding:14px}.anim-foot{padding:0 14px 14px}.anim-title{font-size:1.02rem}.anim-keys kbd{font-size:.68rem;padding:3px 6px}}
   </style>
 </head>
 <body>
-  <header class="tk2-topbar">
-    <a class="tk2-back" href="../tk/A1.html">← Zurück zu A1</a>
-    <span class="tk2-badge">tk2 · Animations-Prototyp</span>
+  <header class="top-bar">
+    <a href="../tk/index.html" class="back-link">← Zurück zur Übersicht</a>
+    <div style="display:flex;align-items:center;gap:12px">
+      <div class="xp-pill">⚡ XP: <span class="global-xp-val">0</span></div>
+      <span class="tk-badge" style="--badge-accent:#38bdf8;--badge-accent-rgb:56,189,248;--badge-text:#7dd3fc">A1 · animiert</span>
+    </div>
   </header>
 
-  <main>
-    <section class="tk2-intro">
-      <div class="tk2-eyebrow">Arbeitsblatt A1 · Theorie neu gedacht</div>
-      <h1>Tastenkürzel nicht nur lesen – sehen.</h1>
-      <p>Dieser Prototyp zeigt die Bedeutung eines Kürzels als kleine Handlung. Erst wenn die Darstellung überzeugt, wird dieselbe Animationssprache auf die restlichen A1-Kürzel übertragen.</p>
+  <div class="container">
+    <div class="phase-tabs">
+      <button class="tab-btn active" id="tab-1" onclick="switchPhase(1)">📖 Theorie</button>
+      <button class="tab-btn" id="tab-2" onclick="switchPhase(2)">⚡ Q1: Geführt</button>
+      <button class="tab-btn" id="tab-3" onclick="switchPhase(3)">🎲 Q2: 50/50</button>
+      <button class="tab-btn" id="tab-4" onclick="switchPhase(4)">🧠 Q3: Memory</button>
+    </div>
+
+    <section id="phase-1" class="card">
+      <div class="theory-intro">
+        <h1>Die wichtigsten Alltagskürzel unter Windows</h1>
+        <p>Schau dir nicht nur die Tastenkombination an: Jede Karte zeigt in einer kurzen Animation, <strong>was tatsächlich passiert</strong>. Sichtbare Animationen wiederholen sich automatisch.</p>
+      </div>
+      <div class="theory-grid" id="theoryGrid"></div>
+      <div class="theory-finish">
+        <p>Alle 14 gesehen? Dann probierst du die Kürzel selbst auf der Tastatur aus.</p>
+        <button class="btn-start-course" onclick="switchPhase(2)">Quest 1 starten ➔</button>
+      </div>
     </section>
 
-    <article class="theory-card">
-      <header class="theory-head">
-        <div>
-          <div class="theory-number">Kürzel 1 von 14</div>
-          <h2 class="theory-title">Kopieren</h2>
-          <p class="theory-desc">Markierter Text wird in die Zwischenablage kopiert. Der Originaltext bleibt im Dokument erhalten.</p>
+    <section id="phase-2" class="card" style="display:none">
+      <div class="trainer-container">
+        <div style="width:100%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+          <span style="font-weight:700;color:var(--text-muted)" id="q1-counter-label">Kürzel 1 von 14</span>
+          <div style="display:flex;align-items:center;gap:12px"><button class="btn-reset-game" onclick="resetQ1()">🔄 Neues Game</button><span style="font-weight:700;color:var(--accent-green)" id="q1-score-live">Genauigkeit: 100%</span></div>
         </div>
-        <div class="shortcut" aria-label="Ctrl plus C">
-          <kbd>Ctrl</kbd><span class="plus">+</span><kbd>C</kbd>
+        <div class="progress-bar-wrap"><div class="progress-bar-fill" id="q1-progress-bar"></div></div>
+        <div class="carousel-card" id="q1-card">
+          <div style="font-size:.8rem;color:var(--accent-cyan);text-transform:uppercase;font-weight:700;letter-spacing:1px;margin-bottom:.5rem">⚡ Geführt – Drücke die gezeigten Tasten</div>
+          <div class="action-label" id="q1-title">Kopieren</div><div class="action-desc" id="q1-desc"></div>
+          <div class="shortcut-display" id="q1-shortcut-display"></div><div class="status-msg" id="q1-status-msg" style="color:var(--text-muted)"></div>
         </div>
-      </header>
-
-      <div class="theory-body">
-        <section class="animation-panel" aria-label="Animation zu Kopieren">
-          <div id="copyScene"></div>
-        </section>
-
-        <aside class="explain-panel">
-          <div class="step-list">
-            <div class="step"><span class="step-num">1</span><span>Der Text <strong>„wichtiger Text“</strong> wird markiert.</span></div>
-            <div class="step"><span class="step-num">2</span><span><strong>Ctrl + C</strong> wird gedrückt.</span></div>
-            <div class="step"><span class="step-num">3</span><span>Eine Kopie landet in der <strong>Zwischenablage</strong>.</span></div>
-          </div>
-
-          <div class="important"><strong>Merke:</strong> Beim Kopieren bleibt das Original an seinem Platz.</div>
-
-          <button class="replay-btn" id="replayCopy" type="button">↻ Animation wiederholen</button>
-        </aside>
+        <div class="trophy-view" id="q1-trophy-view"><div class="trophy-icon">🏆</div><h2 id="q1-result-title" style="font-family:'Space Grotesk',sans-serif;font-size:1.8rem">Quest 1 beendet!</h2><p id="q1-result-desc" style="color:var(--text-muted);font-size:1.05rem;max-width:500px"></p><div style="display:flex;gap:12px;margin-top:1rem;flex-wrap:wrap;justify-content:center"><button class="btn-start-course" onclick="resetQ1()">🔄 Noch einmal</button><button class="btn-start-course" id="q1-to-q2-btn" style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#0f172a" onclick="switchPhase(3)">Weiter zu Quest 2 ➔</button></div></div>
       </div>
-    </article>
+    </section>
 
-    <div class="prototype-note">Prototyp: zuerst eine Karte sauber lösen, danach auf die restlichen A1-Kürzel übertragen.</div>
-  </main>
+    <section id="phase-3" class="card" style="display:none">
+      <div class="lock-screen" id="q2-lock-screen"><div class="lock-icon">🔒</div><h2 style="font-family:'Space Grotesk',sans-serif;font-size:1.8rem;color:#fca5a5">Quest 2 ist gesperrt</h2><p style="color:var(--text-muted);font-size:1.05rem;max-width:550px">Du benötigst <strong>mindestens 80 % Genauigkeit</strong> in Quest 1.</p><button class="btn-start-course" onclick="switchPhase(2)">Zurück zu Quest 1 ➔</button></div>
+      <div class="trainer-container" id="q2-game-screen" style="display:none">
+        <div style="width:100%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px"><span style="font-weight:700;color:var(--text-muted)" id="q2-counter-label">Rätsel 1 von 14</span><div style="display:flex;align-items:center;gap:12px"><button class="btn-reset-game" onclick="resetQ2()">🔄 Neues Game</button><span style="font-weight:700;color:var(--accent-amber)" id="q2-score-live">Genauigkeit: 100%</span></div></div>
+        <div class="progress-bar-wrap"><div class="progress-bar-fill" id="q2-progress-bar" style="background:linear-gradient(90deg,var(--accent-amber),var(--accent-green))"></div></div>
+        <div class="carousel-card q2-card" id="q2-card"><div style="font-size:.8rem;color:var(--accent-amber);text-transform:uppercase;font-weight:700;letter-spacing:1px">🎲 50/50 – Welche Taste fehlt?</div><div class="action-label" id="q2-title" style="margin-top:.5rem">Kopieren</div><div class="action-desc" id="q2-desc"></div><div class="shortcut-display" id="q2-shortcut-display"></div><button class="btn-hint" id="q2-hint-btn" onclick="useQ2Hint()">💡 Tipp (-30 XP)</button><div class="status-msg" id="q2-status-msg" style="color:var(--text-muted);margin-top:1rem"></div></div>
+        <div class="trophy-view" id="q2-trophy-view"><div class="trophy-icon">🎲🏆</div><h2 id="q2-result-title" style="font-family:'Space Grotesk',sans-serif;font-size:1.8rem">Quest 2 beendet!</h2><p id="q2-result-desc" style="color:var(--text-muted);font-size:1.05rem;max-width:500px"></p><div style="display:flex;gap:12px;margin-top:1rem;flex-wrap:wrap;justify-content:center"><button class="btn-start-course" onclick="resetQ2()">🔄 Noch einmal</button><button class="btn-start-course" id="q2-to-q3-btn" style="background:linear-gradient(135deg,#8b5cf6,#6d28d9);color:#fff" onclick="switchPhase(4)">Weiter zu Quest 3 ➔</button></div></div>
+      </div>
+    </section>
 
+    <section id="phase-4" class="card" style="display:none">
+      <div class="lock-screen" id="q3-lock-screen"><div class="lock-icon">🔒</div><h2 style="font-family:'Space Grotesk',sans-serif;font-size:1.8rem;color:#fca5a5">Quest 3 ist gesperrt</h2><p style="color:var(--text-muted);font-size:1.05rem;max-width:550px">Du benötigst <strong>mindestens 70 % Genauigkeit</strong> in Quest 2.</p><button class="btn-start-course" onclick="switchPhase(3)">Zurück zu Quest 2 ➔</button></div>
+      <div class="trainer-container" id="q3-game-screen" style="display:none">
+        <div style="width:100%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px"><span style="font-weight:700;color:var(--text-muted)" id="q3-counter-label">Memory 1 von 14</span><div style="display:flex;align-items:center;gap:12px"><button class="btn-reset-game" onclick="resetQ3()">🔄 Neues Game</button><span style="font-weight:700;color:var(--accent-purple)" id="q3-score-live">Genauigkeit: 100%</span></div></div>
+        <div class="progress-bar-wrap"><div class="progress-bar-fill" id="q3-progress-bar" style="background:linear-gradient(90deg,var(--accent-purple),var(--accent-cyan))"></div></div>
+        <div class="carousel-card q3-card" id="q3-card"><div style="font-size:.8rem;color:var(--accent-purple);text-transform:uppercase;font-weight:700;letter-spacing:1px">🧠 Memory – Aus dem Gedächtnis</div><div class="action-label" id="q3-title" style="margin-top:.5rem">Kopieren</div><div class="action-desc" id="q3-desc"></div><div class="shortcut-display" id="q3-shortcut-display"></div><button class="btn-hint" id="q3-hint-btn" onclick="useQ3Hint()">💡 Tipp (-30 XP)</button><div class="status-msg" id="q3-status-msg" style="color:var(--text-muted);margin-top:1rem"></div></div>
+        <div class="trophy-view" id="q3-trophy-view"><div class="trophy-icon">🧠🏆</div><h2 id="q3-result-title" style="font-family:'Space Grotesk',sans-serif;font-size:1.8rem">Quest 3 beendet!</h2><p id="q3-result-desc" style="color:var(--text-muted);font-size:1.05rem;max-width:500px"></p><div style="display:flex;gap:12px;margin-top:1rem;flex-wrap:wrap;justify-content:center"><button class="btn-start-course" onclick="resetQ3()">🔄 Noch einmal</button><a href="../tk/A2.html" class="btn-start-course" id="q3-to-a2-btn" style="background:linear-gradient(135deg,#10b981,#047857);text-decoration:none">Weiter zu A2 ➔</a></div></div>
+      </div>
+    </section>
+  </div>
+
+  <script src="../tk/xp.js"></script>
   <script src="docTextScene.js"></script>
+  <script src="utilityScenes.js"></script>
   <script>
-    var copyAnimation = createDocTextScene(document.getElementById('copyScene'), {
-      mode: 'copy',
-      autoplay: true
-    });
-
-    document.getElementById('replayCopy').addEventListener('click', function(){
-      copyAnimation.play();
-    });
+    (function(){
+      var theoryItems=[
+        {title:'Kopieren',keys:['Ctrl','C'],family:'doc',mode:'copy',desc:'Markierter Text wird in die Zwischenablage kopiert.',remember:'Das Original bleibt an seinem Platz.'},
+        {title:'Ausschneiden',keys:['Ctrl','X'],family:'doc',mode:'cut',desc:'Markierter Inhalt wandert in die Zwischenablage und verschwindet am ursprünglichen Ort.',remember:'Ausschneiden = kopieren und am alten Ort entfernen.'},
+        {title:'Einfügen',keys:['Ctrl','V'],family:'doc',mode:'paste',desc:'Der Inhalt aus der Zwischenablage erscheint an der Cursor-Position.',remember:'Vorher muss etwas kopiert oder ausgeschnitten worden sein.'},
+        {title:'Einfügen ohne Format',keys:['Ctrl','Shift','V'],family:'doc',mode:'pastePlain',desc:'Text wird eingefügt, aber Schriftart, Farbe und andere Formatierungen werden entfernt.',remember:'Praktisch, wenn nur der reine Text übernommen werden soll.'},
+        {title:'Rückgängig machen',keys:['Ctrl','Z'],family:'doc',mode:'undo',desc:'Die letzte Änderung wird zurückgenommen.',remember:'Ein Fehler lässt sich oft sofort rückgängig machen.'},
+        {title:'Wiederherstellen',keys:['Ctrl','Y'],family:'doc',mode:'redo',desc:'Eine rückgängig gemachte Aktion wird erneut ausgeführt.',remember:'Ctrl + Y ist das Gegenstück zu Ctrl + Z.'},
+        {title:'Speichern',keys:['Ctrl','S'],family:'doc',mode:'save',desc:'Das aktuelle Dokument wird gespeichert.',remember:'Regelmässig speichern schützt deine Arbeit.'},
+        {title:'Alles markieren',keys:['Ctrl','A'],family:'doc',mode:'selectAll',desc:'Der gesamte Inhalt des aktuellen Bereichs wird ausgewählt.',remember:'Danach kannst du alles gemeinsam kopieren, löschen oder formatieren.'},
+        {title:'Suchen im Text',keys:['Ctrl','F'],family:'util',mode:'find',desc:'Ein Suchfeld öffnet sich und passende Wörter werden im Dokument hervorgehoben.',remember:'Ideal bei langen Webseiten und Dokumenten.'},
+        {title:'Suchen & Ersetzen',keys:['Ctrl','H'],family:'util',mode:'replace',desc:'Ein Wort wird gesucht und durch ein anderes ersetzt.',remember:'Besonders nützlich, wenn dasselbe Wort mehrfach vorkommt.'},
+        {title:'Drucken',keys:['Ctrl','P'],family:'util',mode:'print',desc:'Der Druckdialog öffnet sich. Dort wählst du Drucker und Einstellungen.',remember:'Ctrl + P druckt nicht sofort – zuerst erscheint der Dialog.'},
+        {title:'Datei öffnen',keys:['Ctrl','O'],family:'util',mode:'open',desc:'Ein Dateidialog öffnet sich und du kannst eine bestehende Datei auswählen.',remember:'O steht für „Open“.'},
+        {title:'Zum Anfang springen',keys:['Ctrl','Home'],family:'util',mode:'home',desc:'Die Ansicht springt direkt an den Anfang eines langen Dokuments.',remember:'Kein langes Hochscrollen nötig.'},
+        {title:'Zum Ende springen',keys:['Ctrl','End'],family:'util',mode:'end',desc:'Die Ansicht springt direkt an das Ende eines langen Dokuments.',remember:'Das Gegenstück zu Ctrl + Home.'}
+      ];
+      var grid=document.getElementById('theoryGrid'),scenes=[],phaseActive=true;
+      function keyHtml(keys){return keys.map(function(k){return '<kbd>'+k+'</kbd>';}).join('<span class="anim-plus">+</span>');}
+      theoryItems.forEach(function(item,index){
+        var card=document.createElement('article');card.className='anim-card';card.innerHTML='<div class="anim-head"><div><div class="anim-number">Kürzel '+(index+1)+' von 14</div><h2 class="anim-title">'+item.title+'</h2></div><div class="anim-keys">'+keyHtml(item.keys)+'</div></div><div class="anim-scene" id="scene-'+index+'"></div><div class="anim-foot"><p class="anim-desc">'+item.desc+'</p><p class="anim-remember"><strong>Merke:</strong> '+item.remember+'</p><div class="anim-actions"><button type="button" class="replay-btn" data-replay="'+index+'">↻ Wiederholen</button></div></div>';
+        grid.appendChild(card);
+        var target=card.querySelector('.anim-scene');var scene=item.family==='doc'?createDocTextScene(target,{mode:item.mode,autoplay:false}):createUtilityScene(target,{mode:item.mode,autoplay:false});scenes.push({scene:scene,card:card,visible:false});
+      });
+      var observer=new IntersectionObserver(function(entries){entries.forEach(function(entry){var index=scenes.findIndex(function(x){return x.card===entry.target;});if(index<0)return;scenes[index].visible=entry.isIntersecting&&entry.intersectionRatio>.18;scenes[index].scene.setActive(phaseActive&&scenes[index].visible);});},{threshold:[0,.18,.4]});
+      scenes.forEach(function(x){observer.observe(x.card);});
+      grid.addEventListener('click',function(e){var btn=e.target.closest('[data-replay]');if(!btn)return;var idx=Number(btn.dataset.replay);if(scenes[idx])scenes[idx].scene.play();});
+      window.tk2SetTheoryActive=function(value){phaseActive=Boolean(value);scenes.forEach(function(x){x.scene.setActive(phaseActive&&x.visible);});};
+    })();
   </script>
+  <script src="a1-app.js"></script>
 </body>
 </html>
