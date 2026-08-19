@@ -1,195 +1,226 @@
 (function(){
   'use strict';
 
+  var sceneCounter = 0;
+  var MODES = {
+    copy:{keys:['Ctrl','C'],label:'Kopieren'},
+    cut:{keys:['Ctrl','X'],label:'Ausschneiden'},
+    paste:{keys:['Ctrl','V'],label:'Einfügen'},
+    pastePlain:{keys:['Ctrl','Shift','V'],label:'Ohne Formatierung einfügen'},
+    undo:{keys:['Ctrl','Z'],label:'Rückgängig'},
+    redo:{keys:['Ctrl','Y'],label:'Wiederherstellen'},
+    save:{keys:['Ctrl','S'],label:'Speichern'},
+    selectAll:{keys:['Ctrl','A'],label:'Alles markieren'}
+  };
+
   function createDocTextScene(container, options){
     options = options || {};
     var mode = options.mode || 'copy';
-    var autoplay = options.autoplay !== false;
+    var autoLoop = options.autoplay !== false;
+    var active = autoLoop;
     var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var uid = 'tk2doc' + (++sceneCounter);
     var timers = [];
     var running = false;
+    var cfg = MODES[mode] || MODES.copy;
 
-    container.innerHTML = `
-      <div class="tk2-scene-shell" data-mode="${mode}">
-        <svg class="tk2-doc-scene" viewBox="0 0 720 400" role="img" aria-label="Animation: Markierter Text wird mit Ctrl C kopiert und bleibt im Dokument erhalten.">
-          <defs>
-            <filter id="tk2-shadow" x="-30%" y="-30%" width="160%" height="170%">
-              <feDropShadow dx="0" dy="12" stdDeviation="14" flood-color="#020617" flood-opacity="0.42"/>
-            </filter>
-            <linearGradient id="tk2-window-bg" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#ffffff"/>
-              <stop offset="1" stop-color="#f8fafc"/>
-            </linearGradient>
-            <linearGradient id="tk2-selection" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0" stop-color="#60a5fa" stop-opacity="0.55"/>
-              <stop offset="1" stop-color="#38bdf8" stop-opacity="0.34"/>
-            </linearGradient>
-            <linearGradient id="tk2-clipboard" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0" stop-color="#172554"/>
-              <stop offset="1" stop-color="#0f172a"/>
-            </linearGradient>
-          </defs>
-
-          <rect x="0" y="0" width="720" height="400" rx="28" fill="#07101f"/>
-          <circle cx="640" cy="74" r="110" fill="#2563eb" opacity="0.07"/>
-          <circle cx="88" cy="356" r="120" fill="#06b6d4" opacity="0.055"/>
-
-          <g class="tk2-editor" filter="url(#tk2-shadow)">
-            <rect x="40" y="34" width="470" height="326" rx="18" fill="url(#tk2-window-bg)"/>
-            <rect x="40" y="34" width="470" height="42" rx="18" fill="#e2e8f0"/>
-            <rect x="40" y="58" width="470" height="18" fill="#e2e8f0"/>
-            <circle cx="64" cy="55" r="5" fill="#fb7185"/>
-            <circle cx="82" cy="55" r="5" fill="#fbbf24"/>
-            <circle cx="100" cy="55" r="5" fill="#34d399"/>
-            <rect x="128" y="48" width="142" height="14" rx="7" fill="#cbd5e1"/>
-            <text x="146" y="59" font-family="Arial,sans-serif" font-size="11" fill="#475569">Projektbericht.docx</text>
-
-            <rect x="76" y="100" width="176" height="15" rx="7.5" fill="#0f172a" opacity="0.90"/>
-            <rect x="76" y="133" width="352" height="10" rx="5" fill="#94a3b8" opacity="0.78"/>
-            <rect x="76" y="157" width="312" height="10" rx="5" fill="#94a3b8" opacity="0.78"/>
-            <rect x="76" y="181" width="344" height="10" rx="5" fill="#94a3b8" opacity="0.78"/>
-
-            <g class="tk2-copy-source">
-              <rect class="tk2-selection" x="72" y="209" width="0" height="34" rx="7" fill="url(#tk2-selection)"/>
-              <text x="80" y="232" font-family="Arial,sans-serif" font-size="18" font-weight="700" fill="#0f172a">wichtiger Text</text>
-            </g>
-
-            <rect x="76" y="263" width="332" height="10" rx="5" fill="#94a3b8" opacity="0.68"/>
-            <rect x="76" y="287" width="276" height="10" rx="5" fill="#94a3b8" opacity="0.68"/>
-            <rect x="76" y="311" width="308" height="10" rx="5" fill="#94a3b8" opacity="0.68"/>
-
-            <g class="tk2-caret" opacity="0">
-              <rect x="225" y="211" width="2.5" height="26" rx="1.25" fill="#2563eb"/>
-            </g>
-          </g>
-
-          <g class="tk2-clipboard" transform="translate(558 112)" filter="url(#tk2-shadow)">
-            <rect x="0" y="12" width="122" height="166" rx="22" fill="url(#tk2-clipboard)" stroke="#334155" stroke-width="2"/>
-            <rect x="35" y="0" width="52" height="30" rx="11" fill="#334155"/>
-            <rect x="22" y="48" width="78" height="8" rx="4" fill="#64748b"/>
-            <rect x="22" y="69" width="65" height="8" rx="4" fill="#64748b"/>
-            <rect class="tk2-clip-slot" x="20" y="100" width="82" height="35" rx="9" fill="#0b1220" stroke="#475569" stroke-width="1.5"/>
-            <text class="tk2-clip-text" x="61" y="123" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" font-weight="700" fill="#7dd3fc" opacity="0">wichtiger Text</text>
-            <text x="61" y="158" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#94a3b8">Zwischenablage</text>
-          </g>
-
-          <g class="tk2-keys" transform="translate(552 302)" filter="url(#tk2-shadow)">
-            <g class="tk2-key-ctrl">
-              <rect x="0" y="0" width="72" height="48" rx="12" fill="#182235" stroke="#475569" stroke-width="2"/>
-              <text x="36" y="30" text-anchor="middle" font-family="Arial,sans-serif" font-size="16" font-weight="800" fill="#dbeafe">Ctrl</text>
-            </g>
-            <text x="85" y="30" font-family="Arial,sans-serif" font-size="19" font-weight="800" fill="#64748b">+</text>
-            <g class="tk2-key-c">
-              <rect x="101" y="0" width="52" height="48" rx="12" fill="#182235" stroke="#475569" stroke-width="2"/>
-              <text x="127" y="30" text-anchor="middle" font-family="Arial,sans-serif" font-size="18" font-weight="800" fill="#dbeafe">C</text>
-            </g>
-          </g>
-
-          <g class="tk2-flying-copy" opacity="0">
-            <rect x="72" y="209" width="160" height="34" rx="7" fill="#2563eb" opacity="0.18"/>
-            <text x="80" y="232" font-family="Arial,sans-serif" font-size="18" font-weight="700" fill="#7dd3fc">wichtiger Text</text>
-          </g>
-
-          <g class="tk2-success" transform="translate(528 64)" opacity="0">
-            <rect x="0" y="0" width="166" height="34" rx="17" fill="#052e2b" stroke="#10b981" stroke-width="1.5"/>
-            <circle cx="20" cy="17" r="8" fill="#10b981"/>
-            <path d="M16 17l3 3 6-7" fill="none" stroke="#ecfdf5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <text x="36" y="22" font-family="Arial,sans-serif" font-size="13" font-weight="700" fill="#a7f3d0">Kopie gespeichert</text>
-          </g>
-        </svg>
-      </div>
-    `;
-
-    var svg = container.querySelector('.tk2-doc-scene');
-    var selection = svg.querySelector('.tk2-selection');
-    var flying = svg.querySelector('.tk2-flying-copy');
-    var clipText = svg.querySelector('.tk2-clip-text');
-    var success = svg.querySelector('.tk2-success');
-    var ctrlKey = svg.querySelector('.tk2-key-ctrl');
-    var cKey = svg.querySelector('.tk2-key-c');
-
-    function later(ms, fn){
-      var id = window.setTimeout(fn, ms);
-      timers.push(id);
+    function keyMarkup(keys){
+      var x = 0;
+      return keys.map(function(key, index){
+        var w = key === 'Shift' ? 78 : (key === 'Ctrl' ? 68 : 48);
+        var block = '<g class="tk2-key" data-key="'+key+'" transform="translate('+x+' 0)">'+
+          '<rect width="'+w+'" height="42" rx="10" fill="#172033" stroke="#475569" stroke-width="1.5"/>'+
+          '<text x="'+(w/2)+'" y="27" text-anchor="middle" font-family="Arial,sans-serif" font-size="'+(key.length>4?12:14)+'" font-weight="800" fill="#dbeafe">'+key+'</text></g>';
+        x += w;
+        if(index < keys.length-1){
+          block += '<text x="'+(x+9)+'" y="27" font-family="Arial,sans-serif" font-size="16" font-weight="800" fill="#64748b">+</text>';
+          x += 26;
+        }
+        return block;
+      }).join('');
     }
 
-    function clearTimers(){
-      timers.forEach(function(id){ window.clearTimeout(id); });
-      timers = [];
-    }
+    container.innerHTML = ''+
+      '<svg class="tk2-doc-scene" viewBox="0 0 560 320" role="img" aria-label="Animation: '+cfg.label+'">'+
+      '<defs>'+
+        '<filter id="'+uid+'Shadow" x="-30%" y="-30%" width="170%" height="180%"><feDropShadow dx="0" dy="9" stdDeviation="10" flood-color="#020617" flood-opacity=".38"/></filter>'+
+        '<linearGradient id="'+uid+'Paper" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#f8fafc"/></linearGradient>'+
+        '<linearGradient id="'+uid+'Sel" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#60a5fa" stop-opacity=".58"/><stop offset="1" stop-color="#22d3ee" stop-opacity=".34"/></linearGradient>'+
+      '</defs>'+
+      '<rect width="560" height="320" rx="24" fill="#07101f"/>'+
+      '<circle cx="500" cy="42" r="96" fill="#2563eb" opacity=".06"/>'+
+      '<g class="doc" filter="url(#'+uid+'Shadow)">'+
+        '<rect x="30" y="24" width="365" height="270" rx="16" fill="url(#'+uid+'Paper)"/>'+
+        '<rect x="30" y="24" width="365" height="36" rx="16" fill="#e2e8f0"/>'+
+        '<rect x="30" y="44" width="365" height="16" fill="#e2e8f0"/>'+
+        '<circle cx="50" cy="42" r="4" fill="#fb7185"/><circle cx="66" cy="42" r="4" fill="#fbbf24"/><circle cx="82" cy="42" r="4" fill="#34d399"/>'+
+        '<text x="108" y="46" font-family="Arial,sans-serif" font-size="10" font-weight="700" fill="#475569">Projektbericht.docx</text>'+
+        '<g class="unsaved-dot"><circle cx="370" cy="42" r="5" fill="#f59e0b"/></g>'+
+        '<g class="saved-badge" opacity="0"><circle cx="366" cy="42" r="8" fill="#10b981"/><path d="M362 42l3 3 5-6" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/></g>'+
+        '<rect x="60" y="80" width="148" height="13" rx="6.5" fill="#0f172a" opacity=".9"/>'+
+        '<g class="text-lines">'+
+          '<rect x="60" y="111" width="270" height="8" rx="4" fill="#94a3b8"/>'+
+          '<rect x="60" y="130" width="246" height="8" rx="4" fill="#94a3b8"/>'+
+          '<rect x="60" y="149" width="278" height="8" rx="4" fill="#94a3b8"/>'+
+        '</g>'+
+        '<g class="source-row">'+
+          '<rect class="single-selection" x="56" y="174" width="0" height="31" rx="7" fill="url(#'+uid+'Sel)"/>'+
+          '<text class="source-text" x="64" y="195" font-family="Arial,sans-serif" font-size="17" font-weight="700" fill="#0f172a">wichtiger Text</text>'+
+        '</g>'+
+        '<g class="all-selection" opacity="0">'+
+          '<rect x="54" y="105" width="292" height="101" rx="9" fill="url(#'+uid+'Sel)"/>'+
+        '</g>'+
+        '<g class="paste-target">'+
+          '<line class="caret" x1="64" y1="224" x2="64" y2="246" stroke="#2563eb" stroke-width="2.5" opacity="0"/>'+
+          '<text class="pasted-rich" x="70" y="241" font-family="Arial,sans-serif" font-size="17" font-weight="800" fill="#2563eb" opacity="0">WICHTIGER TEXT</text>'+
+          '<text class="pasted-plain" x="70" y="241" font-family="Arial,sans-serif" font-size="17" font-weight="400" fill="#334155" opacity="0">wichtiger Text</text>'+
+        '</g>'+
+        '<g class="history-state">'+
+          '<rect class="history-chip" x="60" y="259" width="98" height="19" rx="9.5" fill="#dbeafe" opacity="0"/>'+
+          '<text class="history-text" x="109" y="272" text-anchor="middle" font-family="Arial,sans-serif" font-size="10" font-weight="700" fill="#1d4ed8" opacity="0">Änderung aktiv</text>'+
+        '</g>'+
+      '</g>'+
+      '<g class="clipboard" transform="translate(425 68)" filter="url(#'+uid+'Shadow)">'+
+        '<rect width="104" height="139" rx="18" fill="#111c30" stroke="#334155" stroke-width="1.5"/>'+
+        '<rect x="30" y="-9" width="44" height="25" rx="9" fill="#334155"/>'+
+        '<rect x="18" y="31" width="68" height="7" rx="3.5" fill="#64748b"/>'+
+        '<rect x="18" y="48" width="57" height="7" rx="3.5" fill="#64748b"/>'+
+        '<rect x="15" y="72" width="74" height="34" rx="8" fill="#09111f" stroke="#475569"/>'+
+        '<text class="clip-text" x="52" y="93" text-anchor="middle" font-family="Arial,sans-serif" font-size="10" font-weight="700" fill="#7dd3fc" opacity="0">wichtiger Text</text>'+
+        '<text class="clip-rich" x="52" y="90" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" font-weight="900" fill="#60a5fa" opacity="0">WICHTIG</text>'+
+        '<rect class="clip-rich-line" x="30" y="96" width="44" height="3" rx="1.5" fill="#f59e0b" opacity="0"/>'+
+        '<text x="52" y="126" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" fill="#94a3b8">Zwischenablage</text>'+
+      '</g>'+
+      '<g class="keys" transform="translate(414 240)">'+keyMarkup(cfg.keys)+'</g>'+
+      '<g class="flying" opacity="0"><rect x="56" y="174" width="148" height="31" rx="7" fill="#2563eb" opacity=".2"/><text x="64" y="195" font-family="Arial,sans-serif" font-size="17" font-weight="700" fill="#7dd3fc">wichtiger Text</text></g>'+
+      '<g class="history-arrow" opacity="0" transform="translate(427 205)"><path d="M60 10C31 -5 8 6 9 31" fill="none" stroke="#10b981" stroke-width="5" stroke-linecap="round"/><path d="M2 22l7 11 10-9" fill="none" stroke="#10b981" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></g>'+
+      '<g class="status-toast" opacity="0" transform="translate(391 20)"><rect width="148" height="30" rx="15" fill="#052e2b" stroke="#10b981"/><circle cx="18" cy="15" r="7" fill="#10b981"/><path d="M14 15l3 3 5-6" fill="none" stroke="#fff" stroke-width="1.8"/><text class="toast-text" x="32" y="19" font-family="Arial,sans-serif" font-size="11" font-weight="700" fill="#a7f3d0">Fertig</text></g>'+
+      '</svg>';
 
-    function setTransition(el, value){ el.style.transition = value; }
+    var svg = container.querySelector('svg');
+    var $ = function(sel){ return svg.querySelector(sel); };
+    var $$ = function(sel){ return Array.from(svg.querySelectorAll(sel)); };
+
+    function later(ms, fn){ timers.push(window.setTimeout(fn, ms)); }
+    function clearTimers(){ timers.forEach(window.clearTimeout); timers = []; }
+    function trans(el, value){ el.style.transition = reduceMotion ? 'none' : value; }
+    function opacity(el, value){ el.setAttribute('opacity', String(value)); }
+    function toast(text){ $('.toast-text').textContent = text; opacity($('.status-toast'),1); }
+    function pressKeys(){
+      $$('.tk2-key').forEach(function(key, i){
+        later(i*115, function(){
+          trans(key,'transform 110ms ease, filter 110ms ease');
+          key.setAttribute('transform', key.getAttribute('transform').replace(/\)$/, '') + ') translate(0 4)');
+          key.style.filter='drop-shadow(0 0 8px rgba(56,189,248,.75))';
+          later(170,function(){
+            var base = key.getAttribute('transform').replace(/ translate\(0 4\)$/,'');
+            key.setAttribute('transform',base);
+            key.style.filter='';
+          });
+        });
+      });
+    }
 
     function reset(){
-      clearTimers();
-      running = false;
-      setTransition(selection, 'none');
-      selection.setAttribute('width', '0');
-      setTransition(flying, 'none');
-      flying.setAttribute('opacity', '0');
-      flying.setAttribute('transform', 'translate(0 0) scale(1)');
-      clipText.setAttribute('opacity', '0');
-      success.setAttribute('opacity', '0');
-      ctrlKey.setAttribute('transform', 'translate(0 0)');
-      cKey.setAttribute('transform', 'translate(0 0)');
-      ctrlKey.style.filter = '';
-      cKey.style.filter = '';
+      clearTimers(); running=false;
+      trans($('.single-selection'),'none'); $('.single-selection').setAttribute('width','0');
+      opacity($('.all-selection'),0);
+      opacity($('.source-text'),1);
+      opacity($('.flying'),0); $('.flying').setAttribute('transform','translate(0 0) scale(1)');
+      opacity($('.clip-text'),0); opacity($('.clip-rich'),0); opacity($('.clip-rich-line'),0);
+      opacity($('.caret'),0); opacity($('.pasted-rich'),0); opacity($('.pasted-plain'),0);
+      opacity($('.status-toast'),0); opacity($('.saved-badge'),0); opacity($('.unsaved-dot'),1);
+      opacity($('.history-arrow'),0); $('.history-arrow').setAttribute('transform','translate(427 205) scale(1 1)');
+      opacity($('.history-chip'),0); opacity($('.history-text'),0);
+      $$('.tk2-key').forEach(function(k){k.style.transition='none';k.style.filter='';});
     }
 
-    function pressKey(group){
-      group.setAttribute('transform', 'translate(0 4)');
-      group.style.filter = 'drop-shadow(0 0 10px rgba(56,189,248,.75))';
-      later(180, function(){
-        group.setAttribute('transform', 'translate(0 0)');
-        group.style.filter = '';
-      });
+    function selectSingle(){
+      later(140,function(){ trans($('.single-selection'),'width 520ms cubic-bezier(.2,.8,.25,1)'); $('.single-selection').setAttribute('width','152'); });
     }
 
-    function playCopy(){
-      if(running) reset();
-      running = true;
-
-      later(120, function(){
-        setTransition(selection, reduceMotion ? 'none' : 'width 620ms cubic-bezier(.22,.8,.25,1)');
-        selection.setAttribute('width', '164');
+    function playCopy(cut){
+      selectSingle();
+      later(760,pressKeys);
+      later(1120,function(){
+        opacity($('.flying'),1); trans($('.flying'),'transform 660ms cubic-bezier(.2,.78,.25,1), opacity 160ms ease');
+        $('.flying').setAttribute('transform','translate(366 -93) scale(.48)');
       });
-
-      later(980, function(){ pressKey(ctrlKey); });
-      later(1120, function(){ pressKey(cKey); });
-
-      later(1360, function(){
-        flying.setAttribute('opacity', '1');
-        setTransition(flying, reduceMotion ? 'none' : 'transform 760ms cubic-bezier(.2,.75,.24,1), opacity 180ms ease');
-        flying.setAttribute('transform', 'translate(492 -86) scale(.58)');
-      });
-
-      later(2140, function(){
-        flying.setAttribute('opacity', '0');
-        clipText.setAttribute('opacity', '1');
-        success.setAttribute('opacity', '1');
-      });
-
-      later(3600, function(){
-        running = false;
-        if(autoplay) play();
+      later(1810,function(){
+        opacity($('.flying'),0); opacity($('.clip-text'),1);
+        if(cut){ trans($('.source-text'),'opacity 330ms ease'); opacity($('.source-text'),0); toast('Text ausgeschnitten'); }
+        else toast('Kopie gespeichert');
       });
     }
 
-    function play(){
-      reset();
-      later(reduceMotion ? 0 : 180, function(){
-        if(mode === 'copy') playCopy();
+    function playPaste(plain){
+      if(plain){ opacity($('.clip-rich'),1); opacity($('.clip-rich-line'),1); }
+      else opacity($('.clip-text'),1);
+      later(250,function(){opacity($('.caret'),1);});
+      later(650,pressKeys);
+      later(1120,function(){
+        if(plain){ trans($('.pasted-plain'),'opacity 300ms ease'); opacity($('.pasted-plain'),1); toast('Nur Text eingefügt'); }
+        else { trans($('.pasted-rich'),'opacity 300ms ease'); opacity($('.pasted-rich'),1); toast('Inhalt eingefügt'); }
       });
     }
+
+    function playUndo(){
+      opacity($('.history-chip'),1); opacity($('.history-text'),1);
+      $('.history-text').textContent='Text gelöscht';
+      opacity($('.source-text'),0);
+      later(600,pressKeys);
+      later(1040,function(){ opacity($('.history-arrow'),1); });
+      later(1380,function(){ trans($('.source-text'),'opacity 300ms ease'); opacity($('.source-text'),1); $('.history-text').textContent='Text wieder da'; toast('Rückgängig'); });
+    }
+
+    function playRedo(){
+      opacity($('.history-chip'),1); opacity($('.history-text'),1);
+      $('.history-text').textContent='Rückgängig gemacht';
+      opacity($('.source-text'),1);
+      $('.history-arrow').setAttribute('transform','translate(527 205) scale(-1 1)');
+      later(600,pressKeys);
+      later(1040,function(){ opacity($('.history-arrow'),1); });
+      later(1380,function(){ trans($('.source-text'),'opacity 300ms ease'); opacity($('.source-text'),0); $('.history-text').textContent='Löschen wiederholt'; toast('Wiederhergestellt'); });
+    }
+
+    function playSave(){
+      later(400,pressKeys);
+      later(920,function(){ opacity($('.unsaved-dot'),0); opacity($('.saved-badge'),1); toast('Dokument gespeichert'); });
+    }
+
+    function playSelectAll(){
+      later(420,pressKeys);
+      later(920,function(){ trans($('.all-selection'),'opacity 300ms ease'); opacity($('.all-selection'),1); toast('Alles markiert'); });
+    }
+
+    function run(){
+      reset(); running=true;
+      later(reduceMotion?0:120,function(){
+        if(mode==='copy') playCopy(false);
+        else if(mode==='cut') playCopy(true);
+        else if(mode==='paste') playPaste(false);
+        else if(mode==='pastePlain') playPaste(true);
+        else if(mode==='undo') playUndo();
+        else if(mode==='redo') playRedo();
+        else if(mode==='save') playSave();
+        else if(mode==='selectAll') playSelectAll();
+      });
+      if(!reduceMotion){
+        later(3350,function(){ running=false; if(active && autoLoop) run(); });
+      }
+    }
+
+    function play(){ active=true; run(); }
+    function setActive(value){
+      active=Boolean(value);
+      if(!active){ clearTimers(); running=false; }
+      else if(!running) run();
+    }
+    function setMode(next){ mode=next; cfg=MODES[mode]||MODES.copy; run(); }
 
     reset();
-    if(autoplay) play();
-
-    return {
-      play: play,
-      reset: reset,
-      setMode: function(nextMode){ mode = nextMode; play(); }
-    };
+    if(active) run();
+    return {play:play,reset:reset,setActive:setActive,setMode:setMode};
   }
 
   window.createDocTextScene = createDocTextScene;
