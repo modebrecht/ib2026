@@ -76,26 +76,35 @@ const TK_TEXT_REPLACEMENTS = [
     ['A3: Mission Maus weglegen - Boss Challenge', 'A3: Praxisaufgabe – Maus weglegen'],
     ['Arbeitsblatt A3: Mission: Maus weglegen', 'Praxisaufgabe – Maus weglegen'],
     ['Arbeitsblatt A3 (Mission: Maus weglegen)', 'Praxisaufgabe – Maus weglegen'],
+    ['Boss-Challenge "Maus weglegen"', 'Praxisaufgabe – Maus weglegen'],
     ['Boss-Challenge (A3.html)', 'Praxisaufgabe A3'],
     ['Boss Challenge A3', 'Praxisaufgabe A3'],
     ['Boss-Challenge A3', 'Praxisaufgabe A3'],
     ['Boss Challenge', 'Praxisaufgabe'],
     ['Boss-Challenge', 'Praxisaufgabe'],
+    ['Mission: Maus weglegen', 'Praxisaufgabe – Maus weglegen'],
     ['Memory Mode – Aus dem Gedächtnis:', 'Aus dem Gedächtnis:'],
     ['Memory Mode', 'Aus dem Gedächtnis'],
     ['Geführter Mode', 'Geführt'],
     ['AltGr Geführt', 'Geführt'],
+    ['50/50 Mode', 'Kürzel-Rätsel'],
     ['50/50 Rätsel', 'Kürzel-Rätsel'],
+    ['Blind-Profi-Modus', 'Übung ohne Hilfe'],
     ['Blind-Profi', 'Ohne Hilfe'],
     ['Gedächtnis-Test', 'Test aus dem Gedächtnis'],
     ['Blind-Test', 'Test ohne Hilfe'],
     ['Überragend!', 'Geschafft!'],
+    ['Super gemacht!', 'Geschafft!'],
     ['gemeistert!', 'geschafft!'],
     ['FREIGESCHALTET!', 'freigeschaltet.'],
     ['Neues Game', 'Neu starten'],
     ['Tastatur-Kürzel', 'Tastenkürzel'],
     ['Arbeitsblatt Download', 'Arbeitsblatt herunterladen'],
     ['originale Word-Arbeitsblatt', 'Word-Arbeitsblatt'],
+    ['A1 Starten', 'A1 starten'],
+    ['A2 Starten', 'A2 starten'],
+    ['A3 Starten', 'A3 starten'],
+    ['PDF Herunterladen', 'PDF herunterladen'],
     ['Zusammenfassung der Leistungswerte in den Praxiskursen:', 'Zusammenfassung der Ergebnisse aus den Übungen:'],
     ['Meistere alle Quests', 'Schliesse alle Quests ab'],
     ['Danach starten wir mit Quest 1 im Praxistrainer!', 'Danach startest du mit Quest 1 in der Übung!'],
@@ -123,6 +132,8 @@ function normalizeTkText(text) {
         .replace(/Q4: Geführt/g, 'Quest 4 – Geführt')
         .replace(/Q5: Kürzel-Rätsel/g, 'Quest 5 – Kürzel-Rätsel')
         .replace(/Q6: Ohne Hilfe/g, 'Quest 6 – Ohne Hilfe')
+        .replace(/50\/50 (\d+) von/g, 'Rätsel $1 von')
+        .replace(/Blind (\d+) von/g, 'Ohne Hilfe $1 von')
         .replace(/mindestens (\d+)% Genauigkeit/g, 'mindestens $1 % richtig')
         .replace(/Genauigkeit:\s*(\d+)%/g, 'Richtig: $1 %')
         .replace(/(\d+)% Genauigkeit/g, '$1 % richtig')
@@ -149,6 +160,18 @@ function applyTkLanguage(root) {
     if (root.nodeType === Node.ELEMENT_NODE && ['SCRIPT', 'STYLE', 'NOSCRIPT'].includes(root.tagName)) return;
 
     root.childNodes.forEach(child => applyTkLanguage(child));
+}
+
+function applyTkPagePolish() {
+    const page = location.pathname.split('/').pop() || 'index.html';
+
+    if (page === 'A1.html') {
+        document.body.classList.add('tk-page-a1');
+        const headerLabel = document.querySelector('.top-bar > div:last-child > span:last-child');
+        if (headerLabel && headerLabel.textContent.trim() === 'Arbeitsblatt A1') {
+            headerLabel.classList.add('badge-a1');
+        }
+    }
 }
 
 function startTkLanguageNormalization() {
@@ -255,6 +278,7 @@ function playSound(type) {
 
 document.addEventListener('DOMContentLoaded', () => {
     updateXPDisplays();
+    applyTkPagePolish();
     startTkLanguageNormalization();
 });
 
