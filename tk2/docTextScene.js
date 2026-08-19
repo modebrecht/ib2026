@@ -2,6 +2,7 @@
   'use strict';
 
   var sceneCounter = 0;
+  var LOOP_MS = 4200;
   var MODES = {
     copy:{keys:['Ctrl','C'],label:'Kopieren'},
     cut:{keys:['Ctrl','X'],label:'Ausschneiden'},
@@ -68,19 +69,20 @@
           '<rect class="single-selection" x="56" y="174" width="0" height="31" rx="7" fill="url(#'+uid+'Sel)"/>'+
           '<text class="source-text" x="64" y="195" font-family="Arial,sans-serif" font-size="17" font-weight="700" fill="#0f172a">wichtiger Text</text>'+
         '</g>'+
-        '<g class="all-selection" opacity="0">'+
-          '<rect x="54" y="105" width="292" height="101" rx="9" fill="url(#'+uid+'Sel)"/>'+
-        '</g>'+
+        '<g class="all-selection" opacity="0"><rect x="54" y="105" width="292" height="101" rx="9" fill="url(#'+uid+'Sel)"/></g>'+
         '<g class="paste-target">'+
           '<line class="caret" x1="64" y1="224" x2="64" y2="246" stroke="#2563eb" stroke-width="2.5" opacity="0"/>'+
           '<text class="pasted-rich" x="70" y="241" font-family="Arial,sans-serif" font-size="17" font-weight="800" fill="#2563eb" opacity="0">WICHTIGER TEXT</text>'+
+          '<line class="rich-underline" x1="70" y1="246" x2="208" y2="246" stroke="#f59e0b" stroke-width="3" opacity="0"/>'+
           '<text class="pasted-plain" x="70" y="241" font-family="Arial,sans-serif" font-size="17" font-weight="400" fill="#334155" opacity="0">wichtiger Text</text>'+
         '</g>'+
         '<g class="history-state">'+
-          '<rect class="history-chip" x="60" y="259" width="98" height="19" rx="9.5" fill="#dbeafe" opacity="0"/>'+
-          '<text class="history-text" x="109" y="272" text-anchor="middle" font-family="Arial,sans-serif" font-size="10" font-weight="700" fill="#1d4ed8" opacity="0">Änderung aktiv</text>'+
+          '<rect class="history-chip" x="60" y="259" width="120" height="19" rx="9.5" fill="#dbeafe" opacity="0"/>'+
+          '<text class="history-text" x="120" y="272" text-anchor="middle" font-family="Arial,sans-serif" font-size="10" font-weight="700" fill="#1d4ed8" opacity="0">Änderung aktiv</text>'+
         '</g>'+
       '</g>'+
+      '<path class="transfer-path" d="M205 190 C300 164 350 120 435 121" fill="none" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="7 8" opacity="0"/>'+
+      '<circle class="transfer-dot" cx="205" cy="190" r="5" fill="#7dd3fc" opacity="0"/>'+
       '<g class="clipboard" transform="translate(425 68)" filter="url(#'+uid+'Shadow)">'+
         '<rect width="104" height="139" rx="18" fill="#111c30" stroke="#334155" stroke-width="1.5"/>'+
         '<rect x="30" y="-9" width="44" height="25" rx="9" fill="#334155"/>'+
@@ -95,7 +97,7 @@
       '<g class="keys" transform="translate(414 240)">'+keyMarkup(cfg.keys)+'</g>'+
       '<g class="flying" opacity="0"><rect x="56" y="174" width="148" height="31" rx="7" fill="#2563eb" opacity=".2"/><text x="64" y="195" font-family="Arial,sans-serif" font-size="17" font-weight="700" fill="#7dd3fc">wichtiger Text</text></g>'+
       '<g class="history-arrow" opacity="0" transform="translate(427 205)"><path d="M60 10C31 -5 8 6 9 31" fill="none" stroke="#10b981" stroke-width="5" stroke-linecap="round"/><path d="M2 22l7 11 10-9" fill="none" stroke="#10b981" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></g>'+
-      '<g class="status-toast" opacity="0" transform="translate(391 20)"><rect width="148" height="30" rx="15" fill="#052e2b" stroke="#10b981"/><circle cx="18" cy="15" r="7" fill="#10b981"/><path d="M14 15l3 3 5-6" fill="none" stroke="#fff" stroke-width="1.8"/><text class="toast-text" x="32" y="19" font-family="Arial,sans-serif" font-size="11" font-weight="700" fill="#a7f3d0">Fertig</text></g>'+
+      '<g class="status-toast" opacity="0" transform="translate(382 20)"><rect width="157" height="30" rx="15" fill="#052e2b" stroke="#10b981"/><circle cx="18" cy="15" r="7" fill="#10b981"/><path d="M14 15l3 3 5-6" fill="none" stroke="#fff" stroke-width="1.8"/><text class="toast-text" x="32" y="19" font-family="Arial,sans-serif" font-size="11" font-weight="700" fill="#a7f3d0">Fertig</text></g>'+
       '</svg>';
 
     var svg = container.querySelector('svg');
@@ -104,9 +106,10 @@
 
     function later(ms, fn){ timers.push(window.setTimeout(fn, ms)); }
     function clearTimers(){ timers.forEach(window.clearTimeout); timers = []; }
-    function trans(el, value){ el.style.transition = reduceMotion ? 'none' : value; }
-    function opacity(el, value){ el.setAttribute('opacity', String(value)); }
+    function trans(el, value){ if(el) el.style.transition = reduceMotion ? 'none' : value; }
+    function opacity(el, value){ if(el) el.setAttribute('opacity', String(value)); }
     function toast(text){ $('.toast-text').textContent = text; opacity($('.status-toast'),1); }
+
     function pressKeys(){
       $$('.tk2-key').forEach(function(key, i){
         later(i*115, function(){
@@ -125,75 +128,120 @@
       opacity($('.all-selection'),0);
       opacity($('.source-text'),1);
       opacity($('.flying'),0); $('.flying').setAttribute('transform','translate(0 0) scale(1)');
+      opacity($('.transfer-path'),0); opacity($('.transfer-dot'),0); $('.transfer-dot').setAttribute('transform','translate(0 0)');
       opacity($('.clip-text'),0); opacity($('.clip-rich'),0); opacity($('.clip-rich-line'),0);
-      opacity($('.caret'),0); opacity($('.pasted-rich'),0); opacity($('.pasted-plain'),0);
+      opacity($('.caret'),0); opacity($('.pasted-rich'),0); opacity($('.pasted-plain'),0); opacity($('.rich-underline'),0);
       opacity($('.status-toast'),0); opacity($('.saved-badge'),0); opacity($('.unsaved-dot'),1);
       opacity($('.history-arrow'),0); $('.history-arrow').setAttribute('transform','translate(427 205) scale(1 1)');
       opacity($('.history-chip'),0); opacity($('.history-text'),0);
       $$('.tk2-key').forEach(function(k){k.style.transition='none';k.style.filter='';k.setAttribute('transform',k.getAttribute('data-base'));});
     }
 
+    function showTransfer(){
+      opacity($('.transfer-path'),.75); opacity($('.transfer-dot'),1);
+      trans($('.transfer-dot'),'transform 720ms cubic-bezier(.2,.75,.25,1)');
+      $('.transfer-dot').setAttribute('transform','translate(230 -69)');
+    }
+
     function selectSingle(){
-      later(140,function(){ trans($('.single-selection'),'width 520ms cubic-bezier(.2,.8,.25,1)'); $('.single-selection').setAttribute('width','152'); });
+      later(180,function(){ trans($('.single-selection'),'width 520ms cubic-bezier(.2,.8,.25,1)'); $('.single-selection').setAttribute('width','152'); });
     }
 
     function playCopy(cut){
       selectSingle();
-      later(760,pressKeys);
-      later(1120,function(){
-        opacity($('.flying'),1); trans($('.flying'),'transform 660ms cubic-bezier(.2,.78,.25,1), opacity 160ms ease');
+      later(830,pressKeys);
+      later(1260,function(){
+        showTransfer();
+        opacity($('.flying'),1);
+        trans($('.flying'),'transform 720ms cubic-bezier(.2,.78,.25,1), opacity 160ms ease');
         $('.flying').setAttribute('transform','translate(366 -93) scale(.48)');
       });
-      later(1810,function(){
-        opacity($('.flying'),0); opacity($('.clip-text'),1);
-        if(cut){ trans($('.source-text'),'opacity 330ms ease'); opacity($('.source-text'),0); toast('Text ausgeschnitten'); }
-        else toast('Kopie gespeichert');
+      later(2030,function(){
+        opacity($('.flying'),0); opacity($('.transfer-dot'),0); opacity($('.clip-text'),1);
+        if(cut){ trans($('.source-text'),'opacity 330ms ease'); opacity($('.source-text'),0); toast('Original entfernt · Kopie bleibt'); }
+        else toast('Kopie in Zwischenablage');
       });
+      later(2480,function(){ opacity($('.transfer-path'),0); });
     }
 
     function playPaste(plain){
       if(plain){ opacity($('.clip-rich'),1); opacity($('.clip-rich-line'),1); }
       else opacity($('.clip-text'),1);
-      later(250,function(){opacity($('.caret'),1);});
-      later(650,pressKeys);
-      later(1120,function(){
-        if(plain){ trans($('.pasted-plain'),'opacity 300ms ease'); opacity($('.pasted-plain'),1); toast('Nur Text eingefügt'); }
-        else { trans($('.pasted-rich'),'opacity 300ms ease'); opacity($('.pasted-rich'),1); toast('Inhalt eingefügt'); }
+      later(300,function(){opacity($('.caret'),1);});
+      later(780,pressKeys);
+      later(1300,function(){
+        if(plain){
+          trans($('.pasted-plain'),'opacity 300ms ease'); opacity($('.pasted-plain'),1);
+          toast('Formatierung entfernt');
+        } else {
+          trans($('.pasted-rich'),'opacity 300ms ease'); opacity($('.pasted-rich'),1); opacity($('.rich-underline'),1);
+          toast('Inhalt eingefügt');
+        }
       });
     }
 
     function playUndo(){
       opacity($('.history-chip'),1); opacity($('.history-text'),1);
-      $('.history-text').textContent='Text gelöscht';
+      $('.history-text').textContent='Vorher: Text gelöscht';
       opacity($('.source-text'),0);
-      later(600,pressKeys);
-      later(1040,function(){ opacity($('.history-arrow'),1); });
-      later(1380,function(){ trans($('.source-text'),'opacity 300ms ease'); opacity($('.source-text'),1); $('.history-text').textContent='Text wieder da'; toast('Rückgängig'); });
+      later(720,pressKeys);
+      later(1210,function(){ opacity($('.history-arrow'),1); });
+      later(1580,function(){
+        trans($('.source-text'),'opacity 300ms ease'); opacity($('.source-text'),1);
+        $('.history-text').textContent='Nachher: Text wieder da';
+        toast('Letzte Änderung rückgängig');
+      });
     }
 
     function playRedo(){
       opacity($('.history-chip'),1); opacity($('.history-text'),1);
-      $('.history-text').textContent='Rückgängig gemacht';
+      $('.history-text').textContent='Vorher: rückgängig';
       opacity($('.source-text'),1);
       $('.history-arrow').setAttribute('transform','translate(527 205) scale(-1 1)');
-      later(600,pressKeys);
-      later(1040,function(){ opacity($('.history-arrow'),1); });
-      later(1380,function(){ trans($('.source-text'),'opacity 300ms ease'); opacity($('.source-text'),0); $('.history-text').textContent='Löschen wiederholt'; toast('Wiederhergestellt'); });
+      later(720,pressKeys);
+      later(1210,function(){ opacity($('.history-arrow'),1); });
+      later(1580,function(){
+        trans($('.source-text'),'opacity 300ms ease'); opacity($('.source-text'),0);
+        $('.history-text').textContent='Nachher: Löschen erneut';
+        toast('Änderung wiederholt');
+      });
     }
 
     function playSave(){
-      later(400,pressKeys);
-      later(920,function(){ opacity($('.unsaved-dot'),0); opacity($('.saved-badge'),1); toast('Dokument gespeichert'); });
+      later(560,pressKeys);
+      later(1160,function(){ opacity($('.unsaved-dot'),0); opacity($('.saved-badge'),1); toast('Änderungen gespeichert'); });
     }
 
     function playSelectAll(){
-      later(420,pressKeys);
-      later(920,function(){ trans($('.all-selection'),'opacity 300ms ease'); opacity($('.all-selection'),1); toast('Alles markiert'); });
+      later(560,pressKeys);
+      later(1160,function(){ trans($('.all-selection'),'opacity 300ms ease'); opacity($('.all-selection'),1); toast('Gesamter Inhalt markiert'); });
+    }
+
+    function applyEndState(){
+      reset();
+      if(mode==='copy'){
+        $('.single-selection').setAttribute('width','152'); opacity($('.clip-text'),1); toast('Kopie in Zwischenablage');
+      } else if(mode==='cut'){
+        $('.single-selection').setAttribute('width','152'); opacity($('.clip-text'),1); opacity($('.source-text'),0); toast('Original entfernt · Kopie bleibt');
+      } else if(mode==='paste'){
+        opacity($('.clip-text'),1); opacity($('.caret'),1); opacity($('.pasted-rich'),1); opacity($('.rich-underline'),1); toast('Inhalt eingefügt');
+      } else if(mode==='pastePlain'){
+        opacity($('.clip-rich'),1); opacity($('.clip-rich-line'),1); opacity($('.caret'),1); opacity($('.pasted-plain'),1); toast('Formatierung entfernt');
+      } else if(mode==='undo'){
+        opacity($('.history-chip'),1); opacity($('.history-text'),1); $('.history-text').textContent='Nachher: Text wieder da'; opacity($('.source-text'),1); toast('Letzte Änderung rückgängig');
+      } else if(mode==='redo'){
+        opacity($('.history-chip'),1); opacity($('.history-text'),1); $('.history-text').textContent='Nachher: Löschen erneut'; opacity($('.source-text'),0); toast('Änderung wiederholt');
+      } else if(mode==='save'){
+        opacity($('.unsaved-dot'),0); opacity($('.saved-badge'),1); toast('Änderungen gespeichert');
+      } else if(mode==='selectAll'){
+        opacity($('.all-selection'),1); toast('Gesamter Inhalt markiert');
+      }
     }
 
     function run(){
+      if(reduceMotion){ applyEndState(); running=false; return; }
       reset(); running=true;
-      later(reduceMotion?0:120,function(){
+      later(120,function(){
         if(mode==='copy') playCopy(false);
         else if(mode==='cut') playCopy(true);
         else if(mode==='paste') playPaste(false);
@@ -203,11 +251,15 @@
         else if(mode==='save') playSave();
         else if(mode==='selectAll') playSelectAll();
       });
-      if(!reduceMotion){ later(3350,function(){ running=false; if(active && autoLoop) run(); }); }
+      later(LOOP_MS,function(){ running=false; if(active && autoLoop) run(); });
     }
 
     function play(){ active=true; run(); }
-    function setActive(value){ active=Boolean(value); if(!active){ clearTimers(); running=false; } else if(!running) run(); }
+    function setActive(value){
+      active=Boolean(value);
+      if(!active){ clearTimers(); running=false; }
+      else if(!running) run();
+    }
     function setMode(next){ mode=next; cfg=MODES[mode]||MODES.copy; run(); }
 
     reset();
