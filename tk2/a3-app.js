@@ -50,6 +50,11 @@
     byId('a3-lock-screen').style.display=unlocked?'none':'flex';
     byId('a3-content-wrap').style.display=unlocked?'block':'none';
 
+    var links=document.querySelectorAll('.top-bar .back-link');
+    if(links.length>1)links[1].setAttribute('href','index.html');
+    var next=document.querySelector('#completion-panel .btn-next');
+    if(next)next.setAttribute('href','A4.html');
+
     var done=(getQuestScores().q7||0)>=100;
     if(done){
       byId('completion-panel').style.display='block';
