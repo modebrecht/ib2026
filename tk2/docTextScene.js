@@ -17,8 +17,8 @@
   function createDocTextScene(container, options){
     options = options || {};
     var mode = options.mode || 'copy';
-    var autoLoop = options.autoplay !== false;
-    var active = autoLoop;
+    var active = options.autoplay !== false;
+    var autoLoop = options.loop !== false;
     var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var uid = 'tk2doc' + (++sceneCounter);
     var timers = [];
