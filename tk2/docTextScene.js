@@ -28,7 +28,8 @@
       var x = 0;
       return keys.map(function(key, index){
         var w = key === 'Shift' ? 78 : (key === 'Ctrl' ? 68 : 48);
-        var block = '<g class="tk2-key" data-key="'+key+'" transform="translate('+x+' 0)">'+
+        var base = 'translate('+x+' 0)';
+        var block = '<g class="tk2-key" data-key="'+key+'" data-base="'+base+'" transform="'+base+'">'+
           '<rect width="'+w+'" height="42" rx="10" fill="#172033" stroke="#475569" stroke-width="1.5"/>'+
           '<text x="'+(w/2)+'" y="27" text-anchor="middle" font-family="Arial,sans-serif" font-size="'+(key.length>4?12:14)+'" font-weight="800" fill="#dbeafe">'+key+'</text></g>';
         x += w;
@@ -109,14 +110,11 @@
     function pressKeys(){
       $$('.tk2-key').forEach(function(key, i){
         later(i*115, function(){
+          var base = key.getAttribute('data-base');
           trans(key,'transform 110ms ease, filter 110ms ease');
-          key.setAttribute('transform', key.getAttribute('transform').replace(/\)$/, '') + ') translate(0 4)');
+          key.setAttribute('transform', base + ' translate(0 4)');
           key.style.filter='drop-shadow(0 0 8px rgba(56,189,248,.75))';
-          later(170,function(){
-            var base = key.getAttribute('transform').replace(/ translate\(0 4\)$/,'');
-            key.setAttribute('transform',base);
-            key.style.filter='';
-          });
+          later(170,function(){ key.setAttribute('transform',base); key.style.filter=''; });
         });
       });
     }
@@ -132,7 +130,7 @@
       opacity($('.status-toast'),0); opacity($('.saved-badge'),0); opacity($('.unsaved-dot'),1);
       opacity($('.history-arrow'),0); $('.history-arrow').setAttribute('transform','translate(427 205) scale(1 1)');
       opacity($('.history-chip'),0); opacity($('.history-text'),0);
-      $$('.tk2-key').forEach(function(k){k.style.transition='none';k.style.filter='';});
+      $$('.tk2-key').forEach(function(k){k.style.transition='none';k.style.filter='';k.setAttribute('transform',k.getAttribute('data-base'));});
     }
 
     function selectSingle(){
@@ -205,17 +203,11 @@
         else if(mode==='save') playSave();
         else if(mode==='selectAll') playSelectAll();
       });
-      if(!reduceMotion){
-        later(3350,function(){ running=false; if(active && autoLoop) run(); });
-      }
+      if(!reduceMotion){ later(3350,function(){ running=false; if(active && autoLoop) run(); }); }
     }
 
     function play(){ active=true; run(); }
-    function setActive(value){
-      active=Boolean(value);
-      if(!active){ clearTimers(); running=false; }
-      else if(!running) run();
-    }
+    function setActive(value){ active=Boolean(value); if(!active){ clearTimers(); running=false; } else if(!running) run(); }
     function setMode(next){ mode=next; cfg=MODES[mode]||MODES.copy; run(); }
 
     reset();
