@@ -241,6 +241,18 @@
             flex-shrink: 0;
         }
 
+        .answer-row {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .answer-row .btn-hint {
+            margin-top: 0;
+            white-space: nowrap;
+        }
+
         .answer-select {
             width: 100%;
             padding: 11px 14px;
@@ -387,6 +399,8 @@
         @media (max-width: 640px) {
             .set-tabs { grid-template-columns: repeat(4, 1fr); }
             .set-tab .tab-name { display: none; }
+            .answer-row { grid-template-columns: 1fr; }
+            .answer-row .btn-hint { justify-self: start; }
             .actions { justify-content: center; }
             .summary-row { grid-template-columns: 38px 1fr; }
             .summary-vals { grid-column: 2; }
@@ -751,6 +765,7 @@
             var storedAnswers = stored && Array.isArray(stored.answers) ? stored.answers : [];
             var questions = DATA[currentSet];
             var startFresh = Boolean(forceFresh || freshAttempt);
+            var completedView = !startFresh && stored && typeof stored.last === "number";
 
             questions.forEach(function (q, idx) {
                 var card = document.createElement("div");
@@ -793,6 +808,53 @@
                 });
 
                 if (!startFresh && storedAnswers[idx]) select.value = storedAnswers[idx];
+                if (completedView) select.disabled = true;
+
+                var hintBtn = document.createElement("button");
+                hintBtn.type = "button";
+                hintBtn.className = "btn-hint";
+                hintBtn.dataset.used = "false";
+
+                var currentXP = typeof getGlobalXP === "function" ? getGlobalXP() : 0;
+                if (completedView) {
+                    hintBtn.textContent = "💡 Tipp";
+                    hintBtn.disabled = true;
+                } else if (currentXP < 30) {
+                    hintBtn.textContent = "💡 Tipp (-30 XP | Zu wenig XP)";
+                    hintBtn.disabled = true;
+                } else {
+                    hintBtn.textContent = "💡 Tipp (-30 XP)";
+                }
+
+                hintBtn.addEventListener("click", function () {
+                    if (hintBtn.dataset.used === "true" || select.disabled) return;
+
+                    var xp = typeof getGlobalXP === "function" ? getGlobalXP() : 0;
+                    if (xp < 30) {
+                        if (typeof playSound === "function") playSound("wrong");
+                        hintBtn.textContent = "💡 Tipp (-30 XP | Zu wenig XP)";
+                        hintBtn.disabled = true;
+                        return;
+                    }
+
+                    var wrongOptions = Array.from(select.options).filter(function (option) {
+                        return option.value && option.value !== q.correct && option.value !== select.value;
+                    });
+                    if (!wrongOptions.length) {
+                        wrongOptions = Array.from(select.options).filter(function (option) {
+                            return option.value && option.value !== q.correct;
+                        });
+                    }
+                    if (!wrongOptions.length) return;
+
+                    var optionToRemove = wrongOptions[Math.floor(Math.random() * wrongOptions.length)];
+                    optionToRemove.remove();
+                    if (typeof addGlobalXP === "function") addGlobalXP(-30);
+                    if (typeof playSound === "function") playSound("hint");
+                    hintBtn.dataset.used = "true";
+                    hintBtn.textContent = "💡 Tipp genutzt (-30 XP)";
+                    hintBtn.disabled = true;
+                });
 
                 var feedback = document.createElement("div");
                 feedback.className = "q-feedback";
@@ -803,8 +865,13 @@
                     updateAnswerProgress();
                 });
 
+                var answerRow = document.createElement("div");
+                answerRow.className = "answer-row";
+                answerRow.appendChild(select);
+                answerRow.appendChild(hintBtn);
+
                 card.appendChild(title);
-                card.appendChild(select);
+                card.appendChild(answerRow);
                 card.appendChild(feedback);
                 questionsContainer.appendChild(card);
             });
@@ -925,7 +992,8 @@
 
             for (var i = 0; i < selects.length; i++) {
                 var sel = selects[i];
-                var feedback = sel.parentNode.querySelector(".q-feedback");
+                var feedback = sel.closest(".question-card").querySelector(".q-feedback");
+                var hintBtn = sel.closest(".question-card").querySelector(".btn-hint");
                 var correctVal = sel.getAttribute("data-correct");
                 sel.classList.remove("correct", "wrong");
                 chosen.push(sel.value || "");
@@ -934,18 +1002,22 @@
                     sel.classList.add("correct");
                     correctCount++;
                     feedback.innerHTML = '<span style="color: var(--accent-green);">✅ Richtig</span>';
-                } else {
+                } else if (sel.value) {
                     sel.classList.add("wrong");
-                    feedback.innerHTML = '<span style="color: var(--accent-red);">❌ ' +
-                        (sel.value ? "Falsch" : "Keine Antwort") +
-                        '</span><span style="color: var(--text-muted);">Richtig wäre:</span>';
+                    feedback.innerHTML = '<span style="color: var(--accent-red);">❌ Falsch</span>' +
+                        '<span style="color: var(--text-muted);">Richtig wäre:</span>';
                     var answerKbd = document.createElement("kbd");
                     answerKbd.textContent = correctVal;
                     feedback.appendChild(answerKbd);
+                } else {
+                    sel.classList.add("wrong");
+                    feedback.innerHTML = '<span style="color: var(--accent-amber);">⚠️ Keine Antwort</span>' +
+                        '<span style="color: var(--text-muted);">Wähle beim nächsten Versuch zuerst eine Antwort.</span>';
                 }
 
                 feedback.classList.add("show");
                 sel.disabled = true;
+                if (hintBtn) hintBtn.disabled = true;
             }
 
             var percent = Math.round((correctCount / selects.length) * 100);
