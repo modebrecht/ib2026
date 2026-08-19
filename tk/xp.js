@@ -212,6 +212,40 @@ function applyTkPagePolish() {
             headerLabel.classList.add('badge-a1');
         }
     }
+
+    if (page === 'A2.html') {
+        const q6Title = document.getElementById('q6-title');
+        if (q6Title && !document.getElementById('q6-symbol-box')) {
+            const symbolByTitle = {
+                'Klammeraffe': '@',
+                'Hashtag / Raute': '#',
+                'Euro-Zeichen': '€',
+                'Senkrechter Strich (Pipe)': '|',
+                'Backslash': '\\',
+                'Eckige Klammer auf': '[',
+                'Eckige Klammer zu': ']',
+                'Geschweifte Klammer auf': '{',
+                'Geschweifte Klammer zu': '}',
+                'Gradzeichen': '°'
+            };
+
+            const symbolBox = document.createElement('div');
+            symbolBox.className = 'symbol-hero-box';
+            symbolBox.id = 'q6-symbol-box';
+            q6Title.parentNode.insertBefore(symbolBox, q6Title);
+
+            const syncQ6Symbol = () => {
+                symbolBox.textContent = symbolByTitle[q6Title.textContent.trim()] || '';
+            };
+
+            syncQ6Symbol();
+            new MutationObserver(syncQ6Symbol).observe(q6Title, {
+                subtree: true,
+                childList: true,
+                characterData: true
+            });
+        }
+    }
 }
 
 function startTkLanguageNormalization() {
