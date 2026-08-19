@@ -9,7 +9,7 @@
   var META={
     A:{q:10,name:'A1',title:'Quest 10 – Wiederholung A1',desc:'Alle 14 allgemeinen Tastenkürzel aus A1.',theme:BLUE},
     B:{q:11,name:'A2',title:'Quest 11 – Wiederholung A2',desc:'Sonderzeichen mit AltGr aus A2. Das Zielzeichen bleibt immer sichtbar.',theme:AMBER},
-    C:{q:12,name:'A4',title:'Quest 12 – Wiederholung A4',desc:'Alle zwölf Browser-, Programm- und Windows-Kürzel aus A4.',theme:CYAN},
+    C:{q:12,name:'A4',title:'Quest 12 – Wiederholung A4',desc:'Alle 19 Browser-, Programm- und Windows-Tastenkombinationen aus A4.',theme:CYAN},
     D:{q:13,name:'Gemischt',title:'Quest 13 – Alles gemischt',desc:'A1, A2 und A4 in gemischten Alltagssituationen.',theme:GREEN}
   };
 
@@ -43,18 +43,25 @@
       {char:'°',text:'Gradzeichen',correct:'AltGr + 4',wrong:['AltGr + 3','Shift + ^']}
     ],
     C:[
-      {text:'Du möchtest einen neuen Browser-Tab öffnen.',correct:'Ctrl + T',wrong:['Ctrl + N','Ctrl + W']},
-      {text:'Du willst den Datei-Explorer öffnen.',correct:'Win + E',wrong:['Win + D','Ctrl + E']},
-      {text:'Du möchtest eine Webseite neu laden.',correct:'F5',wrong:['Ctrl + F','Win + L']},
-      {text:'Du willst den Computer sperren.',correct:'Win + L',wrong:['Win + D','Ctrl + L']},
-      {text:'Du hast einen Browser-Tab geschlossen und möchtest ihn wieder öffnen.',correct:'Ctrl + Shift + T',wrong:['Ctrl + T','Ctrl + N']},
-      {text:'Du möchtest zwischen zwei geöffneten Programmen wechseln.',correct:'Alt + Tab',wrong:['Ctrl + Tab','Ctrl + W']},
       {text:'Du möchtest Text in Word fett formatieren.',correct:'Ctrl + B',wrong:['Ctrl + F','Ctrl + N']},
-      {text:'Du möchtest einen Bildschirmausschnitt aufnehmen.',correct:'Win + Shift + S',wrong:['Win + D','F5']},
-      {text:'Du möchtest ein neues Dokument erstellen.',correct:'Ctrl + N',wrong:['Ctrl + T','Ctrl + W']},
-      {text:'Du möchtest den Task-Manager direkt öffnen.',correct:'Ctrl + Shift + Esc',wrong:['Alt + Tab','Ctrl + Shift + T']},
-      {text:'Du möchtest den Desktop anzeigen.',correct:'Win + D',wrong:['Win + E','Win + L']},
-      {text:'Du möchtest den aktuellen Browser-Tab schliessen.',correct:'Ctrl + W',wrong:['Ctrl + T','Alt + Tab']}
+      {text:'Du möchtest in Word ein neues Dokument erstellen.',correct:'Ctrl + N',wrong:['Ctrl + T','Ctrl + W']},
+      {text:'Du willst im Browser einen neuen Tab öffnen.',correct:'Ctrl + T',wrong:['Ctrl + N','Ctrl + Shift + T']},
+      {text:'Du willst den aktuellen Browser-Tab schliessen.',correct:'Ctrl + W',wrong:['Alt + Tab','Ctrl + T']},
+      {text:'Du hast einen Browser-Tab versehentlich geschlossen und willst ihn zurückholen.',correct:'Ctrl + Shift + T',wrong:['Ctrl + T','Ctrl + Shift + N']},
+      {text:'Du möchtest eine Webseite aktualisieren.',correct:'F5',wrong:['Ctrl + F','Win + D']},
+      {text:'Du möchtest sofort die Adresse der aktuellen Webseite markieren.',correct:'Ctrl + L',wrong:['Ctrl + F','Ctrl + T']},
+      {text:'Du möchtest zum nächsten geöffneten Browser-Tab wechseln.',correct:'Ctrl + Tab',wrong:['Alt + Tab','Ctrl + T']},
+      {text:'Du möchtest zum vorherigen geöffneten Browser-Tab wechseln.',correct:'Ctrl + Shift + Tab',wrong:['Ctrl + Tab','Ctrl + Shift + T']},
+      {text:'Du verlässt deinen Platz kurz und möchtest den Computer sperren.',correct:'Win + L',wrong:['Ctrl + L','Win + D']},
+      {text:'Du möchtest schnell den Desktop anzeigen.',correct:'Win + D',wrong:['Win + E','Alt + Tab']},
+      {text:'Du möchtest den Datei-Explorer öffnen.',correct:'Win + E',wrong:['Ctrl + E','Win + D']},
+      {text:'Du möchtest nur einen Ausschnitt des Bildschirms aufnehmen.',correct:'Win + Shift + S',wrong:['Win + S','Taste Printscreen (Prt Scr)']},
+      {text:'Du möchtest zwischen geöffneten Programmen wechseln.',correct:'Alt + Tab',wrong:['Ctrl + Tab','Win + D']},
+      {text:'Ein Programm hängt. Du möchtest den Task-Manager direkt öffnen.',correct:'Ctrl + Shift + Esc',wrong:['Ctrl + Alt + Del','Alt + F4']},
+      {text:'Du möchtest den Verlauf deiner kopierten Inhalte öffnen.',correct:'Win + V',wrong:['Ctrl + V','Win + C']},
+      {text:'Du möchtest das aktuell geöffnete Fenster oder Programm schliessen.',correct:'Alt + F4',wrong:['Ctrl + W','Win + L']},
+      {text:'Du möchtest das aktuelle Fenster auf der linken Bildschirmhälfte andocken.',correct:'Win + ←',wrong:['Win + →','Win + D']},
+      {text:'Du möchtest das aktuelle Fenster auf der rechten Bildschirmhälfte andocken.',correct:'Win + →',wrong:['Win + ←','Win + D']}
     ],
     D:[
       {text:'Du hast einen Text kopiert und möchtest ihn einfügen.',correct:'Ctrl + V',wrong:['Ctrl + C','Ctrl + X']},
