@@ -3,6 +3,7 @@
 const XP_STORAGE_KEY = 'tk_global_xp_v1';
 const QUEST_SCORES_KEY = 'tk_quest_scores_v1';
 const STUDENT_NAME_KEY = 'tk_student_name_v1';
+const QUEST_XP_BEST_KEY = 'tk_quest_xp_best_v1';
 
 // INITIALIZE LOCALSTORAGE
 function getGlobalXP() {
@@ -41,6 +42,30 @@ function saveQuestScore(questId, percentage) {
     localStorage.setItem(QUEST_SCORES_KEY, JSON.stringify(scores));
 }
 
+function getQuestXpBest() {
+    try {
+        return JSON.parse(localStorage.getItem(QUEST_XP_BEST_KEY) || '{}');
+    } catch(e) {
+        return {};
+    }
+}
+
+function awardQuestImprovementXP(questId, correctCount, xpPerNewCorrect = 5) {
+    const bestByQuest = getQuestXpBest();
+    const previousBest = Math.max(0, parseInt(bestByQuest[questId] || '0', 10));
+    const currentCorrect = Math.max(0, parseInt(correctCount || '0', 10));
+    const improvement = Math.max(0, currentCorrect - previousBest);
+
+    if (currentCorrect > previousBest) {
+        bestByQuest[questId] = currentCorrect;
+        localStorage.setItem(QUEST_XP_BEST_KEY, JSON.stringify(bestByQuest));
+    }
+
+    const awardedXP = improvement * Math.max(0, xpPerNewCorrect);
+    if (awardedXP > 0) addGlobalXP(awardedXP);
+    return awardedXP;
+}
+
 function getStudentName() {
     return (localStorage.getItem(STUDENT_NAME_KEY) || '').trim();
 }
@@ -51,6 +76,21 @@ function saveStudentName(name) {
         localStorage.setItem(STUDENT_NAME_KEY, trimmedName);
     }
     return trimmedName;
+}
+
+function requireStudentName() {
+    const savedName = getStudentName();
+    if (savedName) return savedName;
+
+    const enteredName = prompt("Bitte gib deinen Vornamen ein:", "");
+    if (enteredName === null) return '';
+
+    const studentName = saveStudentName(enteredName);
+    if (!studentName) {
+        alert("Bitte gib einen Vornamen ein.");
+        return '';
+    }
+    return studentName;
 }
 
 function sanitizeStudentNameForFileName(name) {
@@ -287,15 +327,10 @@ function downloadCertificatePDF(studentName) {
     studentName = saveStudentName(studentName || getStudentName());
 
     if (!studentName) {
-        const enteredName = prompt("Bitte gib deinen Vornamen ein:", "");
-        if (enteredName === null) return;
-        studentName = saveStudentName(enteredName);
+        studentName = requireStudentName();
     }
 
-    if (!studentName) {
-        alert("Bitte gib einen Vornamen ein.");
-        return;
-    }
+    if (!studentName) return;
 
     // Create high-res offscreen canvas (1200 x 850)
     const canvas = document.createElement('canvas');
