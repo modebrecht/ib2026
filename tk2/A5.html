@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>A5: Wiederholung – Quest 10 bis 13</title>
+  <title>A5: Wiederholung – Quest 11 bis 14</title>
   <link rel="stylesheet" href="../tk/vendor/fonts.css">
   <link rel="stylesheet" href="../tk/shared.css">
   <style>
@@ -32,7 +32,7 @@
   <div class="set-tabs" id="setTabs"></div>
 
   <div class="card">
-    <div class="sheet-head"><div><h2 class="sheet-title" id="sheetTitle"></h2><p class="sheet-desc" id="sheetDesc"></p></div><div class="sheet-tools"><button class="tk-btn-secondary" id="showSummaryBtn">📊 Auswertung</button><button class="tk-btn-secondary" id="quickPdfBtn" disabled title="PDF verfügbar nach Q10–Q13">📄 PDF erzeugen</button></div></div>
+    <div class="sheet-head"><div><h2 class="sheet-title" id="sheetTitle"></h2><p class="sheet-desc" id="sheetDesc"></p></div><div class="sheet-tools"><button class="tk-btn-secondary" id="showSummaryBtn">📊 Auswertung</button><button class="tk-btn-secondary" id="quickPdfBtn" disabled title="PDF verfügbar nach Q11–Q14">📄 PDF erzeugen</button></div></div>
     <div class="progress-bar-wrap"><div class="progress-bar-fill" id="answerProgress"></div></div>
     <div class="questions" id="questionsContainer"></div>
     <div class="actions"><button class="tk-btn-primary" id="checkBtn">✅ Überprüfen</button><div class="score-box" id="scoreBox"></div></div>
@@ -40,7 +40,7 @@
 
   <div class="card finish-card" id="finishCard">
     <h2>A5 bearbeitet ✓</h2>
-    <p>Q10–Q13 wurden mindestens einmal bearbeitet. Du kannst deine Wiederholungs-Auswertung als PDF speichern oder einzelne Quests weiter verbessern.</p>
+    <p>Q11–Q14 wurden mindestens einmal bearbeitet. Du kannst deine Wiederholungs-Auswertung als PDF speichern oder einzelne Quests weiter verbessern.</p>
     <div class="finish-actions"><button class="tk-btn-primary" id="finishPdfBtn">📄 PDF herunterladen</button><a href="index.html" class="tk-btn-secondary" style="text-decoration:none">Zur Kursübersicht</a></div>
   </div>
 </div>
@@ -59,7 +59,7 @@
 <script>
 (function(){
   var quick=document.getElementById('quickPdfBtn');var source=document.getElementById('downloadPdfBtn');if(!quick||!source)return;
-  function sync(){quick.disabled=source.disabled;quick.title=source.disabled?'PDF verfügbar nach Q10–Q13':'Wiederholungs-PDF erzeugen';}
+  function sync(){quick.disabled=source.disabled;quick.title=source.disabled?'PDF verfügbar nach Q11–Q14':'Wiederholungs-PDF erzeugen';}
   new MutationObserver(sync).observe(source,{attributes:true,attributeFilter:['disabled']});quick.addEventListener('click',function(){if(!quick.disabled)source.click();});sync();
 })();
 </script>
