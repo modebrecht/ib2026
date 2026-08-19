@@ -53,6 +53,21 @@ function saveStudentName(name) {
     return trimmedName;
 }
 
+function sanitizeStudentNameForFileName(name) {
+    return (name || '')
+        .replace(/Ä/g, 'Ae')
+        .replace(/Ö/g, 'Oe')
+        .replace(/Ü/g, 'Ue')
+        .replace(/ä/g, 'ae')
+        .replace(/ö/g, 'oe')
+        .replace(/ü/g, 'ue')
+        .replace(/ß/g, 'ss')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-zA-Z0-9]+/g, '_')
+        .replace(/^_+|_+$/g, '');
+}
+
 // CONSISTENT, STUDENT-FRIENDLY COURSE LANGUAGE
 // Keep the gamification structure (Quest + XP), but avoid exaggerated game/AI wording.
 const TK_TEXT_REPLACEMENTS = [
@@ -401,8 +416,9 @@ function downloadCertificatePDF(studentName) {
 
         const imgData = canvas.toDataURL('image/png');
         pdf.addImage(imgData, 'PNG', 0, 0, 297, 210);
-        
-        const sanitizedFileName = `Leistungsnachweis_${studentName.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
+
+        const safeStudentName = sanitizeStudentNameForFileName(studentName);
+        const sanitizedFileName = `Leistungsnachweis_${safeStudentName}.pdf`;
         pdf.save(sanitizedFileName);
 
         localStorage.setItem('tk_pdf_downloaded_v1', 'true');
