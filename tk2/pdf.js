@@ -102,7 +102,7 @@
     var jsPDF=window.jspdf.jsPDF;
     var doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
     var W=210,H=297,M=16,y=18;
-    var blue=[56,189,248],green=[16,185,129],muted=[100,116,139],dark=[15,23,42];
+    var green=[16,185,129],muted=[100,116,139],dark=[15,23,42];
     var attempted=sheets.reduce(function(sum,s){return sum+s.rows.length;},0);
     var title=which==='all'?'Zwischenstand Tastenkombinationen':'Arbeitsblatt '+which+' - '+SHEET_TITLES[which];
 
@@ -229,6 +229,12 @@
 
   if(scope==='all')addIndexCard();else addHeaderButton();
   hideLegacyA5Pdf();captureA3Time();
+
+  if(scope==='A4'||scope==='A5'){
+    var checkBtn=document.getElementById('checkBtn');
+    if(checkBtn)checkBtn.addEventListener('click',function(){setTimeout(syncButton,0);});
+  }
+
   document.addEventListener('visibilitychange',function(){if(!document.hidden)syncButton();});
   window.addEventListener('focus',syncButton);
 
