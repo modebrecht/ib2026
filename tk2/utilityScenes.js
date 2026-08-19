@@ -81,7 +81,8 @@
       $$('.tk2-u-key').forEach(function(k){k.style.filter='';if(k.getAttribute('data-base'))k.setAttribute('transform',k.getAttribute('data-base'));});
       opacity($('.toast'),0);opacity($('.search-panel'),0);opacity($('.matches'),0);opacity($('.hl1'),0);opacity($('.hl2'),0);opacity($('.word1top'),0);opacity($('.word2top'),0);opacity($('.dialog'),0);opacity($('.paper-out'),0);opacity($('.opened-content'),0);
       if($('.search-text'))$('.search-text').textContent='';if($('.replace-text'))$('.replace-text').textContent='';
-      if($('.word1'))$('.word1').textContent='Hund';if($('.word2'))$('.word2').textContent='Hund';
+      if($('.word1'))$('.word1').textContent='Hund';if($('.word2'))$('.word2').textContent='Hund';if($('.word1top'))$('.word1top').textContent='Hund';if($('.word2top'))$('.word2top').textContent='Hund';
+      if($('.paper-out'))$('.paper-out').setAttribute('transform','translate(0 0)');
       if($('.window-title'))$('.window-title').textContent=mode==='print'?'Projektbericht.docx':'Leeres Dokument';
       if($('.scroll-thumb')){$('.scroll-thumb').setAttribute('y',mode==='home'?'220':'84');}
       if($('.scroll-content')){$('.scroll-content').setAttribute('transform',mode==='home'?'translate(0 -160)':'translate(0 0)');}
