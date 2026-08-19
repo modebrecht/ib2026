@@ -190,6 +190,109 @@
     border-color: rgba(255, 255, 255, 0.3);
 }
 
+.tk-badge {
+    background: rgba(var(--badge-accent-rgb, 59, 130, 246), 0.2);
+    border: 1px solid var(--badge-accent, var(--accent-blue));
+    color: var(--badge-text, #93c5fd);
+    padding: 4px 12px;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.tk-btn-primary {
+    background: linear-gradient(
+        135deg,
+        var(--btn-accent, var(--accent-blue)) 0%,
+        var(--btn-accent-dark, #1d4ed8) 100%
+    );
+    color: white;
+    padding: 11px 26px;
+    font-size: 1rem;
+    font-family: inherit;
+    font-weight: 800;
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 10px 25px rgba(var(--btn-accent-rgb, 59, 130, 246), 0.35);
+}
+
+.tk-btn-primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 30px rgba(var(--btn-accent-rgb, 59, 130, 246), 0.5);
+}
+
+.tk-btn-primary:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.tk-btn-secondary {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    padding: 10px 18px;
+    border-radius: 12px;
+    font-family: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.tk-btn-secondary:hover:not(:disabled) {
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.tk-btn-close {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.tk-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(4px);
+    z-index: 40;
+}
+
+.tk-modal-panel {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(460px, calc(100vw - 2rem));
+    max-height: calc(100vh - 3rem);
+    overflow-y: auto;
+    background: #111c33;
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    padding: 1.5rem;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+    z-index: 50;
+}
+
+.tk-modal-panel.open {
+    display: block;
+}
+
 .badge-a1 {
     background: rgba(59, 130, 246, 0.2);
     border: 1px solid var(--accent-blue);
