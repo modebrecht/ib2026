@@ -13,7 +13,7 @@
     4:'Geführt',5:'Kürzel-Rätsel',6:'Ohne Hilfe',
     7:'Praxis: Maus weglegen',
     8:'Programme & Browser',9:'Windows & Arbeitsalltag',
-    10:'Wiederholung A1',11:'Wiederholung A2',12:'Wiederholung A4',13:'Alles gemischt'
+    11:'Wiederholung A1',12:'Wiederholung A2',13:'Wiederholung A4',14:'Alles gemischt'
   };
   var SHEET_TITLES={A1:'Allgemeine Tastenkürzel',A2:'Sonderzeichen mit AltGr',A3:'Praxis: Maus weglegen',A4:'Browser & Windows',A5:'Wiederholen & festigen'};
 
@@ -30,7 +30,7 @@
     {id:'A2',title:SHEET_TITLES.A2,rows:simpleRows(4,6)},
     {id:'A3',title:SHEET_TITLES.A3,rows:a3Rows()},
     {id:'A4',title:SHEET_TITLES.A4,rows:richRows(A4_KEY,[{key:'A',q:8},{key:'B',q:9}])},
-    {id:'A5',title:SHEET_TITLES.A5,rows:richRows(A5_KEY,[{key:'A',q:10},{key:'B',q:11},{key:'C',q:12},{key:'D',q:13}])}
+    {id:'A5',title:SHEET_TITLES.A5,rows:richRows(A5_KEY,[{key:'A',q:11},{key:'B',q:12},{key:'C',q:13},{key:'D',q:14}])}
   ];}
   function selectedSheets(which){var sheets=collectSheets();if(which==='all')return sheets.filter(function(s){return s.rows.length;});return sheets.filter(function(s){return s.id===which&&s.rows.length;});}
 
