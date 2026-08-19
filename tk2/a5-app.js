@@ -7,7 +7,7 @@
   var GREEN={accent:'#10b981',dark:'#047857',rgb:'16,185,129'};
 
   var META={
-    A:{q:10,name:'A1',title:'Quest 10 – Wiederholung A1',desc:'Allgemeine Tastenkürzel aus A1.',theme:BLUE},
+    A:{q:10,name:'A1',title:'Quest 10 – Wiederholung A1',desc:'Alle 14 allgemeinen Tastenkürzel aus A1.',theme:BLUE},
     B:{q:11,name:'A2',title:'Quest 11 – Wiederholung A2',desc:'Sonderzeichen mit AltGr aus A2. Das Zielzeichen bleibt immer sichtbar.',theme:AMBER},
     C:{q:12,name:'A4',title:'Quest 12 – Wiederholung A4',desc:'Alle zwölf Browser-, Programm- und Windows-Kürzel aus A4.',theme:CYAN},
     D:{q:13,name:'Gemischt',title:'Quest 13 – Alles gemischt',desc:'A1, A2 und A4 in gemischten Alltagssituationen.',theme:GREEN}
@@ -16,11 +16,19 @@
   var DATA={
     A:[
       {text:'Du möchtest markierten Inhalt kopieren.',correct:'Ctrl + C',wrong:['Ctrl + X','Ctrl + V']},
-      {text:'Du möchtest kopierten Inhalt einfügen.',correct:'Ctrl + V',wrong:['Ctrl + C','Ctrl + X']},
       {text:'Du möchtest etwas ausschneiden.',correct:'Ctrl + X',wrong:['Ctrl + C','Ctrl + Z']},
+      {text:'Du möchtest kopierten Inhalt einfügen.',correct:'Ctrl + V',wrong:['Ctrl + C','Ctrl + X']},
+      {text:'Du möchtest Text ohne ursprüngliche Formatierung einfügen.',correct:'Ctrl + Shift + V',wrong:['Ctrl + V','Ctrl + Shift + X']},
       {text:'Du möchtest den letzten Schritt rückgängig machen.',correct:'Ctrl + Z',wrong:['Ctrl + Y','Ctrl + S']},
-      {text:'Du möchtest dein Dokument speichern.',correct:'Ctrl + S',wrong:['Ctrl + P','Ctrl + F']},
-      {text:'Du möchtest in einem Dokument nach einem Wort suchen.',correct:'Ctrl + F',wrong:['Ctrl + H','Ctrl + O']}
+      {text:'Du möchtest eine rückgängig gemachte Aktion wiederherstellen.',correct:'Ctrl + Y',wrong:['Ctrl + Z','Ctrl + S']},
+      {text:'Du möchtest dein Dokument speichern.',correct:'Ctrl + S',wrong:['Ctrl + P','Ctrl + O']},
+      {text:'Du möchtest den gesamten Inhalt markieren.',correct:'Ctrl + A',wrong:['Ctrl + S','Ctrl + F']},
+      {text:'Du möchtest in einem Dokument nach einem Wort suchen.',correct:'Ctrl + F',wrong:['Ctrl + H','Ctrl + O']},
+      {text:'Du möchtest ein Wort suchen und durch ein anderes ersetzen.',correct:'Ctrl + H',wrong:['Ctrl + F','Ctrl + Y']},
+      {text:'Du möchtest den Druckdialog öffnen.',correct:'Ctrl + P',wrong:['Ctrl + O','Ctrl + S']},
+      {text:'Du möchtest eine bestehende Datei öffnen.',correct:'Ctrl + O',wrong:['Ctrl + N','Ctrl + P']},
+      {text:'Du möchtest ganz an den Anfang des Dokuments springen.',correct:'Ctrl + Home',wrong:['Ctrl + End','Home']},
+      {text:'Du möchtest ganz ans Ende des Dokuments springen.',correct:'Ctrl + End',wrong:['Ctrl + Home','End']}
     ],
     B:[
       {char:'@',text:'Klammeraffe',correct:'AltGr + 2',wrong:['AltGr + 3','AltGr + E']},
