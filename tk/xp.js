@@ -2,6 +2,7 @@
 
 const XP_STORAGE_KEY = 'tk_global_xp_v1';
 const QUEST_SCORES_KEY = 'tk_quest_scores_v1';
+const STUDENT_NAME_KEY = 'tk_student_name_v1';
 
 // INITIALIZE LOCALSTORAGE
 function getGlobalXP() {
@@ -30,6 +31,18 @@ function saveQuestScore(questId, percentage) {
     let scores = getQuestScores();
     scores[questId] = Math.max(scores[questId] || 0, percentage);
     localStorage.setItem(QUEST_SCORES_KEY, JSON.stringify(scores));
+}
+
+function getStudentName() {
+    return (localStorage.getItem(STUDENT_NAME_KEY) || '').trim();
+}
+
+function saveStudentName(name) {
+    const trimmedName = (name || '').trim();
+    if (trimmedName) {
+        localStorage.setItem(STUDENT_NAME_KEY, trimmedName);
+    }
+    return trimmedName;
 }
 
 function isQuestUnlocked(questId) {
@@ -119,10 +132,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // PDF CERTIFICATE GENERATOR FOR TEACHER (1 PAGE SUMMARY)
 function downloadCertificatePDF(studentName) {
+    studentName = saveStudentName(studentName || getStudentName());
+
     if (!studentName) {
-        studentName = prompt("Bitte gib deinen Vornamen ein:", "Vorname");
+        const enteredName = prompt("Bitte gib deinen Vornamen ein:", "");
+        if (enteredName === null) return;
+        studentName = saveStudentName(enteredName);
     }
-    if (!studentName) return;
+
+    if (!studentName) {
+        alert("Bitte gib einen Vornamen ein.");
+        return;
+    }
 
     // Create high-res offscreen canvas (1200 x 850)
     const canvas = document.createElement('canvas');
