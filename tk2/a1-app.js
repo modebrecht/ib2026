@@ -122,5 +122,8 @@
   window.addEventListener('keyup',function(e){if(!e.ctrlKey&&e.key!=='Control')document.querySelectorAll('.big-kbd[data-keyname="Ctrl"]').forEach(function(b){b.classList.remove('pressed');});if(!e.shiftKey&&e.key!=='Shift')document.querySelectorAll('.big-kbd[data-keyname="Shift"]').forEach(function(b){b.classList.remove('pressed');});});
 
   window.switchPhase=switchPhase;window.resetQ1=resetQ1;window.resetQ2=resetQ2;window.resetQ3=resetQ3;window.useQ2Hint=useQ2Hint;window.useQ3Hint=useQ3Hint;
-  document.addEventListener('DOMContentLoaded',function(){switchPhase(1);});
+  document.addEventListener('DOMContentLoaded',function(){
+    var next=byId('q3-to-a2-btn');if(next)next.setAttribute('href','A2.html');
+    switchPhase(1);
+  });
 })();
