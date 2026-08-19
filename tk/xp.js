@@ -609,3 +609,10 @@ function downloadCertificatePDF(studentName) {
         document.head.appendChild(script);
     }
 }
+
+// tk2 uses one shared PDF exporter for A1-A5 and the course overview.
+// The synchronous insert keeps the index PDF card available before its
+// particle initializer scans the module cards.
+if (location.pathname.includes('/tk2/')) {
+    document.write('<script src="pdf.js"><\/script>');
+}
