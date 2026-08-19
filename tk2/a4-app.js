@@ -113,8 +113,7 @@
   }
 
   function renderSummary(){var data=loadProgress();summaryRows.innerHTML='';SETS.forEach(function(key){var m=META[key],s=data[key],row=document.createElement('div'),q=document.createElement('div'),name=document.createElement('div'),vals=document.createElement('div'),attempts=attemptCount(s),second=s&&typeof s.second==='number'?s.second:null;row.className='summary-row';q.className='summary-q';q.textContent='Q'+m.q;q.style.color=m.theme.accent;name.textContent=m.name;vals.className='summary-vals';vals.textContent=s?s.first+' % → '+(second!==null?second+' %':'offen')+' · Best '+s.best+' % · '+attempts+'×':'noch offen · 0/2';vals.style.color=s?scoreColor(second!==null?second:s.first):'var(--text-muted)';row.appendChild(q);row.appendChild(name);row.appendChild(vals);summaryRows.appendChild(row);});}
-  function allRequiredAttempts(){var d=loadProgress();return SETS.every(function(k){return attemptCount(d[k])>=2;});}
-  function updateA5Link(){var ok=allRequiredAttempts();toA5Btn.setAttribute('aria-disabled',ok?'false':'true');toA5Btn.textContent=ok?'Weiter zu A5 ➔':'A5 nach 2 Durchgängen pro Quest';}
+  function updateA5Link(){toA5Btn.setAttribute('aria-disabled','false');toA5Btn.textContent='Weiter zu A5 ➔';}
 
   checkBtn.addEventListener('click',function(){if(attemptFinished){freshAttempt=true;render(true);}else evaluate();});
   document.getElementById('showSummaryBtn').addEventListener('click',function(){renderSummary();overlay.style.display='block';summaryPanel.classList.add('open');});
