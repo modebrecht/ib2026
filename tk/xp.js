@@ -135,6 +135,7 @@ const TK_TEXT_REPLACEMENTS = [
     ['Blind-Test', 'Test ohne Hilfe'],
     ['Überragend!', 'Geschafft!'],
     ['Super gemacht!', 'Geschafft!'],
+    ['🇨🇭', ''],
     ['gemeistert!', 'geschafft!'],
     ['FREIGESCHALTET!', 'freigeschaltet.'],
     ['Neues Game', 'Neu starten'],
