@@ -9,7 +9,10 @@
       {keys:'Ctrl + T',desc:'Neue Browser-Registerkarte öffnen',mode:'newTab',flow:['Browser','Ctrl + T','Neuer Tab']},
       {keys:'Ctrl + W',desc:'Aktuelle Browser-Registerkarte schliessen',mode:'closeTab',flow:['Aktiver Tab','Ctrl + W','Tab schliesst']},
       {keys:'Ctrl + Shift + T',desc:'Zuletzt geschlossenen Browser-Tab wieder öffnen',mode:'reopenTab',flow:['Tab geschlossen','Ctrl + Shift + T','Tab wieder da']},
-      {keys:'F5',desc:'Webseite aktualisieren',mode:'refresh',flow:['Webseite','F5','Neu geladen']}
+      {keys:'F5',desc:'Webseite aktualisieren',mode:'refresh',flow:['Webseite','F5','Neu geladen']},
+      {keys:'Ctrl + L',desc:'Direkt in die Browser-Adressleiste springen',mode:'addressBar',flow:['Webseite','Ctrl + L','Adresse markiert']},
+      {keys:'Ctrl + Tab',desc:'Zum nächsten Browser-Tab wechseln',mode:'nextTab',flow:['Tab 1 aktiv','Ctrl + Tab','Tab 2 aktiv']},
+      {keys:'Ctrl + Shift + Tab',desc:'Zum vorherigen Browser-Tab wechseln',mode:'prevTab',flow:['Tab 2 aktiv','Ctrl + Shift + Tab','Tab 1 aktiv']}
     ]},
     B:{q:9,name:'Windows & Arbeitsalltag',theme:{accent:'#3b82f6',rgb:'59,130,246'},lesson:[
       {keys:'Win + L',desc:'Computer sperren, wenn du den Platz verlässt',mode:'lock',flow:['Desktop','Win + L','Gesperrt']},
@@ -17,7 +20,11 @@
       {keys:'Win + E',desc:'Datei-Explorer öffnen',mode:'explorer',flow:['Desktop','Win + E','Explorer']},
       {keys:'Win + Shift + S',desc:'Bildschirmausschnitt aufnehmen',mode:'snip',flow:['Bildschirm','Win + Shift + S','Ausschnitt wählen']},
       {keys:'Alt + Tab',desc:'Zwischen geöffneten Programmen wechseln',mode:'appSwitch',flow:['Word aktiv','Alt + Tab','Browser aktiv']},
-      {keys:'Ctrl + Shift + Esc',desc:'Task-Manager direkt öffnen',mode:'taskManager',flow:['Programm hängt','Ctrl + Shift + Esc','Task-Manager']}
+      {keys:'Ctrl + Shift + Esc',desc:'Task-Manager direkt öffnen',mode:'taskManager',flow:['Programm hängt','Ctrl + Shift + Esc','Task-Manager']},
+      {keys:'Win + V',desc:'Zwischenablageverlauf öffnen',mode:'clipboard',flow:['Mehrfach kopiert','Win + V','Zwischenablage']},
+      {keys:'Alt + F4',desc:'Aktives Fenster oder Programm schliessen',mode:'closeWindow',flow:['Fenster aktiv','Alt + F4','Fenster geschlossen']},
+      {keys:'Win + ←',desc:'Aktives Fenster links andocken',mode:'snapLeft',flow:['Fenster frei','Win + ←','Links angedockt']},
+      {keys:'Win + →',desc:'Aktives Fenster rechts andocken',mode:'snapRight',flow:['Fenster frei','Win + →','Rechts angedockt']}
     ]}
   };
 
@@ -28,7 +35,10 @@
       {text:'Du willst im Browser einen neuen Tab öffnen.',correct:'Ctrl + T',wrong:['Ctrl + N','Ctrl + Shift + T']},
       {text:'Du willst den aktuellen Browser-Tab schliessen.',correct:'Ctrl + W',wrong:['Alt + Tab','Ctrl + T']},
       {text:'Du hast einen Browser-Tab versehentlich geschlossen und willst ihn zurückholen.',correct:'Ctrl + Shift + T',wrong:['Ctrl + T','Ctrl + Shift + N']},
-      {text:'Du möchtest eine Webseite aktualisieren.',correct:'F5',wrong:['Ctrl + F','Win + D']}
+      {text:'Du möchtest eine Webseite aktualisieren.',correct:'F5',wrong:['Ctrl + F','Win + D']},
+      {text:'Du möchtest sofort die Adresse der aktuellen Webseite markieren.',correct:'Ctrl + L',wrong:['Ctrl + F','Ctrl + T']},
+      {text:'Du möchtest zum nächsten geöffneten Browser-Tab wechseln.',correct:'Ctrl + Tab',wrong:['Alt + Tab','Ctrl + T']},
+      {text:'Du möchtest zum vorherigen geöffneten Browser-Tab wechseln.',correct:'Ctrl + Shift + Tab',wrong:['Ctrl + Tab','Ctrl + Shift + T']}
     ],
     B:[
       {text:'Du verlässt deinen Platz kurz und möchtest den Computer sperren.',correct:'Win + L',wrong:['Ctrl + L','Win + D']},
@@ -36,7 +46,11 @@
       {text:'Du möchtest den Datei-Explorer öffnen.',correct:'Win + E',wrong:['Ctrl + E','Win + D']},
       {text:'Du möchtest nur einen Ausschnitt des Bildschirms aufnehmen.',correct:'Win + Shift + S',wrong:['Win + S','Taste Printscreen (Prt Scr)']},
       {text:'Du möchtest zwischen geöffneten Programmen wechseln.',correct:'Alt + Tab',wrong:['Ctrl + Tab','Win + D']},
-      {text:'Ein Programm hängt. Du möchtest den Task-Manager direkt öffnen.',correct:'Ctrl + Shift + Esc',wrong:['Ctrl + Alt + Del','Alt + F4']}
+      {text:'Ein Programm hängt. Du möchtest den Task-Manager direkt öffnen.',correct:'Ctrl + Shift + Esc',wrong:['Ctrl + Alt + Del','Alt + F4']},
+      {text:'Du möchtest den Verlauf deiner kopierten Inhalte öffnen.',correct:'Win + V',wrong:['Ctrl + V','Win + C']},
+      {text:'Du möchtest das aktuell geöffnete Fenster oder Programm schliessen.',correct:'Alt + F4',wrong:['Ctrl + W','Win + L']},
+      {text:'Du möchtest das aktuelle Fenster auf der linken Bildschirmhälfte andocken.',correct:'Win + ←',wrong:['Win + →','Win + D']},
+      {text:'Du möchtest das aktuelle Fenster auf der rechten Bildschirmhälfte andocken.',correct:'Win + →',wrong:['Win + ←','Win + D']}
     ]
   };
 
