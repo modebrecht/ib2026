@@ -23,7 +23,7 @@
     background: rgba(15, 23, 42, 0.85);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border-color);
-    padding: 0.8rem 1.5rem;
+    padding: 1rem 2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -91,6 +91,13 @@
     padding: 6px;
     border-radius: 16px;
     border: 1px solid var(--border-color);
+    gap: 6px;
+}
+
+.tab-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     gap: 6px;
 }
 
@@ -181,6 +188,26 @@
 .btn-reset-game:hover {
     color: white;
     border-color: rgba(255, 255, 255, 0.3);
+}
+
+.badge-a1 {
+    background: rgba(59, 130, 246, 0.2);
+    border: 1px solid var(--accent-blue);
+    color: #93c5fd;
+    padding: 4px 12px;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+body.tk-page-a1 .btn-start-course:not([style*="background"]) {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    color: white;
+    box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
+}
+
+body.tk-page-a1 .btn-start-course:not([style*="background"]):hover {
+    box-shadow: 0 15px 30px rgba(59, 130, 246, 0.6);
 }
 
 .trophy-view {
