@@ -15,7 +15,7 @@ function setGlobalXP(val) {
 }
 
 function addGlobalXP(amount) {
-    // A3 Boss Challenge: the 50 XP completion reward may only be granted once.
+    // A3 practice task: the 50 XP completion reward may only be granted once.
     // Q7 is saved immediately after the first successful stop, so later retries
     // can still be timed without allowing students to farm additional XP.
     const isA3CompletionReward = amount === 50 && document.getElementById('boss-timer');
@@ -53,6 +53,110 @@ function saveStudentName(name) {
     return trimmedName;
 }
 
+// CONSISTENT, STUDENT-FRIENDLY COURSE LANGUAGE
+// Keep the gamification structure (Quest + XP), but avoid exaggerated game/AI wording.
+const TK_TEXT_REPLACEMENTS = [
+    ['A1: Praxiskurs - Allgemeine Tastenkürzel', 'A1: Allgemeine Tastenkürzel'],
+    ['A2: Praxiskurs - Sonderzeichen (AltGr - CH-Layout)', 'A2: Sonderzeichen mit AltGr'],
+    ['A3: Mission Maus weglegen - Boss Challenge', 'A3: Praxisaufgabe – Maus weglegen'],
+    ['Arbeitsblatt A3: Mission: Maus weglegen', 'Praxisaufgabe – Maus weglegen'],
+    ['Arbeitsblatt A3 (Mission: Maus weglegen)', 'Praxisaufgabe – Maus weglegen'],
+    ['Boss-Challenge (A3.html)', 'Praxisaufgabe A3'],
+    ['Boss Challenge A3', 'Praxisaufgabe A3'],
+    ['Boss-Challenge A3', 'Praxisaufgabe A3'],
+    ['Boss Challenge', 'Praxisaufgabe'],
+    ['Boss-Challenge', 'Praxisaufgabe'],
+    ['Memory Mode – Aus dem Gedächtnis:', 'Aus dem Gedächtnis:'],
+    ['Memory Mode', 'Aus dem Gedächtnis'],
+    ['Geführter Mode', 'Geführt'],
+    ['AltGr Geführt', 'Geführt'],
+    ['50/50 Rätsel', 'Kürzel-Rätsel'],
+    ['Blind-Profi', 'Ohne Hilfe'],
+    ['Gedächtnis-Test', 'Test aus dem Gedächtnis'],
+    ['Blind-Test', 'Test ohne Hilfe'],
+    ['Überragend!', 'Geschafft!'],
+    ['gemeistert!', 'geschafft!'],
+    ['FREIGESCHALTET!', 'freigeschaltet.'],
+    ['Neues Game', 'Neu starten'],
+    ['Tastatur-Kürzel', 'Tastenkürzel'],
+    ['Arbeitsblatt Download', 'Arbeitsblatt herunterladen'],
+    ['originale Word-Arbeitsblatt', 'Word-Arbeitsblatt'],
+    ['Zusammenfassung der Leistungswerte in den Praxiskursen:', 'Zusammenfassung der Ergebnisse aus den Übungen:'],
+    ['Meistere alle Quests', 'Schliesse alle Quests ab'],
+    ['Danach starten wir mit Quest 1 im Praxistrainer!', 'Danach startest du mit Quest 1 in der Übung!'],
+    ['Kopieren, Einfügen, Rückgängig, Speichern, Ende und Suchen & Ersetzen.', 'Kopieren, Einfügen, Rückgängig, Speichern, Suchen und mehr.'],
+    ['Suchen & Ersetzen', 'Suchen und Ersetzen'],
+    ['Warte auf Tastatur-Eingabe...', 'Warte auf Tastatureingabe...'],
+    ['freizuschalten!', 'freizuschalten.'],
+    ['ist gesperrt!', 'ist gesperrt.'],
+    ['noch gesperrt!', 'noch gesperrt.']
+];
+
+function normalizeTkText(text) {
+    let normalized = text;
+
+    TK_TEXT_REPLACEMENTS.forEach(([from, to]) => {
+        normalized = normalized.split(from).join(to);
+    });
+
+    normalized = normalized
+        .replace(/\s*\(A[1-4]\.html\)/g, '')
+        .replace(/Quest (\d+) \((?:AltGr )?(Geführt|Kürzel-Rätsel|Ohne Hilfe)\)/g, 'Quest $1 – $2')
+        .replace(/Q1: Geführt/g, 'Quest 1 – Geführt')
+        .replace(/Q2: Kürzel-Rätsel/g, 'Quest 2 – Kürzel-Rätsel')
+        .replace(/Q3: Ohne Hilfe/g, 'Quest 3 – Ohne Hilfe')
+        .replace(/Q4: Geführt/g, 'Quest 4 – Geführt')
+        .replace(/Q5: Kürzel-Rätsel/g, 'Quest 5 – Kürzel-Rätsel')
+        .replace(/Q6: Ohne Hilfe/g, 'Quest 6 – Ohne Hilfe')
+        .replace(/mindestens (\d+)% Genauigkeit/g, 'mindestens $1 % richtig')
+        .replace(/Genauigkeit:\s*(\d+)%/g, 'Richtig: $1 %')
+        .replace(/(\d+)% Genauigkeit/g, '$1 % richtig')
+        .replace(/(\d+)%/g, '$1 %')
+        .replace(/ {2,}/g, ' ');
+
+    return normalized;
+}
+
+function applyTkLanguage(root) {
+    if (!root) return;
+
+    if (root.nodeType === Node.TEXT_NODE) {
+        const parentTag = root.parentElement ? root.parentElement.tagName : '';
+        if (['SCRIPT', 'STYLE', 'NOSCRIPT'].includes(parentTag)) return;
+        if (!root.nodeValue || !root.nodeValue.trim()) return;
+
+        const normalized = normalizeTkText(root.nodeValue);
+        if (normalized !== root.nodeValue) root.nodeValue = normalized;
+        return;
+    }
+
+    if (![Node.ELEMENT_NODE, Node.DOCUMENT_FRAGMENT_NODE].includes(root.nodeType)) return;
+    if (root.nodeType === Node.ELEMENT_NODE && ['SCRIPT', 'STYLE', 'NOSCRIPT'].includes(root.tagName)) return;
+
+    root.childNodes.forEach(child => applyTkLanguage(child));
+}
+
+function startTkLanguageNormalization() {
+    document.title = normalizeTkText(document.title);
+    applyTkLanguage(document.body);
+
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.type === 'characterData') {
+                applyTkLanguage(mutation.target);
+            } else {
+                mutation.addedNodes.forEach(node => applyTkLanguage(node));
+            }
+        });
+    });
+
+    observer.observe(document.body, {
+        subtree: true,
+        childList: true,
+        characterData: true
+    });
+}
+
 function isQuestUnlocked(questId) {
     let scores = getQuestScores();
     if (questId === 'q1') return true; // Quest 1 always unlocked
@@ -61,7 +165,7 @@ function isQuestUnlocked(questId) {
     if (questId === 'q4') return (scores.q3 || 0) >= 70;
     if (questId === 'q5') return (scores.q4 || 0) >= 80;
     if (questId === 'q6') return (scores.q5 || 0) >= 70;
-    if (questId === 'q7') return (scores.q6 || 0) >= 70; // A3 Boss Challenge
+    if (questId === 'q7') return (scores.q6 || 0) >= 70; // A3 practice task
     return true; // q8-q14 (A4 Sets 1-7): frei navigierbares Quiz, kein Freischalt-Zwang
 }
 
@@ -136,6 +240,7 @@ function playSound(type) {
 
 document.addEventListener('DOMContentLoaded', () => {
     updateXPDisplays();
+    startTkLanguageNormalization();
 });
 
 // PDF CERTIFICATE GENERATOR FOR TEACHER (1 PAGE SUMMARY)
@@ -188,7 +293,7 @@ function downloadCertificatePDF(studentName) {
 
     ctx.fillStyle = '#94a3b8';
     ctx.font = '500 19px sans-serif';
-    ctx.fillText('Zusammenfassung der Leistungswerte in den Praxiskursen:', 600, 205);
+    ctx.fillText('Zusammenfassung der Ergebnisse aus den Übungen:', 600, 205);
 
     // Student Name Box
     ctx.fillStyle = 'rgba(59, 130, 246, 0.15)';
@@ -231,24 +336,24 @@ function downloadCertificatePDF(studentName) {
     // A1 Column
     ctx.fillStyle = '#38bdf8';
     ctx.font = '800 22px "Space Grotesk", sans-serif';
-    ctx.fillText('Arbeitsblatt A1 (Allgemeine Kürzel)', 130, 420);
+    ctx.fillText('Arbeitsblatt A1 (Allgemeine Tastenkürzel)', 130, 420);
 
     ctx.fillStyle = '#e2e8f0';
     ctx.font = '600 18px sans-serif';
-    ctx.fillText(`• Quest 1 (Geführt): ${scores.q1 || 0}%`, 150, 465);
-    ctx.fillText(`• Quest 2 (50/50 Rätsel): ${scores.q2 || 0}%`, 150, 505);
-    ctx.fillText(`• Quest 3 (Blind-Profi): ${scores.q3 || 0}%`, 150, 545);
+    ctx.fillText(`• Quest 1 – Geführt: ${scores.q1 || 0} %`, 150, 465);
+    ctx.fillText(`• Quest 2 – Kürzel-Rätsel: ${scores.q2 || 0} %`, 150, 505);
+    ctx.fillText(`• Quest 3 – Ohne Hilfe: ${scores.q3 || 0} %`, 150, 545);
 
     // A2 Column
     ctx.fillStyle = '#fde047';
     ctx.font = '800 22px "Space Grotesk", sans-serif';
-    ctx.fillText('Arbeitsblatt A2 (Sonderzeichen AltGr)', 630, 420);
+    ctx.fillText('Arbeitsblatt A2 (Sonderzeichen mit AltGr)', 630, 420);
 
     ctx.fillStyle = '#e2e8f0';
     ctx.font = '600 18px sans-serif';
-    ctx.fillText(`• Quest 4 (AltGr Geführt): ${scores.q4 || 0}%`, 650, 465);
-    ctx.fillText(`• Quest 5 (50/50 Rätsel): ${scores.q5 || 0}%`, 650, 505);
-    ctx.fillText(`• Quest 6 (Blind-Profi): ${scores.q6 || 0}%`, 650, 545);
+    ctx.fillText(`• Quest 4 – Geführt: ${scores.q4 || 0} %`, 650, 465);
+    ctx.fillText(`• Quest 5 – Kürzel-Rätsel: ${scores.q5 || 0} %`, 650, 505);
+    ctx.fillText(`• Quest 6 – Ohne Hilfe: ${scores.q6 || 0} %`, 650, 545);
 
     // Divider Line
     ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
@@ -257,12 +362,12 @@ function downloadCertificatePDF(studentName) {
     ctx.lineTo(1070, 580);
     ctx.stroke();
 
-    // A3 Boss Challenge Status
+    // A3 practice task status
     const a3Completed = scores.q7 === 100;
     const a3Unlocked = (scores.q6 || 0) >= 70;
     ctx.fillStyle = '#ef4444';
     ctx.font = '800 22px "Space Grotesk", sans-serif';
-    ctx.fillText('Arbeitsblatt A3 (Mission: Maus weglegen)', 130, 625);
+    ctx.fillText('Praxisaufgabe – Maus weglegen', 130, 625);
 
     let a3StatusColor, a3StatusText;
     if (a3Completed) {
@@ -273,7 +378,7 @@ function downloadCertificatePDF(studentName) {
         a3StatusText = 'Status: 🟡 Freigeschaltet, aber noch nicht absolviert';
     } else {
         a3StatusColor = '#f43f5e';
-        a3StatusText = 'Status: 🔴 Gesperrt (Voraussetzung: Q6 >= 70%)';
+        a3StatusText = 'Status: 🔴 Gesperrt (Voraussetzung: Quest 6 ≥ 70 %)';
     }
     ctx.fillStyle = a3StatusColor;
     ctx.font = '700 18px sans-serif';
