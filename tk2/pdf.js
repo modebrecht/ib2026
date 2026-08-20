@@ -10,8 +10,8 @@
   var pdfButton=null;
 
   var QUEST_LABELS={
-    1:'Geführt',2:'Kürzel-Rätsel',3:'Ohne Hilfe',
-    4:'Geführt',5:'Kürzel-Rätsel',6:'Ohne Hilfe',
+    1:'Geführt',2:'Kürzel-Rätsel',3:'Memory',
+    4:'Geführt',5:'Kürzel-Rätsel',6:'Memory',
     7:'Praxis: mit und ohne Maus',
     8:'Programme & Browser',9:'Windows & Arbeitsalltag',
     10:'Wiederholung A1',11:'Wiederholung A2',12:'Wiederholung A4 + A5',13:'Alles gemischt'
