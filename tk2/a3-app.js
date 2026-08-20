@@ -17,6 +17,14 @@
   }
   function render(){if(running)byId('boss-timer').textContent=formatTime(Date.now()-startTime);}
 
+  function ensureCompletionReward(progress){
+    if(progress.rewarded)return;
+    addGlobalXP(50);
+    progress.rewarded=true;
+    progress.completed=true;
+    saveProgress(progress);
+  }
+
   function showFirstReady(progress){
     byId('boss-timer').textContent=progress.first||'00:00';
     byId('run-instruction').textContent='Durchlauf 2: Öffne zuerst eine frische, ungelöste Kopie. Dann Maus weglegen und möglichst nur Tastenkürzel verwenden.';
@@ -31,6 +39,7 @@
   }
 
   function showCompleted(progress){
+    ensureCompletionReward(progress);
     byId('boss-timer').textContent=progress.second||'00:00';
     byId('run-instruction').textContent='Beide Durchläufe sind abgeschlossen. Vergleiche jetzt dein Arbeiten mit und ohne Maus.';
     byId('start-boss-btn').style.display='none';
@@ -96,13 +105,8 @@
     progress.second=text;
     progress.secondMs=elapsed;
     progress.attempts=2;
+    progress.completed=true;
     saveProgress(progress);
-
-    var alreadyDone=(getQuestScores().q7||0)>=100;
-    if(!alreadyDone){
-      addGlobalXP(50);
-      saveQuestScore('q7',100);
-    }
     showCompleted(progress);
   }
 
