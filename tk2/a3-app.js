@@ -16,10 +16,11 @@
     return String(minutes).padStart(2,'0')+':'+String(seconds).padStart(2,'0');
   }
   function render(){if(running)byId('boss-timer').textContent=formatTime(Date.now()-startTime);}
+  function legacyRewardAlreadyGranted(){return typeof getQuestScores==='function'&&(getQuestScores().q7||0)>=100;}
 
   function ensureCompletionReward(progress){
     if(progress.rewarded)return;
-    addGlobalXP(50);
+    if(!legacyRewardAlreadyGranted())addGlobalXP(50);
     progress.rewarded=true;
     progress.completed=true;
     saveProgress(progress);
@@ -106,7 +107,6 @@
     progress.secondMs=elapsed;
     progress.attempts=2;
     progress.completed=true;
-    saveProgress(progress);
     showCompleted(progress);
   }
 
