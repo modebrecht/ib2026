@@ -50,7 +50,7 @@
       }).join('');
     }
 
-    var keyX = Math.max(404, 650 - keyRowWidth(cfg.keys));
+    var keyX = 425;
 
     container.innerHTML = ''+
       '<svg class="tk2-doc-scene" viewBox="0 0 680 320" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Animation: '+cfg.label+'">'+
@@ -122,12 +122,12 @@
 
     function pressKeys(){
       $$('.tk2-key').forEach(function(key, i){
-        later(i*115, function(){
+        later(i*150, function(){
           var base = key.getAttribute('data-base');
-          trans(key,'transform 110ms ease, filter 110ms ease');
+          trans(key,'transform 160ms ease, filter 160ms ease');
           key.setAttribute('transform', base + ' translate(0 4)');
           key.style.filter='drop-shadow(0 0 8px rgba(56,189,248,.75))';
-          later(170,function(){ key.setAttribute('transform',base); key.style.filter=''; });
+          later(240,function(){ key.setAttribute('transform',base); key.style.filter=''; });
         });
       });
     }
