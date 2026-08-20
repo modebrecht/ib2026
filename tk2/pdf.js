@@ -4,6 +4,7 @@
   var A3_PROGRESS_KEY='tk_a3_progress_v1';
   var A4_KEY='tk_a4_progress_v1';
   var A5_KEY='tk_a5_progress_v1';
+  var A6_KEY='tk_a6_progress_v1';
   var page=(location.pathname.split('/').pop()||'index.html').toLowerCase();
   var scope=page==='index.html'?'all':page.replace('.html','').toUpperCase();
   var pdfButton=null;
@@ -13,9 +14,9 @@
     4:'Geführt',5:'Kürzel-Rätsel',6:'Ohne Hilfe',
     7:'Praxis: mit und ohne Maus',
     8:'Programme & Browser',9:'Windows & Arbeitsalltag',
-    10:'Wiederholung A1',11:'Wiederholung A2',12:'Wiederholung A4',13:'Alles gemischt'
+    10:'Wiederholung A1',11:'Wiederholung A2',12:'Wiederholung A4 + A5',13:'Alles gemischt'
   };
-  var SHEET_TITLES={A1:'Allgemeine Tastenkürzel',A2:'Sonderzeichen mit AltGr',A3:'Praxis: mit und ohne Maus',A4:'Browser & Windows',A5:'Wiederholen & festigen'};
+  var SHEET_TITLES={A1:'Allgemeine Tastenkürzel',A2:'Sonderzeichen mit AltGr',A3:'Praxis: mit und ohne Maus',A4:'Programme & Browser',A5:'Windows & Arbeitsalltag',A6:'Wiederholen & festigen'};
 
   function parse(key){try{return JSON.parse(localStorage.getItem(key)||'{}');}catch(e){return{};}}
   function owns(obj,key){return Object.prototype.hasOwnProperty.call(obj,key);}
@@ -25,13 +26,14 @@
 
   function simpleRows(from,to){var scores=getScores(),rows=[];for(var q=from;q<=to;q++){var key='q'+q;if(!owns(scores,key))continue;rows.push({q:q,label:QUEST_LABELS[q],value:String(scores[key])+' %'});}return rows;}
   function a3Rows(){var progress=parse(A3_PROGRESS_KEY);if(!progress.first)return[];var parts=['1. Durchlauf (normal) '+progress.first];if(progress.second)parts.push('2. Durchlauf (ohne Maus) '+progress.second);else parts.push('2. Durchlauf noch offen');return[{q:7,label:QUEST_LABELS[7],value:parts.join(' · ')}];}
-  function richRows(storageKey,defs,isA4){var data=parse(storageKey),rows=[];defs.forEach(function(def){var entry=data[def.key];if(!entry||!num(entry.first))return;var parts=['1. Versuch '+entry.first+' %'];if(isA4&&attemptCount(entry)>=2&&num(entry.second))parts.push('2. Versuch '+entry.second+' %');if(num(entry.best))parts.push('Best '+entry.best+' %');rows.push({q:def.q,label:QUEST_LABELS[def.q],value:parts.join(' · ')});});return rows;}
+  function richRows(storageKey,defs,includeSecond){var data=parse(storageKey),rows=[];defs.forEach(function(def){var entry=data[def.key];if(!entry||!num(entry.first))return;var parts=['1. Versuch '+entry.first+' %'];if(includeSecond&&attemptCount(entry)>=2&&num(entry.second))parts.push('2. Versuch '+entry.second+' %');if(num(entry.best))parts.push('Best '+entry.best+' %');rows.push({q:def.q,label:QUEST_LABELS[def.q],value:parts.join(' · ')});});return rows;}
   function collectSheets(){return[
     {id:'A1',title:SHEET_TITLES.A1,rows:simpleRows(1,3)},
     {id:'A2',title:SHEET_TITLES.A2,rows:simpleRows(4,6)},
     {id:'A3',title:SHEET_TITLES.A3,rows:a3Rows()},
-    {id:'A4',title:SHEET_TITLES.A4,rows:richRows(A4_KEY,[{key:'A',q:8},{key:'B',q:9}],true)},
-    {id:'A5',title:SHEET_TITLES.A5,rows:richRows(A5_KEY,[{key:'A',q:10},{key:'B',q:11},{key:'C',q:12},{key:'D',q:13}],false)}
+    {id:'A4',title:SHEET_TITLES.A4,rows:richRows(A4_KEY,[{key:'A',q:8}],true)},
+    {id:'A5',title:SHEET_TITLES.A5,rows:richRows(A5_KEY,[{key:'A',q:9}],true)},
+    {id:'A6',title:SHEET_TITLES.A6,rows:richRows(A6_KEY,[{key:'A',q:10},{key:'B',q:11},{key:'C',q:12},{key:'D',q:13}],false)}
   ];}
   function selectedSheets(which){var sheets=collectSheets();if(which==='all')return sheets.filter(function(s){return s.rows.length;});return sheets.filter(function(s){return s.id===which&&s.rows.length;});}
 
@@ -51,9 +53,9 @@
   function hasData(which){return selectedSheets(which).length>0;}
 
   function addHeaderButton(){var top=document.querySelector('.top-bar');if(!top)return;var host=top.querySelector('div:last-child')||top,btn=document.createElement('button');btn.type='button';btn.className='tk-btn-secondary tk2-pdf-action';btn.textContent='📄 PDF erzeugen';btn.style.whiteSpace='nowrap';btn.addEventListener('click',function(){download(scope);});host.appendChild(btn);pdfButton=btn;syncButton();}
-  function addIndexCard(){var modules=document.querySelector('.modules');if(!modules)return;var card=document.createElement('article');card.className='module module-wide';card.id='module-pdf';card.style.cssText='--accent:#8b5cf6;--accent-dark:#6d28d9;--rgb:139,92,246;--glow:rgba(139,92,246,.07)';card.innerHTML='<div class="module-head"><span class="module-badge">PDF · Zwischenstand</span><span class="module-state" id="pdf-module-state">wird geprüft</span></div><div><h2>Deine bisherigen Ergebnisse als PDF</h2><p>Fasst automatisch nur die Arbeitsblätter und Quests zusammen, die du bereits bearbeitet hast. Du kannst jederzeit einen neuen Zwischenstand erzeugen.</p></div><div class="module-tags"><span>A1–A5</span><span>nur bearbeitete Quests</span><span>Name + XP</span></div><div class="module-action"><span class="module-meta" id="pdf-module-meta">Noch keine Ergebnisse</span><button type="button" class="module-btn" id="pdf-module-btn" style="border:0;cursor:pointer">📄 Zwischenstand erzeugen</button></div>';modules.appendChild(card);pdfButton=card.querySelector('#pdf-module-btn');pdfButton.addEventListener('click',function(){download('all');});syncButton();}
+  function addIndexCard(){var modules=document.querySelector('.modules');if(!modules)return;var card=document.createElement('article');card.className='module module-wide';card.id='module-pdf';card.style.cssText='--accent:#8b5cf6;--accent-dark:#6d28d9;--rgb:139,92,246;--glow:rgba(139,92,246,.07)';card.innerHTML='<div class="module-head"><span class="module-badge">PDF · Zwischenstand</span><span class="module-state" id="pdf-module-state">wird geprüft</span></div><div><h2>Deine bisherigen Ergebnisse als PDF</h2><p>Fasst automatisch nur die Arbeitsblätter und Quests zusammen, die du bereits bearbeitet hast. Du kannst jederzeit einen neuen Zwischenstand erzeugen.</p></div><div class="module-tags"><span>A1–A6</span><span>nur bearbeitete Quests</span><span>Name + XP</span></div><div class="module-action"><span class="module-meta" id="pdf-module-meta">Noch keine Ergebnisse</span><button type="button" class="module-btn" id="pdf-module-btn" style="border:0;cursor:pointer">📄 Zwischenstand erzeugen</button></div>';modules.appendChild(card);pdfButton=card.querySelector('#pdf-module-btn');pdfButton.addEventListener('click',function(){download('all');});syncButton();}
   function syncButton(){if(!pdfButton)return;var available=hasData(scope);pdfButton.disabled=!available;pdfButton.style.opacity=available?'1':'.52';pdfButton.style.cursor=available?'pointer':'not-allowed';pdfButton.title=available?'PDF mit aktuellem Zwischenstand erzeugen':'PDF verfügbar, sobald mindestens eine Quest bearbeitet wurde';if(scope==='all'){var sheets=selectedSheets('all'),quests=sheets.reduce(function(n,s){return n+s.rows.length;},0),state=document.getElementById('pdf-module-state'),meta=document.getElementById('pdf-module-meta');if(state)state.textContent=quests?quests+' Quest'+(quests===1?'':'s')+' erfasst':'noch keine Ergebnisse';if(meta)meta.textContent=quests?sheets.length+' Arbeitsblatt'+(sheets.length===1?'':'blätter')+' · '+quests+' Quest'+(quests===1?'':'s'):'Noch keine Ergebnisse';}}
-  function hideLegacyA5Pdf(){if(page!=='a5.html')return;['quickPdfBtn','downloadPdfBtn','finishPdfBtn'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});}
+  function hideLegacyA6Pdf(){if(page!=='a6.html')return;['quickPdfBtn','downloadPdfBtn','finishPdfBtn'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});}
   var originalSave=window.saveQuestScore;if(typeof originalSave==='function'){window.saveQuestScore=function(){var result=originalSave.apply(this,arguments);setTimeout(syncButton,0);return result;};}
-  if(scope==='all')addIndexCard();else addHeaderButton();hideLegacyA5Pdf();document.addEventListener('visibilitychange',function(){if(!document.hidden)syncButton();});window.addEventListener('focus',syncButton);window.tk2Pdf={download:download,collectSheets:collectSheets,sync:syncButton};
+  if(scope==='all')addIndexCard();else addHeaderButton();hideLegacyA6Pdf();document.addEventListener('visibilitychange',function(){if(!document.hidden)syncButton();});window.addEventListener('focus',syncButton);window.tk2Pdf={download:download,collectSheets:collectSheets,sync:syncButton};
 })();
