@@ -2,7 +2,7 @@
   'use strict';
 
   var counter=0;
-  var LOOP_MS=4200;
+  var LOOP_MS=5000;
   var CONTEXT_X=410;
   var CONTEXT_Y=58;
   var CONFIG={
@@ -14,7 +14,7 @@
     squareOpen:{char:'[',key2:'ü',label:'Eckige Klammer auf',kind:'code',context:'[1, 2, 3]',before:'',after:'1, 2, 3]'},
     squareClose:{char:']',key2:'¨',label:'Eckige Klammer zu',kind:'code',context:'[1, 2, 3]',before:'[1, 2, 3',after:''},
     curlyOpen:{char:'{',key2:'ä',label:'Geschweifte Klammer auf',kind:'codeblock',context:'if (ok) {',before:'if (ok) ',after:''},
-    curlyClose:{char:'}',key2:'$',label:'Geschweifte Klammer zu',kind:'codeblock',context:'}',before:'',after:''},
+    curlyClose:{char:'}',key2:'$',label:'Geschweifte Klammer zu',kind:'codeblock',context:'if (ok) { starten(); }',before:'',after:'',multilineClose:true},
     degree:{char:'°',key2:'4',label:'Gradzeichen',kind:'temp',context:'21 °C',before:'21 ',after:'C'}
   };
 
@@ -58,15 +58,27 @@
       var mono=(cfg.kind==='terminal'||cfg.kind==='path'||cfg.kind==='code'||cfg.kind==='codeblock');
       var font=mono?'Consolas,monospace':'Arial,sans-serif';
       var size=(cfg.context.length>16?16:19);
+      var content='';
+      if(cfg.multilineClose){
+        content=''
+          +'<text x="29" y="83" font-family="'+font+'" font-size="15" font-weight="700" fill="#e2e8f0">if (ok) {</text>'
+          +'<text x="29" y="103" font-family="'+font+'" font-size="15" font-weight="700" fill="#e2e8f0">  starten();</text>'
+          +'<text class="ctx-before" x="29" y="123" font-family="'+font+'" font-size="15" font-weight="700" fill="#e2e8f0"></text>'
+          +'<text class="ctx-char" x="29" y="123" font-family="'+font+'" font-size="15" font-weight="900" fill="#fde047" opacity="0">'+escapeText(cfg.char)+'</text>'
+          +'<text class="ctx-after" x="29" y="123" font-family="'+font+'" font-size="15" font-weight="700" fill="#e2e8f0"></text>';
+      }else{
+        content=''
+          +'<text class="ctx-before" x="29" y="100" font-family="'+font+'" font-size="'+size+'" font-weight="700" fill="#e2e8f0">'+escapeText(cfg.before)+'</text>'
+          +'<text class="ctx-char" x="29" y="100" font-family="'+font+'" font-size="'+size+'" font-weight="900" fill="#fde047" opacity="0">'+escapeText(cfg.char)+'</text>'
+          +'<text class="ctx-after" x="29" y="100" font-family="'+font+'" font-size="'+size+'" font-weight="700" fill="#e2e8f0">'+escapeText(cfg.after)+'</text>';
+      }
       return '<g class="context" transform="translate('+CONTEXT_X+' '+CONTEXT_Y+')" filter="url(#'+uid+'Shadow)">'+
         '<rect width="205" height="178" rx="20" fill="#101a2c" stroke="#334155" stroke-width="1.5"/>'+
         '<rect width="205" height="42" rx="20" fill="#17233a"/>'+
         '<rect y="23" width="205" height="19" fill="#17233a"/>'+
         '<text x="18" y="26" font-family="Arial,sans-serif" font-size="11" font-weight="800" fill="#cbd5e1">'+icon+'  '+title+'</text>'+
         '<rect x="17" y="61" width="171" height="66" rx="13" fill="#08111f" stroke="#334155"/>'+
-        '<text class="ctx-before" x="29" y="100" font-family="'+font+'" font-size="'+size+'" font-weight="700" fill="#e2e8f0">'+escapeText(cfg.before)+'</text>'+
-        '<text class="ctx-char" x="29" y="100" font-family="'+font+'" font-size="'+size+'" font-weight="900" fill="#fde047" opacity="0">'+escapeText(cfg.char)+'</text>'+
-        '<text class="ctx-after" x="29" y="100" font-family="'+font+'" font-size="'+size+'" font-weight="700" fill="#e2e8f0">'+escapeText(cfg.after)+'</text>'+
+        content+
         '<g class="context-result" opacity="0"><rect x="17" y="141" width="171" height="25" rx="12.5" fill="#052e2b" stroke="#10b981"/><circle cx="34" cy="153.5" r="6" fill="#10b981"/><path d="M31 153.5l2 2 4-5" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><text x="47" y="157" font-family="Arial,sans-serif" font-size="10" font-weight="800" fill="#a7f3d0">Zeichen eingesetzt</text></g>'+
       '</g>';
     }
@@ -112,6 +124,10 @@
 
     function layoutContext(){
       var before=$('.ctx-before'),ch=$('.ctx-char'),after=$('.ctx-after');
+      if(cfg.multilineClose){
+        ch.setAttribute('x',29);
+        return;
+      }
       var x=29;
       before.setAttribute('x',x);
       var fallbackBefore=Math.max(0,cfg.before.length*(cfg.context.length>16?8.5:10));
@@ -139,10 +155,18 @@
       layoutContext();
     }
 
-    function press(el){
+    function keyDown(el){
       var base=el.getAttribute('data-base');
-      trans(el,'transform 110ms ease, filter 110ms ease');el.setAttribute('transform',base+' translate(0 4)');el.style.filter='drop-shadow(0 0 9px rgba(245,158,11,.8))';
-      later(190,function(){el.setAttribute('transform',base);el.style.filter='';});
+      trans(el,'transform 180ms ease, filter 180ms ease');
+      el.setAttribute('transform',base+' translate(0 5)');
+      el.style.filter='drop-shadow(0 0 10px rgba(245,158,11,.9))';
+    }
+
+    function keyUp(el){
+      var base=el.getAttribute('data-base');
+      trans(el,'transform 160ms ease, filter 160ms ease');
+      el.setAttribute('transform',base);
+      el.style.filter='';
     }
 
     function showEndState(){
@@ -152,15 +176,21 @@
     function run(){
       if(reduceMotion){showEndState();return;}
       reset();running=true;
-      later(220,function(){trans($('.hero-char'),'opacity 260ms ease');opacity($('.hero-char'),1);});
-      later(680,function(){press($('.key-alt'));opacity($('.press-label'),1);});
-      later(980,function(){press($('.key-main'));});
-      later(1260,function(){
+      later(350,function(){keyDown($('.key-alt'));});
+      later(700,function(){keyDown($('.key-main'));});
+      later(1000,function(){
+        trans($('.hero-char'),'opacity 260ms ease');
+        opacity($('.hero-char'),1);
+        opacity($('.press-label'),1);
+      });
+      later(1250,function(){keyUp($('.key-main'));});
+      later(1400,function(){keyUp($('.key-alt'));});
+      later(1500,function(){
         opacity($('.flying-char'),1);
         trans($('.flying-char'),'transform 820ms cubic-bezier(.2,.78,.24,1), opacity 180ms ease');
         $('.flying-char').setAttribute('transform',flyingTargetTransform());
       });
-      later(2100,function(){opacity($('.flying-char'),0);opacity($('.ctx-char'),1);opacity($('.context-result'),1);});
+      later(2320,function(){opacity($('.flying-char'),0);opacity($('.ctx-char'),1);opacity($('.context-result'),1);});
       later(LOOP_MS,function(){running=false;if(active&&autoLoop)run();});
     }
 
