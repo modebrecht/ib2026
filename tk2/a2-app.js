@@ -132,7 +132,7 @@
 
   function setCommon(prefix,item,index,total,correct,attempts){
     byId(prefix+'-symbol-box').textContent=item.char;byId(prefix+'-title').textContent=item.title;byId(prefix+'-desc').textContent=item.desc;
-    byId(prefix+'-counter-label').textContent='Zeichen '+(index+1)+' von '+total;byId(prefix+'-progress-bar').style.width=((index+1)/total*100)+'%';byId(prefix+'-score-live').textContent='Richtig: '+accuracy(correct,attempts)+' %';
+    byId(prefix+'-counter-label').textContent=(index+1)+' / '+total+' Zeichen';byId(prefix+'-progress-bar').style.width=((index+1)/total*100)+'%';byId(prefix+'-score-live').textContent='Richtig: '+accuracy(correct,attempts)+' %';
     var input=byId(prefix+'-char-input');input.value='';setTimeout(function(){input.focus();},0);
   }
 
