@@ -62,26 +62,56 @@
       var style=document.createElement('style');
       style.id='tk2-q2-fifty-style';
       style.textContent=''
-        +'.q2-choice-key{max-width:none!important;min-width:220px!important;padding:0 18px!important;gap:10px!important;color:#fde68a!important;border-color:rgba(245,158,11,.52)!important;background:rgba(245,158,11,.08)!important}'
-        +'.q2-choice-value{font-size:clamp(1.05rem,4vw,1.55rem);font-weight:900;color:#fde68a}'
-        +'.q2-choice-or-inline{font-family:\'Outfit\',sans-serif;font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:#94a3b8}'
-        +'.q2-choice-q{font-size:1.3rem;font-weight:900;color:#38bdf8;margin-left:1px}'
-        +'@media(max-width:520px){.q2-choice-key{min-width:190px!important;padding:0 12px!important;gap:7px!important}}';
+        +'.q2-choice-key{flex:0 0 92px!important;max-width:92px!important;min-width:72px!important;border-color:rgba(6,182,212,.55)!important;color:#cffafe!important;background:rgba(6,182,212,.08)!important}'
+        +'.q2-choice-or{font-family:\'Outfit\',sans-serif;font-size:.75rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:#94a3b8;flex:0 0 auto}'
+        +'.q2-choice-key.q2-choice-correct{background:linear-gradient(135deg,#10b981,#047857)!important;border-color:#34d399!important;color:#fff!important;box-shadow:0 0 35px rgba(16,185,129,.9)!important}'
+        +'.q2-choice-key.q2-choice-wrong{background:linear-gradient(135deg,#ef4444,#b91c1c)!important;border-color:#f87171!important;color:#fff!important;box-shadow:0 0 30px rgba(239,68,68,.75)!important}'
+        +'.q2-choice-key.q2-choice-muted{opacity:.34;filter:saturate(.45);box-shadow:0 3px 0 rgba(0,0,0,.45)!important}'
+        +'@media(max-width:520px){.q2-choice-key{flex-basis:68px!important;max-width:68px!important;min-width:58px!important}.q2-choice-or{font-size:.64rem;letter-spacing:.04em}}';
       document.head.appendChild(style);
     }
     var heading=byId('q2-card')&&byId('q2-card').firstElementChild;
-    if(heading)heading.textContent='🎲 50/50 – Ergänze das Kürzel';
+    if(heading)heading.textContent='🎲 Welche letzte Taste passt?';
   }
 
   function renderQ2Keys(item){
     ensureQ2FiftyUi();
     var correct=item.keys[item.keys.length-1];
     q2Choices=shuffleArray([correct,item.q2Wrong]);
-    var last=item.keys.length-1;
-    byId('q2-shortcut-display').innerHTML=item.keys.map(function(k,idx){
-      if(idx!==last)return '<div class="big-kbd" data-keyname="'+k+'">'+k+'</div>';
-      return '<div class="big-kbd q2-choice-key" data-keyname="'+correct+'"><span class="q2-choice-value">'+q2Choices[0]+'</span><span class="q2-choice-or-inline">oder</span><span class="q2-choice-value">'+q2Choices[1]+'</span><span class="q2-choice-q">?</span></div>';
-    }).join('<div class="plus-sign">+</div>');
+    var fixed=item.keys.slice(0,-1).map(function(k){return '<div class="big-kbd" data-keyname="'+k+'">'+k+'</div>';}).join('<div class="plus-sign">+</div>');
+    byId('q2-shortcut-display').innerHTML=''
+      +fixed
+      +'<div class="plus-sign">+</div>'
+      +'<div class="big-kbd q2-choice-key" data-q2-key="'+q2Choices[0]+'">'+q2Choices[0]+'</div>'
+      +'<div class="q2-choice-or">oder</div>'
+      +'<div class="big-kbd q2-choice-key" data-q2-key="'+q2Choices[1]+'">'+q2Choices[1]+'</div>';
+  }
+
+  function clearQ2Feedback(){
+    document.querySelectorAll('#q2-shortcut-display .q2-choice-key').forEach(function(key){key.classList.remove('q2-choice-correct','q2-choice-wrong','q2-choice-muted');});
+  }
+
+  function showQ2Success(item){
+    var correct=item.keys[item.keys.length-1];
+    var choices=document.querySelectorAll('#q2-shortcut-display .q2-choice-key');
+    if(!choices.length){document.querySelectorAll('#q2-shortcut-display .big-kbd').forEach(function(key){key.classList.add('pressed-success');});return;}
+    choices.forEach(function(key){
+      if(key.getAttribute('data-q2-key')===correct)key.classList.add('q2-choice-correct');
+      else key.classList.add('q2-choice-muted');
+    });
+  }
+
+  function q2EventMatchesKey(key,e){
+    if(key==='Home')return e.key==='Home'||e.code==='Home'||e.key==='Pos1';
+    if(key==='End')return e.key==='End'||e.code==='End'||e.key==='Ende';
+    return String(e.key).toLowerCase()===String(key).toLowerCase()||e.code==='Key'+String(key).toUpperCase();
+  }
+
+  function showQ2Wrong(item,e){
+    if(!q2EventMatchesKey(item.q2Wrong,e))return;
+    document.querySelectorAll('#q2-shortcut-display .q2-choice-key').forEach(function(key){
+      if(key.getAttribute('data-q2-key')===item.q2Wrong)key.classList.add('q2-choice-wrong');
+    });
   }
 
   function switchPhase(phaseNum){
@@ -124,8 +154,8 @@
     byId('q2-counter-label').textContent='Rätsel '+(q2Index+1)+' von '+q2Shortcuts.length;byId('q2-progress-bar').style.width=((q2Index+1)/q2Shortcuts.length*100)+'%';byId('q2-score-live').textContent='Genauigkeit: '+accuracy(q2CorrectHits,q2TotalAttempts)+'%';byId('q2-status-msg').innerHTML='<span style="color:var(--accent-amber)">Drücke das richtige vollständige Kürzel auf deiner Tastatur.</span>';byId('q2-card').classList.remove('success-flash','error-flash');
   }
   function useQ2Hint(){if(q2HintRevealed)return;if(getGlobalXP()<30){playSound('wrong');return;}q2HintRevealed=true;addGlobalXP(-30);playSound('hint');var item=q2Shortcuts[q2Index];renderKeys(byId('q2-shortcut-display'),item,-1,false);byId('q2-hint-btn').textContent='💡 Tipp genutzt (-30 XP)';byId('q2-hint-btn').disabled=true;}
-  function handleQ2Success(){q2Locked=true;addGlobalXP(10);playSound('correct');q2CorrectHits++;q2TotalAttempts++;var item=q2Shortcuts[q2Index];renderKeys(byId('q2-shortcut-display'),item,-1,false);document.querySelectorAll('#q2-shortcut-display .big-kbd').forEach(function(b){b.classList.add('pressed-success');});byId('q2-card').classList.add('success-flash');byId('q2-status-msg').innerHTML='✨ <span style="color:var(--accent-green)">Richtig – +10 XP!</span>';setTimeout(function(){q2Index++;updateQ2Card();},700);}
-  function handleQ2Wrong(){q2Locked=true;addGlobalXP(-10);playSound('wrong');q2TotalAttempts++;byId('q2-card').classList.add('error-flash');byId('q2-status-msg').innerHTML='❌ <span style="color:var(--accent-red)">Noch nicht.</span> Entscheide zwischen den beiden Tasten im Kürzel und versuche es erneut.';setTimeout(function(){byId('q2-card').classList.remove('error-flash');q2Locked=false;},650);}
+  function handleQ2Success(){q2Locked=true;addGlobalXP(10);playSound('correct');q2CorrectHits++;q2TotalAttempts++;var item=q2Shortcuts[q2Index];showQ2Success(item);byId('q2-card').classList.add('success-flash');byId('q2-status-msg').innerHTML='✨ <span style="color:var(--accent-green)">Richtig – +10 XP!</span>';setTimeout(function(){q2Index++;updateQ2Card();},700);}
+  function handleQ2Wrong(e){q2Locked=true;addGlobalXP(-10);playSound('wrong');q2TotalAttempts++;var item=q2Shortcuts[q2Index];showQ2Wrong(item,e);byId('q2-card').classList.add('error-flash');byId('q2-status-msg').innerHTML='❌ <span style="color:var(--accent-red)">Noch nicht.</span> Entscheide zwischen den beiden sichtbaren Tasten und versuche es erneut.';setTimeout(function(){byId('q2-card').classList.remove('error-flash');clearQ2Feedback();q2Locked=false;},650);}
 
   function checkQ3Unlock(){var ok=isQuestUnlocked('q3');byId('q3-lock-screen').style.display=ok?'none':'flex';byId('q3-game-screen').style.display=ok?'flex':'none';if(ok)updateQ3Card();}
   function resetQ3(){q3Shortcuts=shuffleArray(shortcuts);q3Index=0;q3CorrectHits=0;q3TotalAttempts=0;q3HintRevealed=false;q3Misses=0;byId('q3-card').style.display='block';byId('q3-trophy-view').style.display='none';updateQ3Card();}
@@ -161,7 +191,7 @@
     if(e.repeat)return;
     var target;
     if(activePhase===2){if(q1Locked||q1Index>=q1Shortcuts.length)return;target=q1Shortcuts[q1Index];showPressed('q1',e);if(e.ctrlKey||e.metaKey){preventBrowserShortcut(e);if(checkMatch(target,e))handleQ1Success();else if(e.key!=='Control'&&e.key!=='Shift')handleQ1Wrong();}}
-    else if(activePhase===3&&isQuestUnlocked('q2')){if(q2Locked||q2Index>=q2Shortcuts.length)return;target=q2Shortcuts[q2Index];showPressed('q2',e);if(e.ctrlKey||e.metaKey){preventBrowserShortcut(e);if(checkMatch(target,e))handleQ2Success();else if(e.key!=='Control'&&e.key!=='Shift')handleQ2Wrong();}}
+    else if(activePhase===3&&isQuestUnlocked('q2')){if(q2Locked||q2Index>=q2Shortcuts.length)return;target=q2Shortcuts[q2Index];showPressed('q2',e);if(e.ctrlKey||e.metaKey){preventBrowserShortcut(e);if(checkMatch(target,e))handleQ2Success();else if(e.key!=='Control'&&e.key!=='Shift')handleQ2Wrong(e);}}
     else if(activePhase===4&&isQuestUnlocked('q3')){if(q3Locked||q3Index>=q3Shortcuts.length)return;target=q3Shortcuts[q3Index];showPressed('q3',e);if(e.ctrlKey||e.metaKey){preventBrowserShortcut(e);if(checkMatch(target,e))handleQ3Success();else if(e.key!=='Control'&&e.key!=='Shift')handleQ3Wrong();}}
   });
   window.addEventListener('keyup',function(e){if(!e.ctrlKey&&e.key!=='Control')document.querySelectorAll('.big-kbd[data-keyname="Ctrl"]').forEach(function(b){b.classList.remove('pressed');});if(!e.shiftKey&&e.key!=='Shift')document.querySelectorAll('.big-kbd[data-keyname="Shift"]').forEach(function(b){b.classList.remove('pressed');});});
