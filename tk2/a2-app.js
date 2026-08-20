@@ -34,18 +34,50 @@
     var style=document.createElement('style');
     style.id='tk2-q5-fifty-style';
     style.textContent=''
-      +'.q5-choice-key{max-width:none!important;min-width:220px!important;padding:0 18px!important;gap:10px!important;color:#fde68a!important;border-color:rgba(245,158,11,.52)!important;background:rgba(245,158,11,.08)!important}'
-      +'.q5-choice-value{font-size:clamp(1.05rem,4vw,1.55rem);font-weight:900;color:#fde68a}'
-      +'.q5-choice-or-inline{font-family:\'Outfit\',sans-serif;font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:#94a3b8}'
-      +'.q5-choice-q{font-size:1.3rem;font-weight:900;color:#38bdf8;margin-left:1px}'
-      +'@media(max-width:520px){.q5-choice-key{min-width:190px!important;padding:0 12px!important;gap:7px!important}}';
+      +'.q5-choice-key{flex:0 0 92px!important;max-width:92px!important;min-width:72px!important;border-color:rgba(6,182,212,.55)!important;color:#cffafe!important;background:rgba(6,182,212,.08)!important}'
+      +'.q5-choice-or{font-family:\'Outfit\',sans-serif;font-size:.75rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:#94a3b8;flex:0 0 auto}'
+      +'.q5-choice-key.q5-choice-correct{background:linear-gradient(135deg,#10b981,#047857)!important;border-color:#34d399!important;color:#fff!important;box-shadow:0 0 35px rgba(16,185,129,.9)!important}'
+      +'.q5-choice-key.q5-choice-wrong{background:linear-gradient(135deg,#ef4444,#b91c1c)!important;border-color:#f87171!important;color:#fff!important;box-shadow:0 0 30px rgba(239,68,68,.75)!important}'
+      +'.q5-choice-key.q5-choice-muted{opacity:.34;filter:saturate(.45);box-shadow:0 3px 0 rgba(0,0,0,.45)!important}'
+      +'@media(max-width:520px){.q5-choice-key{flex-basis:68px!important;max-width:68px!important;min-width:58px!important}.q5-choice-or{font-size:.64rem;letter-spacing:.04em}}';
     document.head.appendChild(style);
   }
 
   function renderQ5Keys(item){
     ensureQ5FiftyUi();
     q5Choices=shuffle([item.key2,item.q5Wrong]);
-    byId('q5-shortcut-display').innerHTML='<div class="big-kbd">AltGr</div><div class="plus-sign">+</div><div class="big-kbd q5-choice-key"><span class="q5-choice-value">'+escapeHtml(q5Choices[0])+'</span><span class="q5-choice-or-inline">oder</span><span class="q5-choice-value">'+escapeHtml(q5Choices[1])+'</span><span class="q5-choice-q">?</span></div>';
+    byId('q5-shortcut-display').innerHTML=''
+      +'<div class="big-kbd">AltGr</div>'
+      +'<div class="plus-sign">+</div>'
+      +'<div class="big-kbd q5-choice-key" data-q5-key="'+escapeHtml(q5Choices[0])+'">'+escapeHtml(q5Choices[0])+'</div>'
+      +'<div class="q5-choice-or">oder</div>'
+      +'<div class="big-kbd q5-choice-key" data-q5-key="'+escapeHtml(q5Choices[1])+'">'+escapeHtml(q5Choices[1])+'</div>';
+  }
+
+  function q5CharForKey(key){
+    for(var i=0;i<altgrItems.length;i++)if(altgrItems[i].key2===key)return altgrItems[i].char;
+    return '';
+  }
+
+  function clearQ5Feedback(){
+    document.querySelectorAll('#q5-shortcut-display .q5-choice-key').forEach(function(key){key.classList.remove('q5-choice-correct','q5-choice-wrong','q5-choice-muted');});
+  }
+
+  function showQ5Success(item){
+    var choices=document.querySelectorAll('#q5-shortcut-display .q5-choice-key');
+    if(!choices.length){document.querySelectorAll('#q5-shortcut-display .big-kbd').forEach(function(key){key.classList.add('pressed-success');});return;}
+    choices.forEach(function(key){
+      if(key.getAttribute('data-q5-key')===item.key2)key.classList.add('q5-choice-correct');
+      else key.classList.add('q5-choice-muted');
+    });
+  }
+
+  function showQ5Wrong(item,typed){
+    var wrongChar=q5CharForKey(item.q5Wrong);
+    if(!wrongChar||String(typed).indexOf(wrongChar)===-1)return;
+    document.querySelectorAll('#q5-shortcut-display .q5-choice-key').forEach(function(key){
+      if(key.getAttribute('data-q5-key')===item.q5Wrong)key.classList.add('q5-choice-wrong');
+    });
   }
 
   document.addEventListener('DOMContentLoaded',function(){
@@ -55,6 +87,7 @@
     var next=byId('q6-to-a3-btn');if(next)next.setAttribute('href','A3.html');
     var q6Tab=byId('tab-4');if(q6Tab)q6Tab.textContent='🧠 Q6: Memory';
     var q6Heading=byId('q6-card')&&byId('q6-card').firstElementChild;if(q6Heading)q6Heading.textContent='🧠 Memory – Aus dem Gedächtnis';
+    var q5Heading=byId('q5-card')&&byId('q5-card').firstElementChild;if(q5Heading)q5Heading.textContent='🎲 Welche zweite Taste passt?';
     ['q4-char-input','q5-char-input','q6-char-input'].forEach(function(id){
       var input=byId(id);if(!input)return;
       input.addEventListener('paste',function(e){e.preventDefault();});
@@ -99,7 +132,7 @@
     var hint=byId('q5-hint-btn'),xp=getGlobalXP();hint.disabled=xp<30;hint.textContent=xp<30?'💡 Tipp (-30 XP | Zu wenig XP)':'💡 Tipp (-30 XP)';byId('q5-status-msg').textContent='Das Zielzeichen bleibt sichtbar. Entscheide zwischen den zwei Tasten und tippe das Zeichen mit AltGr.';byId('q5-card').classList.remove('success-flash','error-flash');
   }
   function useQ5Hint(){if(q5Hint)return;if(getGlobalXP()<30){playSound('wrong');return;}q5Hint=true;addGlobalXP(-30);playSound('hint');var item=q5Items[q5Index];byId('q5-shortcut-display').innerHTML=comboHtml(item,'guided');byId('q5-hint-btn').disabled=true;byId('q5-hint-btn').textContent='💡 Tipp genutzt (-30 XP)';}
-  byId('q5-char-input').addEventListener('input',function(e){if(activePhase!==3||q5Locked||q5Index>=q5Items.length||!e.target.value)return;var item=q5Items[q5Index];q5Locked=true;q5Attempts++;if(e.target.value.indexOf(item.char)!==-1){q5Correct++;addGlobalXP(10);playSound('correct');byId('q5-shortcut-display').innerHTML=comboHtml(item,'guided');byId('q5-card').classList.add('success-flash');byId('q5-status-msg').innerHTML='✨ <span style="color:var(--accent-green)">Richtig – +10 XP</span>';setTimeout(function(){q5Index++;updateQ5();},600);}else{addGlobalXP(-10);playSound('wrong');byId('q5-card').classList.add('error-flash');byId('q5-status-msg').innerHTML='❌ <span style="color:var(--accent-red)">Noch nicht.</span> Entscheide zwischen den beiden sichtbaren Tasten und versuche es erneut.';setTimeout(function(){byId('q5-card').classList.remove('error-flash');e.target.value='';q5Locked=false;},600);}});
+  byId('q5-char-input').addEventListener('input',function(e){if(activePhase!==3||q5Locked||q5Index>=q5Items.length||!e.target.value)return;var item=q5Items[q5Index],typed=e.target.value;q5Locked=true;q5Attempts++;if(typed.indexOf(item.char)!==-1){q5Correct++;addGlobalXP(10);playSound('correct');showQ5Success(item);byId('q5-card').classList.add('success-flash');byId('q5-status-msg').innerHTML='✨ <span style="color:var(--accent-green)">Richtig – +10 XP</span>';setTimeout(function(){q5Index++;updateQ5();},700);}else{addGlobalXP(-10);playSound('wrong');showQ5Wrong(item,typed);byId('q5-card').classList.add('error-flash');byId('q5-status-msg').innerHTML='❌ <span style="color:var(--accent-red)">Noch nicht.</span> Entscheide zwischen den beiden sichtbaren Tasten und versuche es erneut.';setTimeout(function(){byId('q5-card').classList.remove('error-flash');clearQ5Feedback();e.target.value='';q5Locked=false;},650);}});
 
   function checkQ6(){var ok=isQuestUnlocked('q6');byId('q6-lock-screen').style.display=ok?'none':'flex';byId('q6-game-screen').style.display=ok?'flex':'none';if(ok)updateQ6();}
   function resetQ6(){q6Items=shuffle(altgrItems);q6Index=0;q6Correct=0;q6Attempts=0;q6Locked=false;q6Hint=false;byId('q6-card').style.display='block';byId('q6-trophy-view').style.display='none';updateQ6();}
