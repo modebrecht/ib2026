@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>A3: Praxisaufgabe – Maus weglegen</title>
+  <title>A3: Praxis – mit und ohne Maus</title>
   <link rel="stylesheet" href="../tk/vendor/fonts.css">
   <link rel="stylesheet" href="../tk/shared.css">
   <style>
@@ -30,7 +30,7 @@
     .timer-box.is-running{border-color:#ef4444;box-shadow:0 0 35px rgba(239,68,68,.25)}
     .timer-display{font-family:'Space Grotesk',monospace;font-size:clamp(3rem,10vw,5rem);font-weight:900;letter-spacing:-.05em;color:#34d399;text-shadow:0 0 24px rgba(16,185,129,.25);margin-bottom:16px}
     .timer-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-    .result-msg{display:none;margin-top:16px;padding:12px 14px;border-radius:12px;background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.18);color:#a7f3d0;font-weight:700}
+    .result-msg{display:none;margin-top:16px;padding:12px 14px;border-radius:12px;background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.18);color:#a7f3d0;font-weight:700;line-height:1.5}
     .completion-panel{display:none;margin-top:18px;padding:18px;border-radius:18px;background:rgba(16,185,129,.05);border:1px solid rgba(16,185,129,.18);text-align:center}
     .completion-panel h3{font-family:'Space Grotesk',sans-serif;margin:0 0 .4rem;color:#a7f3d0}.completion-panel p{margin:0 0 12px;color:var(--text-muted)}
     .practice-rule{margin-top:18px;padding:14px 16px;border-radius:14px;background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.16);color:#cbd5e1;line-height:1.55}.practice-rule strong{color:#fde68a}
@@ -55,40 +55,40 @@
     <div id="a3-content-wrap">
       <section class="practice-hero">
         <span class="practice-kicker">A3 · Praxisaufgabe</span>
-        <h1>Maus weglegen</h1>
-        <p>Jetzt wendest du die Tastenkürzel in einem echten Word-Dokument an. Hier gibt es bewusst keine neue Theorie: Du sollst das Gelernte praktisch einsetzen.</p>
+        <h1>Mit Maus vs. ohne Maus</h1>
+        <p>Du löst dasselbe Word-Arbeitsblatt zweimal. Im ersten Durchlauf arbeitest du ganz normal. Im zweiten Durchlauf öffnest du die Datei frisch und arbeitest ohne Maus mit Tastenkürzeln.</p>
         <div class="mission-flow">
           <div class="mission-step"><div class="step-no">1</div><strong>Word-Datei öffnen</strong><span>Arbeitsblatt herunterladen und in Word öffnen.</span></div>
-          <div class="mission-step"><div class="step-no">2</div><strong>Maus weglegen</strong><span>Arbeite so weit wie möglich mit Tastenkürzeln.</span></div>
-          <div class="mission-step"><div class="step-no">3</div><strong>Timer starten</strong><span>Starte erst, wenn das Dokument bereit ist.</span></div>
-          <div class="mission-step"><div class="step-no">4</div><strong>Zeit festhalten</strong><span>Am Ende Timer stoppen und Zeit ins Dokument eintragen.</span></div>
+          <div class="mission-step"><div class="step-no">2</div><strong>1. Durchlauf: normal</strong><span>Maus ist erlaubt. Arbeite so, wie du es sonst auch tun würdest.</span></div>
+          <div class="mission-step"><div class="step-no">3</div><strong>Datei frisch öffnen</strong><span>Für den zweiten Durchlauf eine neue, ungelöste Kopie öffnen.</span></div>
+          <div class="mission-step"><div class="step-no">4</div><strong>2. Durchlauf: ohne Maus</strong><span>Maus weglegen und möglichst nur Tastenkürzel verwenden.</span></div>
         </div>
-        <div class="practice-rule"><strong>Ziel:</strong> Nicht möglichst hektisch sein. Arbeite sauber und versuche, die Maus möglichst wenig zu benutzen.</div>
+        <div class="practice-rule"><strong>Ziel:</strong> Vergleiche nicht nur die Zeit. Achte auch darauf, wie flüssig du arbeitest und bei welchen Schritten dir Tastenkürzel helfen.</div>
       </section>
 
       <section class="work-card">
         <div class="word-icon">W</div>
         <h2>Word-Arbeitsblatt</h2>
-        <p>Öffne zuerst die Datei. Wenn sie in Word bereit ist, legst du die Maus weg und startest den Timer.</p>
+        <p>Für den ersten Durchlauf arbeitest du normal. Vor dem zweiten Durchlauf öffnest du nochmals eine frische, ungelöste Kopie derselben Datei.</p>
         <a href="../tk/Tastenkombinationen_A3.docx" download="Tastenkombinationen_A3.docx" class="btn-word">↓ Tastenkombinationen_A3.docx</a>
       </section>
 
       <section class="timer-card">
-        <h2>Stoppuhr</h2>
-        <p>Miss deine Zeit für die praktische Aufgabe.</p>
+        <h2>Zwei Durchläufe</h2>
+        <p id="run-instruction">Durchlauf 1: Maus ist erlaubt. Starte den Timer erst, wenn das Dokument bereit ist.</p>
         <div class="timer-box" id="timer-box">
           <div class="timer-display" id="boss-timer">00:00</div>
           <div class="timer-actions">
-            <button class="btn-start" id="start-boss-btn" onclick="startBossChallenge()">▶ Timer starten</button>
+            <button class="btn-start" id="start-boss-btn" onclick="startBossChallenge()">▶ 1. Durchlauf starten</button>
             <button class="btn-stop" id="stop-boss-btn" onclick="stopBossChallenge()" style="display:none">■ Timer stoppen</button>
           </div>
-          <div class="result-msg" id="result-time-msg">Geschafft. Deine Zeit: <strong id="result-time-value">00:00</strong>. Trage sie jetzt in dein Word-Dokument ein.</div>
+          <div class="result-msg" id="result-time-msg"><span id="result-prefix">Zeit:</span> <strong id="result-time-value">00:00</strong><span id="result-next"></span></div>
         </div>
       </section>
 
       <section class="completion-panel" id="completion-panel">
         <h3>A3 abgeschlossen ✓</h3>
-        <p id="completion-note">Die Praxisaufgabe ist abgeschlossen. Die 50 XP für A3 werden nur einmal vergeben.</p>
+        <p id="completion-note">Beide Durchläufe sind abgeschlossen. Vergleiche jetzt deine Arbeitsweise mit und ohne Maus.</p>
         <a href="A4.html" class="btn-next">Weiter zu A4 ➔</a>
       </section>
     </div>
