@@ -5,6 +5,8 @@
   var LOOP_MS=5000;
   var CONTEXT_X=410;
   var CONTEXT_Y=58;
+  var FLY_X=207;
+  var FLY_Y=204;
   var CONFIG={
     at:{char:'@',key2:'2',label:'Klammeraffe',kind:'email',context:'anna@schule.ch',before:'anna',after:'schule.ch'},
     hash:{char:'#',key2:'3',label:'Hashtag / Raute',kind:'tag',context:'#Informatik',before:'',after:'Informatik'},
@@ -101,7 +103,7 @@
       '<circle cx="95" cy="84" r="112" fill="url(#'+uid+'Glow)"/>'+
       '<g class="symbol-stage" filter="url(#'+uid+'Shadow)"><rect x="36" y="38" width="238" height="152" rx="22" fill="#0f1b2f" stroke="#334155" stroke-width="1.5"/><text x="55" y="67" font-family="Arial,sans-serif" font-size="10" font-weight="800" fill="#94a3b8">SONDERZEICHEN</text><circle cx="155" cy="119" r="48" fill="#1e293b" stroke="#f59e0b" stroke-opacity=".5" stroke-width="2"/><text class="hero-char" x="155" y="139" text-anchor="middle" font-family="Consolas,monospace" font-size="62" font-weight="900" fill="#fde047" opacity=".28">'+escapeText(cfg.char)+'</text><text x="155" y="178" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" font-weight="800" fill="#cbd5e1">'+cfg.label+'</text></g>'+
       contextMarkup()+keyMarkup()+
-      '<g class="flying-char" opacity="0"><circle cx="155" cy="119" r="24" fill="#f59e0b" opacity=".18"/><text x="155" y="132" text-anchor="middle" font-family="Consolas,monospace" font-size="38" font-weight="900" fill="#fde047">'+escapeText(cfg.char)+'</text></g>'+
+      '<g class="flying-char" opacity="0"><circle cx="'+FLY_X+'" cy="'+FLY_Y+'" r="24" fill="#f59e0b" opacity=".18"/><text x="'+FLY_X+'" y="'+(FLY_Y+13)+'" text-anchor="middle" font-family="Consolas,monospace" font-size="38" font-weight="900" fill="#fde047">'+escapeText(cfg.char)+'</text></g>'+
       '<g class="press-label" transform="translate('+CONTEXT_X+' 250)" opacity="0"><rect width="205" height="35" rx="17.5" fill="#422006" stroke="#f59e0b"/><text x="102.5" y="22" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" font-weight="800" fill="#fde68a">AltGr aktiviert 3. Zeichen</text></g>'+
       '</svg>';
 
@@ -142,8 +144,8 @@
       var ch=$('.ctx-char');
       var targetX=CONTEXT_X+parseFloat(ch.getAttribute('x')||29);
       var targetY=CONTEXT_Y+parseFloat(ch.getAttribute('y')||100)-8;
-      var dx=targetX-155;
-      var dy=targetY-119;
+      var dx=targetX-FLY_X;
+      var dy=targetY-FLY_Y;
       return 'translate('+dx+' '+dy+') scale(.55)';
     }
 
@@ -183,14 +185,14 @@
         opacity($('.hero-char'),1);
         opacity($('.press-label'),1);
       });
-      later(1250,function(){keyUp($('.key-main'));});
-      later(1400,function(){keyUp($('.key-alt'));});
-      later(1500,function(){
+      later(1100,function(){
         opacity($('.flying-char'),1);
         trans($('.flying-char'),'transform 820ms cubic-bezier(.2,.78,.24,1), opacity 180ms ease');
         $('.flying-char').setAttribute('transform',flyingTargetTransform());
       });
-      later(2320,function(){opacity($('.flying-char'),0);opacity($('.ctx-char'),1);opacity($('.context-result'),1);});
+      later(1250,function(){keyUp($('.key-main'));});
+      later(1400,function(){keyUp($('.key-alt'));});
+      later(1920,function(){opacity($('.flying-char'),0);opacity($('.ctx-char'),1);opacity($('.context-result'),1);});
       later(LOOP_MS,function(){running=false;if(active&&autoLoop)run();});
     }
 
