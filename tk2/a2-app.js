@@ -54,6 +54,7 @@
     byId('a2-content-wrap').style.display=unlocked?'block':'none';
     var next=byId('q6-to-a3-btn');if(next)next.setAttribute('href','A3.html');
     var q6Tab=byId('tab-4');if(q6Tab)q6Tab.textContent='🧠 Q6: Memory';
+    var q6Heading=byId('q6-card')&&byId('q6-card').firstElementChild;if(q6Heading)q6Heading.textContent='🧠 Memory – Aus dem Gedächtnis';
     ['q4-char-input','q5-char-input','q6-char-input'].forEach(function(id){
       var input=byId(id);if(!input)return;
       input.addEventListener('paste',function(e){e.preventDefault();});
