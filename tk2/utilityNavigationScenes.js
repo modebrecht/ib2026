@@ -1,8 +1,9 @@
 (function(){
   'use strict';
 
-  var baseCreate=window.createUtilityScene;
-  if(typeof baseCreate!=='function')return;
+  var baseUtility=window.createUtilityScene;
+  var baseDoc=window.createDocTextScene;
+  if(typeof baseUtility!=='function')return;
 
   var counter=0;
   var LOOP_MS=4400;
@@ -135,9 +136,120 @@
     return{play:play,reset:reset,setActive:setActive};
   }
 
+  function polishDocScene(container,mode){
+    var svg=container.querySelector('svg');
+    if(!svg)return;
+
+    if(mode==='cut'){
+      var source=svg.querySelector('.source-text');
+      var selection=svg.querySelector('.single-selection');
+      if(source&&selection){
+        var syncCut=function(){selection.setAttribute('opacity',source.getAttribute('opacity')==='0'?'0':'1');};
+        new MutationObserver(syncCut).observe(source,{attributes:true,attributeFilter:['opacity']});
+        syncCut();
+      }
+    }
+
+    if(mode==='paste'){
+      var clipText=svg.querySelector('.clip-text');
+      var clipRich=svg.querySelector('.clip-rich');
+      var clipLine=svg.querySelector('.clip-rich-line');
+      if(clipText&&clipRich&&clipLine){
+        clipText.style.opacity='0';
+        var syncPaste=function(){
+          var visible=clipText.getAttribute('opacity')!=='0';
+          clipRich.setAttribute('opacity',visible?'1':'0');
+          clipLine.setAttribute('opacity',visible?'1':'0');
+        };
+        new MutationObserver(syncPaste).observe(clipText,{attributes:true,attributeFilter:['opacity']});
+        syncPaste();
+      }
+    }
+
+    if(mode==='selectAll'){
+      var all=svg.querySelector('.all-selection rect');
+      if(all){
+        all.setAttribute('x','54');
+        all.setAttribute('y','74');
+        all.setAttribute('width','292');
+        all.setAttribute('height','180');
+      }
+    }
+  }
+
+  function polishUtilityScene(container,mode){
+    var svg=container.querySelector('svg');
+    if(!svg)return;
+
+    if(mode==='replace'){
+      var replacement=svg.querySelector('.replace-text');
+      var button=svg.querySelector('.replace-btn');
+      if(replacement&&button){
+        var pressed=false;
+        new MutationObserver(function(){
+          if(replacement.textContent==='Katze'&&!pressed){
+            pressed=true;
+            button.style.transition='transform 120ms ease, fill 120ms ease';
+            button.setAttribute('transform','translate(0 2)');
+            button.setAttribute('fill','#1d4ed8');
+            window.setTimeout(function(){
+              button.setAttribute('transform','translate(0 0)');
+              button.setAttribute('fill','#2563eb');
+            },220);
+          }else if(replacement.textContent!=='Katze'){
+            pressed=false;
+            button.setAttribute('transform','translate(0 0)');
+            button.setAttribute('fill','#2563eb');
+          }
+        }).observe(replacement,{subtree:true,childList:true,characterData:true});
+      }
+    }
+
+    if(mode==='print'){
+      var paper=svg.querySelector('.paper-out');
+      var printToast=svg.querySelector('.toast-text');
+      if(paper)paper.style.display='none';
+      if(printToast){
+        new MutationObserver(function(){
+          if(printToast.textContent==='Druckauftrag gesendet')printToast.textContent='Druckdialog geöffnet';
+        }).observe(printToast,{subtree:true,childList:true,characterData:true});
+      }
+    }
+
+    if(mode==='open'){
+      var opened=svg.querySelector('.opened-content');
+      var dialog=svg.querySelector('.dialog');
+      var title=svg.querySelector('.window-title');
+      var toast=svg.querySelector('.toast');
+      var toastText=svg.querySelector('.toast-text');
+      if(opened)opened.style.display='none';
+      if(title&&dialog&&toast&&toastText){
+        new MutationObserver(function(){
+          if(title.textContent==='Referat.docx'){
+            title.textContent='Leeres Dokument';
+            dialog.setAttribute('opacity','1');
+            toastText.textContent='Dateidialog geöffnet';
+            toast.setAttribute('opacity','1');
+          }
+        }).observe(title,{subtree:true,childList:true,characterData:true});
+      }
+    }
+  }
+
   window.createUtilityScene=function(container,options){
     var mode=options&&options.mode;
     if(mode==='home'||mode==='end')return createNavigationScene(container,options);
-    return baseCreate(container,options);
+    var scene=baseUtility(container,options);
+    polishUtilityScene(container,mode);
+    return scene;
   };
+
+  if(typeof baseDoc==='function'){
+    window.createDocTextScene=function(container,options){
+      var mode=options&&options.mode;
+      var scene=baseDoc(container,options);
+      polishDocScene(container,mode);
+      return scene;
+    };
+  }
 })();
