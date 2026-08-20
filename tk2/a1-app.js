@@ -158,12 +158,12 @@
     if(q1Index>=q1Shortcuts.length){
       byId('q1-card').style.display='none';byId('q1-trophy-view').style.display='flex';
       var pct=accuracy(q1CorrectHits,q1TotalAttempts);saveQuestScore('q1',pct);
-      if(pct>=80){byId('q1-result-title').textContent='🏆 Quest 1 bestanden!';byId('q1-result-title').style.color='var(--accent-green)';byId('q1-result-desc').textContent='Du hast '+pct+' % Genauigkeit erreicht. Quest 2 ist freigeschaltet.';byId('q1-to-q2-btn').style.display='inline-block';}
+      if(pct>=80){byId('q1-result-title').textContent='🏆 Quest 1 bestanden!';byId('q1-result-title').style.color='var(--accent-green)';byId('q1-result-desc').textContent='Du hast '+pct+' % richtig. Quest 2 ist freigeschaltet.';byId('q1-to-q2-btn').style.display='inline-block';}
       else{byId('q1-result-title').textContent='⚠️ Noch nicht ganz';byId('q1-result-title').style.color='var(--accent-amber)';byId('q1-result-desc').textContent='Du hast '+pct+' % erreicht. Für Quest 2 brauchst du mindestens 80 %.';byId('q1-to-q2-btn').style.display='none';}
       return;
     }
     var item=q1Shortcuts[q1Index];byId('q1-title').textContent=item.title;byId('q1-desc').textContent=item.desc;renderKeys(byId('q1-shortcut-display'),item,-1,false);
-    byId('q1-counter-label').textContent=(q1Index+1)+' / '+q1Shortcuts.length+' Kürzel';byId('q1-progress-bar').style.width=((q1Index+1)/q1Shortcuts.length*100)+'%';byId('q1-score-live').textContent='Genauigkeit: '+accuracy(q1CorrectHits,q1TotalAttempts)+'%';
+    byId('q1-counter-label').textContent=(q1Index+1)+' / '+q1Shortcuts.length+' Kürzel';byId('q1-progress-bar').style.width=((q1Index+1)/q1Shortcuts.length*100)+'%';byId('q1-score-live').textContent='Richtig: '+accuracy(q1CorrectHits,q1TotalAttempts)+' %';
     byId('q1-status-msg').innerHTML='Warte auf Tastatur-Eingabe... <span style="color:var(--accent-amber)">Drücke die Tasten!</span>';byId('q1-card').classList.remove('success-flash','error-flash');
   }
   function handleQ1Success(){q1Locked=true;addGlobalXP(10);playSound('correct');q1CorrectHits++;q1TotalAttempts++;document.querySelectorAll('#q1-shortcut-display .big-kbd').forEach(function(b){b.classList.add('pressed-success');});byId('q1-card').classList.add('success-flash');byId('q1-status-msg').innerHTML='✨ <span style="color:var(--accent-green)">+10 XP!</span>';setTimeout(function(){q1Index++;updateQ1Card();},600);}
@@ -175,13 +175,13 @@
     q2Locked=false;
     if(q2Index>=q2Shortcuts.length){
       byId('q2-card').style.display='none';byId('q2-trophy-view').style.display='flex';var pct=accuracy(q2CorrectHits,q2TotalAttempts);saveQuestScore('q2',pct);
-      if(pct>=70){byId('q2-result-title').textContent='🎲🏆 Quest 2 gemeistert!';byId('q2-result-title').style.color='var(--accent-green)';byId('q2-result-desc').textContent='Du hast '+pct+' % Genauigkeit erreicht. Quest 3 ist freigeschaltet.';byId('q2-to-q3-btn').style.display='inline-block';}
+      if(pct>=70){byId('q2-result-title').textContent='🎲🏆 Quest 2 gemeistert!';byId('q2-result-title').style.color='var(--accent-green)';byId('q2-result-desc').textContent='Du hast '+pct+' % richtig. Quest 3 ist freigeschaltet.';byId('q2-to-q3-btn').style.display='inline-block';}
       else{byId('q2-result-title').textContent='⚠️ Noch nicht ganz';byId('q2-result-title').style.color='var(--accent-amber)';byId('q2-result-desc').textContent='Du hast '+pct+' % erreicht. Für Quest 3 brauchst du mindestens 70 %.';byId('q2-to-q3-btn').style.display='none';}
       return;
     }
     q2HintRevealed=false;var item=q2Shortcuts[q2Index];byId('q2-title').textContent=item.title;byId('q2-desc').textContent=item.desc;renderQ2Keys(item);
     var xp=getGlobalXP(),hint=byId('q2-hint-btn');hint.disabled=xp<30;hint.textContent=xp<30?'💡 Tipp (-30 XP | Zu wenig XP)':'💡 Tipp (-30 XP)';
-    byId('q2-counter-label').textContent=(q2Index+1)+' / '+q2Shortcuts.length+' Rätsel';byId('q2-progress-bar').style.width=((q2Index+1)/q2Shortcuts.length*100)+'%';byId('q2-score-live').textContent='Genauigkeit: '+accuracy(q2CorrectHits,q2TotalAttempts)+'%';byId('q2-status-msg').innerHTML='<span style="color:var(--accent-amber)">Drücke das richtige vollständige Kürzel auf deiner Tastatur.</span>';byId('q2-card').classList.remove('success-flash','error-flash');
+    byId('q2-counter-label').textContent=(q2Index+1)+' / '+q2Shortcuts.length+' Rätsel';byId('q2-progress-bar').style.width=((q2Index+1)/q2Shortcuts.length*100)+'%';byId('q2-score-live').textContent='Richtig: '+accuracy(q2CorrectHits,q2TotalAttempts)+' %';byId('q2-status-msg').innerHTML='<span style="color:var(--accent-amber)">Drücke das richtige vollständige Kürzel auf deiner Tastatur.</span>';byId('q2-card').classList.remove('success-flash','error-flash');
   }
   function useQ2Hint(){if(q2HintRevealed)return;if(getGlobalXP()<30){playSound('wrong');return;}q2HintRevealed=true;addGlobalXP(-30);playSound('hint');var item=q2Shortcuts[q2Index];renderKeys(byId('q2-shortcut-display'),item,-1,false);byId('q2-hint-btn').textContent='💡 Tipp genutzt (-30 XP)';byId('q2-hint-btn').disabled=true;}
   function handleQ2Success(){q2Locked=true;addGlobalXP(10);playSound('correct');q2CorrectHits++;q2TotalAttempts++;var item=q2Shortcuts[q2Index];showQ2Success(item);byId('q2-card').classList.add('success-flash');byId('q2-status-msg').innerHTML='✨ <span style="color:var(--accent-green)">Richtig – +10 XP!</span>';setTimeout(function(){q2Index++;updateQ2Card();},700);}
@@ -193,13 +193,13 @@
     q3Locked=false;
     if(q3Index>=q3Shortcuts.length){
       byId('q3-card').style.display='none';byId('q3-trophy-view').style.display='flex';var pct=accuracy(q3CorrectHits,q3TotalAttempts);saveQuestScore('q3',pct);
-      if(pct>=70){byId('q3-result-title').textContent='🧠🏆 Quest 3 gemeistert!';byId('q3-result-title').style.color='var(--accent-green)';byId('q3-result-desc').textContent='Du hast '+pct+' % im Gedächtnis-Test erreicht. A2 ist freigeschaltet.';byId('q3-to-a2-btn').style.display='inline-block';}
+      if(pct>=70){byId('q3-result-title').textContent='🧠🏆 Quest 3 gemeistert!';byId('q3-result-title').style.color='var(--accent-green)';byId('q3-result-desc').textContent='Du hast '+pct+' % richtig. A2 ist freigeschaltet.';byId('q3-to-a2-btn').style.display='inline-block';}
       else{byId('q3-result-title').textContent='⚠️ Noch nicht ganz';byId('q3-result-title').style.color='var(--accent-amber)';byId('q3-result-desc').textContent='Du hast '+pct+' % erreicht. Für A2 brauchst du mindestens 70 %.';byId('q3-to-a2-btn').style.display='none';}
       return;
     }
     q3HintRevealed=false;q3Misses=0;var item=q3Shortcuts[q3Index];byId('q3-title').textContent=item.title;byId('q3-desc').textContent=item.desc;renderQ3MemoryPrompt();
     var xp=getGlobalXP(),hint=byId('q3-hint-btn');hint.disabled=xp<30;hint.textContent=xp<30?'💡 Tipp (-30 XP | Zu wenig XP)':'💡 Tipp (-30 XP)';hint.classList.remove('memory-hint-nudge');
-    byId('q3-counter-label').textContent=(q3Index+1)+' / '+q3Shortcuts.length+' Memory';byId('q3-progress-bar').style.width=((q3Index+1)/q3Shortcuts.length*100)+'%';byId('q3-score-live').textContent='Genauigkeit: '+accuracy(q3CorrectHits,q3TotalAttempts)+'%';byId('q3-status-msg').innerHTML='Aus dem Gedächtnis: <span style="color:var(--accent-amber)">Drücke das passende Kürzel.</span>';byId('q3-card').classList.remove('success-flash','error-flash');
+    byId('q3-counter-label').textContent=(q3Index+1)+' / '+q3Shortcuts.length+' Memory';byId('q3-progress-bar').style.width=((q3Index+1)/q3Shortcuts.length*100)+'%';byId('q3-score-live').textContent='Richtig: '+accuracy(q3CorrectHits,q3TotalAttempts)+' %';byId('q3-status-msg').innerHTML='Aus dem Gedächtnis: <span style="color:var(--accent-amber)">Drücke das passende Kürzel.</span>';byId('q3-card').classList.remove('success-flash','error-flash');
   }
   function useQ3Hint(){if(q3HintRevealed)return;if(getGlobalXP()<30){playSound('wrong');return;}q3HintRevealed=true;addGlobalXP(-30);playSound('hint');var item=q3Shortcuts[q3Index];renderKeys(byId('q3-shortcut-display'),item,-1,false);byId('q3-hint-btn').classList.remove('memory-hint-nudge');byId('q3-hint-btn').textContent='💡 Tipp genutzt (-30 XP)';byId('q3-hint-btn').disabled=true;}
   function handleQ3Success(){q3Locked=true;addGlobalXP(10);playSound('correct');q3CorrectHits++;q3TotalAttempts++;var item=q3Shortcuts[q3Index];renderKeys(byId('q3-shortcut-display'),item,-1,false);document.querySelectorAll('#q3-shortcut-display .big-kbd').forEach(function(b){b.classList.add('pressed-success');});byId('q3-card').classList.add('success-flash');byId('q3-status-msg').innerHTML='✨ <span style="color:var(--accent-green)">+10 XP!</span>';setTimeout(function(){q3Index++;updateQ3Card();},600);}
@@ -230,6 +230,8 @@
   document.addEventListener('DOMContentLoaded',function(){
     var next=byId('q3-to-a2-btn');if(next)next.setAttribute('href','A2.html');
     var back=document.querySelector('.top-bar .back-link');if(back)back.setAttribute('href','index.html');
+    var q2LockText=byId('q2-lock-screen')&&byId('q2-lock-screen').querySelector('p');if(q2LockText)q2LockText.innerHTML='Du benötigst <strong>mindestens 80 % richtig</strong> in Quest 1.';
+    var q3LockText=byId('q3-lock-screen')&&byId('q3-lock-screen').querySelector('p');if(q3LockText)q3LockText.innerHTML='Du benötigst <strong>mindestens 70 % richtig</strong> in Quest 2.';
     clarifyContextDependentTheory();
     switchPhase(1);
   });
