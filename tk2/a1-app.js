@@ -2,20 +2,20 @@
   'use strict';
 
   var shortcuts = [
-    {title:'Kopieren',desc:'Markierten Text oder Elemente kopieren.',keys:['Ctrl','C'],code:'KeyC'},
-    {title:'Ausschneiden',desc:'Inhalt entfernen und in die Zwischenablage legen.',keys:['Ctrl','X'],code:'KeyX'},
-    {title:'Einfügen',desc:'Kopierten Inhalt an der Cursor-Position einfügen.',keys:['Ctrl','V'],code:'KeyV'},
-    {title:'Einfügen ohne Format',desc:'Reinen Text ohne ursprüngliche Formatierung einfügen.',keys:['Ctrl','Shift','V'],code:'KeyV',shift:true},
-    {title:'Rückgängig machen',desc:'Den letzten Schritt wieder aufheben.',keys:['Ctrl','Z'],code:'KeyZ'},
-    {title:'Wiederherstellen',desc:'Eine rückgängig gemachte Aktion wiederholen.',keys:['Ctrl','Y'],code:'KeyY'},
-    {title:'Speichern',desc:'Das aktuelle Dokument sichern.',keys:['Ctrl','S'],code:'KeyS'},
-    {title:'Alles markieren',desc:'Den gesamten Inhalt auswählen.',keys:['Ctrl','A'],code:'KeyA'},
-    {title:'Suchen im Text',desc:'Ein Wort im Dokument oder Browser suchen.',keys:['Ctrl','F'],code:'KeyF'},
-    {title:'Suchen & Ersetzen',desc:'Wörter finden und durch andere Wörter ersetzen.',keys:['Ctrl','H'],code:'KeyH'},
-    {title:'Drucken',desc:'Den Druckdialog öffnen.',keys:['Ctrl','P'],code:'KeyP'},
-    {title:'Datei öffnen',desc:'Eine bestehende Datei auswählen und öffnen.',keys:['Ctrl','O'],code:'KeyO'},
-    {title:'Zum Anfang springen',desc:'Ganz an den Anfang des Dokuments springen.',keys:['Ctrl','Home'],code:'Home'},
-    {title:'Zum Ende springen',desc:'Ganz an das Ende des Dokuments springen.',keys:['Ctrl','End'],code:'End'}
+    {title:'Kopieren',desc:'Markierten Text oder Elemente kopieren.',keys:['Ctrl','C'],code:'KeyC',q2Wrong:'X'},
+    {title:'Ausschneiden',desc:'Inhalt entfernen und in die Zwischenablage legen.',keys:['Ctrl','X'],code:'KeyX',q2Wrong:'C'},
+    {title:'Einfügen',desc:'Kopierten Inhalt an der Cursor-Position einfügen.',keys:['Ctrl','V'],code:'KeyV',q2Wrong:'C'},
+    {title:'Einfügen ohne Format',desc:'Reinen Text ohne ursprüngliche Formatierung einfügen.',keys:['Ctrl','Shift','V'],code:'KeyV',shift:true,q2Wrong:'X'},
+    {title:'Rückgängig machen',desc:'Den letzten Schritt wieder aufheben.',keys:['Ctrl','Z'],code:'KeyZ',q2Wrong:'Y'},
+    {title:'Wiederherstellen',desc:'Eine rückgängig gemachte Aktion wiederholen.',keys:['Ctrl','Y'],code:'KeyY',q2Wrong:'Z'},
+    {title:'Speichern',desc:'Das aktuelle Dokument sichern.',keys:['Ctrl','S'],code:'KeyS',q2Wrong:'P'},
+    {title:'Alles markieren',desc:'Den gesamten Inhalt auswählen.',keys:['Ctrl','A'],code:'KeyA',q2Wrong:'S'},
+    {title:'Suchen im Text',desc:'Ein Wort im Dokument oder Browser suchen.',keys:['Ctrl','F'],code:'KeyF',q2Wrong:'H'},
+    {title:'Suchen & Ersetzen',desc:'Wörter finden und durch andere Wörter ersetzen.',keys:['Ctrl','H'],code:'KeyH',q2Wrong:'F'},
+    {title:'Drucken',desc:'Den Druckdialog öffnen.',keys:['Ctrl','P'],code:'KeyP',q2Wrong:'O'},
+    {title:'Datei öffnen',desc:'Eine bestehende Datei auswählen und öffnen.',keys:['Ctrl','O'],code:'KeyO',q2Wrong:'P'},
+    {title:'Zum Anfang springen',desc:'Ganz an den Anfang des Dokuments springen.',keys:['Ctrl','Home'],code:'Home',q2Wrong:'End'},
+    {title:'Zum Ende springen',desc:'Ganz an das Ende des Dokuments springen.',keys:['Ctrl','End'],code:'End',q2Wrong:'Home'}
   ];
 
   function shuffleArray(arr){
@@ -26,7 +26,7 @@
 
   var activePhase=1;
   var q1Shortcuts=shuffleArray(shortcuts),q1Index=0,q1CorrectHits=0,q1TotalAttempts=0,q1Locked=false;
-  var q2Shortcuts=shuffleArray(shortcuts),q2Index=0,q2CorrectHits=0,q2TotalAttempts=0,q2HintRevealed=false,q2HiddenIndex=1,q2Locked=false;
+  var q2Shortcuts=shuffleArray(shortcuts),q2Index=0,q2CorrectHits=0,q2TotalAttempts=0,q2HintRevealed=false,q2HiddenIndex=1,q2Locked=false,q2Choices=[];
   var q3Shortcuts=shuffleArray(shortcuts),q3Index=0,q3CorrectHits=0,q3TotalAttempts=0,q3HintRevealed=false,q3Locked=false;
 
   function byId(id){return document.getElementById(id);}
@@ -37,6 +37,41 @@
     }).join('<div class="plus-sign">+</div>');
   }
   function accuracy(correct,total){return total===0?100:Math.round(correct/total*100);}
+
+  function ensureQ2FiftyUi(){
+    if(!document.getElementById('tk2-q2-fifty-style')){
+      var style=document.createElement('style');
+      style.id='tk2-q2-fifty-style';
+      style.textContent=''
+        +'.q2-choice-row{display:grid;gap:8px;margin:-.35rem 0 1rem}'
+        +'.q2-choice-label{text-align:center;color:var(--text-muted);font-size:.82rem;font-weight:800}'
+        +'.q2-choice-options{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}'
+        +'.q2-choice-option{min-width:92px;padding:10px 16px;border-radius:12px;border:1px solid rgba(245,158,11,.38);background:rgba(245,158,11,.08);color:#fde68a;font-family:\'Space Grotesk\',monospace;font-size:1rem;font-weight:900;text-align:center;box-shadow:0 3px 0 rgba(0,0,0,.35)}'
+        +'.q2-choice-option.correct{border-color:#34d399;background:rgba(16,185,129,.14);color:#a7f3d0;box-shadow:0 0 20px rgba(16,185,129,.18)}';
+      document.head.appendChild(style);
+    }
+    var row=byId('q2-choice-row');
+    if(!row){
+      row=document.createElement('div');
+      row.id='q2-choice-row';
+      row.className='q2-choice-row';
+      var hint=byId('q2-hint-btn');
+      hint.parentNode.insertBefore(row,hint);
+    }
+    return row;
+  }
+
+  function renderQ2Choices(item){
+    var correct=item.keys[item.keys.length-1];
+    q2Choices=shuffleArray([correct,item.q2Wrong]);
+    var row=ensureQ2FiftyUi();
+    row.innerHTML='<div class="q2-choice-label">Eine dieser beiden Tasten ergänzt das Kürzel:</div><div class="q2-choice-options">'+q2Choices.map(function(value){return '<div class="q2-choice-option" data-value="'+value+'">'+value+'</div>';}).join('')+'</div>';
+  }
+
+  function markQ2CorrectChoice(item){
+    var correct=item.keys[item.keys.length-1];
+    document.querySelectorAll('#q2-choice-row .q2-choice-option').forEach(function(el){el.classList.toggle('correct',el.dataset.value===correct);});
+  }
 
   function switchPhase(phaseNum){
     activePhase=phaseNum;
@@ -64,7 +99,7 @@
   function handleQ1Wrong(){q1Locked=true;addGlobalXP(-10);playSound('wrong');q1TotalAttempts++;byId('q1-card').classList.add('error-flash');byId('q1-status-msg').innerHTML='❌ <span style="color:var(--accent-red)">-10 XP!</span>';setTimeout(function(){byId('q1-card').classList.remove('error-flash');q1Locked=false;},600);}
 
   function checkQ2Unlock(){var ok=isQuestUnlocked('q2');byId('q2-lock-screen').style.display=ok?'none':'flex';byId('q2-game-screen').style.display=ok?'flex':'none';if(ok)updateQ2Card();}
-  function resetQ2(){q2Shortcuts=shuffleArray(shortcuts);q2Index=0;q2CorrectHits=0;q2TotalAttempts=0;q2HintRevealed=false;byId('q2-card').style.display='block';byId('q2-trophy-view').style.display='none';updateQ2Card();}
+  function resetQ2(){q2Shortcuts=shuffleArray(shortcuts);q2Index=0;q2CorrectHits=0;q2TotalAttempts=0;q2HintRevealed=false;q2Choices=[];byId('q2-card').style.display='block';byId('q2-trophy-view').style.display='none';updateQ2Card();}
   function updateQ2Card(){
     q2Locked=false;
     if(q2Index>=q2Shortcuts.length){
@@ -74,13 +109,13 @@
       return;
     }
     q2HintRevealed=false;var item=q2Shortcuts[q2Index];byId('q2-title').textContent=item.title;byId('q2-desc').textContent=item.desc;
-    q2HiddenIndex=item.keys.length-1;renderKeys(byId('q2-shortcut-display'),item,q2HiddenIndex,false);
+    q2HiddenIndex=item.keys.length-1;renderKeys(byId('q2-shortcut-display'),item,q2HiddenIndex,false);renderQ2Choices(item);
     var xp=getGlobalXP(),hint=byId('q2-hint-btn');hint.disabled=xp<30;hint.textContent=xp<30?'💡 Tipp (-30 XP | Zu wenig XP)':'💡 Tipp (-30 XP)';
-    byId('q2-counter-label').textContent='Rätsel '+(q2Index+1)+' von '+q2Shortcuts.length;byId('q2-progress-bar').style.width=((q2Index+1)/q2Shortcuts.length*100)+'%';byId('q2-score-live').textContent='Genauigkeit: '+accuracy(q2CorrectHits,q2TotalAttempts)+'%';byId('q2-status-msg').innerHTML='Welche Taste fehlt? <span style="color:var(--accent-amber)">Drücke das vollständige Kürzel.</span>';byId('q2-card').classList.remove('success-flash','error-flash');
+    byId('q2-counter-label').textContent='Rätsel '+(q2Index+1)+' von '+q2Shortcuts.length;byId('q2-progress-bar').style.width=((q2Index+1)/q2Shortcuts.length*100)+'%';byId('q2-score-live').textContent='Genauigkeit: '+accuracy(q2CorrectHits,q2TotalAttempts)+'%';byId('q2-status-msg').innerHTML='50/50: <span style="color:var(--accent-amber)">Entscheide zwischen den zwei Tasten und drücke das vollständige Kürzel.</span>';byId('q2-card').classList.remove('success-flash','error-flash');
   }
-  function useQ2Hint(){if(q2HintRevealed)return;if(getGlobalXP()<30){playSound('wrong');return;}q2HintRevealed=true;addGlobalXP(-30);playSound('hint');var item=q2Shortcuts[q2Index];renderKeys(byId('q2-shortcut-display'),item,-1,false);byId('q2-hint-btn').textContent='💡 Tipp genutzt (-30 XP)';byId('q2-hint-btn').disabled=true;}
-  function handleQ2Success(){q2Locked=true;addGlobalXP(10);playSound('correct');q2CorrectHits++;q2TotalAttempts++;var item=q2Shortcuts[q2Index];renderKeys(byId('q2-shortcut-display'),item,-1,false);document.querySelectorAll('#q2-shortcut-display .big-kbd').forEach(function(b){b.classList.add('pressed-success');});byId('q2-card').classList.add('success-flash');byId('q2-status-msg').innerHTML='✨ <span style="color:var(--accent-green)">+10 XP!</span>';setTimeout(function(){q2Index++;updateQ2Card();},600);}
-  function handleQ2Wrong(){q2Locked=true;addGlobalXP(-10);playSound('wrong');q2TotalAttempts++;byId('q2-card').classList.add('error-flash');byId('q2-status-msg').innerHTML='❌ <span style="color:var(--accent-red)">-10 XP!</span>';setTimeout(function(){byId('q2-card').classList.remove('error-flash');q2Locked=false;},600);}
+  function useQ2Hint(){if(q2HintRevealed)return;if(getGlobalXP()<30){playSound('wrong');return;}q2HintRevealed=true;addGlobalXP(-30);playSound('hint');var item=q2Shortcuts[q2Index];renderKeys(byId('q2-shortcut-display'),item,-1,false);markQ2CorrectChoice(item);byId('q2-hint-btn').textContent='💡 Tipp genutzt (-30 XP)';byId('q2-hint-btn').disabled=true;}
+  function handleQ2Success(){q2Locked=true;addGlobalXP(10);playSound('correct');q2CorrectHits++;q2TotalAttempts++;var item=q2Shortcuts[q2Index];renderKeys(byId('q2-shortcut-display'),item,-1,false);markQ2CorrectChoice(item);document.querySelectorAll('#q2-shortcut-display .big-kbd').forEach(function(b){b.classList.add('pressed-success');});byId('q2-card').classList.add('success-flash');byId('q2-status-msg').innerHTML='✨ <span style="color:var(--accent-green)">+10 XP!</span>';setTimeout(function(){q2Index++;updateQ2Card();},700);}
+  function handleQ2Wrong(){q2Locked=true;addGlobalXP(-10);playSound('wrong');q2TotalAttempts++;byId('q2-card').classList.add('error-flash');byId('q2-status-msg').innerHTML='❌ <span style="color:var(--accent-red)">-10 XP.</span> Wähle erneut zwischen den zwei sichtbaren Tasten.';setTimeout(function(){byId('q2-card').classList.remove('error-flash');q2Locked=false;},650);}
 
   function checkQ3Unlock(){var ok=isQuestUnlocked('q3');byId('q3-lock-screen').style.display=ok?'none':'flex';byId('q3-game-screen').style.display=ok?'flex':'none';if(ok)updateQ3Card();}
   function resetQ3(){q3Shortcuts=shuffleArray(shortcuts);q3Index=0;q3CorrectHits=0;q3TotalAttempts=0;q3HintRevealed=false;byId('q3-card').style.display='block';byId('q3-trophy-view').style.display='none';updateQ3Card();}
