@@ -27,7 +27,7 @@
   var activePhase=1;
   var q1Shortcuts=shuffleArray(shortcuts),q1Index=0,q1CorrectHits=0,q1TotalAttempts=0,q1Locked=false;
   var q2Shortcuts=shuffleArray(shortcuts),q2Index=0,q2CorrectHits=0,q2TotalAttempts=0,q2HintRevealed=false,q2Locked=false,q2Choices=[];
-  var q3Shortcuts=shuffleArray(shortcuts),q3Index=0,q3CorrectHits=0,q3TotalAttempts=0,q3HintRevealed=false,q3Locked=false;
+  var q3Shortcuts=shuffleArray(shortcuts),q3Index=0,q3CorrectHits=0,q3TotalAttempts=0,q3HintRevealed=false,q3Locked=false,q3Misses=0;
 
   function byId(id){return document.getElementById(id);}
   function renderKeys(target,item,hiddenIndex,hiddenAll){
@@ -37,6 +37,25 @@
     }).join('<div class="plus-sign">+</div>');
   }
   function accuracy(correct,total){return total===0?100:Math.round(correct/total*100);}
+
+  function ensureMemoryHintNudgeUi(){
+    if(document.getElementById('tk2-memory-hint-style'))return;
+    var style=document.createElement('style');
+    style.id='tk2-memory-hint-style';
+    style.textContent='@keyframes tk2HintNudge{0%,100%{transform:scale(1)}50%{transform:scale(1.04);box-shadow:0 0 0 5px rgba(245,158,11,.12)}}.memory-hint-nudge{animation:tk2HintNudge 1.05s ease-in-out 2}';
+    document.head.appendChild(style);
+  }
+
+  function nudgeQ3Hint(){
+    if(q3Misses<2||q3HintRevealed||getGlobalXP()<30)return false;
+    ensureMemoryHintNudgeUi();
+    var hint=byId('q3-hint-btn');
+    if(!hint||hint.disabled)return false;
+    hint.classList.remove('memory-hint-nudge');
+    void hint.offsetWidth;
+    hint.classList.add('memory-hint-nudge');
+    return true;
+  }
 
   function ensureQ2FiftyUi(){
     if(!document.getElementById('tk2-q2-fifty-style')){
@@ -109,7 +128,7 @@
   function handleQ2Wrong(){q2Locked=true;addGlobalXP(-10);playSound('wrong');q2TotalAttempts++;byId('q2-card').classList.add('error-flash');byId('q2-status-msg').innerHTML='❌ <span style="color:var(--accent-red)">Noch nicht.</span> Entscheide zwischen den beiden Tasten im Kürzel und versuche es erneut.';setTimeout(function(){byId('q2-card').classList.remove('error-flash');q2Locked=false;},650);}
 
   function checkQ3Unlock(){var ok=isQuestUnlocked('q3');byId('q3-lock-screen').style.display=ok?'none':'flex';byId('q3-game-screen').style.display=ok?'flex':'none';if(ok)updateQ3Card();}
-  function resetQ3(){q3Shortcuts=shuffleArray(shortcuts);q3Index=0;q3CorrectHits=0;q3TotalAttempts=0;q3HintRevealed=false;byId('q3-card').style.display='block';byId('q3-trophy-view').style.display='none';updateQ3Card();}
+  function resetQ3(){q3Shortcuts=shuffleArray(shortcuts);q3Index=0;q3CorrectHits=0;q3TotalAttempts=0;q3HintRevealed=false;q3Misses=0;byId('q3-card').style.display='block';byId('q3-trophy-view').style.display='none';updateQ3Card();}
   function updateQ3Card(){
     q3Locked=false;
     if(q3Index>=q3Shortcuts.length){
@@ -118,13 +137,13 @@
       else{byId('q3-result-title').textContent='⚠️ Noch nicht ganz';byId('q3-result-title').style.color='var(--accent-amber)';byId('q3-result-desc').textContent='Du hast '+pct+' % erreicht. Für A2 brauchst du mindestens 70 %.';byId('q3-to-a2-btn').style.display='none';}
       return;
     }
-    q3HintRevealed=false;var item=q3Shortcuts[q3Index];byId('q3-title').textContent=item.title;byId('q3-desc').textContent=item.desc;renderKeys(byId('q3-shortcut-display'),item,-1,true);
-    var xp=getGlobalXP(),hint=byId('q3-hint-btn');hint.disabled=xp<30;hint.textContent=xp<30?'💡 Tipp (-30 XP | Zu wenig XP)':'💡 Tipp (-30 XP)';
+    q3HintRevealed=false;q3Misses=0;var item=q3Shortcuts[q3Index];byId('q3-title').textContent=item.title;byId('q3-desc').textContent=item.desc;renderKeys(byId('q3-shortcut-display'),item,-1,true);
+    var xp=getGlobalXP(),hint=byId('q3-hint-btn');hint.disabled=xp<30;hint.textContent=xp<30?'💡 Tipp (-30 XP | Zu wenig XP)':'💡 Tipp (-30 XP)';hint.classList.remove('memory-hint-nudge');
     byId('q3-counter-label').textContent='Memory '+(q3Index+1)+' von '+q3Shortcuts.length;byId('q3-progress-bar').style.width=((q3Index+1)/q3Shortcuts.length*100)+'%';byId('q3-score-live').textContent='Genauigkeit: '+accuracy(q3CorrectHits,q3TotalAttempts)+'%';byId('q3-status-msg').innerHTML='Aus dem Gedächtnis: <span style="color:var(--accent-amber)">Drücke das passende Kürzel.</span>';byId('q3-card').classList.remove('success-flash','error-flash');
   }
-  function useQ3Hint(){if(q3HintRevealed)return;if(getGlobalXP()<30){playSound('wrong');return;}q3HintRevealed=true;addGlobalXP(-30);playSound('hint');var item=q3Shortcuts[q3Index];renderKeys(byId('q3-shortcut-display'),item,-1,false);byId('q3-hint-btn').textContent='💡 Tipp genutzt (-30 XP)';byId('q3-hint-btn').disabled=true;}
+  function useQ3Hint(){if(q3HintRevealed)return;if(getGlobalXP()<30){playSound('wrong');return;}q3HintRevealed=true;addGlobalXP(-30);playSound('hint');var item=q3Shortcuts[q3Index];renderKeys(byId('q3-shortcut-display'),item,-1,false);byId('q3-hint-btn').classList.remove('memory-hint-nudge');byId('q3-hint-btn').textContent='💡 Tipp genutzt (-30 XP)';byId('q3-hint-btn').disabled=true;}
   function handleQ3Success(){q3Locked=true;addGlobalXP(10);playSound('correct');q3CorrectHits++;q3TotalAttempts++;var item=q3Shortcuts[q3Index];renderKeys(byId('q3-shortcut-display'),item,-1,false);document.querySelectorAll('#q3-shortcut-display .big-kbd').forEach(function(b){b.classList.add('pressed-success');});byId('q3-card').classList.add('success-flash');byId('q3-status-msg').innerHTML='✨ <span style="color:var(--accent-green)">+10 XP!</span>';setTimeout(function(){q3Index++;updateQ3Card();},600);}
-  function handleQ3Wrong(){q3Locked=true;addGlobalXP(-10);playSound('wrong');q3TotalAttempts++;byId('q3-card').classList.add('error-flash');byId('q3-status-msg').innerHTML='❌ <span style="color:var(--accent-red)">-10 XP!</span>';setTimeout(function(){byId('q3-card').classList.remove('error-flash');q3Locked=false;},600);}
+  function handleQ3Wrong(){q3Locked=true;addGlobalXP(-10);playSound('wrong');q3TotalAttempts++;q3Misses++;var nudged=nudgeQ3Hint();byId('q3-card').classList.add('error-flash');byId('q3-status-msg').innerHTML=nudged?'❌ <span style="color:var(--accent-red)">-10 XP.</span> <span style="color:var(--accent-amber)">💡 Unsicher? Der Tipp ist verfügbar.</span>':'❌ <span style="color:var(--accent-red)">-10 XP!</span>';setTimeout(function(){byId('q3-card').classList.remove('error-flash');q3Locked=false;},600);}
 
   function checkMatch(target,e){
     var ctrl=e.ctrlKey||e.metaKey;if(!ctrl)return false;if(Boolean(target.shift)!==e.shiftKey)return false;
