@@ -17,7 +17,7 @@
   function byId(id){return document.getElementById(id);}
   function shuffle(arr){var a=arr.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
   function accuracy(c,t){return t===0?100:Math.round(c/t*100);}
-  function escapeHtml(value){return String(value).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\"/g,'&quot;').replace(/'/g,'&#39;');}
+  function escapeHtml(value){return String(value).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
   function comboHtml(item,mode){
     if(mode==='guided')return '<div class="big-kbd">AltGr</div><div class="plus-sign">+</div><div class="big-kbd">'+escapeHtml(item.key2)+'</div>';
     if(mode==='partial')return '<div class="big-kbd">AltGr</div><div class="plus-sign">+</div><div class="big-kbd">?</div>';
