@@ -43,13 +43,17 @@
       var style=document.createElement('style');
       style.id='tk2-q2-fifty-style';
       style.textContent=''
-        +'.q2-choice-row{display:grid;gap:8px;margin:-.35rem 0 1rem}'
-        +'.q2-choice-label{text-align:center;color:var(--text-muted);font-size:.82rem;font-weight:800}'
-        +'.q2-choice-options{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}'
-        +'.q2-choice-option{min-width:92px;padding:10px 16px;border-radius:12px;border:1px solid rgba(245,158,11,.38);background:rgba(245,158,11,.08);color:#fde68a;font-family:\'Space Grotesk\',monospace;font-size:1rem;font-weight:900;text-align:center;box-shadow:0 3px 0 rgba(0,0,0,.35)}'
+        +'.q2-choice-row{display:grid;gap:9px;margin:-.35rem 0 1rem}'
+        +'.q2-choice-label{text-align:center;color:#e2e8f0;font-size:.9rem;font-weight:900}'
+        +'.q2-choice-options{display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap}'
+        +'.q2-choice-option{min-width:88px;padding:9px 15px;border-radius:11px;border:1px solid rgba(245,158,11,.32);background:rgba(245,158,11,.065);color:#fde68a;font-family:\'Space Grotesk\',monospace;font-size:1rem;font-weight:900;text-align:center;cursor:default;user-select:none;pointer-events:none}'
+        +'.q2-choice-or{color:#64748b;font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em}'
+        +'.q2-choice-help{text-align:center;color:var(--text-muted);font-size:.82rem;font-weight:750;line-height:1.45}'
         +'.q2-choice-option.correct{border-color:#34d399;background:rgba(16,185,129,.14);color:#a7f3d0;box-shadow:0 0 20px rgba(16,185,129,.18)}';
       document.head.appendChild(style);
     }
+    var heading=byId('q2-card')&&byId('q2-card').firstElementChild;
+    if(heading)heading.textContent='🎲 Eine von zwei Tasten ist richtig';
     var row=byId('q2-choice-row');
     if(!row){
       row=document.createElement('div');
@@ -65,7 +69,7 @@
     var correct=item.keys[item.keys.length-1];
     q2Choices=shuffleArray([correct,item.q2Wrong]);
     var row=ensureQ2FiftyUi();
-    row.innerHTML='<div class="q2-choice-label">Eine dieser beiden Tasten ergänzt das Kürzel:</div><div class="q2-choice-options">'+q2Choices.map(function(value){return '<div class="q2-choice-option" data-value="'+value+'">'+value+'</div>';}).join('')+'</div>';
+    row.innerHTML='<div class="q2-choice-label">Welche Taste fehlt?</div><div class="q2-choice-options"><div class="q2-choice-option" data-value="'+q2Choices[0]+'">'+q2Choices[0]+'</div><span class="q2-choice-or">oder</span><div class="q2-choice-option" data-value="'+q2Choices[1]+'">'+q2Choices[1]+'</div></div><div class="q2-choice-help">👇 Drücke jetzt das vollständige Kürzel auf deiner Tastatur.</div>';
   }
 
   function markQ2CorrectChoice(item){
@@ -111,11 +115,11 @@
     q2HintRevealed=false;var item=q2Shortcuts[q2Index];byId('q2-title').textContent=item.title;byId('q2-desc').textContent=item.desc;
     q2HiddenIndex=item.keys.length-1;renderKeys(byId('q2-shortcut-display'),item,q2HiddenIndex,false);renderQ2Choices(item);
     var xp=getGlobalXP(),hint=byId('q2-hint-btn');hint.disabled=xp<30;hint.textContent=xp<30?'💡 Tipp (-30 XP | Zu wenig XP)':'💡 Tipp (-30 XP)';
-    byId('q2-counter-label').textContent='Rätsel '+(q2Index+1)+' von '+q2Shortcuts.length;byId('q2-progress-bar').style.width=((q2Index+1)/q2Shortcuts.length*100)+'%';byId('q2-score-live').textContent='Genauigkeit: '+accuracy(q2CorrectHits,q2TotalAttempts)+'%';byId('q2-status-msg').innerHTML='50/50: <span style="color:var(--accent-amber)">Entscheide zwischen den zwei Tasten und drücke das vollständige Kürzel.</span>';byId('q2-card').classList.remove('success-flash','error-flash');
+    byId('q2-counter-label').textContent='Rätsel '+(q2Index+1)+' von '+q2Shortcuts.length;byId('q2-progress-bar').style.width=((q2Index+1)/q2Shortcuts.length*100)+'%';byId('q2-score-live').textContent='Genauigkeit: '+accuracy(q2CorrectHits,q2TotalAttempts)+'%';byId('q2-status-msg').innerHTML='<span style="color:var(--accent-amber)">Benutze die Tastatur – die zwei Karten sind nur eine Denkhilfe.</span>';byId('q2-card').classList.remove('success-flash','error-flash');
   }
   function useQ2Hint(){if(q2HintRevealed)return;if(getGlobalXP()<30){playSound('wrong');return;}q2HintRevealed=true;addGlobalXP(-30);playSound('hint');var item=q2Shortcuts[q2Index];renderKeys(byId('q2-shortcut-display'),item,-1,false);markQ2CorrectChoice(item);byId('q2-hint-btn').textContent='💡 Tipp genutzt (-30 XP)';byId('q2-hint-btn').disabled=true;}
-  function handleQ2Success(){q2Locked=true;addGlobalXP(10);playSound('correct');q2CorrectHits++;q2TotalAttempts++;var item=q2Shortcuts[q2Index];renderKeys(byId('q2-shortcut-display'),item,-1,false);markQ2CorrectChoice(item);document.querySelectorAll('#q2-shortcut-display .big-kbd').forEach(function(b){b.classList.add('pressed-success');});byId('q2-card').classList.add('success-flash');byId('q2-status-msg').innerHTML='✨ <span style="color:var(--accent-green)">+10 XP!</span>';setTimeout(function(){q2Index++;updateQ2Card();},700);}
-  function handleQ2Wrong(){q2Locked=true;addGlobalXP(-10);playSound('wrong');q2TotalAttempts++;byId('q2-card').classList.add('error-flash');byId('q2-status-msg').innerHTML='❌ <span style="color:var(--accent-red)">-10 XP.</span> Wähle erneut zwischen den zwei sichtbaren Tasten.';setTimeout(function(){byId('q2-card').classList.remove('error-flash');q2Locked=false;},650);}
+  function handleQ2Success(){q2Locked=true;addGlobalXP(10);playSound('correct');q2CorrectHits++;q2TotalAttempts++;var item=q2Shortcuts[q2Index];renderKeys(byId('q2-shortcut-display'),item,-1,false);markQ2CorrectChoice(item);document.querySelectorAll('#q2-shortcut-display .big-kbd').forEach(function(b){b.classList.add('pressed-success');});byId('q2-card').classList.add('success-flash');byId('q2-status-msg').innerHTML='✨ <span style="color:var(--accent-green)">Richtig – +10 XP!</span>';setTimeout(function(){q2Index++;updateQ2Card();},700);}
+  function handleQ2Wrong(){q2Locked=true;addGlobalXP(-10);playSound('wrong');q2TotalAttempts++;byId('q2-card').classList.add('error-flash');byId('q2-status-msg').innerHTML='❌ <span style="color:var(--accent-red)">Noch nicht.</span> Schau auf die zwei Möglichkeiten und drücke das vollständige Kürzel erneut.';setTimeout(function(){byId('q2-card').classList.remove('error-flash');q2Locked=false;},650);}
 
   function checkQ3Unlock(){var ok=isQuestUnlocked('q3');byId('q3-lock-screen').style.display=ok?'none':'flex';byId('q3-game-screen').style.display=ok?'flex':'none';if(ok)updateQ3Card();}
   function resetQ3(){q3Shortcuts=shuffleArray(shortcuts);q3Index=0;q3CorrectHits=0;q3TotalAttempts=0;q3HintRevealed=false;byId('q3-card').style.display='block';byId('q3-trophy-view').style.display='none';updateQ3Card();}
