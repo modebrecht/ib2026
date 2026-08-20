@@ -5,13 +5,13 @@
     {title:'Kopieren',desc:'Markierten Text oder Elemente kopieren.',keys:['Ctrl','C'],code:'KeyC',q2Wrong:'X'},
     {title:'Ausschneiden',desc:'Inhalt entfernen und in die Zwischenablage legen.',keys:['Ctrl','X'],code:'KeyX',q2Wrong:'C'},
     {title:'Einfügen',desc:'Kopierten Inhalt an der Cursor-Position einfügen.',keys:['Ctrl','V'],code:'KeyV',q2Wrong:'C'},
-    {title:'Einfügen ohne Format',desc:'Reinen Text ohne ursprüngliche Formatierung einfügen.',keys:['Ctrl','Shift','V'],code:'KeyV',shift:true,q2Wrong:'X'},
+    {title:'Einfügen ohne Format',desc:'In vielen Programmen reinen Text ohne ursprüngliche Formatierung einfügen.',keys:['Ctrl','Shift','V'],code:'KeyV',shift:true,q2Wrong:'X'},
     {title:'Rückgängig machen',desc:'Den letzten Schritt wieder aufheben.',keys:['Ctrl','Z'],code:'KeyZ',q2Wrong:'Y'},
     {title:'Wiederherstellen',desc:'Eine rückgängig gemachte Aktion wiederholen.',keys:['Ctrl','Y'],code:'KeyY',q2Wrong:'Z'},
     {title:'Speichern',desc:'Das aktuelle Dokument sichern.',keys:['Ctrl','S'],code:'KeyS',q2Wrong:'P'},
     {title:'Alles markieren',desc:'Den gesamten Inhalt auswählen.',keys:['Ctrl','A'],code:'KeyA',q2Wrong:'S'},
     {title:'Suchen im Text',desc:'Ein Wort im Dokument oder Browser suchen.',keys:['Ctrl','F'],code:'KeyF',q2Wrong:'H'},
-    {title:'Suchen & Ersetzen',desc:'Wörter finden und durch andere Wörter ersetzen.',keys:['Ctrl','H'],code:'KeyH',q2Wrong:'F'},
+    {title:'Suchen & Ersetzen',desc:'In vielen Programmen Wörter suchen und ersetzen; im Browser kann Ctrl+H den Verlauf öffnen.',keys:['Ctrl','H'],code:'KeyH',q2Wrong:'F'},
     {title:'Drucken',desc:'Den Druckdialog öffnen.',keys:['Ctrl','P'],code:'KeyP',q2Wrong:'O'},
     {title:'Datei öffnen',desc:'Eine bestehende Datei auswählen und öffnen.',keys:['Ctrl','O'],code:'KeyO',q2Wrong:'P'},
     {title:'Zum Anfang springen',desc:'Ganz an den Anfang des Dokuments springen.',keys:['Ctrl','Home'],code:'Home',q2Wrong:'End'},
@@ -37,6 +37,36 @@
     }).join('<div class="plus-sign">+</div>');
   }
   function accuracy(correct,total){return total===0?100:Math.round(correct/total*100);}
+
+  function ensureQ3MemoryUi(){
+    if(document.getElementById('tk2-q3-memory-style'))return;
+    var style=document.createElement('style');
+    style.id='tk2-q3-memory-style';
+    style.textContent='.q3-memory-prompt{min-width:118px!important;max-width:none!important;padding:0 24px!important;border-style:dashed!important;border-color:rgba(139,92,246,.58)!important;color:#ddd6fe!important;background:rgba(139,92,246,.08)!important}';
+    document.head.appendChild(style);
+  }
+
+  function renderQ3MemoryPrompt(){
+    ensureQ3MemoryUi();
+    byId('q3-shortcut-display').innerHTML='<div class="big-kbd q3-memory-prompt" aria-label="Kürzel aus dem Gedächtnis">?</div>';
+  }
+
+  function clarifyContextDependentTheory(){
+    document.querySelectorAll('#theoryGrid .anim-card').forEach(function(card){
+      var title=card.querySelector('.anim-title');
+      var desc=card.querySelector('.anim-desc');
+      var remember=card.querySelector('.anim-remember');
+      if(!title||!desc||!remember)return;
+      var name=title.textContent.trim();
+      if(name==='Einfügen ohne Format'){
+        desc.textContent='In vielen Programmen wird Text ohne ursprüngliche Formatierung eingefügt.';
+        remember.innerHTML='<strong>Merke:</strong> Nicht jedes Programm unterstützt Ctrl + Shift + V.';
+      }else if(name==='Suchen & Ersetzen'||name==='Suchen und Ersetzen'){
+        desc.textContent='In vielen Programmen öffnet Ctrl + H Suchen und Ersetzen.';
+        remember.innerHTML='<strong>Merke:</strong> Im Browser kann Ctrl + H stattdessen den Verlauf öffnen.';
+      }
+    });
+  }
 
   function ensureMemoryHintNudgeUi(){
     if(document.getElementById('tk2-memory-hint-style'))return;
@@ -167,7 +197,7 @@
       else{byId('q3-result-title').textContent='⚠️ Noch nicht ganz';byId('q3-result-title').style.color='var(--accent-amber)';byId('q3-result-desc').textContent='Du hast '+pct+' % erreicht. Für A2 brauchst du mindestens 70 %.';byId('q3-to-a2-btn').style.display='none';}
       return;
     }
-    q3HintRevealed=false;q3Misses=0;var item=q3Shortcuts[q3Index];byId('q3-title').textContent=item.title;byId('q3-desc').textContent=item.desc;renderKeys(byId('q3-shortcut-display'),item,-1,true);
+    q3HintRevealed=false;q3Misses=0;var item=q3Shortcuts[q3Index];byId('q3-title').textContent=item.title;byId('q3-desc').textContent=item.desc;renderQ3MemoryPrompt();
     var xp=getGlobalXP(),hint=byId('q3-hint-btn');hint.disabled=xp<30;hint.textContent=xp<30?'💡 Tipp (-30 XP | Zu wenig XP)':'💡 Tipp (-30 XP)';hint.classList.remove('memory-hint-nudge');
     byId('q3-counter-label').textContent=(q3Index+1)+' / '+q3Shortcuts.length+' Memory';byId('q3-progress-bar').style.width=((q3Index+1)/q3Shortcuts.length*100)+'%';byId('q3-score-live').textContent='Genauigkeit: '+accuracy(q3CorrectHits,q3TotalAttempts)+'%';byId('q3-status-msg').innerHTML='Aus dem Gedächtnis: <span style="color:var(--accent-amber)">Drücke das passende Kürzel.</span>';byId('q3-card').classList.remove('success-flash','error-flash');
   }
@@ -200,6 +230,7 @@
   document.addEventListener('DOMContentLoaded',function(){
     var next=byId('q3-to-a2-btn');if(next)next.setAttribute('href','A2.html');
     var back=document.querySelector('.top-bar .back-link');if(back)back.setAttribute('href','index.html');
+    clarifyContextDependentTheory();
     switchPhase(1);
   });
 })();
