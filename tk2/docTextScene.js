@@ -119,6 +119,7 @@
     function trans(el, value){ if(el) el.style.transition = reduceMotion ? 'none' : value; }
     function opacity(el, value){ if(el) el.setAttribute('opacity', String(value)); }
     function toast(text){ $('.toast-text').textContent = text; opacity($('.status-toast'),1); }
+    function usesClipboard(){ return mode==='copy'||mode==='cut'||mode==='paste'||mode==='pastePlain'; }
 
     function pressKeys(){
       $$('.tk2-key').forEach(function(key, i){
@@ -139,6 +140,7 @@
       opacity($('.source-text'),1);
       opacity($('.flying'),0); $('.flying').setAttribute('transform','translate(0 0) scale(1)');
       opacity($('.transfer-path'),0); opacity($('.transfer-dot'),0); $('.transfer-dot').setAttribute('transform','translate(0 0)');
+      opacity($('.clipboard'),usesClipboard()?1:0);
       opacity($('.clip-text'),0); opacity($('.clip-rich'),0); opacity($('.clip-rich-line'),0);
       opacity($('.caret'),0); opacity($('.pasted-rich'),0); opacity($('.pasted-plain'),0); opacity($('.rich-underline'),0);
       opacity($('.status-toast'),0); opacity($('.saved-badge'),0); opacity($('.unsaved-dot'),1);
