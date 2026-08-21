@@ -32,6 +32,13 @@
 
 Entscheid: kein Ausbau des 1000-ms-Holds in mehrere Scene-Dateien. Zentrale Lösung beibehalten und nur nachweislich redundanten Code entfernen.
 
+## Deployment / Branches
+
+- `dev` = Entwicklung, kein Produktions-Deploy.
+- `render` = OnRender/Staging (`ib2026.onrender.com`), **nicht Vercel**.
+- `main` = Vercel/Production.
+- Promotion bewusst: `dev → render → main`; kein automatisches Überspringen.
+
 ## QA
 
 - A1 Textflüge code-seitig geprüft; kein weiterer fehlerhafter Flug gefunden.
