@@ -269,7 +269,8 @@
       align-items: start;
     }
     .columns-grid.single-col {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, calc((100% - 20px) / 2));
+      justify-content: center;
     }
     .hidden-col {
       display: none !important;
@@ -720,7 +721,9 @@
     }
 
     @media (max-width: 768px) {
-      .columns-grid { grid-template-columns: 1fr; }
+      .columns-grid,
+      .columns-grid.single-col { grid-template-columns: 1fr; }
+      .columns-grid.single-col { justify-content: stretch; }
       .accounts-graphic { grid-template-columns: 1fr; }
     }
 
