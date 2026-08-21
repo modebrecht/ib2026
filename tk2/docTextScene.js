@@ -204,7 +204,8 @@
     }
 
     function playRedo(){
-      opacity($('.history-chip'),1); opacity($('.history-text'),1;
+      opacity($('.history-chip'),1); opacity($('.history-text'),1);
+      $('.history-text').textContent='Vorher: rückgängig';
       opacity($('.source-text'),1);
       $('.history-arrow').setAttribute('transform','translate(527 205) scale(-1 1)');
       later(720,pressKeys);
