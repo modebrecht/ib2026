@@ -164,7 +164,7 @@
         showTransfer();
         opacity($('.flying'),1);
         trans($('.flying'),'transform 720ms cubic-bezier(.2,.78,.25,1), opacity 160ms ease');
-        $('.flying').setAttribute('transform','translate(366 -93) scale(.48)');
+        $('.flying').setAttribute('transform','translate(415 66) scale(.48)');
       });
       later(2030,function(){
         opacity($('.flying'),0); opacity($('.transfer-dot'),0); opacity($('.clip-text'),1);
