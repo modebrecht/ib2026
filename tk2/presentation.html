@@ -55,6 +55,23 @@
             if(link){link.href='../tk2/index.html';link.target='_top';}
           }
 
+          var algoExamplesWrap=doc.getElementById('algo-examples');
+          if(algoExamplesWrap){
+            [
+              {key:'ampel',label:'🚦 Ampel'},
+              {key:'snack',label:'🥤 Snackautomat'},
+              {key:'waschmaschine',label:'🧺 Waschmaschine'}
+            ].forEach(function(item){
+              if(algoExamplesWrap.querySelector('[data-key="'+item.key+'"]'))return;
+              var btn=doc.createElement('button');
+              btn.className='algo-chip';
+              btn.setAttribute('data-key',item.key);
+              btn.setAttribute('onclick','toggleAlgoExample(this)');
+              btn.textContent=item.label;
+              algoExamplesWrap.appendChild(btn);
+            });
+          }
+
           var algoStyle=doc.createElement('style');
           algoStyle.textContent=''
             +'.algo-examples{opacity:1!important;transform:none!important;pointer-events:none!important}'
@@ -63,13 +80,19 @@
             +'.algo-examples.revealed .algo-chip{opacity:1;transform:none}'
             +'.algo-examples.revealed .algo-chip:nth-child(1){transition-delay:0ms!important}'
             +'.algo-examples.revealed .algo-chip:nth-child(2){transition-delay:280ms!important}'
-            +'.algo-examples.revealed .algo-chip:nth-child(3){transition-delay:560ms!important}';
+            +'.algo-examples.revealed .algo-chip:nth-child(3){transition-delay:560ms!important}'
+            +'.algo-examples.revealed .algo-chip:nth-child(4){transition-delay:840ms!important}'
+            +'.algo-examples.revealed .algo-chip:nth-child(5){transition-delay:1120ms!important}'
+            +'.algo-examples.revealed .algo-chip:nth-child(6){transition-delay:1400ms!important}';
           doc.head.appendChild(algoStyle);
 
           var examples={
             tiktok:'TikTok wertet aus, was du anschaust, und empfiehlt ähnliche Videos.',
             navi:'Das Navi vergleicht Routen und berechnet einen passenden Weg.',
-            google:'Google sortiert Suchergebnisse nach Relevanz.'
+            google:'Google sortiert Suchergebnisse nach Relevanz.',
+            ampel:'Die Ampel folgt festen Regeln: Rot = warten, Grün = fahren oder gehen.',
+            snack:'Der Automat prüft Geld und Auswahl – dann gibt er das Produkt aus.',
+            waschmaschine:'Die Waschmaschine arbeitet ein Programm Schritt für Schritt ab: waschen, spülen, schleudern.'
           };
           frame.contentWindow.toggleAlgoExample=function(btn){
             var textEl=doc.getElementById('algo-reveal-text');
