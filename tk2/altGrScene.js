@@ -144,9 +144,10 @@
       var ch=$('.ctx-char');
       var targetX=CONTEXT_X+parseFloat(ch.getAttribute('x')||29);
       var targetY=CONTEXT_Y+parseFloat(ch.getAttribute('y')||100)-8;
-      var dx=targetX-FLY_X;
-      var dy=targetY-FLY_Y;
-      return 'translate('+dx+' '+dy+') scale(.55)';
+      var scale=.55;
+      var dx=targetX-(FLY_X*scale);
+      var dy=targetY-(FLY_Y*scale);
+      return 'translate('+dx+' '+dy+') scale('+scale+')';
     }
 
     function reset(){
