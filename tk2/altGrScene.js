@@ -3,6 +3,7 @@
 
   var counter=0;
   var LOOP_MS=5000;
+  var CHORD_HOLD_MS=500;
   var CONTEXT_X=410;
   var CONTEXT_Y=58;
   var FLY_X=207;
@@ -179,8 +180,9 @@
     function run(){
       if(reduceMotion){showEndState();return;}
       reset();running=true;
+      var secondKeyAt=700;
       later(350,function(){keyDown($('.key-alt'));});
-      later(700,function(){keyDown($('.key-main'));});
+      later(secondKeyAt,function(){keyDown($('.key-main'));});
       later(1000,function(){
         trans($('.hero-char'),'opacity 260ms ease');
         opacity($('.hero-char'),1);
@@ -191,8 +193,8 @@
         trans($('.flying-char'),'transform 820ms cubic-bezier(.2,.78,.24,1), opacity 180ms ease');
         $('.flying-char').setAttribute('transform',flyingTargetTransform());
       });
-      later(1250,function(){keyUp($('.key-main'));});
-      later(1400,function(){keyUp($('.key-alt'));});
+      later(secondKeyAt+CHORD_HOLD_MS,function(){keyUp($('.key-main'));});
+      later(secondKeyAt+CHORD_HOLD_MS+120,function(){keyUp($('.key-alt'));});
       later(1920,function(){opacity($('.flying-char'),0);opacity($('.ctx-char'),1);opacity($('.context-result'),1);});
       later(LOOP_MS,function(){running=false;if(active&&autoLoop)run();});
     }
