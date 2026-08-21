@@ -14,34 +14,37 @@
       +'.tk2-utility-scene .tk2-u-key.tk2-chord-held{filter:drop-shadow(0 0 11px rgba(56,189,248,.95))!important;translate:0 4px!important}'
       +'.tk2-doc-scene .tk2-key.tk2-chord-held rect,'
       +'.tk2-utility-scene .tk2-u-key.tk2-chord-held rect{fill:#1d4ed8!important;stroke:#93c5fd!important;stroke-width:2!important}'
-      // A2: AltGr stays visibly active while the character key is pressed.
+      // A2: AltGr and the character key stay visibly pressed together as one chord.
+      +'.tk2-altgr-scene .key.tk2-chord-held{filter:drop-shadow(0 0 12px rgba(245,158,11,.98))!important;translate:0 5px!important}'
+      +'.tk2-altgr-scene .key.tk2-chord-held rect{fill:#78350f!important;stroke:#fbbf24!important;stroke-opacity:1!important;stroke-width:2.5!important}'
       +'.tk2-altgr-scene .keys:has(.key-main[style*="drop-shadow"]) .key-alt{filter:drop-shadow(0 0 12px rgba(245,158,11,.98))!important}'
       +'.tk2-altgr-scene .keys:has(.key-main[style*="drop-shadow"]) .key-alt rect,'
       +'.tk2-altgr-scene .key[style*="drop-shadow"] rect{fill:#78350f!important;stroke:#fbbf24!important;stroke-opacity:1!important;stroke-width:2.5!important}';
     document.head.appendChild(style);
   }
 
-  function installA1ChordHoldTiming(){
-    if(window.__tk2A1ChordHoldTiming)return;
-    window.__tk2A1ChordHoldTiming=true;
-    var HOLD_MS=500;
+  function installChordHoldTiming(){
+    if(window.__tk2ChordHoldTiming)return;
+    window.__tk2ChordHoldTiming=true;
+    var HOLD_MS=1000;
     var rowTimers=new WeakMap();
 
-    function isA1Key(el){
-      return el&&el.matches&&el.matches('.tk2-doc-scene .tk2-key,.tk2-utility-scene .tk2-u-key');
+    function isChordKey(el){
+      return el&&el.matches&&el.matches('.tk2-doc-scene .tk2-key,.tk2-utility-scene .tk2-u-key,.tk2-altgr-scene .key');
     }
 
     function holdChord(key){
       var row=key.closest('.keys');
       if(!row)return;
-      var keys=Array.from(row.querySelectorAll('.tk2-key,.tk2-u-key'));
+      var isAltGr=row.closest('.tk2-altgr-scene');
+      var keys=Array.from(row.querySelectorAll(isAltGr?'.key':'.tk2-key,.tk2-u-key'));
       var index=keys.indexOf(key);
-      if(index<1)return; // Ctrl alone is not yet a chord.
+      if(index<1)return; // Modifier alone is not yet a chord.
 
       var oldTimer=rowTimers.get(row);
       if(oldTimer)window.clearTimeout(oldTimer);
 
-      // Hold every key already reached in the chord. For Ctrl+Shift+V this grows 2 -> 3.
+      // Hold every key already reached in the chord. Ctrl+Shift+V grows 2 -> 3.
       keys.forEach(function(k,i){
         if(i<=index)k.classList.add('tk2-chord-held');
       });
@@ -55,13 +58,13 @@
     var observer=new MutationObserver(function(records){
       records.forEach(function(record){
         var key=record.target;
-        if(!isA1Key(key))return;
+        if(!isChordKey(key))return;
         if((key.style.filter||'').indexOf('drop-shadow')!==-1)holdChord(key);
       });
     });
 
     function observe(){
-      document.querySelectorAll('.tk2-doc-scene .tk2-key,.tk2-utility-scene .tk2-u-key').forEach(function(key){
+      document.querySelectorAll('.tk2-doc-scene .tk2-key,.tk2-utility-scene .tk2-u-key,.tk2-altgr-scene .key').forEach(function(key){
         observer.observe(key,{attributes:true,attributeFilter:['style']});
       });
     }
@@ -90,7 +93,7 @@
   }
 
   installChordKeyHoldStyles();
-  installA1ChordHoldTiming();
+  installChordHoldTiming();
 
   document.addEventListener('DOMContentLoaded',function(){
     openIndexCards();
