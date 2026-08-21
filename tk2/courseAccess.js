@@ -94,17 +94,5 @@
 
   installChordKeyHoldStyles();
   installChordHoldTiming();
-
-  document.addEventListener('DOMContentLoaded',function(){
-    openIndexCards();
-
-    ['a2-lock-screen','a3-lock-screen'].forEach(function(id){
-      var el=document.getElementById(id);
-      if(el)el.style.display='none';
-    });
-    ['a2-content-wrap','a3-content-wrap'].forEach(function(id){
-      var el=document.getElementById(id);
-      if(el)el.style.display='block';
-    });
-  });
+  document.addEventListener('DOMContentLoaded',openIndexCards);
 })();
