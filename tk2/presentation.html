@@ -60,7 +60,16 @@
             navi:'Das Navi vergleicht Routen und berechnet einen passenden Weg.',
             google:'Google sortiert Suchergebnisse nach Relevanz.'
           };
-          try{frame.contentWindow.algoExamples.tiktok=examples.tiktok;frame.contentWindow.algoExamples.navi=examples.navi;frame.contentWindow.algoExamples.google=examples.google;}catch(e){}
+          frame.contentWindow.toggleAlgoExample=function(btn){
+            var textEl=doc.getElementById('algo-reveal-text');
+            var wasActive=btn.classList.contains('active');
+            doc.querySelectorAll('.algo-chip').forEach(function(chip){chip.classList.remove('active');});
+            textEl.classList.remove('show');
+            if(wasActive){textEl.textContent='';return;}
+            btn.classList.add('active');
+            textEl.textContent=examples[btn.dataset.key]||'';
+            frame.contentWindow.requestAnimationFrame(function(){textEl.classList.add('show');});
+          };
         }catch(e){
           console.warn('Präsentation konnte nicht sprachlich angepasst werden.',e);
         }
