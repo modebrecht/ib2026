@@ -55,6 +55,17 @@
             if(link){link.href='../tk2/index.html';link.target='_top';}
           }
 
+          var algoStyle=doc.createElement('style');
+          algoStyle.textContent=''
+            +'.algo-examples{opacity:1!important;transform:none!important;pointer-events:none!important}'
+            +'.algo-examples.revealed{pointer-events:auto!important}'
+            +'.algo-examples .algo-chip{opacity:0;transform:translateY(16px) scale(.9);transition:opacity .34s ease,transform .46s cubic-bezier(.34,1.56,.64,1)!important}'
+            +'.algo-examples.revealed .algo-chip{opacity:1;transform:none}'
+            +'.algo-examples.revealed .algo-chip:nth-child(1){transition-delay:0ms!important}'
+            +'.algo-examples.revealed .algo-chip:nth-child(2){transition-delay:280ms!important}'
+            +'.algo-examples.revealed .algo-chip:nth-child(3){transition-delay:560ms!important}';
+          doc.head.appendChild(algoStyle);
+
           var examples={
             tiktok:'TikTok wertet aus, was du anschaust, und empfiehlt ähnliche Videos.',
             navi:'Das Navi vergleicht Routen und berechnet einen passenden Weg.',
