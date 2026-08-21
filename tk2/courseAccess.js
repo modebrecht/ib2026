@@ -9,20 +9,69 @@
     var style=document.createElement('style');
     style.id='tk2-chord-key-hold';
     style.textContent=''
-      // A1: keep Ctrl visibly held for the whole chord, including Ctrl+Shift+V.
-      +'.tk2-doc-scene .keys:has(.tk2-key:not(:first-of-type)[style*="drop-shadow"]) .tk2-key:first-of-type,'
-      +'.tk2-utility-scene .keys:has(.tk2-u-key:not(:first-of-type)[style*="drop-shadow"]) .tk2-u-key:first-of-type{filter:drop-shadow(0 0 11px rgba(56,189,248,.95))!important}'
-      +'.tk2-doc-scene .keys:has(.tk2-key:not(:first-of-type)[style*="drop-shadow"]) .tk2-key:first-of-type rect,'
-      +'.tk2-utility-scene .keys:has(.tk2-u-key:not(:first-of-type)[style*="drop-shadow"]) .tk2-u-key:first-of-type rect{fill:#1d4ed8!important;stroke:#93c5fd!important;stroke-width:2!important}'
-      +'.tk2-doc-scene .tk2-key[style*="drop-shadow"] rect,'
-      +'.tk2-utility-scene .tk2-u-key[style*="drop-shadow"] rect{fill:#1d4ed8!important;stroke:#93c5fd!important;stroke-width:2!important}'
-      +'.tk2-doc-scene .keys:has(.tk2-key:nth-of-type(3)[style*="drop-shadow"]) .tk2-key:nth-of-type(2){filter:drop-shadow(0 0 11px rgba(56,189,248,.95))!important}'
-      +'.tk2-doc-scene .keys:has(.tk2-key:nth-of-type(3)[style*="drop-shadow"]) .tk2-key:nth-of-type(2) rect{fill:#1d4ed8!important;stroke:#93c5fd!important;stroke-width:2!important}'
+      // A1: a chord that has reached its second key stays visibly pressed together.
+      +'.tk2-doc-scene .tk2-key.tk2-chord-held,'
+      +'.tk2-utility-scene .tk2-u-key.tk2-chord-held{filter:drop-shadow(0 0 11px rgba(56,189,248,.95))!important;translate:0 4px!important}'
+      +'.tk2-doc-scene .tk2-key.tk2-chord-held rect,'
+      +'.tk2-utility-scene .tk2-u-key.tk2-chord-held rect{fill:#1d4ed8!important;stroke:#93c5fd!important;stroke-width:2!important}'
       // A2: AltGr stays visibly active while the character key is pressed.
       +'.tk2-altgr-scene .keys:has(.key-main[style*="drop-shadow"]) .key-alt{filter:drop-shadow(0 0 12px rgba(245,158,11,.98))!important}'
       +'.tk2-altgr-scene .keys:has(.key-main[style*="drop-shadow"]) .key-alt rect,'
       +'.tk2-altgr-scene .key[style*="drop-shadow"] rect{fill:#78350f!important;stroke:#fbbf24!important;stroke-opacity:1!important;stroke-width:2.5!important}';
     document.head.appendChild(style);
+  }
+
+  function installA1ChordHoldTiming(){
+    if(window.__tk2A1ChordHoldTiming)return;
+    window.__tk2A1ChordHoldTiming=true;
+    var HOLD_MS=500;
+    var rowTimers=new WeakMap();
+
+    function isA1Key(el){
+      return el&&el.matches&&el.matches('.tk2-doc-scene .tk2-key,.tk2-utility-scene .tk2-u-key');
+    }
+
+    function holdChord(key){
+      var row=key.closest('.keys');
+      if(!row)return;
+      var keys=Array.from(row.querySelectorAll('.tk2-key,.tk2-u-key'));
+      var index=keys.indexOf(key);
+      if(index<1)return; // Ctrl alone is not yet a chord.
+
+      var oldTimer=rowTimers.get(row);
+      if(oldTimer)window.clearTimeout(oldTimer);
+
+      // Hold every key already reached in the chord. For Ctrl+Shift+V this grows 2 -> 3.
+      keys.forEach(function(k,i){
+        if(i<=index)k.classList.add('tk2-chord-held');
+      });
+
+      rowTimers.set(row,window.setTimeout(function(){
+        keys.forEach(function(k){k.classList.remove('tk2-chord-held');});
+        rowTimers.delete(row);
+      },HOLD_MS));
+    }
+
+    var observer=new MutationObserver(function(records){
+      records.forEach(function(record){
+        var key=record.target;
+        if(!isA1Key(key))return;
+        if((key.style.filter||'').indexOf('drop-shadow')!==-1)holdChord(key);
+      });
+    });
+
+    function observe(){
+      document.querySelectorAll('.tk2-doc-scene .tk2-key,.tk2-utility-scene .tk2-u-key').forEach(function(key){
+        observer.observe(key,{attributes:true,attributeFilter:['style']});
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded',function(){
+      observe();
+      // Theory scenes are inserted dynamically; pick up later replacements/replays too.
+      var treeObserver=new MutationObserver(observe);
+      treeObserver.observe(document.body,{childList:true,subtree:true});
+    });
   }
 
   function openIndexCards(){
@@ -41,6 +90,7 @@
   }
 
   installChordKeyHoldStyles();
+  installA1ChordHoldTiming();
 
   document.addEventListener('DOMContentLoaded',function(){
     openIndexCards();
