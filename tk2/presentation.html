@@ -4,11 +4,68 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Informatik B25 – Präsentation</title>
-  <meta http-equiv="refresh" content="0; url=../tk/presentation.html">
-  <link rel="canonical" href="../tk/presentation.html">
-  <script>window.location.replace('../tk/presentation.html');</script>
+  <style>
+    html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#020617}
+    iframe{display:block;width:100%;height:100%;border:0;background:#020617}
+  </style>
 </head>
 <body>
-  <p>Präsentation wird geöffnet … <a href="../tk/presentation.html">Zur Präsentation</a></p>
+  <iframe id="presentationFrame" src="../tk/presentation.html" title="Informatik B25 Präsentation"></iframe>
+  <script>
+    (function(){
+      var frame=document.getElementById('presentationFrame');
+      frame.addEventListener('load',function(){
+        try{
+          var doc=frame.contentDocument;
+          var text={
+            section1:'Heute schauen wir, wie Computer Daten verarbeiten – und wie wir sie effizient nutzen.',
+            section2:'Informatik bedeutet: Informationen verarbeiten und Probleme mit klaren Regeln lösen.',
+            section3:'Computer verarbeiten Daten nach einem einfachen Muster: Eingabe, Verarbeitung, Ausgabe.',
+            section4:'Computer speichern Informationen als Folgen aus 0 und 1. 8 Bits ergeben 1 Byte.',
+            section5:'Ein Algorithmus ist eine klare Schritt-für-Schritt-Anleitung, die zu einem Ergebnis führt.',
+            section6:'Ein Computer braucht beides: Hardware zum Anfassen und Software zum Ausführen.',
+            section7:'Computer tauschen über Netzwerke Daten aus.',
+            section8:'Jetzt geht’s an die Tastatur: Wir lernen die wichtigsten Kürzel und arbeiten damit schneller am PC.'
+          };
+          Object.keys(text).forEach(function(id){
+            var p=doc.querySelector('#'+id+' p.description');
+            if(p)p.textContent=text[id];
+          });
+
+          var s6=doc.getElementById('section6');
+          if(s6){
+            var cards=s6.querySelectorAll('.hw-sw-card p');
+            if(cards[0])cards[0].textContent='Bauteile & Geräte: CPU, RAM, Tastatur, Monitor und Speicher.';
+            if(cards[1])cards[1].textContent='Programme & Daten: Windows/macOS, Browser, Apps, Spiele und Code.';
+          }
+
+          var s7=doc.getElementById('section7');
+          if(s7){
+            var heading=s7.querySelector('.card > div');
+            var copy=s7.querySelector('.card > p');
+            if(heading)heading.textContent='🌐 Daten schützen';
+            if(copy)copy.textContent='Passwörter, Verschlüsselung und Datenschutz helfen, diese Daten zu schützen.';
+          }
+
+          var s8=doc.getElementById('section8');
+          if(s8){
+            var title=s8.querySelector('h2');
+            var link=s8.querySelector('a.btn-primary');
+            if(title)title.textContent='Jetzt an die Tastatur!';
+            if(link){link.href='../tk2/index.html';link.target='_top';}
+          }
+
+          var examples={
+            tiktok:'TikTok wertet aus, was du anschaust, und empfiehlt ähnliche Videos.',
+            navi:'Das Navi vergleicht Routen und berechnet einen passenden Weg.',
+            google:'Google sortiert Suchergebnisse nach Relevanz.'
+          };
+          try{frame.contentWindow.algoExamples.tiktok=examples.tiktok;frame.contentWindow.algoExamples.navi=examples.navi;frame.contentWindow.algoExamples.google=examples.google;}catch(e){}
+        }catch(e){
+          console.warn('Präsentation konnte nicht sprachlich angepasst werden.',e);
+        }
+      });
+    })();
+  </script>
 </body>
 </html>
