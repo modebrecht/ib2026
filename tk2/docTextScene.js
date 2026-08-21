@@ -107,7 +107,7 @@
       '<g class="keys" transform="translate('+keyX+' 240)">'+keyMarkup(cfg.keys)+'</g>'+
       '<g class="flying" opacity="0"><rect x="56" y="174" width="148" height="31" rx="7" fill="#2563eb" opacity=".2"/><text x="64" y="195" font-family="Arial,sans-serif" font-size="17" font-weight="700" fill="#7dd3fc">wichtiger Text</text></g>'+
       '<g class="history-arrow" opacity="0" transform="translate(427 205)"><path d="M60 10C31 -5 8 6 9 31" fill="none" stroke="#10b981" stroke-width="5" stroke-linecap="round"/><path d="M2 22l7 11 10-9" fill="none" stroke="#10b981" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></g>'+
-      '<g class="status-toast" opacity="0" transform="translate(382 20)"><rect width="157" height="30" rx="15" fill="#052e2b" stroke="#10b981"/><circle cx="18" cy="15" r="7" fill="#10b981"/><path d="M14 15l3 3 5-6" fill="none" stroke="#fff" stroke-width="1.8"/><text class="toast-text" x="32" y="19" font-family="Arial,sans-serif" font-size="11" font-weight="700" fill="#a7f3d0">Fertig</text></g>'+
+      '<g class="status-toast" opacity="0" transform="translate(382 20)"><rect width="190" height="30" rx="15" fill="#052e2b" stroke="#10b981"/><circle cx="18" cy="15" r="7" fill="#10b981"/><path d="M14 15l3 3 5-6" fill="none" stroke="#fff" stroke-width="1.8"/><text class="toast-text" x="32" y="19" font-family="Arial,sans-serif" font-size="11" font-weight="700" fill="#a7f3d0">Fertig</text></g>'+
       '</svg>';
 
     var svg = container.querySelector('svg');
@@ -204,8 +204,7 @@
     }
 
     function playRedo(){
-      opacity($('.history-chip'),1); opacity($('.history-text'),1);
-      $('.history-text').textContent='Vorher: rückgängig';
+      opacity($('.history-chip'),1); opacity($('.history-text'),1;
       opacity($('.source-text'),1);
       $('.history-arrow').setAttribute('transform','translate(527 205) scale(-1 1)');
       later(720,pressKeys);
