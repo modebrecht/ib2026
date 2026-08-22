@@ -1782,6 +1782,12 @@
             if (parsed && parsed.percent === 100) markDone('title-A8');
           }
 
+          const a9Data = localStorage.getItem('onedrive_a9_worksheet_8sek');
+          if (a9Data) {
+            const parsed = JSON.parse(a9Data);
+            if (parsed && parsed.percent === 100) markDone('title-A9');
+          }
+
           const aexamData = localStorage.getItem('onedrive_aexam_worksheet_8sek');
           if (aexamData) {
             const parsed = JSON.parse(aexamData);
