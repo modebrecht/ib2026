@@ -1,729 +1,110 @@
 <!DOCTYPE html>
 <html lang="de" class="h-full">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AEXAM: Hardware-Wissenstest • Arbeitsblatt</title>
-    <script src="assets/js/tailwind.min.js"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        slate: {
-                            50: '#fafafa', 100: '#f5f5f5', 200: '#e5e5e5', 300: '#d4d4d4',
-                            400: '#b4bdca', 500: '#a3a3a3', 600: '#616161', 700: '#404040',
-                            800: '#303846', 900: '#1a1f26', 950: '#111418'
-                        },
-                        onedrive: {
-                            50: '#eff6ff', 100: '#dbeafe', 400: '#66a1ff', 500: '#0078d4',
-                            600: '#106ebe', 700: '#005a9e', 800: '#004578',
-                            900: '#00335c', 950: '#001f3f'
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Segoe UI', 'Inter', 'system-ui', '-apple-system', 'sans-serif']
-                    }
-                }
-            }
-        }
-    </script>
-    <link rel="stylesheet" href="assets/css/fontawesome.min.css">
-    <style>
-        @import url('assets/fonts/inter.css');
-        * { transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease; }
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.5); border-radius: 4px; }
-
-        @media print {
-            .no-print { display: none !important; }
-            html, body { height: auto !important; min-height: auto !important; margin: 0 !important; padding: 0 !important; }
-            body { background: white !important; color: black !important; font-size: 11pt; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-            .print-card { border: 1px solid #cbd5e1 !important; box-shadow: none !important; break-inside: avoid; page-break-inside: avoid; }
-            /* Sicherheitsnetz: Dunkelmodus-Farben beim Drucken immer überschreiben, egal wie gedruckt
-               wird (App-Button, Strg+P, Rechtsklick-Drucken) - sonst bleiben Karten dunkel mit heller
-               Schrift, weil @media print sonst nur body zurücksetzt, nicht die .dark-Klasse selbst. */
-            .dark, .dark * { background-color: #fff !important; color: #000 !important; border-color: #cbd5e1 !important; }
-        }
-    </style>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AEXAM: Hardware-Wissenstest</title>
+<script src="assets/js/tailwind.min.js"></script>
+<script>
+tailwind.config={darkMode:'class',theme:{extend:{colors:{onedrive:{500:'#0078d4',600:'#106ebe',700:'#005a9e'}},fontFamily:{sans:['Segoe UI','Inter','system-ui','sans-serif']}}}};
+</script>
+<link rel="stylesheet" href="assets/css/fontawesome.min.css">
+<style>
+@import url('assets/fonts/inter.css');
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI','Inter',system-ui,sans-serif}
+.card{background:white;border:1px solid #e2e8f0;border-radius:1rem}
+.dark .card{background:#0f172a;border-color:#334155}
+.field{width:100%;border:1px solid #cbd5e1;border-radius:.75rem;padding:.65rem .75rem;background:#fff}
+.dark .field{background:#1e293b;border-color:#475569;color:#f8fafc}
+.btn{border-radius:.75rem;padding:.6rem .85rem;font-weight:700}
+@media(max-width:640px){.mobile-stack{grid-template-columns:1fr!important}}
+</style>
 </head>
-<body class="bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-full flex flex-col font-sans antialiased">
-
-    <header class="sticky top-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm no-print">
-        <div class="max-w-[1920px] w-full mx-auto px-4 sm:px-8 py-2.5 flex items-center justify-between gap-4">
-            <div class="flex items-center gap-3 min-w-0">
-                <div class="w-9 h-9 rounded-lg bg-onedrive-500 text-white flex items-center justify-center font-black shadow-md shadow-onedrive-500/20 shrink-0">
-                    <i class="fa-solid fa-clipboard-check text-sm"></i>
-                </div>
-                <div class="flex items-center gap-3">
-                    <div>
-                        <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Fortschritt</span>
-                        <span id="headerPercentText" class="text-sm font-extrabold text-onedrive-600 dark:text-onedrive-400">0% erledigt</span>
-                    </div>
-                    <div class="relative w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center font-bold text-[10px] sm:text-xs text-slate-700 dark:text-slate-200 shrink-0 ml-1">
-                        <svg class="absolute inset-0 w-full h-full transform -rotate-90" viewBox="0 0 36 36">
-                            <circle cx="18" cy="18" r="16" fill="none" class="stroke-slate-200 dark:stroke-slate-800" stroke-width="4"></circle>
-                            <circle id="headerSvgCircle" cx="18" cy="18" r="16" fill="none" class="stroke-emerald-500 transition-all duration-500 ease-out" stroke-width="4" stroke-dasharray="100.53" stroke-dashoffset="100.53" stroke-linecap="round"></circle>
-                        </svg>
-                        <span id="headerPercentNumber" class="relative z-10">0%</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="flex items-center gap-2 shrink-0">
-                <button onclick="toggleDarkMode()" title="Dunkelmodus umschalten" class="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
-                    <i id="themeIcon" class="fa-solid fa-moon text-sm"></i>
-                </button>
-                <button id="hdrPdfBtn" onclick="handlePrint()" class="p-2 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 transition border border-slate-200 dark:border-slate-700 opacity-60 cursor-not-allowed" title="Erst bei 100% Ausfüllung möglich">
-                    <i id="printIcon" class="fa-solid fa-file-pdf text-sm"></i>
-                </button>
-                <button onclick="confirmReset()" title="Zurücksetzen" class="p-2 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/50 rounded-lg border border-rose-200 dark:border-rose-900/50">
-                    <i class="fa-solid fa-rotate-right text-sm"></i>
-                </button>
-            </div>
-        </div>
-        <div class="w-full bg-slate-200 dark:bg-slate-800 h-1">
-            <div id="progressBar" class="bg-onedrive-500 h-1 transition-all duration-300" style="width: 0%"></div>
-        </div>
-    </header>
-
-    <main class="max-w-7xl mx-auto w-full px-4 sm:px-6 py-6 space-y-6 flex-grow">
-
-        <!-- Title & Metadata -->
-        <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 print-card">
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-slate-800">
-                <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-onedrive-500 to-onedrive-700 flex items-center justify-center text-[22px] font-black border border-onedrive-600 shadow-sm text-white">
-                        <i class="fa-solid fa-clipboard-check text-slate-300"></i>
-                    </div>
-                    <div>
-                        <h2 class="text-lg font-bold text-slate-900 dark:text-slate-100">AEXAM: Hardware-Wissenstest</h2>
-                        <p class="text-xs text-slate-500 dark:text-slate-400">Informatische Bildung • IT-Hardware • AEXAM</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Student Metadata -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
-                <div>
-                    <label class="block text-xs font-bold uppercase text-slate-500 dark:text-slate-400 mb-1">
-                        <i class="fa-solid fa-user mr-1 text-onedrive-500"></i> Vorname
-                    </label>
-                    <input type="text" id="studentName" readonly tabindex="-1" style="pointer-events: none;" class="w-full px-3.5 py-2 text-sm bg-slate-100 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl font-medium text-slate-500 dark:text-slate-400 opacity-90 cursor-not-allowed">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold uppercase text-slate-500 dark:text-slate-400 mb-1">
-                        <i class="fa-solid fa-users mr-1 text-onedrive-500"></i> Klasse
-                    </label>
-                    <input type="text" id="studentClass" readonly tabindex="-1" style="pointer-events: none;" class="w-full px-3.5 py-2 text-sm bg-slate-100 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl font-medium text-slate-500 dark:text-slate-400 opacity-90 cursor-not-allowed" value="B24">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold uppercase text-slate-500 dark:text-slate-400 mb-1">
-                        <i class="fa-solid fa-calendar mr-1 text-onedrive-500"></i> Datum
-                    </label>
-                    <input type="text" id="studentDate" readonly tabindex="-1" style="pointer-events: none;" class="w-full px-3.5 py-2 text-sm bg-slate-100 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl font-medium text-slate-500 dark:text-slate-400 opacity-90 cursor-not-allowed">
-                </div>
-            </div>
-        </div>
-
-        <section class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 print-card space-y-6">
-            <div class="border-b border-slate-200 dark:border-slate-800 pb-4 flex items-center justify-between">
-                <div>
-                    <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100">Hardware-Check: Teste dein Wissen (10 Fragen zu den Kernkomponenten)</h3>
-                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Beantworte zu den folgenden 10 Kernkomponenten die jeweils richtige Fachfrage.</p>
-                </div>
-                <div class="hidden md:flex w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-400 items-center justify-center text-xl">
-                    <i class="fa-solid fa-list-check"></i>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-                <!-- 1. PC-Gehäuse -->
-                <div class="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-xl border border-slate-200 dark:border-slate-700/70 space-y-2">
-                    <p class="font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                        <span class="w-5 h-5 rounded-full bg-onedrive-500 text-white text-[10px] flex items-center justify-center shrink-0">1</span>
-                        1. PC-Gehäuse: Welche Hauptfunktion erfüllt es?
-                    </p>
-                    <div class="space-y-1.5 text-slate-700 dark:text-slate-300">
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q1" value="0" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Es verarbeitet logische Daten und Rechenoperationen.
-                        </label>
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q1" value="1" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Es schützt Bauteile vor Staub/Schäden & sorgt für gezielten Luftstrom.
-                        </label>
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q1" value="0" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Es speichert Fotos und Betriebssystem-Dateien langfristig ab.
-                        </label>
-                    </div>
-                </div>
-
-                <!-- 2. Mainboard -->
-                <div class="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-xl border border-slate-200 dark:border-slate-700/70 space-y-2">
-                    <p class="font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                        <span class="w-5 h-5 rounded-full bg-onedrive-500 text-white text-[10px] flex items-center justify-center shrink-0">2</span>
-                        2. Mainboard: Warum gilt es als Zentrale des PCs?
-                    </p>
-                    <div class="space-y-1.5 text-slate-700 dark:text-slate-300">
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q2" value="1" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Weil es alle Bauteile miteinander verbindet & Datenaustausch steuert.
-                        </label>
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q2" value="0" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Weil es den PC mit Wechselstrom versorgt.
-                        </label>
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q2" value="0" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Weil es für die Bildausgabe auf dem Monitor zuständig ist.
-                        </label>
-                    </div>
-                </div>
-
-                <!-- 3. CPU -->
-                <div class="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-xl border border-slate-200 dark:border-slate-700/70 space-y-2">
-                    <p class="font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                        <span class="w-5 h-5 rounded-full bg-onedrive-500 text-white text-[10px] flex items-center justify-center shrink-0">3</span>
-                        3. Prozessor (CPU): Wo genau befindet er sich?
-                    </p>
-                    <div class="space-y-1.5 text-slate-700 dark:text-slate-300">
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q3" value="0" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Fest verbaut im Gehäuse-Netzteil.
-                        </label>
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q3" value="1" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Im CPU-Sockel des Mainboards direkt unter dem Kühler.
-                        </label>
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q3" value="0" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Auf der Rückseite des Monitors.
-                        </label>
-                    </div>
-                </div>
-
-                <!-- 4. RAM -->
-                <div class="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-xl border border-slate-200 dark:border-slate-700/70 space-y-2">
-                    <p class="font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                        <span class="w-5 h-5 rounded-full bg-onedrive-500 text-white text-[10px] flex items-center justify-center shrink-0">4</span>
-                        4. Arbeitsspeicher (RAM): Was passiert beim Ausschalten?
-                    </p>
-                    <div class="space-y-1.5 text-slate-700 dark:text-slate-300">
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q4" value="1" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Alle enthaltenen Daten gehen verloren (flüchtiger Speicher).
-                        </label>
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q4" value="0" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Daten bleiben dauerhaft ohne Strom abgespeichert.
-                        </label>
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q4" value="0" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Daten werden automatisch an den Drucker übertragen.
-                        </label>
-                    </div>
-                </div>
-
-                <!-- 5. SSD -->
-                <div class="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-xl border border-slate-200 dark:border-slate-700/70 space-y-2">
-                    <p class="font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                        <span class="w-5 h-5 rounded-full bg-onedrive-500 text-white text-[10px] flex items-center justify-center shrink-0">5</span>
-                        5. SSD: Warum ist sie viel schneller als eine HDD?
-                    </p>
-                    <div class="space-y-1.5 text-slate-700 dark:text-slate-300">
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q5" value="0" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Weil sie rotierende Scheiben mit hoher Drehzahl nutzt.
-                        </label>
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q5" value="1" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Weil sie rein elektronische Flash-Chips ohne Mechanik nutzt.
-                        </label>
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q5" value="0" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Weil sie direkt vom Lüfter gekühlt wird.
-                        </label>
-                    </div>
-                </div>
-
-                <!-- 6. HDD -->
-                <div class="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-xl border border-slate-200 dark:border-slate-700/70 space-y-2">
-                    <p class="font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                        <span class="w-5 h-5 rounded-full bg-onedrive-500 text-white text-[10px] flex items-center justify-center shrink-0">6</span>
-                        6. HDD (Festplatte): Welches Merkmal ist typisch?
-                    </p>
-                    <div class="space-y-1.5 text-slate-700 dark:text-slate-300">
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q6" value="1" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Rotierende Magnet-Scheiben mit beweglichem Lesekopf.
-                        </label>
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q6" value="0" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Völlig erschütterungsfest und lautlos im Betrieb.
-                        </label>
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q6" value="0" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Verliert Daten sofort bei Stromausfall.
-                        </label>
-                    </div>
-                </div>
-
-                <!-- 7. GPU -->
-                <div class="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-xl border border-slate-200 dark:border-slate-700/70 space-y-2">
-                    <p class="font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                        <span class="w-5 h-5 rounded-full bg-onedrive-500 text-white text-[10px] flex items-center justify-center shrink-0">7</span>
-                        7. Grafikkarte (GPU): Was ist ihre Hauptaufgabe?
-                    </p>
-                    <div class="space-y-1.5 text-slate-700 dark:text-slate-300">
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q7" value="0" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Ausdrucken von Office-Dokumenten.
-                        </label>
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q7" value="1" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Berechnen & Rendern von 3D-Grafiken, Spielen & Videos.
-                        </label>
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q7" value="0" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Empfang von WLAN-Signalen vom Router.
-                        </label>
-                    </div>
-                </div>
-
-                <!-- 8. PSU -->
-                <div class="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-xl border border-slate-200 dark:border-slate-700/70 space-y-2">
-                    <p class="font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                        <span class="w-5 h-5 rounded-full bg-onedrive-500 text-white text-[10px] flex items-center justify-center shrink-0">8</span>
-                        8. Netzteil (PSU): Warum ist es unentbehrlich?
-                    </p>
-                    <div class="space-y-1.5 text-slate-700 dark:text-slate-300">
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q8" value="1" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Wandelt 230V Steckdosenstrom in Gleichstrom für Bauteile um.
-                        </label>
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q8" value="0" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Speichert E-Mails und Dateien bei Stromausfall ab.
-                        </label>
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q8" value="0" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Steuert Tastatur- und Mauseingaben.
-                        </label>
-                    </div>
-                </div>
-
-                <!-- 9. Kühlung -->
-                <div class="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-xl border border-slate-200 dark:border-slate-700/70 space-y-2">
-                    <p class="font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                        <span class="w-5 h-5 rounded-full bg-onedrive-500 text-white text-[10px] flex items-center justify-center shrink-0">9</span>
-                        9. Kühlung: Was würde ohne Kühler geschehen?
-                    </p>
-                    <div class="space-y-1.5 text-slate-700 dark:text-slate-300">
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q9" value="0" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Der PC schaltet sich aus Ersparnisgründen ab.
-                        </label>
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q9" value="1" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> CPU/GPU überhitzen rasch und erleiden Hardwareschäden.
-                        </label>
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q9" value="0" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Der Monitor zeigt nur Schwarz-Weiss-Bilder an.
-                        </label>
-                    </div>
-                </div>
-
-                <!-- 10. Netzwerkkarte / NIC -->
-                <div class="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-xl border border-slate-200 dark:border-slate-700/70 space-y-2">
-                    <p class="font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                        <span class="w-5 h-5 rounded-full bg-onedrive-500 text-white text-[10px] flex items-center justify-center shrink-0">10</span>
-                        10. Netzwerkkarte / WLAN: Wozu dient diese Karte?
-                    </p>
-                    <div class="space-y-1.5 text-slate-700 dark:text-slate-300">
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q10" value="1" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Verbindet den PC per LAN oder Wi-Fi mit dem Netzwerk/Internet.
-                        </label>
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q10" value="0" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Speichert Musik- und Bilddateien dauerhaft auf Chips.
-                        </label>
-                        <label class="flex items-start gap-2 cursor-pointer hover:text-onedrive-600 dark:hover:text-onedrive-400 transition p-1 rounded">
-                            <input type="radio" name="q10" value="0" onchange="checkQuiz(); updateProgress();" class="mt-0.5 accent-onedrive-500"> Wandelt Töne in elektrische Signale für Boxen um.
-                        </label>
-                    </div>
-                </div>
-            </div>
-
-            <div id="quizResult" class="hidden p-3.5 rounded-xl text-center font-bold text-xs shadow-sm"></div>
-        </section>
-
-    </main>
-
-    <script>
-        let currentPercentage = 0;
-
-        window.addEventListener('DOMContentLoaded', () => {
-            initTheme();
-            loadProgress();
-            applyDefaultClassAndDate();
-
-            // Sync global Vorname
-            var globalVorname = localStorage.getItem('studentVorname') || localStorage.getItem('student_vorname');
-            var nameEl = document.getElementById('studentName');
-            if (nameEl) {
-                if (!nameEl.value && globalVorname) {
-                    nameEl.value = globalVorname;
-                } else if (nameEl.value && nameEl.value.trim()) {
-                    localStorage.setItem('studentVorname', nameEl.value.trim());
-                    localStorage.setItem('student_vorname', nameEl.value.trim());
-                }
-            }
-
-            setupUniversalAutoSave();
-            updateProgress();
-        });
-
-        function applyDefaultClassAndDate() {
-            var dateInput = document.getElementById('studentDate');
-            var d = new Date();
-            var mm = String(d.getMonth() + 1).padStart(2, '0');
-            var dd = String(d.getDate()).padStart(2, '0');
-            var todayStr = dd + '.' + mm + '.' + d.getFullYear();
-            if (dateInput) {
-                dateInput.value = todayStr;
-                dateInput.readOnly = true;
-                dateInput.setAttribute('tabindex', '-1');
-                dateInput.style.pointerEvents = 'none';
-            }
-        }
-
-        function setupUniversalAutoSave() {
-            var pageKey = 'hw_autosave_' + location.pathname.split('/').pop();
-
-            function saveAll() {
-                var data = {};
-                document.querySelectorAll('input, textarea, select').forEach(function(el) {
-                    if (el.id) {
-                        if (el.type === 'radio') {
-                            if (el.checked) data[el.name] = el.value;
-                        } else {
-                            data[el.id] = el.value;
-                        }
-                    } else if (el.name && el.type === 'radio') {
-                        if (el.checked) data[el.name] = el.value;
-                    }
-                });
-                localStorage.setItem(pageKey, JSON.stringify(data));
-            }
-
-            try {
-                var saved = localStorage.getItem(pageKey);
-                if (saved) {
-                    var data = JSON.parse(saved);
-                    Object.keys(data).forEach(function(key) {
-                        var el = document.getElementById(key);
-                        if (el) {
-                            if (data[key] !== undefined && data[key] !== null && data[key] !== '') {
-                                el.value = data[key];
-                            }
-                        } else {
-                            var radio = document.querySelector('input[name="' + key + '"][value="' + data[key] + '"]');
-                            if (radio) radio.checked = true;
-                        }
-                    });
-                }
-            } catch(e) {}
-
-            applyDefaultClassAndDate();
-
-            saveAll();
-
-            document.querySelectorAll('input, textarea, select').forEach(function(el) {
-                el.addEventListener('input', saveAll);
-                el.addEventListener('change', saveAll);
-            });
-        }
-
-        function initTheme() {
-            var savedTheme = localStorage.getItem('onedrive_theme');
-            if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                document.documentElement.classList.add('dark');
-                updateThemeIcon(true);
-            } else {
-                document.documentElement.classList.remove('dark');
-                updateThemeIcon(false);
-            }
-        }
-
-        function toggleDarkMode() {
-            var isDark = document.documentElement.classList.toggle('dark');
-            localStorage.setItem('onedrive_theme', isDark ? 'dark' : 'light');
-            updateThemeIcon(isDark);
-        }
-
-        function updateThemeIcon(isDark) {
-            var icon = document.getElementById('themeIcon');
-            if (icon) {
-                icon.className = isDark ? 'fa-solid fa-sun text-sm text-amber-400' : 'fa-solid fa-moon text-sm';
-            }
-        }
-
-        function updateProgress() {
-            const numQuizQuestions = 10;
-            let filled = 0;
-            for (let i = 1; i <= numQuizQuestions; i++) {
-                if (document.querySelector(`input[name="q${i}"]:checked`)) filled++;
-            }
-
-            currentPercentage = Math.min(100, Math.round((filled / numQuizQuestions) * 100));
-
-            const pBar = document.getElementById('progressBar');
-            const headerPText = document.getElementById('headerPercentText');
-            const percentNum = document.getElementById('headerPercentNumber');
-
-            if (pBar) pBar.style.width = currentPercentage + '%';
-            if (headerPText) headerPText.innerText = currentPercentage + '% erledigt';
-            if (percentNum) percentNum.innerText = currentPercentage + '%';
-
-            var svgCircle = document.getElementById('headerSvgCircle');
-            if (svgCircle) {
-                var offset = 100.53 - (100.53 * currentPercentage / 100);
-                svgCircle.style.strokeDashoffset = offset;
-            }
-
-            var hdrPdfBtn = document.getElementById('hdrPdfBtn');
-            var printIcon = document.getElementById('printIcon');
-            if (hdrPdfBtn && printIcon) {
-                if (currentPercentage === 100) {
-                    hdrPdfBtn.className = 'p-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white transition border border-emerald-600 shadow-sm cursor-pointer animate-pulse';
-                    hdrPdfBtn.title = 'Arbeitsblatt als PDF drucken';
-                } else {
-                    hdrPdfBtn.className = 'p-2 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 transition border border-slate-200 dark:border-slate-700 opacity-60 cursor-not-allowed';
-                    hdrPdfBtn.title = `Erst bei 100% Ausfüllung möglich (${currentPercentage}%)`;
-                }
-            }
-
-            saveProgressToStorage();
-        }
-
-        function saveProgressToStorage() {
-            const formData = {};
-            document.querySelectorAll('input[type="text"], input[type="date"]').forEach(input => {
-                if (input.id) formData[input.id] = input.value;
-            });
-
-            const quizData = {};
-            for (let i = 1; i <= 10; i++) {
-                const radios = document.querySelectorAll(`input[name="q${i}"]`);
-                radios.forEach((r, idx) => {
-                    if (r.checked) quizData[`q${i}`] = idx;
-                });
-            }
-
-            const stateToSave = {
-                form: formData,
-                quiz: quizData,
-                percent: currentPercentage
-            };
-
-            localStorage.setItem('onedrive_aexam_worksheet_8sek', JSON.stringify(stateToSave));
-        }
-
-        function loadProgress() {
-            const saved = localStorage.getItem('onedrive_aexam_worksheet_8sek');
-            if (!saved) return;
-
-            try {
-                const data = JSON.parse(saved);
-                if (data.form) {
-                    Object.keys(data.form).forEach(id => {
-                        const el = document.getElementById(id);
-                        if (el) {
-                            if (id === 'studentClass' && (!data.form[id] || !data.form[id].trim())) el.value = 'B24';
-                            else if (data.form[id]) el.value = data.form[id];
-                        }
-                    });
-                }
-                if (data.quiz) {
-                    Object.keys(data.quiz).forEach(qKey => {
-                        const radios = document.querySelectorAll(`input[name="${qKey}"]`);
-                        const checkedIdx = data.quiz[qKey];
-                        if (radios[checkedIdx]) {
-                            radios[checkedIdx].checked = true;
-                        }
-                    });
-                    checkQuiz();
-                }
-            } catch (e) {
-                console.error("Fehler beim Laden des Speicherstands", e);
-            }
-        }
-
-        function handlePrint() {
-            const percentNum = document.getElementById('headerPercentNumber');
-            if (percentNum && percentNum.innerText === '100%') {
-                const originalTitle = document.title;
-                document.title = 'AEXAM';
-                // Dunkelmodus für den Druck immer ausschalten: sonst bleiben die
-                // dark:-Tailwind-Farben (dunkle Karten, helle Schrift) im PDF aktiv,
-                // da @media print nur body zurücksetzt, nicht die .dark-Klasse selbst.
-                const wasDark = document.documentElement.classList.contains('dark');
-                if (wasDark) document.documentElement.classList.remove('dark');
-                window.print();
-                if (wasDark) document.documentElement.classList.add('dark');
-                document.title = originalTitle;
-            } else {
-                showToast('Fülle bitte zuerst alle Felder aus (100%), um das Dokument zu drucken.');
-            }
-        }
-
-        function confirmReset() {
-            showConfirmModal('Möchtest du wirklich alle Antworten auf diesem Arbeitsblatt zurücksetzen?', () => {
-                localStorage.removeItem('onedrive_aexam_worksheet_8sek');
-                localStorage.removeItem('hw_autosave_' + location.pathname.split('/').pop());
-                document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
-                const res = document.getElementById('quizResult');
-                if (res) res.classList.add('hidden');
-                applyDefaultClassAndDate();
-                var nameEl = document.getElementById('studentName');
-                var globalVorname = localStorage.getItem('studentVorname') || localStorage.getItem('student_vorname');
-                if (nameEl && globalVorname) nameEl.value = globalVorname;
-                updateProgress();
-                showToast('Arbeitsblatt wurde zurückgesetzt.');
-            });
-        }
-
-        /* 10-Questions Check Quiz */
-        function checkQuiz() {
-            let score = 0;
-            let answered = 0;
-            const totalQuestions = 10;
-
-            for (let i = 1; i <= totalQuestions; i++) {
-                const selected = document.querySelector(`input[name="q${i}"]:checked`);
-                if (selected) {
-                    answered++;
-                    score += parseInt(selected.value);
-                }
-            }
-
-            const res = document.getElementById('quizResult');
-            if (res && answered > 0) {
-                res.classList.remove('hidden');
-                if (answered === totalQuestions) {
-                    if (score === totalQuestions) {
-                        res.className = 'p-3.5 rounded-xl text-center font-bold text-xs bg-emerald-600 text-white shadow-sm';
-                        res.innerText = `🎉 Hervorragend! Du hast alle ${totalQuestions} von ${totalQuestions} Hardware-Fragen richtig beantwortet!`;
-                    } else {
-                        res.className = 'p-3.5 rounded-xl text-center font-bold text-xs bg-amber-600 text-white shadow-sm';
-                        res.innerText = `👍 Du hast ${score} von ${totalQuestions} Fragen richtig beantwortet. Überprüfe deine Antworten noch einmal!`;
-                    }
-                } else {
-                    res.className = 'p-3.5 rounded-xl text-center font-bold text-xs bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 shadow-sm';
-                    res.innerText = `Fortschritt Wissenstest: ${answered} von ${totalQuestions} Fragen beantwortet.`;
-                }
-            }
-        }
-
-        /* Custom Toast Notification System */
-        function showToast(message) {
-            let toast = document.getElementById('customToast');
-            if (!toast) {
-                toast = document.createElement('div');
-                toast.id = 'customToast';
-                toast.className = 'fixed bottom-5 right-5 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl z-50 transition-all duration-300 transform translate-y-10 opacity-0 flex items-center gap-2.5 text-xs font-semibold border border-slate-700 max-w-md';
-                document.body.appendChild(toast);
-            }
-            toast.innerHTML = `<i class="fa-solid fa-circle-info text-onedrive-400 text-base shrink-0"></i> <span>${message}</span>`;
-            toast.classList.remove('translate-y-10', 'opacity-0');
-
-            setTimeout(() => {
-                toast.classList.add('translate-y-10', 'opacity-0');
-            }, 3500);
-        }
-
-        /* Custom Confirmation Modal */
-        function showConfirmModal(message, onConfirm) {
-            let modal = document.getElementById('customModal');
-            if (!modal) {
-                modal = document.createElement('div');
-                modal.id = 'customModal';
-                modal.className = 'fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4';
-                document.body.appendChild(modal);
-            }
-
-            modal.innerHTML = `
-                <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 max-w-sm w-full p-6 space-y-4">
-                    <div class="flex items-center gap-3 text-rose-600 dark:text-rose-400 font-bold text-base">
-                        <i class="fa-solid fa-triangle-exclamation text-xl"></i>
-                        <span>Aktion bestätigen</span>
-                    </div>
-                    <p class="text-xs text-slate-600 dark:text-slate-300">${message}</p>
-                    <div class="flex justify-end gap-2 pt-2">
-                        <button id="modalCancelBtn" class="px-3.5 py-1.5 text-xs font-semibold rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200">
-                            Abbrechen
-                        </button>
-                        <button id="modalConfirmBtn" class="px-3.5 py-1.5 text-xs font-semibold rounded-xl bg-rose-600 hover:bg-rose-700 text-white">
-                            Zurücksetzen
-                        </button>
-                    </div>
-                </div>
-            `;
-
-            modal.style.display = 'flex';
-
-            document.getElementById('modalCancelBtn').onclick = () => {
-                modal.style.display = 'none';
-            };
-
-            document.getElementById('modalConfirmBtn').onclick = () => {
-                modal.style.display = 'none';
-                onConfirm();
-            };
-        }
-    </script>
-
-    <!-- Global Unified Student Vorname Sync & First-Time Prompt -->
-    <script>
-      (function() {
-        function getSavedVorname() {
-          return localStorage.getItem('studentVorname') || localStorage.getItem('student_vorname') || '';
-        }
-
-        function setSavedVorname(name) {
-          if (name && name.trim()) {
-            var clean = name.trim();
-            localStorage.setItem('studentVorname', clean);
-            localStorage.setItem('student_vorname', clean);
-            syncVornameInputs(clean);
-          }
-        }
-
-        function syncVornameInputs(name) {
-          var el = document.getElementById('studentName');
-          if (el && name) {
-            el.value = name;
-          }
-        }
-
-        function checkAndPromptVorname() {
-          var name = getSavedVorname();
-          var el = document.getElementById('studentName');
-          if (el && el.value && el.value.trim()) {
-            name = el.value.trim();
-            setSavedVorname(name);
-          }
-          if (!name) {
-            setTimeout(function() {
-              var entered = prompt("Willkommen! Wie lautet dein Vorname?");
-              if (entered && entered.trim()) {
-                setSavedVorname(entered);
-              }
-            }, 300);
-          } else {
-            syncVornameInputs(name);
-          }
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-          var el = document.getElementById('studentName');
-          if (el) {
-            var existing = getSavedVorname();
-            if (existing) el.value = existing;
-            el.addEventListener('input', function() {
-              setSavedVorname(el.value);
-            });
-            el.addEventListener('change', function() {
-              setSavedVorname(el.value);
-            });
-          }
-          checkAndPromptVorname();
-        });
-
-        window.addEventListener('storage', function(e) {
-          if (e.key === 'studentVorname' || e.key === 'student_vorname') {
-            if (e.newValue) syncVornameInputs(e.newValue);
-          }
-        });
-      })();
-    </script>
-
-</body>
-</html>
+<body class="min-h-full bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100">
+<header class="sticky top-0 z-40 bg-white/95 dark:bg-slate-900/95 border-b border-slate-200 dark:border-slate-800">
+ <div class="max-w-[1400px] mx-auto px-3 sm:px-6 py-2.5 flex items-center justify-between gap-3">
+  <div class="flex items-center gap-3"><div class="w-9 h-9 rounded-lg bg-onedrive-500 text-white flex items-center justify-center"><i class="fa-solid fa-clipboard-check"></i></div>
+   <div><div class="text-[10px] uppercase font-bold text-slate-400">AEXAM</div><div id="headerPercentText" class="text-sm font-extrabold text-onedrive-600">0% beantwortet</div></div>
+  </div>
+  <div class="flex gap-2">
+   <button class="btn border border-slate-300 dark:border-slate-700" onclick="toggleDarkMode()"><i id="themeIcon" class="fa-solid fa-moon"></i></button>
+   <button id="pdfBtn" class="btn bg-slate-200 dark:bg-slate-800 text-slate-400 opacity-60" onclick="downloadPdf()"><i class="fa-solid fa-file-pdf"></i></button>
+   <button class="btn border border-rose-300 text-rose-600" onclick="resetExam()"><i class="fa-solid fa-rotate-right"></i></button>
+  </div>
+ </div>
+ <div class="h-1 bg-slate-200 dark:bg-slate-800"><div id="progressBar" class="h-1 bg-onedrive-500" style="width:0%"></div></div>
+</header>
+
+<main class="max-w-[1400px] mx-auto px-3 sm:px-6 py-5 space-y-4">
+ <section class="card p-4 sm:p-5">
+  <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+   <div><div class="text-xs uppercase tracking-wider font-bold text-onedrive-600">Abschluss</div><h1 class="text-xl sm:text-2xl font-black mt-1">Hardware-Wissenstest</h1>
+   <p class="text-sm text-slate-500 mt-1">20 Fragen: <strong>10 Komponenten + 10 Schnittstellen</strong>. Bestanden ab <strong>16/20</strong>.</p></div>
+   <div class="grid grid-cols-3 gap-2 min-w-0 sm:min-w-[400px] text-xs">
+    <div class="rounded-xl bg-slate-50 dark:bg-slate-800 p-2"><span class="block text-[9px] uppercase text-slate-400 font-bold">Vorname</span><span id="metaName">–</span></div>
+    <div class="rounded-xl bg-slate-50 dark:bg-slate-800 p-2"><span class="block text-[9px] uppercase text-slate-400 font-bold">Klasse</span><span id="metaClass">B24</span></div>
+    <div class="rounded-xl bg-slate-50 dark:bg-slate-800 p-2"><span class="block text-[9px] uppercase text-slate-400 font-bold">Datum</span><span id="metaDate">–</span></div>
+   </div>
+  </div>
+  <div class="hidden"><input id="studentName" readonly><input id="studentClass" readonly value="B24"><input id="studentDate" readonly></div>
+ </section>
+
+ <section class="grid grid-cols-3 gap-2">
+  <div class="card p-3 text-center"><div class="text-[10px] uppercase font-bold text-slate-400">Beantwortet</div><div id="statAnswered" class="text-xl font-black">0/20</div></div>
+  <div class="card p-3 text-center"><div class="text-[10px] uppercase font-bold text-slate-400">Richtig</div><div id="statCorrect" class="text-xl font-black text-emerald-600">0</div></div>
+  <div class="card p-3 text-center"><div class="text-[10px] uppercase font-bold text-slate-400">Status</div><div id="statStatus" class="text-sm font-black">Offen</div></div>
+ </section>
+
+ <section id="examGrid" class="grid grid-cols-1 lg:grid-cols-2 gap-4"></section>
+ <section id="resultBox" class="card p-5 text-sm font-bold">Beantworte alle 20 Fragen.</section>
+</main>
+
+<div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 translate-y-8 opacity-0 transition-all bg-slate-900 text-white px-4 py-3 rounded-xl text-sm font-bold z-50"></div>
+<script src="assets/js/worksheet-common.js"></script><script src="assets/js/pdf-engine.js"></script>
+<script>
+const STORAGE_KEY='onedrive_aexam_worksheet_8sek',LEGACY_AUTOSAVE_KEY='hw_autosave_AEXAM.html';
+const QUESTIONS=[{"q":"PC-Gehäuse: Welche Hauptfunktion erfüllt es?","o":["Es führt Rechenoperationen aus.","Es schützt Bauteile und unterstützt einen gezielten Luftstrom.","Es speichert Dateien dauerhaft."],"c":1,"group":"Komponenten"},{"q":"Mainboard: Warum gilt es als Zentrale des PCs?","o":["Es verbindet die Bauteile und ermöglicht deren Datenaustausch.","Es ersetzt das Netzteil.","Es ist nur für die Bildausgabe zuständig."],"c":0,"group":"Komponenten"},{"q":"CPU: Wo befindet sie sich typischerweise?","o":["Im CPU-Sockel auf dem Mainboard.","Im Netzteil.","Direkt im Monitor."],"c":0,"group":"Komponenten"},{"q":"RAM: Was trifft zu?","o":["Er speichert Daten dauerhaft ohne Strom.","Er ist schneller Arbeitsspeicher und verliert Inhalte ohne Strom.","Er ist ein Anschluss für Monitore."],"c":1,"group":"Komponenten"},{"q":"SSD und HDD: Wofür werden sie hauptsächlich verwendet?","o":["Für dauerhafte Datenspeicherung.","Nur für WLAN.","Nur zur Kühlung."],"c":0,"group":"Komponenten"},{"q":"GPU/Grafikkarte: Welche Aufgabe hat sie?","o":["Grafik und Bildberechnung.","Strom in 230 V umwandeln.","Tastatureingaben speichern."],"c":0,"group":"Komponenten"},{"q":"Netzteil (PSU): Was macht es?","o":["Es versorgt PC-Komponenten mit passenden Spannungen.","Es ist ein Massenspeicher.","Es ersetzt die CPU."],"c":0,"group":"Komponenten"},{"q":"CPU-Kühler: Warum ist er wichtig?","o":["Damit Wärme von der CPU abgeführt wird.","Damit Dateien schneller gespeichert werden.","Damit der PC WLAN empfängt."],"c":0,"group":"Komponenten"},{"q":"Welches Gerät ist hauptsächlich ein Eingabegerät?","o":["Tastatur","Monitor","Lautsprecher"],"c":0,"group":"Komponenten"},{"q":"Welches Gerät ist hauptsächlich ein Ausgabegerät?","o":["Maus","Mikrofon","Monitor"],"c":2,"group":"Komponenten"},{"q":"Welches Merkmal trifft auf USB-A zu?","o":["Rechteckig und nur in einer Richtung einsteckbar.","Immer beidseitig einsteckbar.","Überträgt ausschliesslich Bild."],"c":0,"group":"Schnittstellen"},{"q":"Was ist ein wichtiger Vorteil von USB-C?","o":["Beidseitig einsteckbar und je nach Port vielseitig nutzbar.","Es ist immer ein analoger Anschluss.","Es benötigt Schrauben."],"c":0,"group":"Schnittstellen"},{"q":"Was überträgt HDMI typischerweise?","o":["Digitales Bild und Ton.","Nur 230-V-Strom.","Nur Netzwerkdaten."],"c":0,"group":"Schnittstellen"},{"q":"Wofür wird DisplayPort hauptsächlich eingesetzt?","o":["Für digitale Monitorverbindungen.","Für Stromversorgung des PC-Netzteils.","Für analoge Mikrofone."],"c":0,"group":"Schnittstellen"},{"q":"Warum gilt VGA heute als veraltet?","o":["Es überträgt analoges Bild und keinen Ton.","Es ist ein USB-Standard.","Es funktioniert nur drahtlos."],"c":0,"group":"Schnittstellen"},{"q":"Woran erkennt man DVI typischerweise?","o":["Breiter Stecker mit Pin-Raster und Schrauben.","Runder 3,5-mm-Stecker.","Kleiner Netzwerkclip."],"c":0,"group":"Schnittstellen"},{"q":"Wozu dient RJ45/Ethernet?","o":["Kabelgebundene Netzwerkverbindung.","Stromversorgung des Netzteils.","Analoge Bildübertragung."],"c":0,"group":"Schnittstellen"},{"q":"Wozu dient ein Stromkabel C13 am Desktop-PC?","o":["Es verbindet das Netzteil mit der Steckdose.","Es überträgt Audiosignale.","Es erweitert USB-Anschlüsse."],"c":0,"group":"Schnittstellen"},{"q":"Wozu dient ein USB-Hub?","o":["Er erweitert einen USB-Anschluss auf mehrere.","Er kühlt die CPU.","Er ersetzt den Router."],"c":0,"group":"Schnittstellen"},{"q":"Wo wird eine SD-Karte häufig eingesetzt?","o":["Als entnehmbarer Speicher, z. B. in Kameras.","Als Stromstecker für das Netzteil.","Als Monitoranschluss."],"c":0,"group":"Schnittstellen"}];
+let currentPercentage=0,saveTimer=null;
+
+function render(){
+ const g=document.getElementById('examGrid');
+ g.innerHTML=QUESTIONS.map((q,i)=>`<fieldset class="card p-4" data-q="${i}">
+   <legend class="font-black text-sm px-1"><span class="text-onedrive-600">${i+1}.</span> ${q.q}</legend>
+   <div class="text-[10px] uppercase font-bold text-slate-400 mt-1">${q.group}</div>
+   <div class="space-y-2 mt-3">${q.o.map((o,j)=>`<label class="flex items-start gap-2 text-sm cursor-pointer"><input class="mt-1 accent-onedrive-500" type="radio" name="q${i}" value="${j}"><span>${o}</span></label>`).join('')}</div>
+  </fieldset>`).join('');
+}
+function score(){
+ let answered=0,correct=0;QUESTIONS.forEach((q,i)=>{const s=document.querySelector(`input[name="q${i}"]:checked`);if(s){answered++;if(Number(s.value)===q.c)correct++;}});
+ return{answered,correct,passed:answered===QUESTIONS.length&&correct>=16};
+}
+function update(){
+ const s=score();const answeredPct=Math.round(s.answered/QUESTIONS.length*100);
+ currentPercentage=s.passed?100:Math.min(99,answeredPct);
+ document.getElementById('headerPercentText').textContent=s.passed?'100% · bestanden':answeredPct+'% beantwortet';
+ document.getElementById('progressBar').style.width=currentPercentage+'%';
+ document.getElementById('statAnswered').textContent=s.answered+'/'+QUESTIONS.length;document.getElementById('statCorrect').textContent=s.correct;
+ document.getElementById('statStatus').textContent=s.passed?'Bestanden':(s.answered===QUESTIONS.length?'Noch nicht bestanden':'Offen');
+ const box=document.getElementById('resultBox');
+ if(s.answered<QUESTIONS.length){box.textContent='Beantworte alle 20 Fragen. Noch '+(QUESTIONS.length-s.answered)+' offen.';box.className='card p-5 text-sm font-bold';}
+ else if(s.passed){box.textContent='✓ '+s.correct+'/20 richtig. AEXAM bestanden.';box.className='card p-5 text-sm font-bold bg-emerald-50 dark:bg-emerald-950 text-emerald-700';}
+ else{box.textContent=s.correct+'/20 richtig. Für das Bestehen brauchst du 16/20. Verbessere die markierten Antworten.';box.className='card p-5 text-sm font-bold bg-amber-50 dark:bg-amber-950 text-amber-700';}
+ if(s.answered===QUESTIONS.length)document.querySelectorAll('[data-q]').forEach((f,i)=>{const r=f.querySelector('input:checked');f.classList.remove('ring-2','ring-emerald-400','ring-amber-400');if(r)f.classList.add('ring-2',Number(r.value)===QUESTIONS[i].c?'ring-emerald-400':'ring-amber-400')});
+ const b=document.getElementById('pdfBtn');if(s.passed){b.className='btn bg-emerald-600 text-white';b.title='PDF herunterladen'}else{b.className='btn bg-slate-200 dark:bg-slate-800 text-slate-400 opacity-60';b.title='PDF nach bestandenem Test'}
+}
+function collect(){const answers={};QUESTIONS.forEach((_,i)=>{const s=document.querySelector(`input[name="q${i}"]:checked`);if(s)answers['q'+i]=Number(s.value)});const s=score();return{version:3,answers,answered:s.answered,correct:s.correct,passed:s.passed,percent:currentPercentage,updatedAt:new Date().toISOString()}}
+function load(){try{const raw=localStorage.getItem(STORAGE_KEY);if(!raw)return;const d=JSON.parse(raw),a=d.answers||{};Object.entries(a).forEach(([k,v])=>{const i=k.replace('q','');const r=document.querySelector(`input[name="q${i}"][value="${v}"]`);if(r)r.checked=true})}catch(e){console.warn(e)}}
+function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(collect()))}
+function scheduleSave(){clearTimeout(saveTimer);saveTimer=setTimeout(save,120)}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.remove('translate-y-8','opacity-0');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.add('translate-y-8','opacity-0'),2200)}
+function resetExam(){if(!confirm('AEXAM vollständig zurücksetzen?'))return;localStorage.removeItem(STORAGE_KEY);localStorage.removeItem(LEGACY_AUTOSAVE_KEY);document.querySelectorAll('input[type=radio]').forEach(r=>r.checked=false);update();save()}
+function downloadPdf(){
+ const s=score();if(!s.passed){toast('PDF erst nach bestandenem Test (mind. 16/20)');return}if(typeof downloadTextWorksheetPDF!=='function'){toast('PDF-Modul nicht geladen');return}
+ const sections=[{heading:'Ergebnis',fields:[{label:'Punkte',value:s.correct+' / '+QUESTIONS.length},{label:'Status',value:'Bestanden'}]},
+  ...QUESTIONS.map((q,i)=>{const sel=document.querySelector(`input[name="q${i}"]:checked`);return{heading:(i+1)+'. '+q.q,fields:[{label:'Antwort',value:q.o[Number(sel.value)]},{label:'Bewertung',value:Number(sel.value)===q.c?'Richtig':'Falsch'}]}})
+ ];downloadTextWorksheetPDF({title:'AEXAM · Hardware-Wissenstest',filenamePrefix:'AEXAM_Hardware-Wissenstest',sections});
+}
+function syncMeta(){[['studentName','metaName'],['studentClass','metaClass'],['studentDate','metaDate']].forEach(([a,b])=>{const s=document.getElementById(a),d=document.getElementById(b);if(s&&d)d.textContent=s.value||'–'})}
+document.addEventListener('DOMContentLoaded',()=>{render();if(typeof applyDefaultClassAndDate==='function')applyDefaultClassAndDate();load();document.querySelectorAll('input[type=radio]').forEach(r=>r.addEventListener('change',()=>{update();scheduleSave()}));update();syncMeta();setTimeout(()=>{syncMeta();save()},400)});
+</script></body></html>
