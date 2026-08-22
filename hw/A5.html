@@ -1,217 +1,148 @@
 <!DOCTYPE html>
 <html lang="de" class="h-full">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>A5: Anschlüsse, Kabel & Schnittstellen • Arbeitsblatt</title>
-  <script src="assets/js/tailwind.min.js"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            slate: {
-              50:'#fafafa',100:'#f5f5f5',200:'#e5e5e5',300:'#d4d4d4',400:'#b4bdca',
-              500:'#a3a3a3',600:'#616161',700:'#404040',800:'#303846',900:'#1a1f26',950:'#111418'
-            },
-            onedrive: {
-              50:'#eff6ff',100:'#dbeafe',400:'#66a1ff',500:'#0078d4',600:'#106ebe',
-              700:'#005a9e',800:'#004578',900:'#00335c',950:'#001f3f'
-            }
-          },
-          fontFamily: { sans:['Segoe UI','Inter','system-ui','-apple-system','sans-serif'] }
-        }
-      }
-    };
-  </script>
-  <link rel="stylesheet" href="assets/css/fontawesome.min.css">
-  <style>
-    @import url('assets/fonts/inter.css');
-    * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-    html { scroll-behavior:smooth; }
-    ::-webkit-scrollbar { width:6px; height:6px; }
-    ::-webkit-scrollbar-track { background:transparent; }
-    ::-webkit-scrollbar-thumb { background:rgba(148,163,184,.55); border-radius:999px; }
-    .task-panel[hidden] { display:none !important; }
-    .step-btn { transition:all .18s ease; }
-    .port-svg { width:100%; height:100%; display:block; }
-    .cable-chip { touch-action:none; user-select:none; }
-    .drop-zone.is-over { outline:3px solid rgba(0,120,212,.35); outline-offset:2px; }
-    .drop-zone.is-wrong { animation:shake .28s linear 1; }
-    @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
-    .toast-show { transform:translateY(0) !important; opacity:1 !important; }
-    textarea { resize:vertical; }
-    @media (max-width:640px) { .task-panel { border-radius:14px !important; } }
-  </style>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>A5: Schnittstellen & PC-Kabel</title>
+<script src="assets/js/tailwind.min.js"></script>
+<script>
+tailwind.config={darkMode:'class',theme:{extend:{colors:{onedrive:{500:'#0078d4',600:'#106ebe',700:'#005a9e'}},fontFamily:{sans:['Segoe UI','Inter','system-ui','sans-serif']}}}};
+</script>
+<link rel="stylesheet" href="assets/css/fontawesome.min.css">
+<style>
+@import url('assets/fonts/inter.css');
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI','Inter',system-ui,sans-serif}
+.card{background:white;border:1px solid #e2e8f0;border-radius:1rem}
+.dark .card{background:#0f172a;border-color:#334155}
+.field{width:100%;border:1px solid #cbd5e1;border-radius:.75rem;padding:.65rem .75rem;background:#fff}
+.dark .field{background:#1e293b;border-color:#475569;color:#f8fafc}
+.btn{border-radius:.75rem;padding:.6rem .85rem;font-weight:700}
+@media(max-width:640px){.mobile-stack{grid-template-columns:1fr!important}}
+</style>
 </head>
-<body class="bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-full flex flex-col font-sans antialiased">
+<body class="min-h-full bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100">
+<header class="sticky top-0 z-40 bg-white/95 dark:bg-slate-900/95 border-b border-slate-200 dark:border-slate-800">
+  <div class="max-w-[1500px] mx-auto px-3 sm:px-6 py-2.5 flex items-center justify-between gap-3">
+    <div class="flex items-center gap-3"><div class="w-9 h-9 rounded-lg bg-onedrive-500 text-white flex items-center justify-center"><i class="fa-solid fa-plug"></i></div>
+      <div><div class="text-[10px] uppercase font-bold text-slate-400">Fortschritt</div><div id="headerPercentText" class="text-sm font-extrabold text-onedrive-600">0% erledigt</div></div>
+    </div>
+    <div class="flex gap-2">
+      <button class="btn border border-slate-300 dark:border-slate-700" onclick="toggleDarkMode()" title="Dunkelmodus"><i id="themeIcon" class="fa-solid fa-moon"></i></button>
+      <button id="pdfBtn" class="btn bg-slate-200 dark:bg-slate-800 text-slate-400 opacity-60" onclick="downloadPdf()" title="Erst bei 100%"><i class="fa-solid fa-file-pdf"></i></button>
+      <button class="btn border border-rose-300 text-rose-600" onclick="resetA5()" title="Zurücksetzen"><i class="fa-solid fa-rotate-right"></i></button>
+    </div>
+  </div>
+  <div class="h-1 bg-slate-200 dark:bg-slate-800"><div id="progressBar" class="h-1 bg-onedrive-500 transition-all" style="width:0%"></div></div>
+</header>
 
-  <header class="sticky top-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur border-b border-slate-200 dark:border-slate-800 shadow-sm">
-    <div class="max-w-[1500px] mx-auto px-3 sm:px-6 py-2.5 flex items-center justify-between gap-3">
-      <div class="flex items-center gap-3 min-w-0">
-        <div class="w-9 h-9 rounded-lg bg-onedrive-500 text-white flex items-center justify-center shadow-md shrink-0"><i class="fa-solid fa-plug-circle-bolt"></i></div>
-        <div class="min-w-0"><span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Fortschritt</span><span id="headerPercentText" class="block text-sm font-extrabold text-onedrive-600 dark:text-onedrive-400 truncate">0% erledigt</span></div>
-        <div class="relative w-10 h-10 flex items-center justify-center font-bold text-[10px] text-slate-700 dark:text-slate-200 shrink-0">
-          <svg class="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="16" fill="none" class="stroke-slate-200 dark:stroke-slate-800" stroke-width="4"></circle><circle id="headerSvgCircle" cx="18" cy="18" r="16" fill="none" class="stroke-emerald-500 transition-all duration-300" stroke-width="4" stroke-dasharray="100.53" stroke-dashoffset="100.53" stroke-linecap="round"></circle></svg>
-          <span id="headerPercentNumber" class="relative z-10">0%</span>
-        </div>
+<main class="max-w-[1500px] mx-auto px-3 sm:px-6 py-5 space-y-4">
+  <section class="card p-4 sm:p-5">
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+      <div>
+        <div class="text-xs font-bold uppercase tracking-wider text-onedrive-600">IT-Hardware · A5</div>
+        <h1 class="text-xl sm:text-2xl font-black mt-1">Schnittstellen & PC-Kabel</h1>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Die gleichen <strong>16 Anschlüsse und Geräte wie in A4</strong> – jetzt beschreibst du Erkennungsmerkmale und Einsatz selbst.</p>
       </div>
-      <div class="flex items-center gap-2 shrink-0">
-        <button type="button" onclick="toggleDarkMode()" title="Dunkelmodus umschalten" class="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700"><i id="themeIcon" class="fa-solid fa-moon text-sm"></i></button>
-        <button id="pdfBtn" type="button" onclick="handleDownloadPdf()" title="Erst bei 100% möglich" class="p-2 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 border border-slate-200 dark:border-slate-700 opacity-60 cursor-not-allowed"><i class="fa-solid fa-file-pdf text-sm"></i></button>
-        <button type="button" onclick="confirmReset()" title="Zurücksetzen" class="p-2 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/50 rounded-lg border border-rose-200 dark:border-rose-900/50"><i class="fa-solid fa-rotate-right text-sm"></i></button>
+      <div class="grid grid-cols-3 gap-2 min-w-0 sm:min-w-[400px] text-xs">
+        <div class="rounded-xl bg-slate-50 dark:bg-slate-800 p-2"><span class="block text-[9px] uppercase text-slate-400 font-bold">Vorname</span><span id="metaName">–</span></div>
+        <div class="rounded-xl bg-slate-50 dark:bg-slate-800 p-2"><span class="block text-[9px] uppercase text-slate-400 font-bold">Klasse</span><span id="metaClass">B24</span></div>
+        <div class="rounded-xl bg-slate-50 dark:bg-slate-800 p-2"><span class="block text-[9px] uppercase text-slate-400 font-bold">Datum</span><span id="metaDate">–</span></div>
       </div>
     </div>
-    <div class="w-full bg-slate-200 dark:bg-slate-800 h-1"><div id="progressBar" class="bg-onedrive-500 h-1 transition-all duration-300" style="width:0%"></div></div>
-  </header>
+    <div class="hidden">
+      <input id="studentName" type="text" readonly><input id="studentClass" type="text" readonly value="B24"><input id="studentDate" type="text" readonly>
+    </div>
+  </section>
 
-  <main class="max-w-[1500px] w-full mx-auto px-2 sm:px-6 py-4 sm:py-6 space-y-4 flex-grow">
-    <section class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-4 sm:p-5">
-      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-        <div class="flex items-center gap-3 min-w-0">
-          <div class="w-12 h-12 rounded-xl bg-onedrive-50 dark:bg-onedrive-900/40 text-onedrive-600 dark:text-onedrive-400 flex items-center justify-center text-xl border border-onedrive-100 dark:border-onedrive-800/50 shrink-0"><i class="fa-solid fa-plug"></i></div>
-          <div><h1 class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">A5: Anschlüsse, Kabel & Schnittstellen</h1><p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">Erkennen · zuordnen · vergleichen · anwenden</p></div>
-        </div>
-        <div class="grid grid-cols-3 gap-2 min-w-0 sm:min-w-[420px]">
-          <div class="rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 px-3 py-2"><div class="text-[10px] uppercase font-bold text-slate-400">Vorname</div><div id="metaNameMobile" class="text-xs font-semibold truncate">–</div></div>
-          <div class="rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 px-3 py-2"><div class="text-[10px] uppercase font-bold text-slate-400">Klasse</div><div id="metaClassMobile" class="text-xs font-semibold">B24</div></div>
-          <div class="rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 px-3 py-2"><div class="text-[10px] uppercase font-bold text-slate-400">Datum</div><div id="metaDateMobile" class="text-xs font-semibold">–</div></div>
-        </div>
-      </div>
-      <div class="hidden sm:grid grid-cols-3 gap-3 mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
-        <input type="text" id="studentName" readonly tabindex="-1" style="pointer-events:none" class="px-3 py-2 text-sm bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-500 dark:text-slate-400" aria-label="Vorname">
-        <input type="text" id="studentClass" readonly tabindex="-1" style="pointer-events:none" value="B24" class="px-3 py-2 text-sm bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-500 dark:text-slate-400" aria-label="Klasse">
-        <input type="text" id="studentDate" readonly tabindex="-1" style="pointer-events:none" class="px-3 py-2 text-sm bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-500 dark:text-slate-400" aria-label="Datum">
-      </div>
-    </section>
+  <section class="card p-4 sm:p-5">
+    <div class="flex items-start gap-3">
+      <div class="w-9 h-9 rounded-lg bg-blue-50 dark:bg-blue-950 text-blue-600 flex items-center justify-center shrink-0"><i class="fa-solid fa-circle-info"></i></div>
+      <div><h2 class="font-bold">Auftrag</h2><p class="text-sm text-slate-600 dark:text-slate-400">Bearbeite alle 16 Karten. Formuliere kurz und in eigenen Worten. A5 enthält bewusst <strong>keinen Sortier-, Transfer- oder Quiz-Teil mehr</strong> – diese Vertiefungen folgen in A8 bzw. AEXAM.</p></div>
+    </div>
+  </section>
 
-    <nav class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-2" aria-label="Aufträge"><div id="stepNav" class="flex gap-2 overflow-x-auto pb-0.5">
-      <button type="button" class="step-btn shrink-0 px-3 py-2 rounded-xl text-xs font-bold" data-step-btn="1" onclick="showStep(1)">1 · Steckbriefe <span id="stepDone1"></span></button>
-      <button type="button" class="step-btn shrink-0 px-3 py-2 rounded-xl text-xs font-bold" data-step-btn="2" onclick="showStep(2)">2 · Sortieren <span id="stepDone2"></span></button>
-      <button type="button" class="step-btn shrink-0 px-3 py-2 rounded-xl text-xs font-bold" data-step-btn="3" onclick="showStep(3)">3 · Vergleichen <span id="stepDone3"></span></button>
-      <button type="button" class="step-btn shrink-0 px-3 py-2 rounded-xl text-xs font-bold" data-step-btn="4" onclick="showStep(4)">4 · Transfer <span id="stepDone4"></span></button>
-      <button type="button" class="step-btn shrink-0 px-3 py-2 rounded-xl text-xs font-bold" data-step-btn="5" onclick="showStep(5)">5 · Check <span id="stepDone5"></span></button>
-    </div></nav>
+  <section id="connectorGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"></section>
+</main>
 
-    <section class="task-panel bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-4 sm:p-6" data-step="1">
-      <div class="mb-5"><div class="text-[11px] font-bold text-onedrive-600 dark:text-onedrive-400 uppercase tracking-wider">Auftrag 1</div><h2 class="text-xl font-bold mt-1">Die 10 wichtigsten Anschlüsse</h2><p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Beschreibe kurz, was übertragen wird, und nenne typische Geräte. Die Skizzen zeigen die Form nur schematisch.</p></div>
-      <div id="connectorGrid" class="grid grid-cols-1 lg:grid-cols-2 gap-3"></div>
-    </section>
+<div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 translate-y-8 opacity-0 transition-all bg-slate-900 text-white px-4 py-3 rounded-xl text-sm font-bold z-50"></div>
 
-    <section class="task-panel bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-4 sm:p-6" data-step="2" hidden>
-      <div class="mb-5"><div class="text-[11px] font-bold text-onedrive-600 dark:text-onedrive-400 uppercase tracking-wider">Auftrag 2</div><h2 class="text-xl font-bold mt-1">Kabel richtig sortieren</h2><p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Ziehe die Stecker in die passende Hauptkategorie. Auf dem Smartphone kannst du einen Stecker antippen und danach die Zielkategorie antippen.</p></div>
-      <div id="bankZone" class="drop-zone rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 p-4 mb-4" data-dropzone="bank"><div class="flex items-center justify-between gap-3 mb-3"><span class="text-xs font-bold uppercase tracking-wider text-slate-500">Noch zuzuordnen</span><span id="selectedCableHint" class="text-xs text-onedrive-600 dark:text-onedrive-400"></span></div><div id="deviceBank" class="flex flex-wrap gap-2 min-h-[44px]"></div></div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-        <div class="drop-zone rounded-2xl border-2 border-dashed border-purple-300 dark:border-purple-800 bg-purple-50/60 dark:bg-purple-950/20 p-4 min-h-[200px]" data-dropzone="video_audio"><button type="button" class="w-full text-left" onclick="placeSelectedCable('video_audio')"><div class="font-bold text-purple-900 dark:text-purple-300">Bild & Audio</div><div class="text-xs text-purple-700/70 dark:text-purple-300/70">HDMI, DisplayPort …</div></button><div id="zone_video_audio" class="flex flex-wrap gap-2 mt-4"></div></div>
-        <div class="drop-zone rounded-2xl border-2 border-dashed border-sky-300 dark:border-sky-800 bg-sky-50/60 dark:bg-sky-950/20 p-4 min-h-[200px]" data-dropzone="daten"><button type="button" class="w-full text-left" onclick="placeSelectedCable('daten')"><div class="font-bold text-sky-900 dark:text-sky-300">Daten & Allrounder</div><div class="text-xs text-sky-700/70 dark:text-sky-300/70">USB, Thunderbolt …</div></button><div id="zone_daten" class="flex flex-wrap gap-2 mt-4"></div></div>
-        <div class="drop-zone rounded-2xl border-2 border-dashed border-emerald-300 dark:border-emerald-800 bg-emerald-50/60 dark:bg-emerald-950/20 p-4 min-h-[200px]" data-dropzone="netz_strom"><button type="button" class="w-full text-left" onclick="placeSelectedCable('netz_strom')"><div class="font-bold text-emerald-900 dark:text-emerald-300">Netzwerk & Strom</div><div class="text-xs text-emerald-700/70 dark:text-emerald-300/70">Ethernet, Strom …</div></button><div id="zone_netz_strom" class="flex flex-wrap gap-2 mt-4"></div></div>
-      </div>
-      <div id="sortStatus" class="mt-4 text-sm font-semibold text-slate-500"></div>
-    </section>
+<script src="assets/js/worksheet-common.js"></script>
+<script src="assets/js/pdf-engine.js"></script>
+<script>
+const STORAGE_KEY='onedrive_a5_worksheet_8sek';
+const LEGACY_AUTOSAVE_KEY='hw_autosave_A5.html';
+const CONNECTORS=[{"id": "usb-a", "name": "USB-A", "desc": "Rechteckiger USB-Anschluss für Daten und Strom.", "img": "assets/usb_a_cable_1786198032413.webp", "category": "daten"}, {"id": "usb-c", "name": "USB-C", "desc": "Kompakt und beidseitig einsteckbar; je nach Port Daten, Bild und Strom.", "img": "assets/usb_c_cable_1786198043571.webp", "category": "daten"}, {"id": "hdmi", "name": "HDMI", "desc": "Digitaler Anschluss für Bild und Ton, z. B. TV und Monitor.", "img": "assets/hdmi_cable_1786198053921.webp", "category": "video_audio"}, {"id": "dp", "name": "DisplayPort", "desc": "Digitaler Monitoranschluss für Bild und Ton, häufig an PCs.", "img": "assets/dp_cable_1786198067133.webp", "category": "video_audio"}, {"id": "rj45", "name": "LAN (RJ45)", "desc": "Kabelgebundene Netzwerkverbindung mit typischem Rastclip.", "img": "assets/lan_cable_1786198076546.webp", "category": "netz_strom"}, {"id": "audio", "name": "Audio (3,5 mm)", "desc": "Analoger Klinkenanschluss für Kopfhörer, Mikrofon oder Lautsprecher.", "img": "assets/audio_cable_1786198086224.webp", "category": "video_audio"}, {"id": "vga", "name": "VGA", "desc": "Älterer analoger Bildanschluss mit 15 Pins und Schrauben.", "img": "assets/vga_cable_1786198097423.webp", "category": "video_audio"}, {"id": "dvi", "name": "DVI", "desc": "Älterer breiter Bildanschluss mit Pin-Raster und Schrauben.", "img": "assets/dvi_cable_1786198107586.webp", "category": "video_audio"}, {"id": "bt-dongle", "name": "Bluetooth-Dongle", "desc": "Kleiner USB-Empfänger für Bluetooth-Verbindungen.", "img": "assets/bluetooth_dongle_1786198654619.webp", "category": "daten"}, {"id": "power", "name": "Stromkabel (C13)", "desc": "Verbindet das PC-Netzteil mit der Steckdose.", "img": "assets/power_cable_1786198664189.webp", "category": "netz_strom"}, {"id": "usb-b", "name": "USB-B (Drucker)", "desc": "Quadratischer USB-Anschluss, häufig an Druckern.", "img": "assets/usb_b_cable_1786198671715.webp", "category": "daten"}, {"id": "micro-usb", "name": "Micro-USB", "desc": "Älterer kleiner USB-Anschluss an älteren Geräten und Powerbanks.", "img": "assets/img_micro_usb_1786222089308.jpg", "category": "daten"}, {"id": "lightning", "name": "Apple Lightning", "desc": "Apple-Anschluss älterer iPhones und iPads.", "img": "assets/img_lightning_1786222112950.jpg", "category": "daten"}, {"id": "sd-card", "name": "SD-Karte", "desc": "Entnehmbares Speichermedium, häufig in Kameras.", "img": "assets/sd_card_item.jpg", "category": "daten"}, {"id": "wlan-antenne", "name": "WLAN-Antenne", "desc": "Antenne für drahtlose Netzwerkverbindungen am PC.", "img": "assets/wlan_antenna_item.jpg", "category": "netz_strom"}, {"id": "usb-hub", "name": "USB-Hub", "desc": "Verteiler, der aus einem USB-Anschluss mehrere macht.", "img": "assets/usb_hub_item.jpg", "category": "daten"}];
+let currentPercentage=0, saveTimer=null;
 
-    <section class="task-panel bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-4 sm:p-6" data-step="3" hidden>
-      <div class="mb-5"><div class="text-[11px] font-bold text-onedrive-600 dark:text-onedrive-400 uppercase tracking-wider">Auftrag 3</div><h2 class="text-xl font-bold mt-1">Analog, digital und USB-C</h2></div>
-      <label class="block text-sm font-semibold mb-1.5" for="task3_analog_digital">1. Erkläre den Hauptunterschied zwischen VGA (analog) und HDMI/DisplayPort (digital).</label><textarea id="task3_analog_digital" rows="3" placeholder="In eigenen Worten …" class="w-full p-3 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none"></textarea>
-      <div class="mt-5 overflow-x-auto"><table class="w-full min-w-[650px] border-collapse text-sm"><thead><tr class="bg-slate-100 dark:bg-slate-800"><th class="p-3 border border-slate-200 dark:border-slate-700 text-left">Eigenschaft</th><th class="p-3 border border-slate-200 dark:border-slate-700 text-left">USB-A</th><th class="p-3 border border-slate-200 dark:border-slate-700 text-left">USB-C</th></tr></thead><tbody>
-        <tr><td class="p-3 border border-slate-200 dark:border-slate-700 font-semibold">Einsteckrichtung</td><td class="p-2 border border-slate-200 dark:border-slate-700"><input id="usba_orient" type="text" class="w-full p-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700" placeholder="…"></td><td class="p-2 border border-slate-200 dark:border-slate-700"><input id="usbc_orient" type="text" class="w-full p-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700" placeholder="…"></td></tr>
-        <tr><td class="p-3 border border-slate-200 dark:border-slate-700 font-semibold">Übertragung</td><td class="p-2 border border-slate-200 dark:border-slate-700"><input id="usba_trans" type="text" class="w-full p-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700" placeholder="…"></td><td class="p-2 border border-slate-200 dark:border-slate-700"><input id="usbc_trans" type="text" class="w-full p-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700" placeholder="…"></td></tr>
-        <tr><td class="p-3 border border-slate-200 dark:border-slate-700 font-semibold">Strom/Laden</td><td class="p-2 border border-slate-200 dark:border-slate-700"><input id="usba_power" type="text" class="w-full p-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700" placeholder="…"></td><td class="p-2 border border-slate-200 dark:border-slate-700"><input id="usbc_power" type="text" class="w-full p-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700" placeholder="…"></td></tr>
-      </tbody></table></div>
-    </section>
+function renderCards(){
+  const grid=document.getElementById('connectorGrid');
+  grid.innerHTML=CONNECTORS.map((c,i)=>`<article class="card overflow-hidden">
+    <div class="h-40 bg-slate-50 dark:bg-slate-800 flex items-center justify-center p-3">
+      <img src="${c.img}" alt="${c.name}" class="max-h-full max-w-full object-contain" loading="lazy">
+    </div>
+    <div class="p-4">
+      <div class="text-[10px] font-bold uppercase tracking-wider text-onedrive-600">${i+1} / ${CONNECTORS.length}</div>
+      <h2 class="font-black text-lg mt-0.5">${c.name}</h2>
+      <p class="text-xs text-slate-500 dark:text-slate-400 min-h-[32px] mt-1">${c.desc}</p>
+      <label class="block text-xs font-bold mt-4 mb-1" for="recognize_${c.id}">Woran erkennst du es?</label>
+      <textarea id="recognize_${c.id}" class="field text-sm" rows="2" placeholder="Form, Farbe, Pins, Symbol …"></textarea>
+      <label class="block text-xs font-bold mt-3 mb-1" for="use_${c.id}">Wofür wird es verwendet?</label>
+      <textarea id="use_${c.id}" class="field text-sm" rows="2" placeholder="Typische Geräte / Einsatz …"></textarea>
+    </div>
+  </article>`).join('');
+}
 
-    <section class="task-panel bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-4 sm:p-6" data-step="4" hidden>
-      <div class="mb-5"><div class="text-[11px] font-bold text-onedrive-600 dark:text-onedrive-400 uppercase tracking-wider">Auftrag 4</div><h2 class="text-xl font-bold mt-1">Praxisfall: neuer Arbeitsplatz</h2></div>
-      <div class="rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 p-4 text-sm text-slate-600 dark:text-slate-300 mb-5">Neue 4K-Monitore besitzen Lautsprecher und USB-Hubs. Die Laptops haben nur USB-C/Thunderbolt. Ältere Desktop-PCs besitzen DisplayPort und VGA.</div>
-      <label class="block text-sm font-semibold mb-1.5" for="task4_cable_choice">Welcher Anschluss ist für den modernen Laptop die beste Ein-Kabel-Lösung für Bild, Ton, Daten und Laden?</label>
-      <select id="task4_cable_choice" class="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none text-sm"><option value="">Bitte auswählen …</option><option value="usbc">USB-C / Thunderbolt</option><option value="vga">VGA</option><option value="aux">3,5-mm-Klinke</option><option value="dvi">DVI</option></select>
-      <div id="task4ChoiceFeedback" class="mt-2 text-xs font-semibold"></div>
-      <label class="block text-sm font-semibold mb-1.5 mt-5" for="task4_reason">Begründe deine Wahl und erkläre, welche Verbindung du für die älteren Desktop-PCs verwenden würdest.</label><textarea id="task4_reason" rows="4" placeholder="Begründung …" class="w-full p-3 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-onedrive-500 focus:outline-none"></textarea>
-    </section>
-
-    <section class="task-panel bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-4 sm:p-6" data-step="5" hidden>
-      <div class="mb-5"><div class="text-[11px] font-bold text-onedrive-600 dark:text-onedrive-400 uppercase tracking-wider">Auftrag 5</div><h2 class="text-xl font-bold mt-1">Schnittstellen-Check</h2><p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Beantworte alle 10 Fragen. Danach siehst du sofort, was du nochmals anschauen solltest.</p></div>
-      <div id="quizGrid" class="grid grid-cols-1 lg:grid-cols-2 gap-3"></div><div id="quizResult" class="mt-4 p-4 rounded-xl bg-slate-100 dark:bg-slate-800 text-sm font-bold">Noch keine Antworten.</div>
-    </section>
-
-    <div class="flex items-center justify-between gap-3 py-1"><button id="prevBtn" type="button" onclick="showStep(activeStep-1)" class="px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm font-bold disabled:opacity-40">← Zurück</button><div id="saveStatus" class="text-xs text-emerald-600 dark:text-emerald-400 font-semibold"><i class="fa-solid fa-cloud-arrow-up mr-1"></i>Automatisch gespeichert</div><button id="nextBtn" type="button" onclick="showStep(activeStep+1)" class="px-4 py-2 rounded-xl bg-onedrive-500 hover:bg-onedrive-600 text-white text-sm font-bold disabled:opacity-40">Weiter →</button></div>
-  </main>
-
-  <footer class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-400 text-xs py-4 px-4 text-center">Informatische Bildung · IT-Hardware · A5</footer>
-  <div id="customToast" class="fixed bottom-5 left-1/2 -translate-x-1/2 translate-y-8 opacity-0 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl z-50 transition-all duration-200 text-sm font-semibold max-w-[90vw] text-center"></div>
-  <div id="customModal" class="hidden fixed inset-0 bg-slate-950/65 backdrop-blur-sm z-50 items-center justify-center p-4"></div>
-
-  <script src="assets/js/worksheet-common.js"></script>
-  <script src="assets/js/pdf-engine.js"></script>
-  <script>
-    const STORAGE_KEY = 'onedrive_a5_worksheet_8sek';
-    const LEGACY_AUTOSAVE_KEY = 'hw_autosave_A5.html';
-    const connectors = [
-      {id:'usba', name:'USB-A', detail:'rechteckig · nur eine Einsteckrichtung', category:'daten'},
-      {id:'usbc', name:'USB-C', detail:'symmetrisch · Daten, Bild und Strom möglich', category:'daten'},
-      {id:'hdmi', name:'HDMI', detail:'digital · Bild und Ton', category:'video_audio'},
-      {id:'dp', name:'DisplayPort', detail:'digital · Bild und Ton', category:'video_audio'},
-      {id:'vga', name:'VGA', detail:'analog · 15 Pins', category:'video_audio'},
-      {id:'dvi', name:'DVI', detail:'älterer Bildanschluss · verschiedene Varianten', category:'video_audio'},
-      {id:'aux', name:'3,5-mm-Klinke', detail:'analoges Audio', category:'video_audio'},
-      {id:'rj45', name:'RJ45 / Ethernet', detail:'kabelgebundenes Netzwerk', category:'netz_strom'},
-      {id:'tb', name:'Thunderbolt 3/4', detail:'USB-C-Form · sehr schnelle Daten und mehr', category:'daten'},
-      {id:'pwr', name:'Kaltgerätestecker C13', detail:'230-V-Stromversorgung', category:'netz_strom'}
-    ];
-    const quizQuestions = [
-      {q:'Welches Merkmal trifft auf USB-A zu?', options:['In jeder Richtung einsteckbar','Rechteckig und nur in einer Richtung einsteckbar','Überträgt ausschliesslich Strom'], correct:1},
-      {q:'Was ist ein wichtiger Vorteil von USB-C?', options:['Symmetrischer Stecker und vielseitige Übertragung','Benötigt immer Schrauben','Überträgt nur analoges Audio'], correct:0},
-      {q:'Was überträgt HDMI typischerweise?', options:['Nur Bild','Digitales Bild und Ton','230-V-Netzstrom'], correct:1},
-      {q:'Woran erkennt man viele DisplayPort-Stecker?', options:['An einer abgeflachten Ecke und teils Verriegelung','An 15 runden Pins in drei Reihen','An einer runden 3,5-mm-Spitze'], correct:0},
-      {q:'Warum gilt VGA als veraltet?', options:['Es ist analog und überträgt keinen Ton','Es funktioniert nur mit USB-C','Es ist ein Stromanschluss'], correct:0},
-      {q:'Wie sieht DVI typischerweise aus?', options:['Breit, Pin-Raster und oft Schrauben','Kleiner runder Audiostecker','Schmaler Netzwerkstecker mit Clip'], correct:0},
-      {q:'Welche Farbe kennzeichnet bei klassischen PC-Audiobuchsen häufig den Audio-Ausgang?', options:['Rosa','Grün','Orange'], correct:1},
-      {q:'Wozu dient RJ45/Ethernet?', options:['Kabelgebundene Netzwerkverbindung','Stromversorgung des Netzteils','Analoge Bildübertragung'], correct:0},
-      {q:'Woran erkennt man Thunderbolt 3/4 häufig?', options:['USB-C-Form mit Blitzsymbol','Blaue Schrauben','Dreipoliger Stromstecker'], correct:0},
-      {q:'Wozu dient ein Kaltgerätekabel C13 am Desktop-PC?', options:['Netzteil mit der Steckdose verbinden','Mikrofonsignal übertragen','WLAN-Daten senden'], correct:0}
-    ];
-    let cableState = {}, activeStep = 1, selectedCableId = null, draggedCableId = null, currentPercentage = 0, saveTimer = null;
-
-    function connectorSvg(kind) {
-      const common='fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"';
-      const holes=coords=>coords.map(([x,y])=>`<circle cx="${x}" cy="${y}" r="1.2" fill="currentColor" stroke="none"/>`).join('');
-      if(kind==='usba')return `<svg viewBox="0 0 80 48" class="port-svg" ${common}><rect x="10" y="9" width="60" height="30" rx="4"/><rect x="19" y="17" width="42" height="14" rx="2"/><path d="M27 17v14M53 17v14"/></svg>`;
-      if(kind==='usbc'||kind==='tb')return `<svg viewBox="0 0 80 48" class="port-svg" ${common}><rect x="9" y="12" width="62" height="24" rx="12"/><rect x="22" y="20" width="36" height="8" rx="4"/>${kind==='tb'?'<path d="M43 5L33 23h9l-5 20 11-23h-9z" fill="currentColor" stroke="none" opacity=".75"/>':''}</svg>`;
-      if(kind==='hdmi')return `<svg viewBox="0 0 80 48" class="port-svg" ${common}><path d="M12 12h56l-7 24H19z"/><path d="M23 20h34M27 27h26"/></svg>`;
-      if(kind==='dp')return `<svg viewBox="0 0 80 48" class="port-svg" ${common}><path d="M13 10h47l8 8v20H13z"/><path d="M23 20h34v9H23z"/></svg>`;
-      if(kind==='vga')return `<svg viewBox="0 0 80 48" class="port-svg" ${common}><path d="M15 10h50l7 28H8z"/>${holes([[24,19],[32,19],[40,19],[48,19],[56,19],[28,27],[36,27],[44,27],[52,27],[32,34],[40,34],[48,34]])}<circle cx="5" cy="24" r="3"/><circle cx="75" cy="24" r="3"/></svg>`;
-      if(kind==='dvi')return `<svg viewBox="0 0 80 48" class="port-svg" ${common}><rect x="10" y="8" width="60" height="32" rx="3"/>${holes([[22,17],[29,17],[36,17],[43,17],[50,17],[22,24],[29,24],[36,24],[43,24],[50,24],[22,31],[29,31],[36,31],[43,31],[50,31]])}<path d="M59 15v18"/></svg>`;
-      if(kind==='aux')return `<svg viewBox="0 0 80 48" class="port-svg" ${common}><circle cx="40" cy="24" r="17"/><circle cx="40" cy="24" r="9"/><circle cx="40" cy="24" r="3" fill="currentColor" stroke="none"/></svg>`;
-      if(kind==='rj45')return `<svg viewBox="0 0 80 48" class="port-svg" ${common}><path d="M16 9h48v31H16z"/><path d="M27 9v9h26V9"/>${holes([[27,27],[32,27],[37,27],[42,27],[47,27],[52,27]])}<path d="M32 40v-7h16v7"/></svg>`;
-      return `<svg viewBox="0 0 80 48" class="port-svg" ${common}><path d="M17 10h46v24l-7 7H24l-7-7z"/>${holes([[31,24],[40,20],[49,24]])}</svg>`;
-    }
-
-    function renderConnectorCards(){const grid=document.getElementById('connectorGrid');grid.innerHTML=connectors.map((c,i)=>`<article class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50/60 dark:bg-slate-800/40 p-3 sm:p-4"><div class="flex gap-3 items-center mb-3"><div class="w-24 h-16 sm:w-28 sm:h-16 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-2 text-slate-700 dark:text-slate-200 shrink-0">${connectorSvg(c.id)}</div><div class="min-w-0"><div class="text-[10px] font-bold uppercase text-onedrive-600 dark:text-onedrive-400">${i+1} / ${connectors.length}</div><h3 class="font-bold text-slate-900 dark:text-white">${c.name}</h3><p class="text-xs text-slate-500 dark:text-slate-400">${c.detail}</p></div></div><div class="grid grid-cols-1 sm:grid-cols-2 gap-2"><textarea id="cable_${c.id}_func" rows="2" placeholder="Was wird übertragen?" aria-label="${c.name}: Funktion und Übertragung" class="w-full p-2.5 text-sm rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 focus:ring-2 focus:ring-onedrive-500 focus:outline-none"></textarea><textarea id="cable_${c.id}_dev" rows="2" placeholder="Typische Geräte / Einsatz" aria-label="${c.name}: typische Geräte" class="w-full p-2.5 text-sm rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 focus:ring-2 focus:ring-onedrive-500 focus:outline-none"></textarea></div></article>`).join('');}
-    function renderQuiz(){document.getElementById('quizGrid').innerHTML=quizQuestions.map((q,i)=>`<fieldset class="rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 p-4"><legend class="font-bold text-sm px-1"><span class="text-onedrive-600 dark:text-onedrive-400">${i+1}.</span> ${q.q}</legend><div class="space-y-2 mt-2">${q.options.map((opt,idx)=>`<label class="flex items-start gap-2 text-sm cursor-pointer"><input type="radio" name="q${i+1}" value="${idx}" class="mt-1 accent-onedrive-500"><span>${opt}</span></label>`).join('')}</div></fieldset>`).join('');}
-    function resetCableState(){cableState={};connectors.forEach(c=>cableState[c.id]='bank');}
-    function renderCables(){['deviceBank','zone_video_audio','zone_daten','zone_netz_strom'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML='';});connectors.forEach(c=>{const loc=cableState[c.id]||'bank',chip=document.createElement('button');chip.type='button';chip.draggable=true;chip.dataset.cableId=c.id;chip.className='cable-chip px-3 py-2 rounded-xl border text-xs font-bold shadow-sm transition '+(selectedCableId===c.id?'ring-2 ring-onedrive-500 bg-onedrive-50 dark:bg-onedrive-950 border-onedrive-300':'bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-700');chip.innerHTML=`<i class="fa-solid fa-grip-vertical opacity-40 mr-1"></i>${c.name}`;chip.addEventListener('click',()=>selectCable(c.id));chip.addEventListener('dragstart',e=>{draggedCableId=c.id;e.dataTransfer.setData('text/plain',c.id);e.dataTransfer.effectAllowed='move';});chip.addEventListener('dragend',()=>{draggedCableId=null;});const target=loc==='bank'?document.getElementById('deviceBank'):document.getElementById('zone_'+loc);if(target)target.appendChild(chip);});const correct=connectors.filter(c=>cableState[c.id]===c.category).length,status=document.getElementById('sortStatus');status.textContent=correct===connectors.length?'✓ Alle 10 Stecker sind richtig zugeordnet.':`${correct} von ${connectors.length} richtig zugeordnet.`;status.className='mt-4 text-sm font-semibold '+(correct===connectors.length?'text-emerald-600 dark:text-emerald-400':'text-slate-500');document.getElementById('selectedCableHint').textContent=selectedCableId?`${connectors.find(c=>c.id===selectedCableId).name} ausgewählt`:'';}
-    function selectCable(id){selectedCableId=selectedCableId===id?null:id;renderCables();}
-    function placeSelectedCable(zone){if(!selectedCableId){showToast('Wähle zuerst einen Stecker aus.');return;}placeCable(selectedCableId,zone);}
-    function placeCable(id,zone){const cable=connectors.find(c=>c.id===id);if(!cable)return;if(zone==='bank'){cableState[id]='bank';selectedCableId=null;renderCables();updateProgress();scheduleSave();return;}if(cable.category!==zone){const el=document.querySelector(`[data-dropzone="${zone}"]`);if(el){el.classList.add('is-wrong');setTimeout(()=>el.classList.remove('is-wrong'),320);}showToast(`${cable.name} gehört nicht in diese Hauptkategorie.`);return;}cableState[id]=zone;selectedCableId=null;renderCables();updateProgress();scheduleSave();}
-    function setupDropZones(){document.querySelectorAll('[data-dropzone]').forEach(zone=>{zone.addEventListener('dragover',e=>{e.preventDefault();zone.classList.add('is-over');});zone.addEventListener('dragleave',()=>zone.classList.remove('is-over'));zone.addEventListener('drop',e=>{e.preventDefault();zone.classList.remove('is-over');const id=e.dataTransfer.getData('text/plain')||draggedCableId;if(id)placeCable(id,zone.dataset.dropzone);});});}
-    function allActivityFields(){const ids=[];connectors.forEach(c=>ids.push(`cable_${c.id}_func`,`cable_${c.id}_dev`));ids.push('task3_analog_digital','usba_orient','usbc_orient','usba_trans','usbc_trans','usba_power','usbc_power','task4_cable_choice','task4_reason');return ids;}
-    function calculateProgress(){let filled=0;const fields=allActivityFields();fields.forEach(id=>{const el=document.getElementById(id);if(!el)return;if(id==='task4_cable_choice'?el.value==='usbc':String(el.value).trim())filled++;});const correctSorted=connectors.filter(c=>cableState[c.id]===c.category).length,quizAnswered=quizQuestions.filter((_,i)=>document.querySelector(`input[name="q${i+1}"]:checked`)).length,total=fields.length+connectors.length+quizQuestions.length;return{filled,fieldsTotal:fields.length,correctSorted,quizAnswered,total,percent:Math.round(((filled+correctSorted+quizAnswered)/total)*100)};}
-    function updateProgress(){if(!document.getElementById('cable_usba_func'))return;const p=calculateProgress();currentPercentage=Math.min(100,p.percent);document.getElementById('progressBar').style.width=currentPercentage+'%';document.getElementById('headerPercentText').textContent=currentPercentage+'% erledigt';document.getElementById('headerPercentNumber').textContent=currentPercentage+'%';document.getElementById('headerSvgCircle').style.strokeDashoffset=(100.53-(100.53*currentPercentage/100)).toFixed(2);const taskDone=[connectors.every(c=>document.getElementById(`cable_${c.id}_func`).value.trim()&&document.getElementById(`cable_${c.id}_dev`).value.trim()),p.correctSorted===connectors.length,['task3_analog_digital','usba_orient','usbc_orient','usba_trans','usbc_trans','usba_power','usbc_power'].every(id=>document.getElementById(id).value.trim()),document.getElementById('task4_cable_choice').value==='usbc'&&document.getElementById('task4_reason').value.trim(),p.quizAnswered===quizQuestions.length];taskDone.forEach((done,i)=>{const el=document.getElementById('stepDone'+(i+1));el.textContent=done?'✓':'';el.className=done?'text-emerald-500 ml-1':'';});const pdf=document.getElementById('pdfBtn');if(currentPercentage===100){pdf.className='p-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white border border-emerald-600 cursor-pointer';pdf.title='Arbeitsblatt als PDF herunterladen';}else{pdf.className='p-2 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 border border-slate-200 dark:border-slate-700 opacity-60 cursor-not-allowed';pdf.title=`Erst bei 100% möglich (${currentPercentage}%)`;}updateTask4Feedback();updateQuizResult();updateMetaDisplay();}
-    function updateTask4Feedback(){const value=document.getElementById('task4_cable_choice').value,fb=document.getElementById('task4ChoiceFeedback');if(!value){fb.textContent='';return;}if(value==='usbc'){fb.textContent='✓ Gute Wahl: USB-C/Thunderbolt kann je nach Gerät Bild, Ton, Daten und Laden über ein Kabel bündeln.';fb.className='mt-2 text-xs font-semibold text-emerald-600 dark:text-emerald-400';}else{fb.textContent='Noch nicht die beste Ein-Kabel-Lösung. Vergleiche die Übertragungsmöglichkeiten nochmals.';fb.className='mt-2 text-xs font-semibold text-amber-600 dark:text-amber-400';}}
-    function getQuizScore(){let answered=0,correct=0;quizQuestions.forEach((q,i)=>{const s=document.querySelector(`input[name="q${i+1}"]:checked`);if(s){answered++;if(Number(s.value)===q.correct)correct++;}});return{answered,correct};}
-    function updateQuizResult(){const{answered,correct}=getQuizScore(),el=document.getElementById('quizResult');if(answered===0){el.textContent='Noch keine Antworten.';el.className='mt-4 p-4 rounded-xl bg-slate-100 dark:bg-slate-800 text-sm font-bold';return;}if(answered<quizQuestions.length){el.textContent=`${answered} von ${quizQuestions.length} beantwortet · ${correct} bisher richtig.`;el.className='mt-4 p-4 rounded-xl bg-slate-100 dark:bg-slate-800 text-sm font-bold';return;}const passed=correct>=8;el.textContent=passed?`✓ ${correct}/10 richtig. Der Check ist bestanden.`:`${correct}/10 richtig. Schau dir die falschen Antworten nochmals an und verbessere sie.`;el.className='mt-4 p-4 rounded-xl text-sm font-bold '+(passed?'bg-emerald-100 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300':'bg-amber-100 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300');document.querySelectorAll('#quizGrid fieldset').forEach((fs,i)=>{const s=fs.querySelector('input:checked');fs.classList.remove('ring-2','ring-emerald-400','ring-amber-400');if(s)fs.classList.add('ring-2',Number(s.value)===quizQuestions[i].correct?'ring-emerald-400':'ring-amber-400');});}
-    function collectState(){const form={};allActivityFields().forEach(id=>{const el=document.getElementById(id);if(el)form[id]=el.value;});const quiz={};quizQuestions.forEach((_,i)=>{const s=document.querySelector(`input[name="q${i+1}"]:checked`);if(s)quiz['q'+(i+1)]=Number(s.value);});return{version:2,form,cables:{...cableState},quiz,percent:currentPercentage,activeStep,quizScore:getQuizScore().correct,updatedAt:new Date().toISOString()};}
-    function saveProgressToStorage(){localStorage.setItem(STORAGE_KEY,JSON.stringify(collectState()));const status=document.getElementById('saveStatus');if(status){status.innerHTML='<i class="fa-solid fa-cloud-arrow-up mr-1"></i>Gespeichert';setTimeout(()=>status.innerHTML='<i class="fa-solid fa-cloud-arrow-up mr-1"></i>Automatisch gespeichert',900);}}
-    function scheduleSave(){clearTimeout(saveTimer);saveTimer=setTimeout(saveProgressToStorage,120);}
-    function loadProgress(){resetCableState();try{const raw=localStorage.getItem(STORAGE_KEY);if(!raw)return;const data=JSON.parse(raw);if(data.form)Object.entries(data.form).forEach(([id,value])=>{const el=document.getElementById(id);if(el&&value!=null)el.value=value;});if(data.cables)connectors.forEach(c=>{if(data.cables[c.id]&&['bank','video_audio','daten','netz_strom'].includes(data.cables[c.id]))cableState[c.id]=data.cables[c.id];});if(data.quiz)Object.entries(data.quiz).forEach(([name,value])=>{const radio=document.querySelector(`input[name="${name}"][value="${value}"]`);if(radio)radio.checked=true;});if(Number.isInteger(data.activeStep))activeStep=Math.min(5,Math.max(1,data.activeStep));}catch(err){console.error('A5 Speicherstand konnte nicht geladen werden:',err);}}
-    function showStep(step){activeStep=Math.min(5,Math.max(1,Number(step)||1));document.querySelectorAll('[data-step]').forEach(el=>el.hidden=Number(el.dataset.step)!==activeStep);document.querySelectorAll('[data-step-btn]').forEach(btn=>{const isActive=Number(btn.dataset.stepBtn)===activeStep;btn.className='step-btn shrink-0 px-3 py-2 rounded-xl text-xs font-bold '+(isActive?'bg-onedrive-500 text-white shadow':'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700');});document.getElementById('prevBtn').disabled=activeStep===1;document.getElementById('nextBtn').disabled=activeStep===5;window.scrollTo({top:0,behavior:'smooth'});scheduleSave();}
-    function updateMetaDisplay(){[['studentName','metaNameMobile'],['studentClass','metaClassMobile'],['studentDate','metaDateMobile']].forEach(([src,dst])=>{const s=document.getElementById(src),d=document.getElementById(dst);if(s&&d)d.textContent=s.value||'–';});}
-    function confirmReset(){showConfirmModal('Möchtest du alle Eingaben, Zuordnungen und Quiz-Antworten von A5 zurücksetzen?',()=>{localStorage.removeItem(STORAGE_KEY);localStorage.removeItem(LEGACY_AUTOSAVE_KEY);allActivityFields().forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});document.querySelectorAll('#quizGrid input[type="radio"]').forEach(r=>r.checked=false);resetCableState();activeStep=1;selectedCableId=null;if(typeof applyDefaultClassAndDate==='function')applyDefaultClassAndDate();const globalName=localStorage.getItem('studentVorname')||localStorage.getItem('student_vorname')||'';document.getElementById('studentName').value=globalName;renderCables();showStep(1);updateProgress();saveProgressToStorage();showToast('A5 wurde zurückgesetzt.');});}
-    function showConfirmModal(message,onConfirm){const modal=document.getElementById('customModal');modal.innerHTML=`<div class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 max-w-sm w-full p-6"><div class="font-bold text-rose-600 dark:text-rose-400 text-lg">Zurücksetzen?</div><p class="text-sm text-slate-600 dark:text-slate-300 mt-2">${message}</p><div class="flex justify-end gap-2 mt-5"><button id="modalCancel" class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-sm font-bold">Abbrechen</button><button id="modalConfirm" class="px-4 py-2 rounded-xl bg-rose-600 text-white text-sm font-bold">Zurücksetzen</button></div></div>`;modal.classList.remove('hidden');modal.classList.add('flex');document.getElementById('modalCancel').onclick=()=>{modal.classList.add('hidden');modal.classList.remove('flex');};document.getElementById('modalConfirm').onclick=()=>{modal.classList.add('hidden');modal.classList.remove('flex');onConfirm();};}
-    function showToast(message){const toast=document.getElementById('customToast');toast.textContent=message;toast.classList.add('toast-show');clearTimeout(showToast._t);showToast._t=setTimeout(()=>toast.classList.remove('toast-show'),2600);}
-    function handleDownloadPdf(){if(currentPercentage<100){showToast(`PDF erst bei 100% · aktuell ${currentPercentage}%`);return;}if(typeof downloadTextWorksheetPDF!=='function'){showToast('PDF-Modul konnte nicht geladen werden.');return;}const score=getQuizScore(),sections=connectors.map((c,i)=>({heading:`${i+1}. ${c.name}`,fields:[{label:'Funktion / Übertragung',value:document.getElementById(`cable_${c.id}_func`).value},{label:'Typische Geräte / Einsatz',value:document.getElementById(`cable_${c.id}_dev`).value}]})),cats={video_audio:[],daten:[],netz_strom:[]};connectors.forEach(c=>cats[cableState[c.id]].push(c.name));sections.push({heading:'Auftrag 2 · Kabel-Kategorisierung',fields:[{label:'Bild & Audio',value:cats.video_audio.join(', ')},{label:'Daten & Allrounder',value:cats.daten.join(', ')},{label:'Netzwerk & Strom',value:cats.netz_strom.join(', ')}]});sections.push({heading:'Auftrag 3 · Schnittstellen-Vergleich',fields:[{label:'Analog vs. digital',value:document.getElementById('task3_analog_digital').value},{label:'USB-A Einsteckrichtung',value:document.getElementById('usba_orient').value},{label:'USB-C Einsteckrichtung',value:document.getElementById('usbc_orient').value},{label:'USB-A Übertragung',value:document.getElementById('usba_trans').value},{label:'USB-C Übertragung',value:document.getElementById('usbc_trans').value},{label:'USB-A Strom/Laden',value:document.getElementById('usba_power').value},{label:'USB-C Strom/Laden',value:document.getElementById('usbc_power').value}]});sections.push({heading:'Auftrag 4 · Praxisfall',fields:[{label:'Gewählte Ein-Kabel-Lösung',value:document.getElementById('task4_cable_choice').selectedOptions[0].textContent},{label:'Begründung / ältere Desktop-PCs',value:document.getElementById('task4_reason').value}]});sections.push({heading:'Auftrag 5 · Schnittstellen-Check',fields:[{label:'Ergebnis',value:`${score.correct} von ${quizQuestions.length} richtig`},{label:'Auswertung',value:score.correct>=8?'Bestanden':'Noch nicht bestanden'}]});downloadTextWorksheetPDF({title:'A5 · Anschlüsse, Kabel & Schnittstellen',filenamePrefix:'A5_Schnittstellen',sections});}
-    function bindActivityEvents(){document.querySelectorAll('textarea,input[type="text"],select,#quizGrid input[type="radio"]').forEach(el=>{if(['studentName','studentClass','studentDate'].includes(el.id))return;el.addEventListener('input',()=>{updateProgress();scheduleSave();});el.addEventListener('change',()=>{updateProgress();scheduleSave();});});}
-    document.addEventListener('DOMContentLoaded',()=>{renderConnectorCards();renderQuiz();if(typeof applyDefaultClassAndDate==='function')applyDefaultClassAndDate();loadProgress();renderCables();setupDropZones();bindActivityEvents();showStep(activeStep);updateProgress();setTimeout(updateMetaDisplay,350);setTimeout(()=>{updateProgress();saveProgressToStorage();},450);});
-  </script>
-</body>
-</html>
+function fieldIds(){
+  return CONNECTORS.flatMap(c=>['recognize_'+c.id,'use_'+c.id]);
+}
+function collect(){
+  const answers={}; fieldIds().forEach(id=>answers[id]=document.getElementById(id)?.value||'');
+  return {version:3,answers,percent:currentPercentage,updatedAt:new Date().toISOString()};
+}
+function load(){
+  try{
+    const raw=localStorage.getItem(STORAGE_KEY); if(!raw)return;
+    const d=JSON.parse(raw); const answers=d.answers||d.form||{};
+    Object.entries(answers).forEach(([id,v])=>{const el=document.getElementById(id);if(el&&v!=null)el.value=v;});
+  }catch(e){console.warn('A5 Speicherstand konnte nicht geladen werden',e);}
+}
+function updateProgress(){
+  const ids=fieldIds(), done=ids.filter(id=>(document.getElementById(id)?.value||'').trim()).length;
+  currentPercentage=Math.round(done/ids.length*100);
+  document.getElementById('headerPercentText').textContent=currentPercentage+'% erledigt';
+  document.getElementById('progressBar').style.width=currentPercentage+'%';
+  const b=document.getElementById('pdfBtn');
+  if(currentPercentage===100){b.className='btn bg-emerald-600 hover:bg-emerald-700 text-white';b.title='PDF herunterladen';}
+  else{b.className='btn bg-slate-200 dark:bg-slate-800 text-slate-400 opacity-60';b.title='Erst bei 100%';}
+}
+function scheduleSave(){clearTimeout(saveTimer);saveTimer=setTimeout(()=>localStorage.setItem(STORAGE_KEY,JSON.stringify(collect())),120);}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.remove('translate-y-8','opacity-0');clearTimeout(showToast.t);showToast.t=setTimeout(()=>t.classList.add('translate-y-8','opacity-0'),2200);}
+function resetA5(){
+  if(!confirm('Alle Eingaben von A5 zurücksetzen?'))return;
+  localStorage.removeItem(STORAGE_KEY); localStorage.removeItem(LEGACY_AUTOSAVE_KEY);
+  fieldIds().forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  updateProgress(); scheduleSave(); showToast('A5 wurde zurückgesetzt.');
+}
+function downloadPdf(){
+  if(currentPercentage<100){showToast('PDF erst bei 100%');return;}
+  if(typeof downloadTextWorksheetPDF!=='function'){showToast('PDF-Modul nicht geladen');return;}
+  const sections=CONNECTORS.map((c,i)=>({heading:`${i+1}. ${c.name}`,fields:[
+    {label:'Erkennungsmerkmale',value:document.getElementById('recognize_'+c.id).value},
+    {label:'Verwendung',value:document.getElementById('use_'+c.id).value}
+  ]}));
+  downloadTextWorksheetPDF({title:'A5 · Schnittstellen & PC-Kabel',filenamePrefix:'A5_Schnittstellen_PC-Kabel',sections});
+}
+function syncMeta(){
+  [['studentName','metaName'],['studentClass','metaClass'],['studentDate','metaDate']].forEach(([a,b])=>{const s=document.getElementById(a),d=document.getElementById(b);if(s&&d)d.textContent=s.value||'–';});
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  renderCards();
+  if(typeof applyDefaultClassAndDate==='function')applyDefaultClassAndDate();
+  load();
+  fieldIds().forEach(id=>{const e=document.getElementById(id);e.addEventListener('input',()=>{updateProgress();scheduleSave();});});
+  updateProgress(); syncMeta();
+  setTimeout(()=>{syncMeta();updateProgress();scheduleSave();},400);
+});
+</script>
+</body></html>
