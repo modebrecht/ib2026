@@ -17,6 +17,25 @@
   }
   function render(){if(running)byId('boss-timer').textContent=formatTime(Date.now()-startTime);}
 
+  function downloadDocx(){
+    if(!window.A3_PIZZA_DOCX_BASE64){alert('Die Word-Datei konnte nicht geladen werden.');return;}
+    var binary=atob(window.A3_PIZZA_DOCX_BASE64);
+    var bytes=new Uint8Array(binary.length);
+    for(var i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);
+    var blob=new Blob([bytes],{type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement('a');
+    a.href=url;
+    a.download='A3_Pizza-Werkstatt.docx';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.setTimeout(function(){URL.revokeObjectURL(url);},1000);
+    var progress=parseProgress();
+    progress.downloaded=true;
+    saveProgress(progress);
+  }
+
   function ensureCompletionReward(progress){
     if(progress.rewarded)return;
     addGlobalXP(50);
@@ -27,36 +46,44 @@
 
   function showFirstReady(progress){
     byId('boss-timer').textContent=progress.first||'00:00';
-    byId('run-instruction').textContent='Durchlauf 2: Öffne zuerst eine frische, ungelöste Kopie. Dann Maus weglegen und möglichst nur Tastenkürzel verwenden.';
+    byId('run-instruction').textContent='Runde 2: Scrolle im selben Word-Dokument auf Seite 2. Starte erst, wenn Seite 2 bereit ist.';
     byId('start-boss-btn').style.display='inline-flex';
-    byId('start-boss-btn').textContent='▶ 2. Durchlauf starten';
+    byId('start-boss-btn').textContent='▶ Runde 2 starten';
     byId('stop-boss-btn').style.display='none';
     byId('result-time-msg').style.display='block';
-    byId('result-prefix').textContent='1. Durchlauf: ';
+    byId('result-prefix').textContent='Runde 1: ';
     byId('result-time-value').textContent=progress.first;
-    byId('result-next').textContent=' gespeichert. Öffne die Datei jetzt frisch für Durchlauf 2.';
+    byId('result-next').textContent=' gespeichert. Jetzt im selben Dokument auf Seite 2 wechseln.';
     byId('completion-panel').style.display='none';
+  }
+
+  function applyReflection(progress){
+    document.querySelectorAll('.choice-btn').forEach(function(btn){
+      btn.classList.toggle('selected',btn.dataset.choice===progress.preference);
+    });
+    if(byId('remember-shortcut'))byId('remember-shortcut').value=progress.rememberShortcut||'';
   }
 
   function showCompleted(progress){
     ensureCompletionReward(progress);
     byId('boss-timer').textContent=progress.second||'00:00';
-    byId('run-instruction').textContent='Beide Durchläufe sind abgeschlossen. Vergleiche jetzt dein Arbeiten mit und ohne Maus.';
+    byId('run-instruction').textContent='Beide Pizza-Runden sind abgeschlossen.';
     byId('start-boss-btn').style.display='none';
     byId('stop-boss-btn').style.display='none';
     byId('result-time-msg').style.display='block';
-    byId('result-prefix').textContent='2. Durchlauf ohne Maus: ';
+    byId('result-prefix').textContent='Runde 2 mit Shortcuts: ';
     byId('result-time-value').textContent=progress.second;
-    byId('result-next').textContent=' · 1. Durchlauf: '+progress.first;
+    byId('result-next').textContent=' · Runde 1: '+progress.first;
     byId('completion-panel').style.display='block';
-    byId('completion-note').textContent='1. Durchlauf: '+progress.first+' · 2. Durchlauf ohne Maus: '+progress.second+'. Vergleiche nicht nur die Zeit, sondern auch wie flüssig du gearbeitet hast.';
+    byId('completion-note').textContent='Runde 1 ohne Shortcuts: '+progress.first+' · Runde 2 mit Shortcuts: '+progress.second+'. Entscheide jetzt kurz, welche Bedienung für dich angenehmer war.';
+    applyReflection(progress);
   }
 
   function showInitial(){
     byId('boss-timer').textContent='00:00';
-    byId('run-instruction').textContent='Durchlauf 1: Maus ist erlaubt. Starte den Timer erst, wenn das Dokument bereit ist.';
+    byId('run-instruction').textContent='Öffne die Word-Datei und bleibe auf Seite 1. Starte den Timer erst, wenn das Dokument bereit ist.';
     byId('start-boss-btn').style.display='inline-flex';
-    byId('start-boss-btn').textContent='▶ 1. Durchlauf starten';
+    byId('start-boss-btn').textContent='▶ Runde 1 starten';
     byId('stop-boss-btn').style.display='none';
     byId('result-time-msg').style.display='none';
     byId('completion-panel').style.display='none';
@@ -115,10 +142,24 @@
     byId('a3-lock-screen').style.display=unlocked?'none':'flex';
     byId('a3-content-wrap').style.display=unlocked?'block':'none';
 
-    var links=document.querySelectorAll('.top-bar .back-link');
-    if(links.length>1)links[1].setAttribute('href','index.html');
-    var next=document.querySelector('#completion-panel .btn-next');
-    if(next)next.setAttribute('href','A4.html');
+    var download=byId('docx-download-btn');
+    if(download)download.addEventListener('click',downloadDocx);
+
+    document.querySelectorAll('.choice-btn').forEach(function(btn){
+      btn.addEventListener('click',function(){
+        var progress=parseProgress();
+        progress.preference=btn.dataset.choice;
+        saveProgress(progress);
+        applyReflection(progress);
+      });
+    });
+
+    var remember=byId('remember-shortcut');
+    if(remember)remember.addEventListener('change',function(){
+      var progress=parseProgress();
+      progress.rememberShortcut=remember.value;
+      saveProgress(progress);
+    });
 
     if(unlocked)refreshFromProgress();
   });
