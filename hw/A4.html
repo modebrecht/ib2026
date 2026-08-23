@@ -99,7 +99,7 @@
                 <div class="flex items-center gap-3">
                     <div>
                         <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Fortschritt</span>
-                        <span id="headerPercentText" class="text-sm font-extrabold text-onedrive-600 dark:text-onedrive-400">0 / 1 Praxis-Test absolviert</span>
+                        <span id="headerPercentText" class="text-sm font-extrabold text-onedrive-600 dark:text-onedrive-400">Praxis-Test noch offen</span>
                     </div>
                     <div class="relative w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center font-bold text-[10px] sm:text-xs text-slate-700 dark:text-slate-200 shrink-0 ml-1">
                         <svg class="absolute inset-0 w-full h-full transform -rotate-90" viewBox="0 0 36 36">
@@ -375,7 +375,7 @@
 
         function updateProgress() {
             if(hasPassed) {
-                document.getElementById('headerPercentText').textContent = '1 / 1 Praxis-Test absolviert';
+                document.getElementById('headerPercentText').textContent = 'Praxis-Test bestanden';
                 document.getElementById('headerPercentNumber').textContent = '100%';
                 document.getElementById('headerSvgCircle').style.strokeDashoffset = '0';
                 document.getElementById('progressBar').style.width = '100%';
