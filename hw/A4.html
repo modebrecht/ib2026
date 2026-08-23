@@ -99,7 +99,7 @@
                 <div class="flex items-center gap-3">
                     <div>
                         <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Fortschritt</span>
-                        <span id="headerPercentText" class="text-sm font-extrabold text-onedrive-600 dark:text-onedrive-400">Praxis-Test noch offen</span>
+                        <span id="headerPercentText" class="text-sm font-extrabold text-onedrive-600 dark:text-onedrive-400">0 / 16 richtig</span>
                     </div>
                     <div class="relative w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center font-bold text-[10px] sm:text-xs text-slate-700 dark:text-slate-200 shrink-0 ml-1">
                         <svg class="absolute inset-0 w-full h-full transform -rotate-90" viewBox="0 0 36 36">
@@ -325,6 +325,7 @@
         let quizQueue = [];
         let currentQuestion = null;
         let errorCount = 0;
+        let correctCount = 0;
         let errorDetails = [];
         let quizActive = false;
         let finalScore = 0;
@@ -374,12 +375,13 @@
         }
 
         function updateProgress() {
+            const percent = Math.round((correctCount / TOTAL_QUESTIONS) * 100);
+            document.getElementById('headerPercentText').textContent = `${correctCount} / ${TOTAL_QUESTIONS} richtig`;
+            document.getElementById('headerPercentNumber').textContent = `${percent}%`;
+            document.getElementById('headerSvgCircle').style.strokeDashoffset = String(100.53 * (1 - percent / 100));
+            document.getElementById('progressBar').style.width = `${percent}%`;
+
             if(hasPassed) {
-                document.getElementById('headerPercentText').textContent = 'Praxis-Test bestanden';
-                document.getElementById('headerPercentNumber').textContent = '100%';
-                document.getElementById('headerSvgCircle').style.strokeDashoffset = '0';
-                document.getElementById('progressBar').style.width = '100%';
-                
                 const pdfBtn = document.getElementById('hdrPdfBtn');
                 pdfBtn.classList.remove('opacity-60', 'cursor-not-allowed', 'text-slate-400');
                 pdfBtn.classList.add('text-onedrive-500', 'border-onedrive-500', 'bg-onedrive-50', 'hover:bg-onedrive-100');
@@ -438,11 +440,14 @@
         function startQuiz() {
             quizActive = true;
             errorCount = 0;
+            correctCount = 0;
             errorDetails = [];
             quizQueue = shuffle([...IODATA]);
             
+            document.getElementById('statFragen').textContent = '0/16';
             document.getElementById('statFehler').textContent = 0;
             document.getElementById('statPunkte').textContent = 0;
+            updateProgress();
             
             clearInterval(timerInterval);
             startTime = performance.now();
@@ -500,6 +505,8 @@
             });
 
             if(isCorrect) {
+                correctCount++;
+                updateProgress();
                 btnElement.classList.add('border-emerald-500', 'ring-4', 'ring-emerald-500/50', 'pop-success', 'z-10');
                 
                 const checkOverlay = document.createElement('div');
@@ -564,7 +571,7 @@
             clearInterval(timerInterval);
             const elapsed = performance.now() - startTime;
             
-            const correctAnswers = TOTAL_QUESTIONS - errorCount;
+            const correctAnswers = correctCount;
             const passedThisRun = (correctAnswers >= MIN_CORRECT_TO_PASS);
 
             // Score Logic (Max 1600, -50 per error, -time bonus)
@@ -689,6 +696,14 @@
                 document.documentElement.classList.add('dark');
                 document.getElementById('themeIcon').className = 'fa-solid fa-sun text-amber-400 text-sm';
             }
+
+            if (hasPassed) {
+                const savedErrors = Number.parseInt(localStorage.getItem('a4_last_errors'), 10);
+                correctCount = Number.isInteger(savedErrors)
+                    ? Math.max(0, Math.min(TOTAL_QUESTIONS, TOTAL_QUESTIONS - savedErrors))
+                    : TOTAL_QUESTIONS;
+            }
+
             syncInputs();
             updateProgress();
             renderStudyMode();
