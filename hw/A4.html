@@ -299,6 +299,25 @@
             { id: 'usb-hub', name: 'USB-Hub', desc: 'Ein Verteiler, der aus einem USB-Anschluss mehrere macht.', img: 'assets/usb_hub_item.jpg', scenarioText: 'Dein Laptop hat nur einen USB-Anschluss, aber du möchtest Maus, Tastatur und Headset gleichzeitig anschließen.', scenarioImg: 'assets/usb_hub_scenario.jpg' }
         ];
 
+        const DISTRACTORS = {
+            'usb-a': ['hdmi', 'rj45', 'audio'],
+            'usb-c': ['power', 'sd-card', 'audio'],
+            'hdmi': ['dp', 'vga', 'rj45'],
+            'dp': ['vga', 'audio', 'rj45'],
+            'rj45': ['wlan-antenne', 'usb-a', 'hdmi'],
+            'audio': ['hdmi', 'bt-dongle', 'rj45'],
+            'vga': ['dvi', 'hdmi', 'dp'],
+            'dvi': ['vga', 'hdmi', 'dp'],
+            'bt-dongle': ['wlan-antenne', 'usb-hub', 'rj45'],
+            'power': ['rj45', 'usb-b', 'hdmi'],
+            'usb-b': ['hdmi', 'dp', 'audio'],
+            'micro-usb': ['lightning', 'usb-b', 'audio'],
+            'lightning': ['usb-c', 'micro-usb', 'audio'],
+            'sd-card': ['hdmi', 'audio', 'wlan-antenne'],
+            'wlan-antenne': ['bt-dongle', 'rj45', 'usb-hub'],
+            'usb-hub': ['usb-a', 'bt-dongle', 'rj45']
+        };
+
         const TOTAL_QUESTIONS = 16;
         const MIN_CORRECT_TO_PASS = 13; // von 16 (max. 3 Fehler erlaubt)
 
@@ -449,8 +468,11 @@
             document.getElementById('scenarioTitle').textContent = currentQuestion.scenarioText;
             document.getElementById('quizImageEl').src = currentQuestion.scenarioImg;
             
-            let wrongOptions = shuffle(IODATA.filter(item => item.id !== currentQuestion.id)).slice(0, 3);
-            let allOptions = shuffle([currentQuestion, ...wrongOptions]);
+            const distractorIds = DISTRACTORS[currentQuestion.id] || [];
+            const wrongOptions = distractorIds
+                .map(id => IODATA.find(item => item.id === id))
+                .filter(Boolean);
+            const allOptions = shuffle([currentQuestion, ...wrongOptions]);
             
             const optionsContainer = document.getElementById('quizOptions');
             optionsContainer.innerHTML = '';
