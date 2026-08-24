@@ -952,30 +952,30 @@
                 </div>
               </div>
 
-              <!-- Unterkachel: A8 EVA, Speicher & Kaufberatung -->
+              <!-- Unterkachel: A8 EVA-Repetition -->
               <div class="unterkachel">
                 <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
                   <div>
                     <h4 class="unterkachel-title" id="title-A8" style="margin-bottom: 2px;">
-                       A8: Hardware anwenden &amp; vertiefen
+                       A8: EVA-Repetition
                     </h4>
                     <p style="font-size: calc(13px * var(--font-scale)); color: var(--muted); margin: 0;">
-                      EVA, Speicher, Kaufberatung &amp; Schnittstellen-Transfer
+                      15 Hardware-Komponenten dem EVA-Prinzip zuordnen
                     </p>
                   </div>
                   <a href="hw/A8.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
                 </div>
               </div>
 
-              <!-- Unterkachel: A9 Grüne IT & Nachhaltigkeit -->
+              <!-- Unterkachel: A9 EVA-Szenarien -->
               <div class="unterkachel">
                 <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
                   <div>
                     <h4 class="unterkachel-title" id="title-A9" style="margin-bottom: 2px;">
-                       A9: Grüne IT &amp; Nachhaltigkeit
+                       A9: EVA-Szenarien
                     </h4>
                     <p style="font-size: calc(13px * var(--font-scale)); color: var(--muted); margin: 0;">
-                      Rohstoffgewinnung, Ökologischer Rucksack &amp; Urban Mining
+                      6 Alltagsszenarien: Eingabe, Verarbeitung oder Ausgabe erkennen
                     </p>
                   </div>
                   <a href="hw/A9.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
@@ -1776,16 +1776,16 @@
             if (parsed && parsed.manualDoneA7 === true) markDone('title-A7');
           }
 
-          const a8Data = localStorage.getItem('onedrive_a8_worksheet_8sek');
+          const a8Data = localStorage.getItem('onedrive_a8_eva_repetition_8sek');
           if (a8Data) {
             const parsed = JSON.parse(a8Data);
-            if (parsed && parsed.percent === 100) markDone('title-A8');
+            if (parsed && Number(parsed.bestFullScore) >= 12) markDone('title-A8');
           }
 
-          const a9Data = localStorage.getItem('onedrive_a9_worksheet_8sek');
+          const a9Data = localStorage.getItem('onedrive_a9_eva_scenarios_8sek');
           if (a9Data) {
             const parsed = JSON.parse(a9Data);
-            if (parsed && parsed.percent === 100) markDone('title-A9');
+            if (parsed && Number(parsed.bestScore) >= 4) markDone('title-A9');
           }
 
           const aexamData = localStorage.getItem('onedrive_aexam_worksheet_8sek');
