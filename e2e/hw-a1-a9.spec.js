@@ -228,10 +228,10 @@ test.describe('HW production smoke: A1-A9', () => {
     await expect(page).toHaveTitle(/A6: Mainboard-Anschlüsse/);
     await downloadFrom(page, '#b64DownloadBtn', 'docx', 'PK');
 
-    await page.locator('#manualDoneA5').check();
+    await page.locator('#manualDoneA6').check();
     await page.waitForTimeout(300);
     await page.reload({ waitUntil: 'domcontentloaded' });
-    await expect(page.locator('#manualDoneA5')).toBeChecked();
+    await expect(page.locator('#manualDoneA6')).toBeChecked();
     expectNoPageErrors(errors);
   });
 
@@ -240,7 +240,7 @@ test.describe('HW production smoke: A1-A9', () => {
     await openWorksheet(page, '/hw/A7.html');
 
     await expect(page).toHaveTitle(/A7: CPU, GPU & PassMark/);
-    const launcher = page.locator('#openExternalBtn');
+    const launcher = page.locator('a[href="https://ib-ts.vercel.app"]');
     await expect(launcher).toBeVisible();
 
     const [toolPage] = await Promise.all([
@@ -281,7 +281,8 @@ test.describe('HW production smoke: A1-A9', () => {
     expect(result.index).toBeGreaterThanOrEqual(total);
     expect(result.firstTryCorrect).toBe(total);
     expect(result.bestFullScore).toBe(total);
-    expect(await page.evaluate(() => localStorage.getItem('a8_full_score'))).toBe(String(total));
+    const saved = await page.evaluate(() => JSON.parse(localStorage.getItem(K) || '{}'));
+    expect(saved.bestFullScore).toBe(total);
     await expect(page.locator('#result')).toBeVisible();
     await downloadPdf(page, '#pdf', 'A8_EVA_Repetition');
     expectNoPageErrors(errors);
@@ -291,12 +292,12 @@ test.describe('HW production smoke: A1-A9', () => {
     const errors = collectPageErrors(page);
     await openWorksheet(page, '/hw/A9.html');
 
-    await expect(page).toHaveTitle(/A9: Stream-Szenarien/);
-    const total = await page.evaluate(() => SCENARIOS.length);
-    expect(total).toBe(8);
+    await expect(page).toHaveTitle(/A9: EVA im Alltag/);
+    const total = await page.evaluate(() => SCENES.length);
+    expect(total).toBe(6);
 
     for (let i = 0; i < total; i += 1) {
-      const category = await page.evaluate(() => current().c);
+      const category = await page.evaluate(() => current().cat);
       await page.locator(`.eva-btn[data-cat="${category}"]`).click();
       await page.waitForFunction(
         (previousIndex) => index > previousIndex || document.getElementById('result')?.classList.contains('hidden') === false,
@@ -305,13 +306,14 @@ test.describe('HW production smoke: A1-A9', () => {
       );
     }
 
-    const result = await page.evaluate(() => ({ index, errors, bestPassed }));
+    const result = await page.evaluate(() => ({ index, score, bestScore }));
     expect(result.index).toBeGreaterThanOrEqual(total);
-    expect(result.errors).toBe(0);
-    expect(result.bestPassed).toBe(true);
-    expect(await page.evaluate(() => localStorage.getItem('a9_best_passed'))).toBe('true');
+    expect(result.score).toBe(total);
+    expect(result.bestScore).toBe(total);
+    const saved = await page.evaluate(() => JSON.parse(localStorage.getItem(K) || '{}'));
+    expect(saved.bestScore).toBe(total);
     await expect(page.locator('#result')).toBeVisible();
-    await downloadPdf(page, '#pdf', 'A9_Stream_Szenarien');
+    await downloadPdf(page, '#pdf', 'A9_EVA_Szenarien');
     expectNoPageErrors(errors);
   });
 });
