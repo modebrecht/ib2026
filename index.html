@@ -1494,12 +1494,6 @@
       saveKachelStates();
     }
 
-    function setTheme(theme) {
-      document.body.setAttribute('data-theme', theme);
-      themeToggle.checked = theme === 'dark';
-      localStorage.setItem('ib-theme', theme);
-    }
-
     function setFontSize(percent) {
       const value = Math.min(250, Math.max(80, Number(percent) || 100));
       document.documentElement.style.setProperty('--font-scale', value / 100);
@@ -1520,14 +1514,9 @@
       }
     });
 
-    themeToggle.addEventListener('change', () => {
-      setTheme(themeToggle.checked ? 'dark' : 'light');
-    });
-
     fontSizeRange.addEventListener('input', () => setFontSize(fontSizeRange.value));
 
     // Initialize
-    setTheme(localStorage.getItem('ib-theme') || 'light');
     setFontSize(localStorage.getItem('ib-font-size') || 100);
     restoreKachelStates();
   </script>
@@ -1560,12 +1549,11 @@
 
         function saveTheme(theme) {
           localStorage.setItem(THEME_KEY, theme);
-          localStorage.setItem('onedrive_theme', theme);
           applyTheme(theme);
         }
 
         function initTheme() {
-          const saved = localStorage.getItem(THEME_KEY) || localStorage.getItem('onedrive_theme');
+          const saved = localStorage.getItem(THEME_KEY);
           if (saved) {
             applyTheme(saved);
           } else {
@@ -1697,7 +1685,7 @@
         });
 
         window.addEventListener('storage', function(e) {
-          if (e.key === THEME_KEY || e.key === 'onedrive_theme') {
+          if (e.key === THEME_KEY) {
             if (e.newValue) applyTheme(e.newValue);
           }
           if (e.key === FONT_KEY || e.key === 'onedrive_font_size') {
