@@ -314,7 +314,7 @@ test.describe('HW production smoke: A1-A9', () => {
 
     await expect(page).toHaveTitle(/A9: EVA-Szenarien/);
     const total = await page.evaluate(() => SCENES.length);
-    expect(total).toBe(9);
+    expect(total).toBe(12);
 
     for (let i = 0; i < total; i += 1) {
       const category = await page.evaluate(() => current().cat);
