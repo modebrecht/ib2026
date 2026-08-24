@@ -16,5 +16,15 @@ function premiumIcon(id){
   soundcard:`<rect class="ink" x="10" y="18" width="60" height="44" rx="7"/><circle class="p-fill" cx="22" cy="30" r="5"/><circle class="p-fill2" cx="22" cy="48" r="5"/><path class="p-stroke" d="M34 42c4-13 7 13 11 0s7 13 11 0"/><rect class="metal" x="62" y="24" width="8" height="8" rx="2"/><rect class="metal" x="62" y="36" width="8" height="8" rx="2"/><rect class="metal" x="62" y="48" width="8" height="8" rx="2"/>`,
   headphones:`<path class="ink-stroke" d="M17 43V36c0-15 10-25 23-25s23 10 23 25v7"/><path class="p-stroke" d="M24 38v-3c0-10 6-17 16-17s16 7 16 17v3"/><rect class="p-fill" x="12" y="38" width="15" height="25" rx="7"/><rect class="p-fill2" x="53" y="38" width="15" height="25" rx="7"/><rect class="paper" x="18" y="44" width="4" height="13" rx="2"/><rect class="paper" x="58" y="44" width="4" height="13" rx="2"/>`
  };
- return `<svg class="premium-svg anim-${id}" viewBox="0 0 80 80" role="img" focusable="false" aria-hidden="true">${icons[id]||icons.cpu}</svg>`;
+ const art=icons[id]||icons.cpu;
+ return `<svg class="hardware-scene anim-${id}" viewBox="0 0 440 250" role="img" focusable="false" aria-hidden="true">
+  <defs><linearGradient id="sceneGlow-${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--p1)" stop-opacity=".16"/><stop offset="1" stop-color="var(--p2)" stop-opacity=".04"/></linearGradient><pattern id="sceneGrid-${id}" width="24" height="24" patternUnits="userSpaceOnUse"><path class="scene-grid" d="M24 0H0V24"/></pattern></defs>
+  <rect class="scene-panel" x="10" y="10" width="420" height="230" rx="28"/>
+  <rect x="10" y="10" width="420" height="230" rx="28" fill="url(#sceneGlow-${id})"/>
+  <rect x="10" y="10" width="420" height="230" rx="28" fill="url(#sceneGrid-${id})"/>
+  <path class="scene-orbit" d="M42 171C84 67 153 39 229 49c77 10 119 54 170 132"/>
+  <circle class="scene-dot" cx="54" cy="66" r="6"/><circle class="scene-dot" cx="383" cy="62" r="5"/><circle class="scene-dot" cx="397" cy="190" r="7"/>
+  <ellipse class="scene-shadow" cx="220" cy="211" rx="92" ry="12"/>
+  <g class="hardware-object" transform="translate(124 18) scale(2.4)">${art}</g>
+ </svg>`;
 }
