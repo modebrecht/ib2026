@@ -24,14 +24,42 @@ body{font-family:'Segoe UI','Inter',system-ui,sans-serif}
         .premium-progress::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 20%,rgba(255,255,255,.72) 48%,transparent 76%);transform:translateX(-130%);animation:premiumProgressShine 2.3s ease-in-out infinite}
         @keyframes premiumProgressFlow{to{background-position:240% 0}}
         @keyframes premiumProgressShine{0%,35%{transform:translateX(-130%)}75%,100%{transform:translateX(130%)}}
-        @media(prefers-reduced-motion:reduce){.premium-progress,.premium-progress::after{animation:none!important}}
+        @media(prefers-reduced-motion:reduce){.premium-progress,.premium-progress::after,.connector-card,.connector-image,.intro-hero-icon,.connector-visual::before,.connector-visual::after,.carousel-nav{animation:none!important}}
+
+/* Premium carousel */
+body{background-image:radial-gradient(circle at 12% 8%,rgba(0,120,212,.10),transparent 28%),radial-gradient(circle at 88% 18%,rgba(124,58,237,.08),transparent 30%)}
+.card{position:relative;background:linear-gradient(145deg,rgba(255,255,255,.96),rgba(248,250,252,.9));border:1px solid rgba(226,232,240,.95);border-radius:1.5rem;box-shadow:0 24px 60px rgba(15,23,42,.10);backdrop-filter:blur(14px)}
+.dark .card{background:linear-gradient(145deg,rgba(30,41,59,.94),rgba(15,23,42,.96));border-color:rgba(51,65,85,.92);box-shadow:0 26px 64px rgba(0,0,0,.30)}
+.connector-card{transform-origin:50% 45%;will-change:transform,opacity}
+.connector-card.card-enter-next{animation:cardEnterNext .48s cubic-bezier(.2,.9,.2,1)}
+.connector-card.card-enter-prev{animation:cardEnterPrev .48s cubic-bezier(.2,.9,.2,1)}
+.connector-visual{position:relative;isolation:isolate;overflow:hidden;background:linear-gradient(145deg,#f8fafc,#e0f2fe 58%,#ede9fe)}
+.dark .connector-visual{background:linear-gradient(145deg,#1e293b,#172554 58%,#2e1065)}
+.connector-visual::before{content:"";position:absolute;width:220px;height:220px;border-radius:50%;left:8%;top:-55%;background:rgba(56,189,248,.18);filter:blur(4px);animation:visualOrbit 7s ease-in-out infinite alternate;z-index:-1}
+.connector-visual::after{content:"";position:absolute;width:190px;height:190px;border-radius:50%;right:5%;bottom:-55%;background:rgba(139,92,246,.16);filter:blur(5px);animation:visualOrbit 8s ease-in-out -2s infinite alternate-reverse;z-index:-1}
+.connector-image{filter:drop-shadow(0 18px 18px rgba(15,23,42,.20));animation:connectorFloat 3.6s ease-in-out infinite;transition:filter .3s ease,transform .3s ease}
+.connector-visual:hover .connector-image{filter:drop-shadow(0 23px 22px rgba(15,23,42,.28))}
+.intro-hero-icon{animation:introIcon 3s ease-in-out infinite;box-shadow:0 16px 34px rgba(0,120,212,.28)}
+.carousel-nav{padding:.8rem 1rem;border:1px solid rgba(226,232,240,.92);background:rgba(255,255,255,.78);box-shadow:0 14px 34px rgba(15,23,42,.07);backdrop-filter:blur(14px);animation:navRise .5s ease both}
+.dark .carousel-nav{background:rgba(15,23,42,.82);border-color:#334155}
+.field{transition:border-color .22s ease,box-shadow .22s ease,background .22s ease,transform .22s ease}
+.field:focus{outline:none;border-color:#0078d4;box-shadow:0 0 0 4px rgba(0,120,212,.12);transform:translateY(-1px)}
+.field.has-value{border-color:#34d399;background:linear-gradient(145deg,#fff,#ecfdf5)}
+.dark .field.has-value{border-color:#059669;background:linear-gradient(145deg,#1e293b,rgba(6,78,59,.22))}
+@keyframes cardEnterNext{from{opacity:0;transform:translateX(34px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes cardEnterPrev{from{opacity:0;transform:translateX(-34px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes connectorFloat{0%,100%{transform:translateY(0) rotate(-.6deg)}50%{transform:translateY(-8px) rotate(.6deg)}}
+@keyframes visualOrbit{from{transform:translate(-12px,-6px) scale(.9)}to{transform:translate(18px,12px) scale(1.12)}}
+@keyframes introIcon{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-7px) rotate(2deg)}}
+@keyframes navRise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
 </style>
 </head>
 <body class="min-h-full bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100">
-<header class="sticky top-0 z-40 bg-white/95 dark:bg-slate-900/95 border-b border-slate-200 dark:border-slate-800">
+<header class="sticky top-0 z-40 bg-white/88 dark:bg-slate-900/88 backdrop-blur-xl border-b border-slate-200/80 dark:border-slate-800 shadow-sm">
   <div class="max-w-[1500px] mx-auto px-3 sm:px-6 py-2.5 flex items-center justify-between gap-3">
     <div class="flex items-center gap-3"><div class="w-9 h-9 rounded-lg bg-onedrive-500 text-white flex items-center justify-center"><i class="fa-solid fa-plug"></i></div>
-      <div><div class="text-[10px] uppercase font-bold text-slate-400">Fortschritt</div><div id="headerPercentText" class="text-sm font-extrabold text-onedrive-600">0% erledigt</div></div>
+      <div><div class="text-[10px] uppercase font-bold text-slate-400">Fortschritt</div><div id="headerPercentText" class="text-sm font-extrabold text-onedrive-600 dark:text-blue-400">0% erledigt</div></div>
     </div>
     <div class="flex gap-2">
       <button class="btn border border-slate-300 dark:border-slate-700" onclick="toggleDarkMode()" title="Dunkelmodus"><i id="themeIcon" class="fa-solid fa-moon"></i></button>
@@ -45,7 +73,7 @@ body{font-family:'Segoe UI','Inter',system-ui,sans-serif}
 <main class="max-w-[1500px] mx-auto px-3 sm:px-6 py-5 space-y-4">
   <section class="max-w-4xl mx-auto">
     <div id="connectorGrid"></div>
-    <nav class="mt-4 flex items-center justify-between gap-3" aria-label="Anschlusskarten">
+    <nav class="carousel-nav mt-4 flex items-center justify-between gap-3 rounded-2xl" aria-label="Anschlusskarten">
       <button id="prevCardBtn" type="button" class="btn border border-slate-300 dark:border-slate-700 disabled:opacity-40 disabled:cursor-not-allowed" onclick="changeCard(-1)">
         <i class="fa-solid fa-arrow-left mr-1"></i> Zurück
       </button>
@@ -75,7 +103,7 @@ function renderCards(){
   const introCard=`<article class="connector-card card overflow-hidden" data-index="0">
     <div class="p-5 sm:p-8">
       <div class="flex flex-col sm:flex-row sm:items-start gap-5">
-        <div class="w-14 h-14 rounded-2xl bg-onedrive-500 text-white flex items-center justify-center text-2xl shadow-lg shrink-0">
+        <div class="intro-hero-icon w-14 h-14 rounded-2xl bg-onedrive-500 text-white flex items-center justify-center text-2xl shadow-lg shrink-0">
           <i class="fa-solid fa-plug"></i>
         </div>
         <div class="flex-1">
@@ -102,8 +130,8 @@ function renderCards(){
     </div>
   </article>`;
   const connectorCards=CONNECTORS.map((c,i)=>`<article class="connector-card card overflow-hidden hidden" data-index="${i+1}">
-    <div class="h-64 sm:h-80 bg-slate-50 dark:bg-slate-800 flex items-center justify-center p-4">
-      <img src="${c.img}" alt="${c.name}" class="max-h-full max-w-full object-contain" loading="lazy">
+    <div class="connector-visual h-64 sm:h-80 flex items-center justify-center p-4">
+      <img src="${c.img}" alt="${c.name}" class="connector-image max-h-full max-w-full object-contain" loading="lazy">
     </div>
     <div class="p-4 sm:p-6">
       <div class="text-[10px] font-bold uppercase tracking-wider text-onedrive-600">${i+1} / ${CONNECTORS.length}</div>
@@ -117,9 +145,18 @@ function renderCards(){
   showCard(0);
 }
 
-function showCard(index){
+function showCard(index,direction=1){
   currentCardIndex=Math.max(0,Math.min(CONNECTORS.length,index));
-  document.querySelectorAll('.connector-card').forEach((card,i)=>card.classList.toggle('hidden',i!==currentCardIndex));
+  const cards=[...document.querySelectorAll('.connector-card')];
+  cards.forEach((card,i)=>{
+    card.classList.toggle('hidden',i!==currentCardIndex);
+    card.classList.remove('card-enter-next','card-enter-prev');
+  });
+  const active=cards[currentCardIndex];
+  if(active){
+    void active.offsetWidth;
+    active.classList.add(direction<0?'card-enter-prev':'card-enter-next');
+  }
   const isIntro=currentCardIndex===0;
   document.getElementById('cardCounter').textContent=isIntro?'Info':currentCardIndex+' / '+CONNECTORS.length;
   document.getElementById('cardCounterLabel').textContent=isIntro?'Information':'Anschluss';
@@ -128,7 +165,7 @@ function showCard(index){
 }
 
 function changeCard(step){
-  showCard(currentCardIndex+step);
+  showCard(currentCardIndex+step,step);
   document.getElementById('connectorGrid').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
@@ -147,7 +184,9 @@ function load(){
   }catch(e){console.warn('A5 Speicherstand konnte nicht geladen werden',e);}
 }
 function updateProgress(){
-  const ids=fieldIds(), done=ids.filter(id=>(document.getElementById(id)?.value||'').trim()).length;
+  const ids=fieldIds();
+  ids.forEach(id=>{const field=document.getElementById(id);if(field)field.classList.toggle('has-value',!!field.value.trim());});
+  const done=ids.filter(id=>(document.getElementById(id)?.value||'').trim()).length;
   currentPercentage=Math.round(done/ids.length*100);
   document.getElementById('headerPercentText').textContent=currentPercentage+'% erledigt';
   document.getElementById('progressBar').style.width=currentPercentage+'%';
