@@ -238,7 +238,7 @@ test.describe('HW production smoke: A1-A9', () => {
     expectNoPageErrors(errors);
   });
 
-  test('A7: completes the first Troubleshooter case and persists manual completion', async ({ page }) => {
+  test('A7: exposes all seven Troubleshooter cases, completes one and persists manual completion', async ({ page }) => {
     const errors = collectPageErrors(page);
     await openWorksheet(page, '/hw/A7.html');
 
@@ -253,6 +253,7 @@ test.describe('HW production smoke: A1-A9', () => {
     await toolPage.waitForLoadState('domcontentloaded', { timeout: 30_000 });
     await expect(toolPage).toHaveURL(/ib-ts\.vercel\.app/);
     await expect(toolPage).toHaveTitle(/PC-Troubleshooter/);
+    await expect(toolPage.locator('.hub-item')).toHaveCount(7);
 
     await toolPage.getByRole('button', { name: 'Starten', exact: true }).click();
     await expect(toolPage.getByRole('heading', { name: /Szenario 1: Der PC/ })).toBeVisible();
