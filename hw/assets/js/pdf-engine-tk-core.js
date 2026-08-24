@@ -1,11 +1,27 @@
-/* TK-inspired shared layout for all hardware PDFs. Loaded after pdf-engine-base.js. */
-var TKPW=297,TKPH=210,TKM=20,TKCW=257,TKBOT=188;
-var TKC={bg:[15,23,42],panel:[20,31,50],panel2:[26,39,61],border:[59,130,246],border2:[37,99,235],blue:[96,165,250],cyan:[56,189,248],text:[248,250,252],soft:[226,232,240],muted:[148,163,184],line:[71,85,105],green:[16,185,129],red:[239,68,68]};
+/* TK2-inspired shared layout for all hardware PDFs. Loaded after pdf-engine-base.js. */
+var TKPW=210,TKPH=297,TKM=16,TKCW=178,TKBOT=278;
+var TKC={
+  bg:[255,255,255],dark:[15,23,42],headerSoft:[186,230,253],
+  panel:[248,250,252],panel2:[241,245,249],line:[226,232,240],
+  blue:[2,132,199],cyan:[14,165,233],text:[15,23,42],soft:[71,85,105],
+  muted:[100,116,139],green:[16,185,129],greenBg:[236,253,245],red:[220,38,38]
+};
 function tkMeta(){var n=(document.getElementById('studentName')||{}).value||'Unbenannt',r=(document.getElementById('studentClass')||{}).value||'',d=(document.getElementById('studentDate')||{}).value||'';return{name:n,cls:(!r||r==='B24'||r==='B25')?'9. Klasse':r,date:d||new Date().toLocaleDateString('de-CH')}}
 function tkFile(v){return pdfSafeText(v||'Unbenannt').replace(/Ä/g,'Ae').replace(/Ö/g,'Oe').replace(/Ü/g,'Ue').replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/ß/g,'ss').replace(/[^a-zA-Z0-9]+/g,'_').replace(/^_+|_+$/g,'')||'Unbenannt'}
 function tkRgb(pdf,c,kind){pdf[kind||'setTextColor'](c[0],c[1],c[2])}
-function tkFooter(pdf,p){var y=197;tkRgb(pdf,TKC.line,'setDrawColor');pdf.setLineWidth(.25);pdf.line(TKM,y-4,TKPW-TKM,y-4);pdf.setFont('helvetica','normal');pdf.setFontSize(7);tkRgb(pdf,TKC.muted);pdf.text(pdfSafeText('IB2026 · Informatik 9. Klasse'),TKM,y);pdf.text('Seite '+p,TKPW-TKM,y,{align:'right'})}
-function tkFrame(pdf,o,m,p){tkRgb(pdf,TKC.bg,'setFillColor');/* Overscan beyond the media box avoids anti-aliased white edge pixels in some PDF renderers. */pdf.rect(-1,-1,TKPW+2,TKPH+2,'F');tkRgb(pdf,TKC.border,'setDrawColor');pdf.setLineWidth(1.35);pdf.roundedRect(7,7,TKPW-14,TKPH-14,3,3,'D');tkRgb(pdf,TKC.border2,'setDrawColor');pdf.setLineWidth(.35);pdf.roundedRect(10,10,TKPW-20,TKPH-20,2,2,'D');pdf.setFont('helvetica','bold');pdf.setFontSize(8.5);tkRgb(pdf,TKC.blue);pdf.text(pdfSafeText('INFORMATIK · 9. KLASSE'),TKPW/2,18,{align:'center'});if(o.badge){pdf.setFontSize(7.5);tkRgb(pdf,o.badgeOk===false?TKC.red:TKC.green);pdf.text(pdfSafeText(o.badge),TKPW-TKM,18,{align:'right'})}pdf.setFont('helvetica','bold');pdf.setFontSize(17);tkRgb(pdf,TKC.text);var tl=pdf.splitTextToSize(pdfSafeText(o.title||'Arbeitsblatt'),225).slice(0,2),ty=29;tl.forEach(function(l,i){pdf.text(l,TKPW/2,ty+i*6.5,{align:'center'})});var sy=ty+tl.length*6.5+1.5,sub=o.subtitle||'Informatische Bildung · IT-Hardware';if(p>1)sub+=' · Fortsetzung';pdf.setFont('helvetica','normal');pdf.setFontSize(8.5);tkRgb(pdf,TKC.muted);pdf.text(pdfSafeText(sub),TKPW/2,sy,{align:'center'});var my=sy+5.5;tkRgb(pdf,TKC.panel2,'setFillColor');tkRgb(pdf,TKC.border2,'setDrawColor');pdf.setLineWidth(.3);pdf.roundedRect(TKM,my,TKCW,14,2.5,2.5,'FD');var cols=[['SCHUELER / SCHUELERIN',m.name,TKM+5,'left'],['KLASSE',m.cls,TKPW/2,'center'],['DATUM',m.date,TKPW-TKM-5,'right']];cols.forEach(function(c){pdf.setFont('helvetica','bold');pdf.setFontSize(5.8);tkRgb(pdf,TKC.muted);pdf.text(c[0],c[2],my+5,{align:c[3]});pdf.setFontSize(9.5);tkRgb(pdf,TKC.soft);var v=pdfSafeText(c[1]);if(c[3]==='left')v=(pdf.splitTextToSize(v,95)[0]||'');pdf.text(v,c[2],my+10.5,{align:c[3]})});tkFooter(pdf,p);return my+21}
+function tkFooter(pdf,p){var y=288;tkRgb(pdf,TKC.line,'setDrawColor');pdf.setLineWidth(.2);pdf.line(TKM,y-4,TKPW-TKM,y-4);pdf.setFont('helvetica','normal');pdf.setFontSize(7);tkRgb(pdf,TKC.muted);pdf.text(pdfSafeText('IB2026 · Informatik 9. Klasse'),TKM,y);pdf.text('Seite '+p,TKPW-TKM,y,{align:'right'})}
+function tkFrame(pdf,o,m,p){
+  tkRgb(pdf,TKC.bg,'setFillColor');pdf.rect(-.5,-.5,TKPW+1,TKPH+1,'F');
+  tkRgb(pdf,TKC.dark,'setFillColor');pdf.rect(0,0,TKPW,30,'F');
+  pdf.setFont('helvetica','bold');pdf.setFontSize(8.5);tkRgb(pdf,TKC.headerSoft);pdf.text(pdfSafeText('INFORMATIK · 9. KLASSE · IT-HARDWARE'),TKM,10);
+  pdf.setFontSize(16.5);pdf.setTextColor(255,255,255);var title=pdf.splitTextToSize(pdfSafeText(o.title||'Arbeitsblatt'),TKCW-4).slice(0,2);pdf.text(title,TKM,19);
+  var y=38;pdf.setFont('helvetica','bold');pdf.setFontSize(12.5);tkRgb(pdf,TKC.text);pdf.text(pdfSafeText(m.name||'Unbenannt'),TKM,y);
+  if(o.badge){pdf.setFontSize(8);tkRgb(pdf,o.badgeOk===false?TKC.red:TKC.green);pdf.text(pdfSafeText(o.badge),TKPW-TKM,y,{align:'right'});}
+  y+=6.5;pdf.setFont('helvetica','normal');pdf.setFontSize(8.5);tkRgb(pdf,TKC.muted);var meta='Klasse: '+pdfSafeText(m.cls||'9. Klasse')+' · Datum: '+pdfSafeText(m.date||'');if(p>1)meta+=' · Fortsetzung';pdf.text(meta,TKM,y);
+  var sub=pdfSafeText(o.subtitle||'Informatische Bildung · IT-Hardware');if(sub){pdf.text(pdf.splitTextToSize(sub,TKCW)[0]||'',TKPW-TKM,y,{align:'right'});}
+  tkFooter(pdf,p);return 53;
+}
 function tkNew(pdf,o,m,s){if(s.page>0)pdf.addPage();s.page++;s.y=tkFrame(pdf,o,m,s.page)}
 function tkSpace(pdf,o,m,s,h){if(s.y+h>TKBOT)tkNew(pdf,o,m,s)}
-function tkPanel(pdf,x,y,w,h,c){c=c||TKC.panel;tkRgb(pdf,c,'setFillColor');tkRgb(pdf,TKC.line,'setDrawColor');pdf.setLineWidth(.25);pdf.roundedRect(x,y,w,h,2.5,2.5,'FD')}
+function tkPanel(pdf,x,y,w,h,c,stroke){tkRgb(pdf,c||TKC.panel2,'setFillColor');tkRgb(pdf,stroke||TKC.line,'setDrawColor');pdf.setLineWidth(.2);pdf.roundedRect(x,y,w,h,2,2,'FD')}
+function tkSectionHeader(pdf,o,m,s,text){tkSpace(pdf,o,m,s,15);tkPanel(pdf,TKM,s.y,TKCW,11,TKC.panel2);pdf.setFont('helvetica','bold');pdf.setFontSize(10.5);tkRgb(pdf,TKC.blue);var line=pdf.splitTextToSize(pdfSafeText(text||'Abschnitt'),TKCW-8)[0]||'';pdf.text(line,TKM+4,s.y+7);s.y+=15}
