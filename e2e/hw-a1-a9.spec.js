@@ -121,7 +121,7 @@ test.describe('HW production smoke: A1-A9', () => {
     context.on('page', async (popup) => {
       if (popup !== page) await popup.close().catch(() => {});
     });
-    await page.locator('#ytButton').click({ noWaitAfter: true });
+    await page.locator('#ytButton').click({ force: true, noWaitAfter: true });
     await expect(page.locator('#secPraxis')).toBeVisible({ timeout: 5_000 });
 
     const examples = {
