@@ -37,31 +37,6 @@ body{font-family:'Segoe UI','Inter',system-ui,sans-serif}
 </header>
 
 <main class="max-w-[1500px] mx-auto px-3 sm:px-6 py-5 space-y-4">
-  <section class="card p-4 sm:p-5">
-    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-      <div>
-        <div class="text-xs font-bold uppercase tracking-wider text-onedrive-600">IT-Hardware · A5</div>
-        <h1 class="text-xl sm:text-2xl font-black mt-1">Schnittstellen & PC-Kabel</h1>
-        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Die gleichen <strong>16 Anschlüsse und Geräte wie in A4</strong> – jetzt beschreibst du ihren typischen Einsatz in eigenen Worten.</p>
-      </div>
-      <div class="grid grid-cols-3 gap-2 min-w-0 sm:min-w-[400px] text-xs">
-        <div class="rounded-xl bg-slate-50 dark:bg-slate-800 p-2"><span class="block text-[9px] uppercase text-slate-400 font-bold">Vorname</span><span id="metaName">–</span></div>
-        <div class="rounded-xl bg-slate-50 dark:bg-slate-800 p-2"><span class="block text-[9px] uppercase text-slate-400 font-bold">Klasse</span><span id="metaClass">B24</span></div>
-        <div class="rounded-xl bg-slate-50 dark:bg-slate-800 p-2"><span class="block text-[9px] uppercase text-slate-400 font-bold">Datum</span><span id="metaDate">–</span></div>
-      </div>
-    </div>
-    <div class="hidden">
-      <input id="studentName" type="text" readonly><input id="studentClass" type="text" readonly value="B24"><input id="studentDate" type="text" readonly>
-    </div>
-  </section>
-
-  <section class="card p-4 sm:p-5">
-    <div class="flex items-start gap-3">
-      <div class="w-9 h-9 rounded-lg bg-blue-50 dark:bg-blue-950 text-blue-600 flex items-center justify-center shrink-0"><i class="fa-solid fa-circle-info"></i></div>
-      <div><h2 class="font-bold">Auftrag</h2><p class="text-sm text-slate-600 dark:text-slate-400">Bearbeite die 16 Karten nacheinander. Beschreibe jeweils kurz und in eigenen Worten, <strong>wofür der Anschluss oder das Gerät verwendet wird</strong>.</p></div>
-    </div>
-  </section>
-
   <section class="max-w-4xl mx-auto">
     <div id="connectorGrid"></div>
     <nav class="mt-4 flex items-center justify-between gap-3" aria-label="Anschlusskarten">
@@ -70,7 +45,7 @@ body{font-family:'Segoe UI','Inter',system-ui,sans-serif}
       </button>
       <div class="text-center">
         <div id="cardCounter" class="text-sm font-black text-onedrive-600">1 / 16</div>
-        <div class="text-[10px] uppercase font-bold tracking-wider text-slate-400">Anschluss</div>
+        <div id="cardCounterLabel" class="text-[10px] uppercase font-bold tracking-wider text-slate-400">Information</div>
       </div>
       <button id="nextCardBtn" type="button" class="btn bg-onedrive-500 hover:bg-onedrive-600 text-white disabled:opacity-40 disabled:cursor-not-allowed" onclick="changeCard(1)">
         Weiter <i class="fa-solid fa-arrow-right ml-1"></i>
@@ -91,7 +66,36 @@ let currentPercentage=0, saveTimer=null, currentCardIndex=0;
 
 function renderCards(){
   const grid=document.getElementById('connectorGrid');
-  grid.innerHTML=CONNECTORS.map((c,i)=>`<article class="connector-card card overflow-hidden ${i===0?'':'hidden'}" data-index="${i}">
+  const introCard=`<article class="connector-card card overflow-hidden" data-index="0">
+    <div class="p-5 sm:p-8">
+      <div class="flex flex-col sm:flex-row sm:items-start gap-5">
+        <div class="w-14 h-14 rounded-2xl bg-onedrive-500 text-white flex items-center justify-center text-2xl shadow-lg shrink-0">
+          <i class="fa-solid fa-plug"></i>
+        </div>
+        <div class="flex-1">
+          <div class="text-xs font-bold uppercase tracking-wider text-onedrive-600">IT-Hardware · A5</div>
+          <h1 class="text-2xl sm:text-3xl font-black mt-1">Schnittstellen & PC-Kabel</h1>
+          <p class="text-sm text-slate-500 dark:text-slate-400 mt-2">Die gleichen <strong>16 Anschlüsse und Geräte wie in A4</strong> – jetzt beschreibst du ihren typischen Einsatz in eigenen Worten.</p>
+        </div>
+      </div>
+      <div class="mt-6 rounded-xl bg-blue-50 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/60 p-4 flex items-start gap-3">
+        <div class="w-9 h-9 rounded-lg bg-white dark:bg-slate-900 text-blue-600 flex items-center justify-center shrink-0"><i class="fa-solid fa-circle-info"></i></div>
+        <div>
+          <h2 class="font-bold">Auftrag</h2>
+          <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Bearbeite die 16 Karten nacheinander. Beschreibe jeweils kurz und in eigenen Worten, <strong>wofür der Anschluss oder das Gerät verwendet wird</strong>.</p>
+        </div>
+      </div>
+      <div class="grid grid-cols-3 gap-2 mt-6 text-xs">
+        <div class="rounded-xl bg-slate-50 dark:bg-slate-800 p-3"><span class="block text-[9px] uppercase text-slate-400 font-bold">Vorname</span><span id="metaName">–</span></div>
+        <div class="rounded-xl bg-slate-50 dark:bg-slate-800 p-3"><span class="block text-[9px] uppercase text-slate-400 font-bold">Klasse</span><span id="metaClass">B24</span></div>
+        <div class="rounded-xl bg-slate-50 dark:bg-slate-800 p-3"><span class="block text-[9px] uppercase text-slate-400 font-bold">Datum</span><span id="metaDate">–</span></div>
+      </div>
+      <div class="hidden">
+        <input id="studentName" type="text" readonly><input id="studentClass" type="text" readonly value="B24"><input id="studentDate" type="text" readonly>
+      </div>
+    </div>
+  </article>`;
+  const connectorCards=CONNECTORS.map((c,i)=>`<article class="connector-card card overflow-hidden hidden" data-index="${i+1}">
     <div class="h-64 sm:h-80 bg-slate-50 dark:bg-slate-800 flex items-center justify-center p-4">
       <img src="${c.img}" alt="${c.name}" class="max-h-full max-w-full object-contain" loading="lazy">
     </div>
@@ -103,15 +107,18 @@ function renderCards(){
       <textarea id="use_${c.id}" class="field text-sm" rows="4" placeholder="Typische Geräte oder Einsatz beschreiben …"></textarea>
     </div>
   </article>`).join('');
+  grid.innerHTML=introCard+connectorCards;
   showCard(0);
 }
 
 function showCard(index){
-  currentCardIndex=Math.max(0,Math.min(CONNECTORS.length-1,index));
+  currentCardIndex=Math.max(0,Math.min(CONNECTORS.length,index));
   document.querySelectorAll('.connector-card').forEach((card,i)=>card.classList.toggle('hidden',i!==currentCardIndex));
-  document.getElementById('cardCounter').textContent=(currentCardIndex+1)+' / '+CONNECTORS.length;
-  document.getElementById('prevCardBtn').disabled=currentCardIndex===0;
-  document.getElementById('nextCardBtn').disabled=currentCardIndex===CONNECTORS.length-1;
+  const isIntro=currentCardIndex===0;
+  document.getElementById('cardCounter').textContent=isIntro?'Info':currentCardIndex+' / '+CONNECTORS.length;
+  document.getElementById('cardCounterLabel').textContent=isIntro?'Information':'Anschluss';
+  document.getElementById('prevCardBtn').disabled=isIntro;
+  document.getElementById('nextCardBtn').disabled=currentCardIndex===CONNECTORS.length;
 }
 
 function changeCard(step){
