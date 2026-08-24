@@ -340,7 +340,7 @@
         // Dark Mode
         function toggleDarkMode() {
             const isDark = document.documentElement.classList.toggle('dark');
-            localStorage.setItem('onedrive_theme', isDark ? 'dark' : 'light');
+            localStorage.setItem('ib-theme', isDark ? 'dark' : 'light');
             document.getElementById('themeIcon').className = isDark ? 'fa-solid fa-sun text-amber-400 text-sm' : 'fa-solid fa-moon text-sm';
         }
 
@@ -697,7 +697,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            const savedTheme = localStorage.getItem('onedrive_theme') || 'light';
+            const savedTheme = localStorage.getItem('ib-theme') || 'light';
             if (savedTheme === 'dark') {
                 document.documentElement.classList.add('dark');
                 document.getElementById('themeIcon').className = 'fa-solid fa-sun text-amber-400 text-sm';
