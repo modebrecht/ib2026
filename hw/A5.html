@@ -19,6 +19,12 @@ body{font-family:'Segoe UI','Inter',system-ui,sans-serif}
 .dark .field{background:#1e293b;border-color:#475569;color:#f8fafc}
 .btn{border-radius:.75rem;padding:.6rem .85rem;font-weight:700}
 @media(max-width:640px){.mobile-stack{grid-template-columns:1fr!important}}
+
+        .premium-progress{position:relative;overflow:hidden;background:linear-gradient(90deg,#0078d4 0%,#7c3aed 38%,#10b981 68%,#0078d4 100%);background-size:240% 100%;box-shadow:0 0 12px rgba(0,120,212,.34);animation:premiumProgressFlow 3.4s linear infinite}
+        .premium-progress::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 20%,rgba(255,255,255,.72) 48%,transparent 76%);transform:translateX(-130%);animation:premiumProgressShine 2.3s ease-in-out infinite}
+        @keyframes premiumProgressFlow{to{background-position:240% 0}}
+        @keyframes premiumProgressShine{0%,35%{transform:translateX(-130%)}75%,100%{transform:translateX(130%)}}
+        @media(prefers-reduced-motion:reduce){.premium-progress,.premium-progress::after{animation:none!important}}
 </style>
 </head>
 <body class="min-h-full bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100">
@@ -33,7 +39,7 @@ body{font-family:'Segoe UI','Inter',system-ui,sans-serif}
       <button class="btn border border-rose-300 text-rose-600" onclick="resetA5()" title="Zurücksetzen"><i class="fa-solid fa-rotate-right"></i></button>
     </div>
   </div>
-  <div class="h-1 bg-slate-200 dark:bg-slate-800"><div id="progressBar" class="h-1 bg-onedrive-500 transition-all" style="width:0%"></div></div>
+  <div class="h-1 bg-slate-200 dark:bg-slate-800"><div id="progressBar" class="premium-progress h-1 transition-all duration-500" style="width:0%"></div></div>
 </header>
 
 <main class="max-w-[1500px] mx-auto px-3 sm:px-6 py-5 space-y-4">
