@@ -903,14 +903,6 @@
             window.print();
         }
 
-        function toggleDarkMode() {
-            const isDark = document.documentElement.classList.toggle('dark');
-            localStorage.setItem('onedrive_theme', isDark ? 'dark' : 'light');
-            const icon = document.getElementById('themeIcon');
-            if (icon) {
-                icon.className = isDark ? 'fa-solid fa-sun text-amber-400 text-sm' : 'fa-solid fa-moon text-sm';
-            }
-        }
     </script>
 </body>
 </html>
