@@ -1,0 +1,52 @@
+name: E2E Smoke HW A1-A2
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: Vercel production base URL
+        required: true
+        default: https://ib2026-git-main-modebrechts-projects.vercel.app
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e2e-smoke-hw-a1-a2
+  cancel-in-progress: false
+
+jobs:
+  smoke:
+    name: Chromium smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      BASE_URL: ${{ inputs.base_url }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Playwright
+        run: |
+          npm init -y >/dev/null
+          npm install --no-save @playwright/test
+          npx playwright install --with-deps chromium
+
+      - name: Run A1-A2 production smoke
+        run: npx playwright test e2e/hw-a1-a2.spec.js --workers=1 --reporter=line
+
+      - name: Upload failure evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-smoke-hw-a1-a2-${{ github.run_id }}
+          path: test-results/
+          if-no-files-found: ignore
+          retention-days: 7
