@@ -36,7 +36,13 @@
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.5); border-radius: 4px; }
-    </style>
+    
+        .premium-progress{position:relative;overflow:hidden;background:linear-gradient(90deg,#0078d4 0%,#7c3aed 38%,#10b981 68%,#0078d4 100%);background-size:240% 100%;box-shadow:0 0 12px rgba(0,120,212,.34);animation:premiumProgressFlow 3.4s linear infinite}
+        .premium-progress::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 20%,rgba(255,255,255,.72) 48%,transparent 76%);transform:translateX(-130%);animation:premiumProgressShine 2.3s ease-in-out infinite}
+        @keyframes premiumProgressFlow{to{background-position:240% 0}}
+        @keyframes premiumProgressShine{0%,35%{transform:translateX(-130%)}75%,100%{transform:translateX(130%)}}
+        @media(prefers-reduced-motion:reduce){.premium-progress,.premium-progress::after{animation:none!important}}
+</style>
 </head>
 <body class="bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-full flex flex-col font-sans antialiased">
 
@@ -50,6 +56,16 @@
                 <div>
                     <h1 class="text-base font-bold text-slate-900 dark:text-slate-100">A6: Mainboard-Anschlüsse</h1>
                     <p class="text-xs text-slate-500 dark:text-slate-400">Informatische Bildung • IT-Hardware • A6</p>
+                </div>
+            </div>
+
+            <div class="ml-auto w-28 sm:w-44" aria-label="Fortschritt">
+                <div class="flex items-center justify-between gap-2 mb-1">
+                    <span class="text-[10px] uppercase tracking-wider font-bold text-slate-400">Fortschritt</span>
+                    <span id="headerPercentText" class="text-xs font-extrabold text-onedrive-600 dark:text-onedrive-400">0%</span>
+                </div>
+                <div class="h-1.5 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
+                    <div id="progressBar" class="premium-progress h-full rounded-full transition-all duration-500" style="width:0%"></div>
                 </div>
             </div>
 
@@ -115,7 +131,25 @@
             }
 
             setupUniversalAutoSave();
+            initManualProgress();
         });
+
+
+        function initManualProgress() {
+            var box = document.getElementById('manualDoneA6');
+            var bar = document.getElementById('progressBar');
+            var text = document.getElementById('headerPercentText');
+            if (!box || !bar || !text) return;
+            function syncProgress() {
+                var percent = box.checked ? 100 : 0;
+                bar.style.width = percent + '%';
+                text.textContent = percent + '%';
+                text.classList.toggle('text-emerald-600', percent === 100);
+                text.classList.toggle('dark:text-emerald-400', percent === 100);
+            }
+            syncProgress();
+            box.addEventListener('change', syncProgress);
+        }
 
 function applyDefaultClassAndDate() {
             var dateInput = document.getElementById('studentDate');
