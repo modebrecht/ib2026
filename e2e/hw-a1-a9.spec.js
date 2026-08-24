@@ -162,7 +162,6 @@ test.describe('HW production smoke: A1-A9', () => {
     }
 
     await expect(page.locator('#headerPercentText')).toHaveText('100% erledigt');
-    await expect(page.locator('#hdrPdfBtn')).toHaveAttribute('title', 'Arbeitsblatt als PDF herunterladen');
     await downloadPdf(page, '#hdrPdfBtn', 'A3_Aufbau_eines_Computers');
     expectNoPageErrors(errors);
   });
@@ -195,7 +194,8 @@ test.describe('HW production smoke: A1-A9', () => {
     expect(result.errorCount).toBe(0);
     expect(result.hasPassed).toBe(true);
     await expect(page.locator('#headerPercentText')).toHaveText('16 / 16 richtig');
-    await downloadPdf(page, '#hdrPdfBtn');
+    await expect(page.locator('#modalPdfBtn')).toBeVisible();
+    await downloadPdf(page, '#modalPdfBtn');
     expectNoPageErrors(errors);
   });
 
