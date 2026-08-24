@@ -199,13 +199,13 @@ test.describe('HW production smoke: A1-A9', () => {
     expectNoPageErrors(errors);
   });
 
-  test('A5: completes all 32 cable fields, persists and downloads PDF', async ({ page }) => {
+  test('A5: completes all 16 connector cards, persists and downloads PDF', async ({ page }) => {
     const errors = collectPageErrors(page);
     await openWorksheet(page, '/hw/A5.html');
 
     await expect(page).toHaveTitle(/A5: Schnittstellen & PC-Kabel/);
     const ids = await page.evaluate(() => fieldIds());
-    expect(ids).toHaveLength(32);
+    expect(ids).toHaveLength(16);
 
     for (let i = 0; i < ids.length; i += 1) {
       await page.locator(`#${ids[i]}`).fill(`E2E A5 ${i + 1}`);
@@ -216,7 +216,7 @@ test.describe('HW production smoke: A1-A9', () => {
     await page.waitForTimeout(250);
     const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('onedrive_a5_worksheet_8sek') || '{}'));
     expect(saved.percent).toBe(100);
-    expect(Object.keys(saved.answers || {})).toHaveLength(32);
+    expect(Object.keys(saved.answers || {})).toHaveLength(16);
     await downloadPdf(page, '#pdfBtn', 'A5_Schnittstellen_PC-Kabel');
     expectNoPageErrors(errors);
   });
