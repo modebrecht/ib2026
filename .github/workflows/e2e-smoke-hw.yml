@@ -1,4 +1,4 @@
-name: E2E Smoke HW A1-A2
+name: E2E Smoke HW A1-A9
 
 on:
   workflow_dispatch:
@@ -13,14 +13,14 @@ permissions:
   contents: read
 
 concurrency:
-  group: e2e-smoke-hw-a1-a2
+  group: e2e-smoke-hw-a1-a9
   cancel-in-progress: false
 
 jobs:
   smoke:
-    name: Chromium smoke
+    name: Chromium smoke A1-A9
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     env:
       BASE_URL: ${{ inputs.base_url }}
 
@@ -39,14 +39,16 @@ jobs:
           npm install --no-save @playwright/test
           npx playwright install --with-deps chromium
 
-      - name: Run A1-A2 production smoke
-        run: npx playwright test e2e/hw-a1-a2.spec.js --workers=1 --reporter=line
+      - name: Run A1-A9 production smoke
+        run: npx playwright test e2e/hw-a1-a9.spec.js --browser=chromium --workers=1 --reporter=line,html
 
       - name: Upload failure evidence
-        if: always()
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: e2e-smoke-hw-a1-a2-${{ github.run_id }}
-          path: test-results/
+          name: e2e-smoke-hw-a1-a9-${{ github.run_id }}
+          path: |
+            test-results/
+            playwright-report/
           if-no-files-found: ignore
           retention-days: 7
