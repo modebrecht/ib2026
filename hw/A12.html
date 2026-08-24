@@ -8,6 +8,7 @@
 </head>
 <body>
   <iframe id="sheet" src="A23.html" title="A12: Grüne IT & Nachhaltigkeit"></iframe>
+  <script src="assets/js/pdf-engine.js"></script>
   <script>
     const frame=document.getElementById('sheet');
     function relabel(){
@@ -20,7 +21,27 @@
         nodes.forEach(n=>{if(n.nodeValue&&n.nodeValue.includes('A9'))n.nodeValue=n.nodeValue.replace(/A9/g,'A12')});
       }catch(e){}
     }
-    frame.addEventListener('load',()=>{relabel();setTimeout(relabel,250)});
+    function exportA12Pdf(){
+      try{
+        const d=frame.contentDocument;
+        if(!d)return;
+        const value=id=>((d.getElementById(id)||{}).value||'').trim();
+        downloadDomWorksheetPDF({
+          root:d.querySelector('main')||d.body,
+          title:'A12 · Grüne IT & Nachhaltigkeit',
+          subtitle:'Informatische Bildung · IT-Hardware · Nachhaltigkeit',
+          filenamePrefix:'A12_Gruene_IT',
+          meta:{name:value('studentName')||'Unbenannt',cls:value('studentClass')||'9. Klasse',date:value('studentDate')||new Date().toLocaleDateString('de-CH')},
+          heading:'Bearbeitetes Arbeitsblatt'
+        });
+      }catch(e){console.error('A12 PDF export failed:',e)}
+    }
+    function installPdfBridge(){
+      try{
+        if(frame.contentWindow)frame.contentWindow.safePrint=exportA12Pdf;
+      }catch(e){}
+    }
+    frame.addEventListener('load',()=>{relabel();installPdfBridge();setTimeout(()=>{relabel();installPdfBridge()},250)});
   </script>
 </body>
 </html>
