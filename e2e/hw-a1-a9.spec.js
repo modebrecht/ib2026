@@ -208,7 +208,10 @@ test.describe('HW production smoke: A1-A9', () => {
     expect(ids).toHaveLength(16);
 
     for (let i = 0; i < ids.length; i += 1) {
+      await expect(page.locator('#cardCounter')).toHaveText(`${i + 1} / ${ids.length}`);
+      await expect(page.locator(`#${ids[i]}`)).toBeVisible();
       await page.locator(`#${ids[i]}`).fill(`E2E A5 ${i + 1}`);
+      if (i < ids.length - 1) await page.locator('#nextCardBtn').click();
     }
 
     await expect(page.locator('#headerPercentText')).toHaveText('100% erledigt');
