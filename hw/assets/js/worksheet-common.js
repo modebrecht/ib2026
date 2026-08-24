@@ -47,12 +47,11 @@ function applyTheme(theme) {
 
 function saveTheme(theme) {
     localStorage.setItem(THEME_KEY, theme);
-    localStorage.setItem('onedrive_theme', theme);
     applyTheme(theme);
 }
 
 function initTheme() {
-    var saved = localStorage.getItem(THEME_KEY) || localStorage.getItem('onedrive_theme');
+    var saved = localStorage.getItem(THEME_KEY);
     if (saved) {
         applyTheme(saved);
     } else {
@@ -399,7 +398,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 window.addEventListener('storage', function(e) {
-    if (e.key === THEME_KEY || e.key === 'onedrive_theme') {
+    if (e.key === THEME_KEY) {
         if (e.newValue) applyTheme(e.newValue);
     }
     if (e.key === FONT_KEY || e.key === 'onedrive_font_size') {
