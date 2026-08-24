@@ -16,5 +16,5 @@ function premiumIcon(id){
   soundcard:`<rect class="ink" x="10" y="18" width="60" height="44" rx="7"/><circle class="p-fill" cx="22" cy="30" r="5"/><circle class="p-fill2" cx="22" cy="48" r="5"/><path class="p-stroke" d="M34 42c4-13 7 13 11 0s7 13 11 0"/><rect class="metal" x="62" y="24" width="8" height="8" rx="2"/><rect class="metal" x="62" y="36" width="8" height="8" rx="2"/><rect class="metal" x="62" y="48" width="8" height="8" rx="2"/>`,
   headphones:`<path class="ink-stroke" d="M17 43V36c0-15 10-25 23-25s23 10 23 25v7"/><path class="p-stroke" d="M24 38v-3c0-10 6-17 16-17s16 7 16 17v3"/><rect class="p-fill" x="12" y="38" width="15" height="25" rx="7"/><rect class="p-fill2" x="53" y="38" width="15" height="25" rx="7"/><rect class="paper" x="18" y="44" width="4" height="13" rx="2"/><rect class="paper" x="58" y="44" width="4" height="13" rx="2"/>`
  };
- return `<svg class="premium-svg" viewBox="0 0 80 80" role="img" focusable="false" aria-hidden="true">${icons[id]||icons.cpu}</svg>`;
+ return `<svg class="premium-svg anim-${id}" viewBox="0 0 80 80" role="img" focusable="false" aria-hidden="true">${icons[id]||icons.cpu}</svg>`;
 }
