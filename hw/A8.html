@@ -9,63 +9,139 @@
   <link rel="stylesheet" href="assets/css/fontawesome.min.css">
   <style>
     @import url('assets/fonts/inter.css');
-    *{box-sizing:border-box} body{font-family:'Segoe UI','Inter',system-ui,sans-serif}
-    .card{background:#fff;border:1px solid #e2e8f0;border-radius:1rem}.dark .card{background:#0f172a;border-color:#334155}
-    .eva-btn{min-height:84px;border:2px solid #cbd5e1;border-radius:1rem;font-weight:900;font-size:1.05rem;transition:.15s}.eva-btn:hover{transform:translateY(-1px);border-color:#0078d4}.dark .eva-btn{border-color:#475569}
-    .eva-btn:disabled{opacity:.55;cursor:default;transform:none}
+    *{box-sizing:border-box}
+    body{font-family:'Segoe UI','Inter',system-ui,sans-serif}
+    .surface{background:rgba(255,255,255,.9);border:1px solid rgba(226,232,240,.9);box-shadow:0 18px 45px rgba(15,23,42,.07);backdrop-filter:blur(14px)}
+    .dark .surface{background:rgba(15,23,42,.88);border-color:rgba(51,65,85,.9);box-shadow:0 18px 45px rgba(0,0,0,.2)}
+    .quiz-stage{position:relative;overflow:hidden;isolation:isolate}
+    .quiz-stage:before,.quiz-stage:after{content:"";position:absolute;border-radius:999px;filter:blur(4px);opacity:.55;z-index:-1}
+    .quiz-stage:before{width:220px;height:220px;right:-80px;top:-90px;background:rgba(0,120,212,.12)}
+    .quiz-stage:after{width:180px;height:180px;left:-70px;bottom:-85px;background:rgba(139,92,246,.10)}
+    .eva-flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:.55rem}
+    .flow-node{border-radius:1rem;padding:.8rem .65rem;text-align:center;border:1px solid #e2e8f0;background:rgba(255,255,255,.76)}
+    .dark .flow-node{border-color:#334155;background:rgba(30,41,59,.72)}
+    .flow-letter{display:flex;width:2rem;height:2rem;margin:0 auto .35rem;border-radius:.75rem;align-items:center;justify-content:center;font-weight:950;color:white}
+    .flow-arrow{color:#94a3b8;font-size:.8rem}
+    .component-shell{position:relative;max-width:600px;margin:auto;padding:1.2rem 1rem 1.4rem;border-radius:1.75rem;background:linear-gradient(145deg,rgba(248,250,252,.96),rgba(239,246,255,.88));border:1px solid #dbeafe}
+    .dark .component-shell{background:linear-gradient(145deg,rgba(30,41,59,.92),rgba(15,23,42,.94));border-color:#334155}
+    .component-shell.enter{animation:cardIn .48s cubic-bezier(.2,.9,.2,1)}
+    .component-icon{position:relative;display:flex;width:92px;height:92px;margin:auto;border-radius:1.65rem;align-items:center;justify-content:center;font-size:2.25rem;color:#0078d4;background:linear-gradient(145deg,#eff6ff,#dbeafe);box-shadow:0 14px 30px rgba(0,120,212,.15)}
+    .dark .component-icon{background:linear-gradient(145deg,#1e3a5f,#172033);color:#66a1ff}
+    .component-icon i{animation:iconFloat 3.2s ease-in-out infinite}
+    .component-icon:after{content:"";position:absolute;inset:8px;border-radius:1.25rem;border:1px solid rgba(255,255,255,.7)}
+    .eva-btn{position:relative;overflow:hidden;min-height:105px;border:2px solid #dbe2ea;border-radius:1.25rem;font-weight:900;text-align:left;padding:1rem 1rem 1rem 4.25rem;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease,opacity .18s ease,background .18s ease}
+    .dark .eva-btn{border-color:#475569;background:#0f172a}
+    .eva-btn:hover:not(:disabled){transform:translateY(-3px);box-shadow:0 14px 28px rgba(15,23,42,.10)}
+    .dark .eva-btn:hover:not(:disabled){box-shadow:0 14px 28px rgba(0,0,0,.25)}
+    .eva-btn:focus-visible{outline:3px solid rgba(0,120,212,.28);outline-offset:3px}
+    .eva-btn:disabled{cursor:default}
+    .choice-letter{position:absolute;left:1rem;top:50%;transform:translateY(-50%);display:flex;width:2.45rem;height:2.45rem;align-items:center;justify-content:center;border-radius:.85rem;color:white;font-size:1.2rem;font-weight:950;box-shadow:0 8px 16px rgba(15,23,42,.13)}
+    .choice-sub{display:block;font-size:.72rem;line-height:1.15;margin-top:.2rem;font-weight:650;color:#64748b}
+    .dark .choice-sub{color:#94a3b8}
+    .eva-btn[data-cat="eingabe"] .choice-letter{background:linear-gradient(135deg,#2563eb,#0284c7)}
+    .eva-btn[data-cat="verarbeitung"] .choice-letter{background:linear-gradient(135deg,#7c3aed,#a855f7)}
+    .eva-btn[data-cat="ausgabe"] .choice-letter{background:linear-gradient(135deg,#059669,#10b981)}
+    .eva-btn.wrong{border-color:#f59e0b;background:#fffbeb;animation:shake .36s ease}
+    .dark .eva-btn.wrong{background:rgba(120,53,15,.18);border-color:#f59e0b}
+    .eva-btn.correct{border-color:#10b981;background:#ecfdf5;box-shadow:0 0 0 4px rgba(16,185,129,.10),0 16px 30px rgba(16,185,129,.12);transform:translateY(-2px)}
+    .dark .eva-btn.correct{background:rgba(6,78,59,.25);border-color:#34d399}
+    .eva-btn.dimmed{opacity:.42;transform:scale(.985)}
+    .feedback-pop{animation:feedbackPop .28s cubic-bezier(.2,.9,.2,1)}
+    .next-pop{animation:nextPop .34s cubic-bezier(.2,.9,.2,1)}
+    .burst{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+    .particle{position:absolute;left:50%;top:46%;width:8px;height:8px;border-radius:50%;opacity:0;animation:burst .68s ease-out forwards}
+    .score-pill{border:1px solid #e2e8f0;border-radius:999px;padding:.45rem .75rem;background:rgba(248,250,252,.85)}
+    .dark .score-pill{border-color:#334155;background:rgba(30,41,59,.75)}
+    .result-hero{background:linear-gradient(145deg,#ecfdf5,#eff6ff);border:1px solid #bbf7d0}
+    .dark .result-hero{background:linear-gradient(145deg,rgba(6,78,59,.22),rgba(30,58,95,.25));border-color:#166534}
+    .result-icon{animation:resultBounce .7s cubic-bezier(.2,.9,.2,1)}
+    .progress-glow{background:linear-gradient(90deg,#0078d4,#7c3aed,#10b981);background-size:200% 100%;animation:progressFlow 3.5s linear infinite}
+    @keyframes cardIn{from{opacity:0;transform:translateY(16px) scale(.985)}to{opacity:1;transform:none}}
+    @keyframes iconFloat{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-6px) rotate(1deg)}}
+    @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}55%{transform:translateX(6px)}75%{transform:translateX(-3px)}}
+    @keyframes feedbackPop{from{opacity:0;transform:scale(.96) translateY(4px)}to{opacity:1;transform:none}}
+    @keyframes nextPop{from{opacity:0;transform:translateY(8px) scale(.97)}to{opacity:1;transform:none}}
+    @keyframes burst{0%{opacity:1;transform:translate(0,0) scale(.8)}100%{opacity:0;transform:translate(var(--x),var(--y)) scale(.2)}}
+    @keyframes resultBounce{0%{transform:scale(.55) rotate(-12deg);opacity:0}70%{transform:scale(1.08) rotate(3deg)}100%{transform:none;opacity:1}}
+    @keyframes progressFlow{0%{background-position:0 0}100%{background-position:200% 0}}
+    @media(max-width:640px){.eva-flow{gap:.25rem}.flow-node{padding:.6rem .25rem}.flow-node .flow-name{font-size:.67rem}.flow-arrow{font-size:.62rem}.component-shell{padding:1rem .75rem 1.2rem}.eva-btn{min-height:86px}}
+    @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}.component-icon i{animation:none}}
   </style>
 </head>
-<body class="min-h-full bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100">
-<header class="sticky top-0 z-40 bg-white/95 dark:bg-slate-900/95 border-b border-slate-200 dark:border-slate-800">
-  <div class="max-w-4xl mx-auto p-3 flex justify-between items-center gap-3">
-    <div><div class="text-[10px] uppercase font-bold text-slate-400">A8 · EVA-Repetition</div><div id="pct" class="font-black text-onedrive-600">0% bearbeitet</div></div>
-    <div class="flex gap-2">
-      <button class="px-3 py-2 rounded-xl border" onclick="toggleDarkMode()" title="Dunkelmodus"><i id="themeIcon" class="fa-solid fa-moon"></i></button>
-      <button id="pdf" class="px-3 py-2 rounded-xl bg-slate-200 text-slate-400" onclick="makePdf()" title="PDF bei Abschluss"><i class="fa-solid fa-file-pdf"></i></button>
-      <button class="px-3 py-2 rounded-xl border border-rose-300 text-rose-600" onclick="resetA8()" title="Zurücksetzen"><i class="fa-solid fa-rotate-right"></i></button>
+<body class="min-h-full overflow-x-hidden bg-gradient-to-br from-slate-100 via-blue-50/40 to-violet-50/30 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900 text-slate-800 dark:text-slate-100">
+<header class="sticky top-0 z-40 bg-white/85 dark:bg-slate-900/88 backdrop-blur-xl border-b border-slate-200/80 dark:border-slate-800">
+  <div class="max-w-5xl mx-auto p-3 flex justify-between items-center gap-3">
+    <div class="min-w-0">
+      <div class="text-[10px] uppercase font-black tracking-[.16em] text-slate-400">A8 · EVA-Repetition</div>
+      <div class="flex items-center gap-2 mt-0.5"><div id="pct" class="font-black text-onedrive-600 dark:text-blue-400">0% bearbeitet</div><span class="hidden sm:inline text-slate-300 dark:text-slate-700">•</span><div id="headerRound" class="hidden sm:block text-xs font-bold text-slate-400">15 Komponenten</div></div>
+    </div>
+    <div class="flex gap-2 shrink-0">
+      <button class="w-10 h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-900 hover:-translate-y-0.5 transition" onclick="toggleDarkMode()" title="Dunkelmodus"><i id="themeIcon" class="fa-solid fa-moon"></i></button>
+      <button id="pdf" class="w-10 h-10 rounded-xl bg-slate-200 text-slate-400 dark:bg-slate-800 dark:text-slate-600 transition" onclick="makePdf()" title="PDF bei Abschluss"><i class="fa-solid fa-file-pdf"></i></button>
+      <button class="w-10 h-10 rounded-xl border border-rose-200 dark:border-rose-900/60 bg-white/70 dark:bg-slate-900 text-rose-600 hover:-translate-y-0.5 transition" onclick="resetA8()" title="Zurücksetzen"><i class="fa-solid fa-rotate-right"></i></button>
     </div>
   </div>
-  <div class="h-1 bg-slate-200 dark:bg-slate-800"><div id="bar" class="h-1 bg-onedrive-500 transition-all" style="width:0"></div></div>
+  <div class="h-1 bg-slate-200 dark:bg-slate-800 overflow-hidden"><div id="bar" class="h-1 progress-glow transition-all duration-500" style="width:0"></div></div>
 </header>
 
-<main class="max-w-4xl mx-auto p-4 sm:p-6 space-y-5">
-  <section class="card p-5 sm:p-6">
-    <div class="text-xs uppercase font-bold text-onedrive-600">IT-Hardware · A8</div>
-    <h1 class="text-2xl sm:text-3xl font-black mt-1">EVA – gezielte Repetition</h1>
-    <p class="text-sm text-slate-500 dark:text-slate-400 mt-2">Du siehst immer genau <strong>eine Hardware-Komponente</strong>. Entscheide: Gehört sie zur <strong>Eingabe</strong>, <strong>Verarbeitung</strong> oder <strong>Ausgabe</strong>?</p>
+<main class="max-w-5xl mx-auto p-4 sm:p-6 lg:p-8 space-y-5">
+  <section class="surface rounded-[1.6rem] p-5 sm:p-6">
+    <div class="flex flex-col lg:flex-row lg:items-center gap-5 lg:gap-8">
+      <div class="flex-1 min-w-0">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950/40 text-onedrive-600 dark:text-blue-300 text-[11px] uppercase tracking-wider font-black border border-blue-100 dark:border-blue-900/60"><i class="fa-solid fa-bolt"></i> Kurze Repetition</div>
+        <h1 class="text-2xl sm:text-3xl font-black tracking-tight mt-3">Eingabe. Verarbeitung. Ausgabe.</h1>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mt-2 max-w-2xl">Ordne jede Hardware-Komponente blitzschnell dem EVA-Prinzip zu. Falsche Antworten kommen am Schluss gezielt nochmals dran.</p>
+      </div>
+      <div class="lg:w-[390px] shrink-0">
+        <div class="eva-flow" aria-label="EVA-Prozess">
+          <div class="flow-node"><span class="flow-letter bg-gradient-to-br from-blue-600 to-sky-500">E</span><div class="flow-name text-xs font-black">Eingabe</div></div>
+          <i class="flow-arrow fa-solid fa-arrow-right"></i>
+          <div class="flow-node"><span class="flow-letter bg-gradient-to-br from-violet-600 to-fuchsia-500">V</span><div class="flow-name text-xs font-black">Verarbeitung</div></div>
+          <i class="flow-arrow fa-solid fa-arrow-right"></i>
+          <div class="flow-node"><span class="flow-letter bg-gradient-to-br from-emerald-600 to-emerald-400">A</span><div class="flow-name text-xs font-black">Ausgabe</div></div>
+        </div>
+      </div>
+    </div>
     <div class="hidden"><input id="studentName" readonly><input id="studentClass" readonly value="B24"><input id="studentDate" readonly></div>
   </section>
 
-  <section id="quiz" class="card p-5 sm:p-8 text-center">
-    <div class="flex items-center justify-between gap-3 mb-6">
-      <span id="counter" class="text-xs font-bold uppercase tracking-wide text-slate-400">1 / 15</span>
-      <span id="firstTry" class="text-xs font-bold text-slate-500">0 richtig beim 1. Versuch</span>
+  <section id="quiz" class="surface quiz-stage rounded-[1.8rem] p-5 sm:p-8">
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+      <span id="counter" class="score-pill text-xs font-black uppercase tracking-wide text-slate-500">1 / 15</span>
+      <span id="firstTry" class="score-pill text-xs font-black text-slate-500"><i class="fa-solid fa-bullseye mr-1 text-onedrive-500"></i>0 richtig beim 1. Versuch</span>
     </div>
 
-    <div class="max-w-xl mx-auto py-4">
-      <div id="icon" class="w-20 h-20 mx-auto rounded-2xl bg-onedrive-50 dark:bg-slate-800 text-onedrive-600 flex items-center justify-center text-3xl mb-4"><i class="fa-solid fa-microchip"></i></div>
-      <div class="text-xs uppercase font-bold tracking-widest text-slate-400">Komponente</div>
-      <h2 id="component" class="text-3xl sm:text-4xl font-black mt-1">Tastatur</h2>
+    <div id="componentShell" class="component-shell enter text-center">
+      <div id="icon" class="component-icon"><i class="fa-solid fa-microchip"></i></div>
+      <div class="text-[10px] uppercase font-black tracking-[.2em] text-slate-400 mt-5">Komponente</div>
+      <h2 id="component" class="text-3xl sm:text-4xl font-black tracking-tight mt-1">Tastatur</h2>
       <p id="hint" class="text-sm text-slate-500 dark:text-slate-400 mt-2">Welche Rolle hat diese Komponente im EVA-Prinzip?</p>
+      <div id="burst" class="burst" aria-hidden="true"></div>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4">
-      <button class="eva-btn bg-white dark:bg-slate-900" onclick="answer('eingabe')"><span class="block text-2xl mb-1">E</span>Eingabe</button>
-      <button class="eva-btn bg-white dark:bg-slate-900" onclick="answer('verarbeitung')"><span class="block text-2xl mb-1">V</span>Verarbeitung</button>
-      <button class="eva-btn bg-white dark:bg-slate-900" onclick="answer('ausgabe')"><span class="block text-2xl mb-1">A</span>Ausgabe</button>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-6" id="answers">
+      <button type="button" class="eva-btn bg-white dark:bg-slate-900" data-cat="eingabe"><span class="choice-letter">E</span><span>Eingabe</span><span class="choice-sub">Daten gelangen in den Computer</span></button>
+      <button type="button" class="eva-btn bg-white dark:bg-slate-900" data-cat="verarbeitung"><span class="choice-letter">V</span><span>Verarbeitung</span><span class="choice-sub">Daten werden verarbeitet</span></button>
+      <button type="button" class="eva-btn bg-white dark:bg-slate-900" data-cat="ausgabe"><span class="choice-letter">A</span><span>Ausgabe</span><span class="choice-sub">Ergebnisse gelangen nach aussen</span></button>
     </div>
 
-    <div id="feedback" class="min-h-[56px] mt-5 flex items-center justify-center text-sm font-bold"></div>
-    <button id="next" class="hidden mt-2 px-6 py-3 rounded-xl bg-onedrive-500 hover:bg-onedrive-600 text-white font-bold" onclick="nextItem()">Nächste Komponente <i class="fa-solid fa-arrow-right ml-1"></i></button>
+    <div id="feedback" class="min-h-[60px] mt-5 flex items-center justify-center text-sm font-bold text-center" aria-live="polite"></div>
+    <div class="text-center"><button id="next" type="button" class="hidden next-pop px-6 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 font-black shadow-lg shadow-slate-900/10">Nächste Komponente <i class="fa-solid fa-arrow-right ml-1"></i></button></div>
+    <div class="text-center text-[11px] text-slate-400 mt-4"><i class="fa-regular fa-keyboard mr-1"></i>Tastatur: <strong>E</strong>, <strong>V</strong> oder <strong>A</strong> drücken</div>
   </section>
 
-  <section id="result" class="card p-6 sm:p-8 hidden text-center">
-    <div class="w-16 h-16 mx-auto rounded-2xl bg-emerald-100 dark:bg-emerald-950 text-emerald-600 flex items-center justify-center text-3xl"><i class="fa-solid fa-check"></i></div>
-    <h2 class="text-2xl font-black mt-4">EVA-Runde abgeschlossen</h2>
-    <p id="resultText" class="text-slate-500 dark:text-slate-400 mt-2"></p>
+  <section id="result" class="surface rounded-[1.8rem] p-5 sm:p-8 hidden">
+    <div class="result-hero rounded-[1.5rem] p-6 sm:p-8 text-center">
+      <div class="result-icon w-20 h-20 mx-auto rounded-[1.4rem] bg-gradient-to-br from-emerald-500 to-teal-500 text-white flex items-center justify-center text-3xl shadow-xl shadow-emerald-500/20"><i class="fa-solid fa-check"></i></div>
+      <div class="text-[10px] uppercase font-black tracking-[.2em] text-emerald-600 dark:text-emerald-400 mt-5">Runde geschafft</div>
+      <h2 class="text-2xl sm:text-3xl font-black mt-1">EVA sitzt immer besser.</h2>
+      <p id="resultText" class="text-slate-600 dark:text-slate-300 mt-3 max-w-2xl mx-auto"></p>
+      <div id="resultScore" class="mt-5 text-5xl font-black tracking-tight text-slate-900 dark:text-white"></div>
+      <div class="text-xs font-bold text-slate-400 mt-1">beim ersten Versuch</div>
+    </div>
     <div class="flex flex-wrap justify-center gap-3 mt-5">
-      <button id="repeatWrong" class="px-5 py-3 rounded-xl bg-amber-500 text-white font-bold" onclick="repeatWrongItems()"><i class="fa-solid fa-repeat mr-1"></i> Unsichere wiederholen</button>
-      <button class="px-5 py-3 rounded-xl border font-bold" onclick="startFullRound()"><i class="fa-solid fa-rotate-right mr-1"></i> Ganze Runde nochmals</button>
+      <button id="repeatWrong" type="button" class="px-5 py-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-black shadow-lg shadow-amber-500/15" onclick="repeatWrongItems()"><i class="fa-solid fa-repeat mr-1"></i> Unsichere wiederholen</button>
+      <button type="button" class="px-5 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white/70 dark:bg-slate-900 font-black" onclick="startFullRound()"><i class="fa-solid fa-rotate-right mr-1"></i> Ganze Runde nochmals</button>
     </div>
   </section>
 </main>
@@ -84,7 +160,7 @@ const ITEMS=[
   {id:'microphone',name:'Mikrofon',cat:'eingabe',icon:'fa-microphone'},
   {id:'ram',name:'Arbeitsspeicher (RAM)',cat:'verarbeitung',icon:'fa-memory'},
   {id:'speakers',name:'Lautsprecher',cat:'ausgabe',icon:'fa-volume-high'},
-  {id:'scanner',name:'Scanner',cat:'eingabe',icon:'fa-scanner'},
+  {id:'scanner',name:'Scanner',cat:'eingabe',icon:'fa-copy'},
   {id:'mainboard',name:'Mainboard / Chipsatz',cat:'verarbeitung',icon:'fa-microchip'},
   {id:'projector',name:'Beamer / Projektor',cat:'ausgabe',icon:'fa-video'},
   {id:'webcam',name:'Webcam',cat:'eingabe',icon:'fa-camera'},
@@ -94,55 +170,69 @@ const ITEMS=[
 const LABEL={eingabe:'Eingabe',verarbeitung:'Verarbeitung',ausgabe:'Ausgabe'};
 let queue=[],index=0,answered=false,firstTryCorrect=0,wrongIds=[],tries=0;
 
-function startFullRound(){queue=ITEMS.map(x=>x.id);index=0;firstTryCorrect=0;wrongIds=[];tries=0;answered=false;showQuiz();render();save();}
-function repeatWrongItems(){if(!wrongIds.length)return startFullRound();queue=[...wrongIds];index=0;firstTryCorrect=0;wrongIds=[];tries=0;answered=false;showQuiz();render();save();}
+function startFullRound(){queue=ITEMS.map(x=>x.id);index=0;firstTryCorrect=0;wrongIds=[];tries=0;answered=false;showQuiz();document.getElementById('headerRound').textContent=queue.length+' Komponenten';render();save();}
+function repeatWrongItems(){const repeat=[...new Set(wrongIds)];if(!repeat.length)return startFullRound();queue=repeat;index=0;firstTryCorrect=0;wrongIds=[];tries=0;answered=false;showQuiz();document.getElementById('headerRound').textContent=queue.length+' Wiederholungen';render();save();}
 function current(){return ITEMS.find(x=>x.id===queue[index]);}
 function showQuiz(){document.getElementById('quiz').classList.remove('hidden');document.getElementById('result').classList.add('hidden');}
+function animateCard(){const shell=document.getElementById('componentShell');shell.classList.remove('enter');void shell.offsetWidth;shell.classList.add('enter');}
+function clearChoiceStates(){document.querySelectorAll('.eva-btn').forEach(b=>{b.disabled=false;b.classList.remove('wrong','correct','dimmed')});}
 function render(){
   if(index>=queue.length)return finish();
-  const item=current(); answered=false; tries=0;
+  const item=current();answered=false;tries=0;clearChoiceStates();animateCard();
   document.getElementById('counter').textContent=`${index+1} / ${queue.length}`;
   document.getElementById('component').textContent=item.name;
   document.getElementById('icon').innerHTML=`<i class="fa-solid ${item.icon}"></i>`;
-  document.getElementById('feedback').textContent='';
+  document.getElementById('feedback').innerHTML='';
+  document.getElementById('feedback').classList.remove('feedback-pop');
   document.getElementById('next').classList.add('hidden');
-  document.querySelectorAll('.eva-btn').forEach(b=>b.disabled=false);
+  document.getElementById('firstTry').innerHTML=`<i class="fa-solid fa-bullseye mr-1 text-onedrive-500"></i>${firstTryCorrect} richtig beim 1. Versuch`;
   updateProgress();
 }
-function answer(cat){
+function showFeedback(html){const fb=document.getElementById('feedback');fb.classList.remove('feedback-pop');void fb.offsetWidth;fb.innerHTML=html;fb.classList.add('feedback-pop');}
+function successBurst(){const burst=document.getElementById('burst');burst.innerHTML='';const colors=['#2563eb','#7c3aed','#10b981','#f59e0b','#ec4899'];for(let i=0;i<16;i++){const p=document.createElement('span');p.className='particle';const a=(Math.PI*2*i)/16;const d=70+Math.random()*70;p.style.setProperty('--x',Math.cos(a)*d+'px');p.style.setProperty('--y',Math.sin(a)*d+'px');p.style.background=colors[i%colors.length];p.style.animationDelay=(Math.random()*.08)+'s';burst.appendChild(p)}setTimeout(()=>burst.innerHTML='',900)}
+function answer(cat,button){
   if(answered)return;
   tries++;
-  const item=current(),fb=document.getElementById('feedback');
+  const item=current();
   if(cat===item.cat){
     answered=true;
     if(tries===1)firstTryCorrect++; else if(!wrongIds.includes(item.id))wrongIds.push(item.id);
-    fb.innerHTML=`<span class="text-emerald-600"><i class="fa-solid fa-circle-check mr-1"></i> Richtig: ${item.name} = ${LABEL[item.cat]}</span>`;
-    document.querySelectorAll('.eva-btn').forEach(b=>b.disabled=true);
-    document.getElementById('next').classList.remove('hidden');
-    document.getElementById('firstTry').textContent=`${firstTryCorrect} richtig beim 1. Versuch`;
-    save();
+    button.classList.add('correct');
+    document.querySelectorAll('.eva-btn').forEach(b=>{b.disabled=true;if(b!==button)b.classList.add('dimmed')});
+    showFeedback(`<span class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-900"><i class="fa-solid fa-circle-check"></i> Richtig: ${item.name} = ${LABEL[item.cat]}</span>`);
+    const next=document.getElementById('next');next.classList.remove('hidden','next-pop');void next.offsetWidth;next.classList.add('next-pop');
+    document.getElementById('firstTry').innerHTML=`<i class="fa-solid fa-bullseye mr-1 text-onedrive-500"></i>${firstTryCorrect} richtig beim 1. Versuch`;
+    successBurst();save();
   }else{
     if(!wrongIds.includes(item.id))wrongIds.push(item.id);
-    fb.innerHTML=`<span class="text-amber-600"><i class="fa-solid fa-arrow-rotate-left mr-1"></i> Noch nicht. Überlege nochmals: E, V oder A?</span>`;
-    save();
+    button.classList.remove('wrong');void button.offsetWidth;button.classList.add('wrong');
+    showFeedback(`<span class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-50 dark:bg-amber-950/30 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-900"><i class="fa-solid fa-arrow-rotate-left"></i> Noch nicht. Überlege nochmals: E, V oder A?</span>`);
+    setTimeout(()=>button.classList.remove('wrong'),650);save();
   }
 }
 function nextItem(){index++;render();}
 function finish(){
   document.getElementById('quiz').classList.add('hidden');document.getElementById('result').classList.remove('hidden');
   const total=queue.length,uncertain=[...new Set(wrongIds)].length;
-  document.getElementById('resultText').innerHTML=`<strong>${firstTryCorrect} von ${total}</strong> Komponenten waren beim ersten Versuch richtig.${uncertain?` <strong>${uncertain}</strong> solltest du nochmals wiederholen.`:' Alles sicher zugeordnet.'}`;
+  const pct=total?Math.round(firstTryCorrect/total*100):0;
+  document.getElementById('resultText').innerHTML=uncertain?`<strong>${uncertain}</strong> Komponente${uncertain===1?'':'n'} war${uncertain===1?'':'en'} noch unsicher. Genau diese kannst du nochmals repetieren.`:'Alle Komponenten wurden sicher zugeordnet. Stark.';
+  document.getElementById('resultScore').textContent=`${firstTryCorrect} / ${total}`;
   document.getElementById('repeatWrong').classList.toggle('hidden',uncertain===0);
   document.getElementById('pct').textContent='100% bearbeitet';document.getElementById('bar').style.width='100%';
-  document.getElementById('pdf').className='px-3 py-2 rounded-xl bg-emerald-600 text-white';
-  localStorage.setItem(K,JSON.stringify({version:1,percent:100,firstTryCorrect,total,wrongIds:[...new Set(wrongIds)],finished:true}));
+  document.getElementById('pdf').className='w-10 h-10 rounded-xl bg-emerald-600 text-white shadow-lg shadow-emerald-500/20 transition';
+  document.getElementById('headerRound').textContent=pct+'% sicher';
+  localStorage.setItem(K,JSON.stringify({version:2,percent:100,firstTryCorrect,total,wrongIds:[...new Set(wrongIds)],finished:true}));
 }
-function updateProgress(){const p=queue.length?Math.round(index/queue.length*100):0;document.getElementById('pct').textContent=p+'% bearbeitet';document.getElementById('bar').style.width=p+'%';document.getElementById('pdf').className='px-3 py-2 rounded-xl bg-slate-200 text-slate-400';}
-function save(){localStorage.setItem(K,JSON.stringify({version:1,queue,index,firstTryCorrect,wrongIds,tries,answered,percent:queue.length?Math.round(index/queue.length*100):0}));}
-function load(){try{const d=JSON.parse(localStorage.getItem(K)||'{}');if(d.finished){queue=ITEMS.map(x=>x.id);firstTryCorrect=d.firstTryCorrect||0;wrongIds=d.wrongIds||[];document.getElementById('firstTry').textContent=`${firstTryCorrect} richtig beim 1. Versuch`;finish();return true}if(Array.isArray(d.queue)&&d.queue.length){queue=d.queue.filter(id=>ITEMS.some(x=>x.id===id));index=Math.min(d.index||0,queue.length);firstTryCorrect=d.firstTryCorrect||0;wrongIds=d.wrongIds||[];document.getElementById('firstTry').textContent=`${firstTryCorrect} richtig beim 1. Versuch`;return true}}catch(e){}return false;}
+function updateProgress(){const p=queue.length?Math.round(index/queue.length*100):0;document.getElementById('pct').textContent=p+'% bearbeitet';document.getElementById('bar').style.width=p+'%';document.getElementById('pdf').className='w-10 h-10 rounded-xl bg-slate-200 text-slate-400 dark:bg-slate-800 dark:text-slate-600 transition';}
+function save(){localStorage.setItem(K,JSON.stringify({version:2,queue,index,firstTryCorrect,wrongIds,tries,answered,percent:queue.length?Math.round(index/queue.length*100):0}));}
+function load(){try{const d=JSON.parse(localStorage.getItem(K)||'{}');if(d.finished){queue=ITEMS.map(x=>x.id);firstTryCorrect=d.firstTryCorrect||0;wrongIds=d.wrongIds||[];finish();return true}if(Array.isArray(d.queue)&&d.queue.length){queue=d.queue.filter(id=>ITEMS.some(x=>x.id===id));index=Math.min(d.index||0,Math.max(0,queue.length-1));firstTryCorrect=d.firstTryCorrect||0;wrongIds=d.wrongIds||[];document.getElementById('headerRound').textContent=queue.length+' Komponenten';return true}}catch(e){}return false;}
 function resetA8(){if(!confirm('A8 vollständig zurücksetzen?'))return;localStorage.removeItem(K);startFullRound();}
 function makePdf(){let d={};try{d=JSON.parse(localStorage.getItem(K)||'{}')}catch(e){}if(!d.finished)return alert('PDF erst nach Abschluss der Runde.');downloadTextWorksheetPDF({title:'A8 · EVA-Repetition',filenamePrefix:'A8_EVA_Repetition',sections:[{heading:'Ergebnis',fields:[{label:'Beim ersten Versuch richtig',value:`${d.firstTryCorrect||0} / ${d.total||ITEMS.length}`},{label:'Nochmals wiederholen',value:(d.wrongIds||[]).map(id=>ITEMS.find(x=>x.id===id)?.name).filter(Boolean).join(', ')||'Keine'}]}]});}
-document.addEventListener('DOMContentLoaded',()=>{if(typeof applyDefaultClassAndDate==='function')applyDefaultClassAndDate();if(!load())startFullRound();else if(!document.getElementById('result').classList.contains('hidden')){}else render();});
+
+document.querySelectorAll('.eva-btn').forEach(button=>button.addEventListener('click',()=>answer(button.dataset.cat,button)));
+document.getElementById('next').addEventListener('click',nextItem);
+document.addEventListener('keydown',e=>{if(document.getElementById('quiz').classList.contains('hidden'))return;if(e.repeat)return;const k=e.key.toLowerCase();const map={e:'eingabe',v:'verarbeitung',a:'ausgabe'};if(map[k]&&!answered){const button=document.querySelector(`.eva-btn[data-cat="${map[k]}"]`);if(button)answer(map[k],button)}else if((e.key==='Enter'||e.key==='ArrowRight')&&answered){nextItem()}});
+document.addEventListener('DOMContentLoaded',()=>{if(typeof applyDefaultClassAndDate==='function')applyDefaultClassAndDate();if(!load())startFullRound();else if(document.getElementById('result').classList.contains('hidden'))render();});
 </script>
 </body>
 </html>
