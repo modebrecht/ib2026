@@ -1,7 +1,7 @@
 const fs = require('fs');
 const { test, expect } = require('@playwright/test');
 
-const BASE_URL = (process.env.BASE_URL || 'https://ib2026-git-main-modebrechts-projects.vercel.app').replace(/\/$/, '');
+const BASE_URL = (process.env.BASE_URL || 'https://ib2026.vercel.app').replace(/\/$/, '');
 const TEST_STUDENT = 'E2E Smoke';
 
 async function seedStudent(page) {
