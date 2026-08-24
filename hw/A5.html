@@ -42,7 +42,7 @@ body{font-family:'Segoe UI','Inter',system-ui,sans-serif}
       <div>
         <div class="text-xs font-bold uppercase tracking-wider text-onedrive-600">IT-Hardware · A5</div>
         <h1 class="text-xl sm:text-2xl font-black mt-1">Schnittstellen & PC-Kabel</h1>
-        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Die gleichen <strong>16 Anschlüsse und Geräte wie in A4</strong> – jetzt beschreibst du Erkennungsmerkmale und Einsatz selbst.</p>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Die gleichen <strong>16 Anschlüsse und Geräte wie in A4</strong> – jetzt beschreibst du ihren typischen Einsatz in eigenen Worten.</p>
       </div>
       <div class="grid grid-cols-3 gap-2 min-w-0 sm:min-w-[400px] text-xs">
         <div class="rounded-xl bg-slate-50 dark:bg-slate-800 p-2"><span class="block text-[9px] uppercase text-slate-400 font-bold">Vorname</span><span id="metaName">–</span></div>
@@ -58,11 +58,25 @@ body{font-family:'Segoe UI','Inter',system-ui,sans-serif}
   <section class="card p-4 sm:p-5">
     <div class="flex items-start gap-3">
       <div class="w-9 h-9 rounded-lg bg-blue-50 dark:bg-blue-950 text-blue-600 flex items-center justify-center shrink-0"><i class="fa-solid fa-circle-info"></i></div>
-      <div><h2 class="font-bold">Auftrag</h2><p class="text-sm text-slate-600 dark:text-slate-400">Bearbeite alle 16 Karten. Formuliere kurz und in eigenen Worten. A5 enthält bewusst <strong>keinen Sortier-, Transfer- oder Quiz-Teil mehr</strong> – diese Vertiefungen folgen in A8 bzw. AEXAM.</p></div>
+      <div><h2 class="font-bold">Auftrag</h2><p class="text-sm text-slate-600 dark:text-slate-400">Bearbeite die 16 Karten nacheinander. Beschreibe jeweils kurz und in eigenen Worten, <strong>wofür der Anschluss oder das Gerät verwendet wird</strong>.</p></div>
     </div>
   </section>
 
-  <section id="connectorGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"></section>
+  <section class="max-w-4xl mx-auto">
+    <div id="connectorGrid"></div>
+    <nav class="mt-4 flex items-center justify-between gap-3" aria-label="Anschlusskarten">
+      <button id="prevCardBtn" type="button" class="btn border border-slate-300 dark:border-slate-700 disabled:opacity-40 disabled:cursor-not-allowed" onclick="changeCard(-1)">
+        <i class="fa-solid fa-arrow-left mr-1"></i> Zurück
+      </button>
+      <div class="text-center">
+        <div id="cardCounter" class="text-sm font-black text-onedrive-600">1 / 16</div>
+        <div class="text-[10px] uppercase font-bold tracking-wider text-slate-400">Anschluss</div>
+      </div>
+      <button id="nextCardBtn" type="button" class="btn bg-onedrive-500 hover:bg-onedrive-600 text-white disabled:opacity-40 disabled:cursor-not-allowed" onclick="changeCard(1)">
+        Weiter <i class="fa-solid fa-arrow-right ml-1"></i>
+      </button>
+    </nav>
+  </section>
 </main>
 
 <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 translate-y-8 opacity-0 transition-all bg-slate-900 text-white px-4 py-3 rounded-xl text-sm font-bold z-50"></div>
@@ -73,32 +87,44 @@ body{font-family:'Segoe UI','Inter',system-ui,sans-serif}
 const STORAGE_KEY='onedrive_a5_worksheet_8sek';
 const LEGACY_AUTOSAVE_KEY='hw_autosave_A5.html';
 const CONNECTORS=[{"id": "usb-a", "name": "USB-A", "desc": "Breiter, flacher, rechteckiger Stecker; nur in einer Richtung einsteckbar.", "img": "assets/usb_a_cable_1786198032413.webp", "category": "daten"}, {"id": "usb-c", "name": "USB-C", "desc": "Kleiner ovaler, symmetrischer Stecker; beidseitig einsteckbar.", "img": "assets/usb_c_cable_1786198043571.webp", "category": "daten"}, {"id": "hdmi", "name": "HDMI", "desc": "Flacher, trapezähnlicher Stecker mit abgeschrägten unteren Ecken.", "img": "assets/hdmi_cable_1786198053921.webp", "category": "video_audio"}, {"id": "dp", "name": "DisplayPort", "desc": "Fast rechteckig; meist ist eine Ecke abgeschrägt, teilweise mit Rastmechanismus.", "img": "assets/dp_cable_1786198067133.webp", "category": "video_audio"}, {"id": "rj45", "name": "LAN (RJ45)", "desc": "Breiter Kunststoffstecker mit acht Kontakten und einem gut sichtbaren Rastclip.", "img": "assets/lan_cable_1786198076546.webp", "category": "netz_strom"}, {"id": "audio", "name": "Audio (3,5 mm)", "desc": "Schmaler runder Metallstecker mit mehreren dunklen Isolierringen.", "img": "assets/audio_cable_1786198086224.webp", "category": "video_audio"}, {"id": "vga", "name": "VGA", "desc": "Breiter D-förmiger Stecker mit 15 Pins in drei Reihen und zwei Schrauben.", "img": "assets/vga_cable_1786198097423.webp", "category": "video_audio"}, {"id": "dvi", "name": "DVI", "desc": "Breiter rechteckiger Stecker mit dichtem Pin-Raster und zwei seitlichen Schrauben.", "img": "assets/dvi_cable_1786198107586.webp", "category": "video_audio"}, {"id": "bt-dongle", "name": "Bluetooth-Dongle", "desc": "Sehr kleiner USB-Stecker mit kurzem, kompaktem Gehäuse.", "img": "assets/bluetooth_dongle_1786198654619.webp", "category": "daten"}, {"id": "power", "name": "Stromkabel (C13)", "desc": "Kräftiger Stecker mit dreipoliger, annähernd rechteckiger Buchsenform.", "img": "assets/power_cable_1786198664189.webp", "category": "netz_strom"}, {"id": "usb-b", "name": "USB-B (Drucker)", "desc": "Nahezu quadratischer Stecker mit zwei abgeschrägten oberen Ecken.", "img": "assets/usb_b_cable_1786198671715.webp", "category": "daten"}, {"id": "micro-usb", "name": "Micro-USB", "desc": "Sehr kleiner, flacher und asymmetrischer Stecker.", "img": "assets/img_micro_usb_1786222089308.jpg", "category": "daten"}, {"id": "lightning", "name": "Apple Lightning", "desc": "Sehr schmaler, flacher, symmetrischer Metallstecker mit sichtbaren Kontakten.", "img": "assets/img_lightning_1786222112950.jpg", "category": "daten"}, {"id": "sd-card", "name": "SD-Karte", "desc": "Flache rechteckige Karte mit einer abgeschrägten Ecke und Kontaktflächen auf der Rückseite.", "img": "assets/sd_card_item.jpg", "category": "daten"}, {"id": "wlan-antenne", "name": "WLAN-Antenne", "desc": "Schmale stabförmige Antenne mit Schraubanschluss am Fuß.", "img": "assets/wlan_antenna_item.jpg", "category": "netz_strom"}, {"id": "usb-hub", "name": "USB-Hub", "desc": "Kleines Gehäuse mit mehreren gleichartigen USB-Buchsen an einer Seite.", "img": "assets/usb_hub_item.jpg", "category": "daten"}];
-let currentPercentage=0, saveTimer=null;
+let currentPercentage=0, saveTimer=null, currentCardIndex=0;
 
 function renderCards(){
   const grid=document.getElementById('connectorGrid');
-  grid.innerHTML=CONNECTORS.map((c,i)=>`<article class="card overflow-hidden">
-    <div class="h-40 bg-slate-50 dark:bg-slate-800 flex items-center justify-center p-3">
+  grid.innerHTML=CONNECTORS.map((c,i)=>`<article class="connector-card card overflow-hidden ${i===0?'':'hidden'}" data-index="${i}">
+    <div class="h-64 sm:h-80 bg-slate-50 dark:bg-slate-800 flex items-center justify-center p-4">
       <img src="${c.img}" alt="${c.name}" class="max-h-full max-w-full object-contain" loading="lazy">
     </div>
-    <div class="p-4">
+    <div class="p-4 sm:p-6">
       <div class="text-[10px] font-bold uppercase tracking-wider text-onedrive-600">${i+1} / ${CONNECTORS.length}</div>
-      <h2 class="font-black text-lg mt-0.5">${c.name}</h2>
-      <p class="text-xs text-slate-500 dark:text-slate-400 min-h-[32px] mt-1">${c.desc}</p>
-      <label class="block text-xs font-bold mt-4 mb-1" for="recognize_${c.id}">Woran erkennst du es?</label>
-      <textarea id="recognize_${c.id}" class="field text-sm" rows="2" placeholder="Form, Farbe, Pins, Symbol …"></textarea>
-      <label class="block text-xs font-bold mt-3 mb-1" for="use_${c.id}">Wofür wird es verwendet?</label>
-      <textarea id="use_${c.id}" class="field text-sm" rows="2" placeholder="Typische Geräte / Einsatz …"></textarea>
+      <h2 class="font-black text-xl mt-0.5">${c.name}</h2>
+      <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">${c.desc}</p>
+      <label class="block text-sm font-bold mt-5 mb-1.5" for="use_${c.id}">Wofür wird es verwendet?</label>
+      <textarea id="use_${c.id}" class="field text-sm" rows="4" placeholder="Typische Geräte oder Einsatz beschreiben …"></textarea>
     </div>
   </article>`).join('');
+  showCard(0);
+}
+
+function showCard(index){
+  currentCardIndex=Math.max(0,Math.min(CONNECTORS.length-1,index));
+  document.querySelectorAll('.connector-card').forEach((card,i)=>card.classList.toggle('hidden',i!==currentCardIndex));
+  document.getElementById('cardCounter').textContent=(currentCardIndex+1)+' / '+CONNECTORS.length;
+  document.getElementById('prevCardBtn').disabled=currentCardIndex===0;
+  document.getElementById('nextCardBtn').disabled=currentCardIndex===CONNECTORS.length-1;
+}
+
+function changeCard(step){
+  showCard(currentCardIndex+step);
+  document.getElementById('connectorGrid').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 function fieldIds(){
-  return CONNECTORS.flatMap(c=>['recognize_'+c.id,'use_'+c.id]);
+  return CONNECTORS.map(c=>'use_'+c.id);
 }
 function collect(){
   const answers={}; fieldIds().forEach(id=>answers[id]=document.getElementById(id)?.value||'');
-  return {version:3,answers,percent:currentPercentage,updatedAt:new Date().toISOString()};
+  return {version:4,answers,percent:currentPercentage,updatedAt:new Date().toISOString()};
 }
 function load(){
   try{
@@ -128,7 +154,6 @@ function downloadPdf(){
   if(currentPercentage<100){showToast('PDF erst bei 100%');return;}
   if(typeof downloadTextWorksheetPDF!=='function'){showToast('PDF-Modul nicht geladen');return;}
   const sections=CONNECTORS.map((c,i)=>({heading:`${i+1}. ${c.name}`,fields:[
-    {label:'Erkennungsmerkmale',value:document.getElementById('recognize_'+c.id).value},
     {label:'Verwendung',value:document.getElementById('use_'+c.id).value}
   ]}));
   downloadTextWorksheetPDF({title:'A5 · Schnittstellen & PC-Kabel',filenamePrefix:'A5_Schnittstellen_PC-Kabel',sections});
