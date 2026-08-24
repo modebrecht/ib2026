@@ -250,29 +250,6 @@
             });
         }
 
-        function initTheme() {
-            const savedTheme = localStorage.getItem('onedrive_theme');
-            if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                document.documentElement.classList.add('dark');
-                updateThemeIcon(true);
-            } else {
-                document.documentElement.classList.remove('dark');
-                updateThemeIcon(false);
-            }
-        }
-
-        function toggleDarkMode() {
-            const isDark = document.documentElement.classList.toggle('dark');
-            localStorage.setItem('onedrive_theme', isDark ? 'dark' : 'light');
-            updateThemeIcon(isDark);
-        }
-
-        function updateThemeIcon(isDark) {
-            const icon = document.getElementById('themeIcon');
-            if (icon) {
-                icon.className = isDark ? 'fa-solid fa-sun text-amber-400 text-sm' : 'fa-solid fa-moon text-sm';
-            }
-        }
     </script>
 
     <!-- Global Unified Student Vorname Sync & First-Time Prompt -->
@@ -362,12 +339,11 @@
 
         function saveTheme(theme) {
           localStorage.setItem(THEME_KEY, theme);
-          localStorage.setItem('onedrive_theme', theme);
           applyTheme(theme);
         }
 
         function initTheme() {
-          const saved = localStorage.getItem(THEME_KEY) || localStorage.getItem('onedrive_theme');
+          const saved = localStorage.getItem(THEME_KEY);
           if (saved) {
             applyTheme(saved);
           } else {
@@ -431,7 +407,7 @@
         });
 
         window.addEventListener('storage', function(e) {
-          if (e.key === THEME_KEY || e.key === 'onedrive_theme') {
+          if (e.key === THEME_KEY) {
             if (e.newValue) applyTheme(e.newValue);
           }
           if (e.key === FONT_KEY || e.key === 'onedrive_font_size') {
