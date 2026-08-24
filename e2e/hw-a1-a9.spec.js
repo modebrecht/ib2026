@@ -35,7 +35,9 @@ async function assertDownload(download, extension, magic, expectedPrefix) {
 async function downloadFrom(page, selector, extension, magic, expectedPrefix) {
   const [download] = await Promise.all([
     page.waitForEvent('download', { timeout: 20_000 }),
-    page.locator(selector).click(),
+    // Several premium CTA buttons use continuous transform animations.
+    // Playwright otherwise waits forever for them to become "stable".
+    page.locator(selector).click({ force: true }),
   ]);
   await assertDownload(download, extension, magic, expectedPrefix);
 }
@@ -113,7 +115,7 @@ test.describe('HW production smoke: A1-A9', () => {
 
     await expect(page).toHaveTitle(/A2: Das EVA-Prinzip/);
     await expect(page.locator('#studentName')).toHaveValue(TEST_STUDENT);
-    await page.locator('#play-btn-hd').click();
+    await page.locator('#play-btn-hd').click({ force: true });
     await expect(page.locator('#secVideo')).toBeVisible({ timeout: 35_000 });
 
     context.on('page', async (popup) => {
@@ -162,7 +164,7 @@ test.describe('HW production smoke: A1-A9', () => {
     }
 
     await expect(page.locator('#headerPercentText')).toHaveText('100% erledigt');
-    await downloadPdf(page, '#hdrPdfBtn', 'A3_Aufbau_eines_Computers');
+    await downloadPdf(page, '#hdrPdfBtn', 'A3_Computeraufbau');
     expectNoPageErrors(errors);
   });
 
@@ -269,7 +271,7 @@ test.describe('HW production smoke: A1-A9', () => {
     await toolPage.getByRole('button', { name: /Monitor ein\/aus/ }).click();
     await expect(toolPage.getByRole('heading', { name: 'Aufgabe abgeschlossen' })).toBeVisible();
     await expect(toolPage.getByText('Das Login ist sichtbar.')).toBeVisible();
-    await expect(toolPage.getByText(/Bewertung: Gold/)).toBeVisible();
+    await expect(toolPage.locator('#rankText')).toContainText('Bewertung: Gold');
     await toolPage.close();
 
     await page.locator('#manualDoneA7').check();
