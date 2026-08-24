@@ -235,11 +235,11 @@ test.describe('HW production smoke: A1-A9', () => {
     expectNoPageErrors(errors);
   });
 
-  test('A7: launches the external CPU/GPU tool and persists manual completion', async ({ page }) => {
+  test('A7: completes the first Troubleshooter case and persists manual completion', async ({ page }) => {
     const errors = collectPageErrors(page);
     await openWorksheet(page, '/hw/A7.html');
 
-    await expect(page).toHaveTitle(/A7: CPU, GPU & PassMark/);
+    await expect(page).toHaveTitle(/A7: TROUBLESHOOTER/);
     const launcher = page.locator('a[href="https://ib-ts.vercel.app"]');
     await expect(launcher).toBeVisible();
 
@@ -249,7 +249,19 @@ test.describe('HW production smoke: A1-A9', () => {
     ]);
     await toolPage.waitForLoadState('domcontentloaded', { timeout: 30_000 });
     await expect(toolPage).toHaveURL(/ib-ts\.vercel\.app/);
-    await expect(toolPage.locator('body')).toBeVisible();
+    await expect(toolPage).toHaveTitle(/PC-Troubleshooter/);
+
+    await toolPage.getByRole('button', { name: 'Starten', exact: true }).click();
+    await expect(toolPage.getByRole('heading', { name: /Szenario 1: Der PC/ })).toBeVisible();
+
+    await toolPage.getByRole('button', { name: /Stromkabel & Steckdose prüfen/ }).click();
+    await expect(toolPage.getByRole('heading', { name: 'Stromkette geprüft' })).toBeVisible();
+    await toolPage.getByRole('button', { name: 'Schliessen', exact: true }).click();
+
+    await toolPage.getByRole('button', { name: /Monitor ein\/aus/ }).click();
+    await expect(toolPage.getByRole('heading', { name: 'Aufgabe abgeschlossen' })).toBeVisible();
+    await expect(toolPage.getByText('Das Login ist sichtbar.')).toBeVisible();
+    await expect(toolPage.getByText(/Bewertung: Gold/)).toBeVisible();
     await toolPage.close();
 
     await page.locator('#manualDoneA7').check();
