@@ -149,54 +149,75 @@ test.describe('HW production smoke: A1-A9', () => {
     const errors = collectPageErrors(page);
     await openWorksheet(page, '/hw/A3.html');
 
-    const fields = page.locator('textarea[id$="_func"]');
+    await expect(page).toHaveTitle(/A3: Aufbau eines Computers/);
+    await page.locator('#viewToggleBtn').click();
+
+    const fields = page.locator('textarea[id^="comp_"][id$="_func"]');
     await expect(fields).toHaveCount(14);
     for (let i = 0; i < 14; i += 1) {
-      await fields.nth(i).fill(`E2E Funktionsbeschreibung ${i + 1}`);
+      const field = fields.nth(i);
+      if (!(await field.inputValue()).trim()) {
+        await field.fill(`E2E Funktionsbeschreibung ${i + 1}`);
+      }
     }
 
-    await expect(page.locator('#headerPercentText')).toContainText('14 / 14');
-    await downloadPdf(page, '#hdrPdfBtn');
+    await expect(page.locator('#headerPercentText')).toHaveText('100% erledigt');
+    await expect(page.locator('#hdrPdfBtn')).toHaveAttribute('title', 'Arbeitsblatt als PDF herunterladen');
+    await downloadPdf(page, '#hdrPdfBtn', 'A3_Aufbau_eines_Computers');
     expectNoPageErrors(errors);
   });
 
-  test('A4: answers all port questions correctly and downloads PDF', async ({ page }) => {
+  test('A4: answers all 16 port questions correctly and downloads PDF', async ({ page }) => {
     const errors = collectPageErrors(page);
     await openWorksheet(page, '/hw/A4.html');
 
+    await expect(page).toHaveTitle(/A4: Kabel & Anschlüsse/);
     await page.locator('#btnQuiz').click();
-    for (let i = 0; i < 15; i += 1) {
+
+    const total = await page.evaluate(() => TOTAL_QUESTIONS);
+    expect(total).toBe(16);
+
+    for (let i = 0; i < total; i += 1) {
       await expect(page.locator('#quizOptions button').first()).toBeVisible({ timeout: 10_000 });
       const correctId = await page.evaluate(() => currentQuestion && currentQuestion.id);
       expect(correctId).toBeTruthy();
       await page.locator(`#quizOptions button[data-id="${correctId}"]`).click();
       await page.waitForFunction(
-        (previousIndex) => finished || qIndex > previousIndex,
-        i,
+        (previousId) => !quizActive || (currentQuestion && currentQuestion.id !== previousId),
+        correctId,
         { timeout: 5_000 },
       );
     }
 
-    const result = await page.evaluate(() => ({ finished, correct, wrong }));
-    expect(result).toEqual({ finished: true, correct: 15, wrong: 0 });
+    const result = await page.evaluate(() => ({ quizActive, correctCount, errorCount, hasPassed }));
+    expect(result.quizActive).toBe(false);
+    expect(result.correctCount).toBe(16);
+    expect(result.errorCount).toBe(0);
+    expect(result.hasPassed).toBe(true);
+    await expect(page.locator('#headerPercentText')).toHaveText('16 / 16 richtig');
     await downloadPdf(page, '#hdrPdfBtn');
     expectNoPageErrors(errors);
   });
 
-  test('A5: completes all cable fields, persists and downloads PDF', async ({ page }) => {
+  test('A5: completes all 32 cable fields, persists and downloads PDF', async ({ page }) => {
     const errors = collectPageErrors(page);
     await openWorksheet(page, '/hw/A5.html');
 
-    const ids = await page.evaluate(() => CABLES.flatMap((cable) => cable.ids));
+    await expect(page).toHaveTitle(/A5: Schnittstellen & PC-Kabel/);
+    const ids = await page.evaluate(() => fieldIds());
     expect(ids).toHaveLength(32);
+
     for (let i = 0; i < ids.length; i += 1) {
       await page.locator(`#${ids[i]}`).fill(`E2E A5 ${i + 1}`);
     }
 
-    await expect(page.locator('#headerPercentText')).toContainText('32 / 32');
-    const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('onedrive_a5_cable_worksheet_v3') || '{}'));
-    expect(saved).toBeTruthy();
-    await downloadPdf(page, '#hdrPdfBtn');
+    await expect(page.locator('#headerPercentText')).toHaveText('100% erledigt');
+    await expect(page.locator('#pdfBtn')).toHaveAttribute('title', 'PDF herunterladen');
+    await page.waitForTimeout(250);
+    const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('onedrive_a5_worksheet_8sek') || '{}'));
+    expect(saved.percent).toBe(100);
+    expect(Object.keys(saved.answers || {})).toHaveLength(32);
+    await downloadPdf(page, '#pdfBtn', 'A5_Schnittstellen_PC-Kabel');
     expectNoPageErrors(errors);
   });
 
@@ -204,21 +225,24 @@ test.describe('HW production smoke: A1-A9', () => {
     const errors = collectPageErrors(page);
     await openWorksheet(page, '/hw/A6.html');
 
-    await downloadFrom(page, '#b64DownloadBtn', 'docx', 'PK', 'A6_Mainboard_Anschlusse');
-    await page.locator('#manualDoneA5').check();
-    expect(await page.evaluate(() => localStorage.getItem('manualDoneA5'))).toBe('true');
+    await expect(page).toHaveTitle(/A6: Mainboard-Anschlüsse/);
+    await downloadFrom(page, '#b64DownloadBtn', 'docx', 'PK');
 
+    await page.locator('#manualDoneA5').check();
+    await page.waitForTimeout(300);
     await page.reload({ waitUntil: 'domcontentloaded' });
     await expect(page.locator('#manualDoneA5')).toBeChecked();
     expectNoPageErrors(errors);
   });
 
-  test('A7: launches troubleshooting tool and persists manual completion', async ({ page }) => {
+  test('A7: launches the external CPU/GPU tool and persists manual completion', async ({ page }) => {
     const errors = collectPageErrors(page);
     await openWorksheet(page, '/hw/A7.html');
 
-    const launcher = page.locator('a[href^="https://ib-ts.vercel.app/"]').first();
+    await expect(page).toHaveTitle(/A7: CPU, GPU & PassMark/);
+    const launcher = page.locator('#openExternalBtn');
     await expect(launcher).toBeVisible();
+
     const [toolPage] = await Promise.all([
       page.waitForEvent('popup'),
       launcher.click(),
@@ -229,65 +253,65 @@ test.describe('HW production smoke: A1-A9', () => {
     await toolPage.close();
 
     await page.locator('#manualDoneA7').check();
-    expect(await page.evaluate(() => localStorage.getItem('manualDoneA7'))).toBe('true');
+    await page.waitForTimeout(300);
     await page.reload({ waitUntil: 'domcontentloaded' });
     await expect(page.locator('#manualDoneA7')).toBeChecked();
     expectNoPageErrors(errors);
   });
 
-  test('A8: answers all device-component questions correctly and downloads PDF', async ({ page }) => {
+  test('A8: answers all EVA repetition items correctly and downloads PDF', async ({ page }) => {
     const errors = collectPageErrors(page);
     await openWorksheet(page, '/hw/A8.html');
 
+    await expect(page).toHaveTitle(/A8: EVA-Repetition/);
     const total = await page.evaluate(() => ITEMS.length);
-    expect(total).toBeGreaterThan(0);
+    expect(total).toBe(15);
+
     for (let i = 0; i < total; i += 1) {
-      const category = await page.evaluate(() => state.queue[state.idx].cat);
-      const option = page.locator(`#options button[onclick="choose('${category}')"]`);
-      await expect(option).toBeVisible();
-      await option.click();
+      const category = await page.evaluate(() => current().cat);
+      await page.locator(`.eva-btn[data-cat="${category}"]`).click();
       await page.waitForFunction(
-        (previousIndex) => state.done || state.idx > previousIndex,
+        (previousIndex) => index > previousIndex || document.getElementById('result')?.classList.contains('hidden') === false,
         i,
         { timeout: 5_000 },
       );
     }
 
-    const result = await page.evaluate(() => ({ done: state.done, right: state.right, wrong: state.wrong }));
-    expect(result.done).toBe(true);
-    expect(result.right).toBe(total);
-    expect(result.wrong).toBe(0);
-    const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('a8_last_result_v3') || '{}'));
-    expect(saved.right).toBe(total);
-    await downloadPdf(page, '#pdfBtn');
+    const result = await page.evaluate(() => ({ index, firstTryCorrect, bestFullScore }));
+    expect(result.index).toBeGreaterThanOrEqual(total);
+    expect(result.firstTryCorrect).toBe(total);
+    expect(result.bestFullScore).toBe(total);
+    expect(await page.evaluate(() => localStorage.getItem('a8_full_score'))).toBe(String(total));
+    await expect(page.locator('#result')).toBeVisible();
+    await downloadPdf(page, '#pdf', 'A8_EVA_Repetition');
     expectNoPageErrors(errors);
   });
 
-  test('A9: answers all hardware scenarios correctly and downloads PDF', async ({ page }) => {
+  test('A9: answers all stream scenarios correctly and downloads PDF', async ({ page }) => {
     const errors = collectPageErrors(page);
     await openWorksheet(page, '/hw/A9.html');
 
-    const total = await page.evaluate(() => SCENES.length);
-    expect(total).toBeGreaterThan(0);
+    await expect(page).toHaveTitle(/A9: Stream-Szenarien/);
+    const total = await page.evaluate(() => SCENARIOS.length);
+    expect(total).toBe(8);
+
     for (let i = 0; i < total; i += 1) {
-      const category = await page.evaluate(() => state.order[state.idx].cat);
-      const option = page.locator(`#options button[onclick="answer('${category}')"]`);
-      await expect(option).toBeVisible();
-      await option.click();
+      const category = await page.evaluate(() => current().c);
+      await page.locator(`.eva-btn[data-cat="${category}"]`).click();
       await page.waitForFunction(
-        (previousIndex) => state.done || state.idx > previousIndex,
+        (previousIndex) => index > previousIndex || document.getElementById('result')?.classList.contains('hidden') === false,
         i,
         { timeout: 5_000 },
       );
     }
 
-    const result = await page.evaluate(() => ({ done: state.done, correct: state.correct, wrong: state.wrong }));
-    expect(result.done).toBe(true);
-    expect(result.correct).toBe(total);
-    expect(result.wrong).toBe(0);
-    const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('a9_quiz_progress_v1') || '{}'));
-    expect(saved.correct).toBe(total);
-    await downloadPdf(page, '#pdfBtn');
+    const result = await page.evaluate(() => ({ index, errors, bestPassed }));
+    expect(result.index).toBeGreaterThanOrEqual(total);
+    expect(result.errors).toBe(0);
+    expect(result.bestPassed).toBe(true);
+    expect(await page.evaluate(() => localStorage.getItem('a9_best_passed'))).toBe('true');
+    await expect(page.locator('#result')).toBeVisible();
+    await downloadPdf(page, '#pdf', 'A9_Stream_Szenarien');
     expectNoPageErrors(errors);
   });
 });
