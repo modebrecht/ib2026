@@ -517,6 +517,29 @@
       box-shadow: 0 4px 12px rgba(37,99,235,.35);
     }
 
+    /* Premium hardware task list */
+    .hw-task-list{gap:10px;margin-top:12px}
+    .hw-task-list .task-card{position:relative;overflow:hidden;isolation:isolate;padding:13px 14px;border-radius:16px;background:linear-gradient(135deg,var(--card),var(--card-soft));box-shadow:0 8px 22px rgba(15,23,42,.055);cursor:pointer;transition:transform .22s cubic-bezier(.2,.9,.2,1),border-color .22s ease,box-shadow .22s ease;background .22s ease;animation:taskCardIn .46s cubic-bezier(.2,.9,.2,1) both}
+    .hw-task-list .task-card::before{content:"";position:absolute;inset:0 auto 0 0;width:4px;background:linear-gradient(180deg,#0078d4,#7c3aed);opacity:.78;transition:width .22s ease,opacity .22s ease}
+    .hw-task-list .task-card::after{content:"";position:absolute;width:100px;height:100px;border-radius:50%;right:-65px;top:-60px;background:rgba(0,120,212,.08);z-index:-1;transition:transform .35s ease,opacity .35s ease}
+    .hw-task-list .task-card:hover,.hw-task-list .task-card:focus-visible{transform:translateY(-2px) translateX(2px);border-color:rgba(0,120,212,.42);box-shadow:0 15px 32px rgba(15,23,42,.11);outline:none}
+    .hw-task-list .task-card:hover::before,.hw-task-list .task-card:focus-visible::before{width:6px;opacity:1}.hw-task-list .task-card:hover::after{transform:scale(1.35)}
+    .hw-task-list .unterkachel-title{font-size:calc(14px * var(--font-scale));line-height:1.2;gap:11px}
+    .hw-task-list .unterkachel-title .task-number{display:inline-flex;width:36px;height:36px;border-radius:11px;align-items:center;justify-content:center;flex:0 0 auto;color:#fff;background:linear-gradient(135deg,#0078d4,#2563eb);border:0;box-shadow:0 8px 17px rgba(0,120,212,.22);font-size:calc(12px * var(--font-scale));font-weight:900;letter-spacing:-.02em}
+    .hw-task-list .unterkachel-title .task-name{display:inline!important;width:auto!important;height:auto!important;border:0!important;background:transparent!important;box-shadow:none!important;border-radius:0!important;justify-content:flex-start!important;font-size:inherit!important;color:var(--text)}
+    .hw-task-list .btn-link{width:auto;height:38px;padding:0 12px;border-radius:12px;gap:7px;font-size:calc(11px * var(--font-scale));font-weight:800;background:linear-gradient(135deg,#0078d4,#2563eb);box-shadow:0 8px 18px rgba(37,99,235,.20)}
+    .hw-task-list .btn-link svg{width:17px;height:17px}.hw-task-list .btn-link:hover{transform:translateY(-1px) scale(1.02)}
+    .hw-task-list .task-card.task-done{background:linear-gradient(135deg,var(--card),rgba(16,185,129,.08));border-color:rgba(16,185,129,.32)}
+    .hw-task-list .task-card.task-done::before{background:linear-gradient(180deg,#10b981,#34d399);opacity:1}
+    .hw-task-list .task-card.task-done::after{background:rgba(16,185,129,.10)}
+    .hw-task-list .task-card.task-done .task-number{background:linear-gradient(135deg,#059669,#34d399);box-shadow:0 8px 18px rgba(16,185,129,.22)}
+    .hw-task-list .task-card.task-done .btn-link{background:linear-gradient(135deg,#059669,#10b981)!important;box-shadow:0 8px 18px rgba(16,185,129,.20)!important}
+    .hw-task-list .task-card:nth-child(2){animation-delay:.035s}.hw-task-list .task-card:nth-child(3){animation-delay:.07s}.hw-task-list .task-card:nth-child(4){animation-delay:.105s}.hw-task-list .task-card:nth-child(5){animation-delay:.14s}.hw-task-list .task-card:nth-child(6){animation-delay:.175s}.hw-task-list .task-card:nth-child(7){animation-delay:.21s}.hw-task-list .task-card:nth-child(8){animation-delay:.245s}.hw-task-list .task-card:nth-child(9){animation-delay:.28s}
+    @keyframes taskCardIn{from{opacity:0;transform:translateY(12px) scale(.988)}to{opacity:1;transform:none}}
+    @media(max-width:520px){.hw-task-list .task-card{padding:11px 12px}.hw-task-list .btn-status-text{display:none}.hw-task-list .btn-link{width:38px;padding:0}.hw-task-list .unterkachel-title{gap:9px}.hw-task-list .unterkachel-title .task-number{width:33px;height:33px;border-radius:10px}}
+    @media(prefers-reduced-motion:reduce){.hw-task-list .task-card{animation:none!important;transition:none!important}}
+
+
 
     /* OneDrive Folder Preview (from i.html) */
     .path {
@@ -846,112 +869,112 @@
           </div>
 
           <div class="kachel-body">
-            <div class="unterkacheln">
+            <div class="unterkacheln hw-task-list">
               <!-- Unterkachel: A1 IT-Hardware Memory -->
-              <div class="unterkachel">
+              <div class="unterkachel task-card">
                 <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
                   <div>
                     <h4 class="unterkachel-title" id="title-A1" style="margin-bottom: 2px;">
-                       A1: IT-Hardware Memory
+                       <span class="task-number">A1</span><span class="task-name">IT-Hardware Memory</span>
                     </h4>
                   </div>
-                  <a href="hw/A1.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
+                  <a href="hw/A1.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"><span class="btn-status-text">Öffnen</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
                 </div>
               </div>
 
               <!-- Unterkachel: A2 EVA Prinzip -->
-              <div class="unterkachel">
+              <div class="unterkachel task-card">
                 <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
                   <div>
                     <h4 class="unterkachel-title" id="title-A2" style="margin-bottom: 2px;">
-                       A2: Das EVA-Prinzip
+                       <span class="task-number">A2</span><span class="task-name">Das EVA-Prinzip</span>
                     </h4>
                   </div>
-                  <a href="hw/A2.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
+                  <a href="hw/A2.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"><span class="btn-status-text">Öffnen</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
                 </div>
               </div>
 
               <!-- Unterkachel: A3 Hardware -->
-              <div class="unterkachel">
+              <div class="unterkachel task-card">
                 <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
                   <div>
                     <h4 class="unterkachel-title" id="title-A3" style="margin-bottom: 2px;">
-                       A3: Computeraufbau
+                       <span class="task-number">A3</span><span class="task-name">Computeraufbau</span>
                     </h4>
                   </div>
-                  <a href="hw/A3.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
+                  <a href="hw/A3.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"><span class="btn-status-text">Öffnen</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
                 </div>
               </div>
 
               <!-- Unterkachel: A4 Anschlüsse & Kabel -->
-              <div class="unterkachel">
+              <div class="unterkachel task-card">
                 <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
                   <div>
                     <h4 class="unterkachel-title" id="title-A4" style="margin-bottom: 2px;">
-                       A4: Anschlüsse &amp; PC-Kabel
+                       <span class="task-number">A4</span><span class="task-name">Anschlüsse &amp; PC-Kabel</span>
                     </h4>
                   </div>
-                  <a href="hw/A4.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
+                  <a href="hw/A4.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"><span class="btn-status-text">Öffnen</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
                 </div>
               </div>
 
               <!-- Unterkachel: A5 Schnittstellen & PC-Kabel -->
-              <div class="unterkachel">
+              <div class="unterkachel task-card">
                 <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
                   <div>
                     <h4 class="unterkachel-title" id="title-A5" style="margin-bottom: 2px;">
-                       A5: Schnittstellen &amp; PC-Kabel
+                       <span class="task-number">A5</span><span class="task-name">Schnittstellen &amp; PC-Kabel</span>
                     </h4>
                   </div>
-                  <a href="hw/A5.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
+                  <a href="hw/A5.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"><span class="btn-status-text">Öffnen</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
                 </div>
               </div>
 
               <!-- Unterkachel: A6 Mainboard-Anschlüsse -->
-              <div class="unterkachel">
+              <div class="unterkachel task-card">
                 <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
                   <div>
                     <h4 class="unterkachel-title" id="title-A6" style="margin-bottom: 2px;">
-                       A6: Mainboard-Anschlüsse
+                       <span class="task-number">A6</span><span class="task-name">Mainboard-Anschlüsse</span>
                     </h4>
                   </div>
-                  <a href="hw/A6.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
+                  <a href="hw/A6.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"><span class="btn-status-text">Öffnen</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
                 </div>
               </div>
 
               <!-- Unterkachel: A7 TROUBLESHOOTER -->
-              <div class="unterkachel">
+              <div class="unterkachel task-card">
                 <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
                   <div>
                     <h4 class="unterkachel-title" id="title-A7" style="margin-bottom: 2px;">
-                       A7: TROUBLESHOOTER
+                       <span class="task-number">A7</span><span class="task-name">TROUBLESHOOTER</span>
                     </h4>
                   </div>
-                  <a href="hw/A7.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
+                  <a href="hw/A7.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"><span class="btn-status-text">Öffnen</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
                 </div>
               </div>
 
               <!-- Unterkachel: A8 EVA-Repetition -->
-              <div class="unterkachel">
+              <div class="unterkachel task-card">
                 <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
                   <div>
                     <h4 class="unterkachel-title" id="title-A8" style="margin-bottom: 2px;">
-                       A8: EVA-Repetition
+                       <span class="task-number">A8</span><span class="task-name">EVA-Repetition</span>
                     </h4>
                   </div>
-                  <a href="hw/A8.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
+                  <a href="hw/A8.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"><span class="btn-status-text">Öffnen</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
                 </div>
               </div>
 
               <!-- Unterkachel: A9 EVA-Szenarien -->
-              <div class="unterkachel">
+              <div class="unterkachel task-card">
                 <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
                   <div>
                     <h4 class="unterkachel-title" id="title-A9" style="margin-bottom: 2px;">
-                       A9: EVA-Szenarien
+                       <span class="task-number">A9</span><span class="task-name">EVA-Szenarien</span>
                     </h4>
                   </div>
-                  <a href="hw/A9.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
+                  <a href="hw/A9.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"><span class="btn-status-text">Öffnen</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
                 </div>
               </div>
 
@@ -1686,6 +1709,28 @@
     </script>
 
     <script>
+
+      function initPremiumTaskCards() {
+        document.querySelectorAll('#hwKachel .task-card').forEach(function(card) {
+          const link = card.querySelector('.btn-link');
+          const title = card.querySelector('.unterkachel-title');
+          if (!link || !title) return;
+          card.tabIndex = 0;
+          card.setAttribute('role', 'link');
+          card.setAttribute('aria-label', title.textContent.trim() + ' öffnen');
+          card.addEventListener('click', function(event) {
+            if (event.target.closest('.btn-link')) return;
+            link.click();
+          });
+          card.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault();
+              link.click();
+            }
+          });
+        });
+      }
+
       function checkCompletionStatus() {
         const checkSvgHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
 
@@ -1704,8 +1749,10 @@
               const btn = kachel.querySelector('.btn-link');
               if (btn && !btn.classList.contains('btn-done')) {
                 btn.classList.add('btn-done');
-                btn.innerHTML = checkSvgHTML;
+                btn.innerHTML = '<span class="btn-status-text">Erledigt</span>' + checkSvgHTML;
                 btn.title = 'Erfolgreich abgeschlossen! (Erneut öffnen)';
+                kachel.classList.add('task-done');
+                kachel.setAttribute('data-status', 'done');
               }
             }
           }
@@ -1799,7 +1846,10 @@
         }
       }
 
-      document.addEventListener('DOMContentLoaded', checkCompletionStatus);
+      document.addEventListener('DOMContentLoaded', function() {
+        initPremiumTaskCards();
+        checkCompletionStatus();
+      });
       document.addEventListener('visibilitychange', () => {
         if (!document.hidden) checkCompletionStatus();
       });
