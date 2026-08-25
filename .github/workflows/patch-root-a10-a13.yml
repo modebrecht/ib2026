@@ -1,0 +1,98 @@
+name: One-shot Root A10-A13 Navigation
+
+on:
+  push:
+    branches: [dev]
+    paths:
+      - .github/workflows/patch-root-a10-a13.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout dev
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+
+      - name: Add A10-A13 cards to root
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('index.html')
+          text = path.read_text(encoding='utf-8')
+          if 'id="title-A10"' in text or 'id="title-A13"' in text:
+              raise SystemExit('A10-A13 root cards already exist')
+
+          start = text.index('<!-- Unterkachel: A9 EVA-Szenarien -->')
+          marker = '\n\n\n            </div>'
+          insert_at = text.index(marker, start)
+
+          cards = '''
+
+              <!-- Unterkachel: A10 RAM, HDD oder SSD -->
+              <div class="unterkachel task-card">
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+                  <div>
+                    <h4 class="unterkachel-title" id="title-A10" style="margin-bottom: 2px;">
+                       <span class="task-number">A10</span><span class="task-name">RAM, HDD oder SSD?</span>
+                    </h4>
+                  </div>
+                  <a href="hw/A10.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"></a>
+                </div>
+              </div>
+
+              <!-- Unterkachel: A11 Kaufberatung -->
+              <div class="unterkachel task-card">
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+                  <div>
+                    <h4 class="unterkachel-title" id="title-A11" style="margin-bottom: 2px;">
+                       <span class="task-number">A11</span><span class="task-name">Kaufberatung</span>
+                    </h4>
+                  </div>
+                  <a href="hw/A11.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"></a>
+                </div>
+              </div>
+
+              <!-- Unterkachel: A12 Schnittstellen sortieren -->
+              <div class="unterkachel task-card">
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+                  <div>
+                    <h4 class="unterkachel-title" id="title-A12" style="margin-bottom: 2px;">
+                       <span class="task-number">A12</span><span class="task-name">Schnittstellen sortieren</span>
+                    </h4>
+                  </div>
+                  <a href="hw/A12.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"></a>
+                </div>
+              </div>
+
+              <!-- Unterkachel: A13 Grüne IT -->
+              <div class="unterkachel task-card">
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+                  <div>
+                    <h4 class="unterkachel-title" id="title-A13" style="margin-bottom: 2px;">
+                       <span class="task-number">A13</span><span class="task-name">Grüne IT &amp; Nachhaltigkeit</span>
+                    </h4>
+                  </div>
+                  <a href="hw/A13.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"></a>
+                </div>
+              </div>'''
+
+          text = text[:insert_at] + cards + text[insert_at:]
+          for token in ('id="title-A10"','id="title-A11"','id="title-A12"','id="title-A13"','href="hw/A13.html"'):
+              if text.count(token) != 1:
+                  raise SystemExit(f'Validation failed for {token}: {text.count(token)}')
+          path.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Commit navigation
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "nav: add A10-A13 hardware worksheets"
+          git push origin HEAD:dev
