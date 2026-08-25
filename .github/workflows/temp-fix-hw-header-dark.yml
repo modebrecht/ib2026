@@ -1,0 +1,41 @@
+name: Temp Fix HW Dark Header
+on:
+  push:
+    branches: [dev]
+    paths: ['.github/workflows/temp-fix-hw-header-dark.yml']
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: dev
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Fix A1-A9 header dark background
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          changed=[]
+          for i in range(1,10):
+              p=Path(f'hw/A{i}.html')
+              s=p.read_text(encoding='utf-8')
+              old='bg-white/88 dark:bg-slate-900/9'
+              new='bg-white/90 dark:bg-slate-900/90'
+              if old in s:
+                  s=s.replace(old,new,1)
+                  p.write_text(s,encoding='utf-8')
+                  changed.append(str(p))
+          print('changed:', changed)
+          if len(changed) != 9:
+              raise SystemExit(f'Expected 9 changed files, got {len(changed)}: {changed}')
+          PY
+      - name: Commit fix and remove temporary workflow
+        run: |
+          rm .github/workflows/temp-fix-hw-header-dark.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add hw/A1.html hw/A2.html hw/A3.html hw/A4.html hw/A5.html hw/A6.html hw/A7.html hw/A8.html hw/A9.html .github/workflows/temp-fix-hw-header-dark.yml
+          git commit -m 'fix(hw): correct dark header backgrounds A1-A9'
+          git push origin dev
