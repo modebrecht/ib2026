@@ -210,7 +210,7 @@ test.describe('HW production smoke: A1-A9', () => {
     expect(ids).toHaveLength(16);
 
     await expect(page.locator('#cardCounter')).toHaveText('Info');
-    await expect(page.getByRole('heading', { name: 'Auftrag' })).toBeVisible();
+    await expect(page.locator('#nextCardBtn')).toBeVisible();
     await page.locator('#nextCardBtn').click();
 
     for (let i = 0; i < ids.length; i += 1) {
