@@ -1,0 +1,41 @@
+name: One-shot Abgabe Copy Patch
+
+on:
+  push:
+    branches: [dev]
+    paths:
+      - .github/workflows/patch-abgabe-copy.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout dev
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+
+      - name: Simplify PDF upload instruction
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('index.html')
+          text = path.read_text(encoding='utf-8')
+          old = 'Lade die generierten <strong>PDFs in deinen OneDrive-Ordner hoch</strong> und teile ihn mit deiner Informatiklehrperson'
+          new = 'Lade die <strong>PDFs in deinen OneDrive-Ordner hoch</strong> und teile ihn mit deiner Informatiklehrperson'
+          count = text.count(old)
+          if count != 1:
+              raise SystemExit(f'Expected exactly one match, found {count}')
+          path.write_text(text.replace(old, new), encoding='utf-8')
+          PY
+
+      - name: Commit patch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "copy: simplify PDF upload instruction"
+          git push origin HEAD:dev
