@@ -1215,7 +1215,11 @@
                   <span>📤 Abgabe:</span>
                 </h4>
                 <div style="display: flex; flex-direction: column; gap: 8px; width: 100%; font-size: calc(13px * var(--font-scale));">
-                </div>
+        <div style="display: flex; align-items: center; gap: 8px; width: 100%; padding: 9px 12px; background: var(--card-soft); border: 1px solid var(--line); border-radius: 8px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
+          <span>Lade die <strong>PDFs in deinen OneDrive-Ordner hoch</strong> und teile ihn mit deiner Informatiklehrperson</span>
+        </div>
+      </div>
               </div>
 
             </div>
@@ -1423,9 +1427,6 @@
   <script>
     const gearBtn = document.getElementById('gearBtn');
     const settingsPanel = document.getElementById('settingsPanel');
-    const themeToggle = document.getElementById('themeToggle');
-    const fontSizeRange = document.getElementById('fontSizeRange');
-    const fontSizeValue = document.getElementById('fontSizeValue');
 
     function saveKachelStates() {
       const states = {};
@@ -1454,14 +1455,6 @@
       saveKachelStates();
     }
 
-    function setFontSize(percent) {
-      const value = Math.min(250, Math.max(80, Number(percent) || 100));
-      document.documentElement.style.setProperty('--font-scale', value / 100);
-      fontSizeRange.value = value;
-      fontSizeValue.value = `${value}%`;
-      fontSizeValue.textContent = `${value}%`;
-      localStorage.setItem('ib-font-size', value);
-    }
 
     gearBtn.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -1474,10 +1467,6 @@
       }
     });
 
-    fontSizeRange.addEventListener('input', () => setFontSize(fontSizeRange.value));
-
-    // Initialize
-    setFontSize(localStorage.getItem('ib-font-size') || 100);
     restoreKachelStates();
   </script>
 
