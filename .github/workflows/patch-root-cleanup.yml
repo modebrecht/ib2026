@@ -1,0 +1,72 @@
+name: One-shot Root Cleanup
+
+on:
+  push:
+    branches: [dev]
+    paths:
+      - .github/workflows/patch-root-cleanup.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout dev
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+
+      - name: Clean up root copy
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          path = Path('index.html')
+          text = path.read_text(encoding='utf-8')
+
+          replacements = {
+              'A1–A12 bearbeiten &amp; abgeben': 'A1–A9 bearbeiten &amp; abgeben',
+              '>A6.PDF</strong>': '>A6</strong>',
+              '>A7.PNG / PDF</strong>': '>A7</strong>',
+          }
+          for old, new in replacements.items():
+              count = text.count(old)
+              if count != 1:
+                  raise SystemExit(f'Expected exactly one match for {old!r}, found {count}')
+              text = text.replace(old, new)
+
+          for label in ('A10', 'A11', 'A12'):
+              pattern = re.compile(
+                  r'\n\s*<div style="display: flex; align-items: center; justify-content: space-between;[^"]*">\n'
+                  rf'\s*<strong[^>]*>{label}</strong>\n'
+                  r'\s*<span[^>]*>Noch nicht verfügbar</span>\n'
+                  r'\s*</div>'
+              )
+              text, count = pattern.subn('', text, count=1)
+              if count != 1:
+                  raise SystemExit(f'Expected one {label} placeholder block, found {count}')
+
+          email_pattern = re.compile(
+              r'\n\s*<div style="display: flex; align-items: center; gap: 8px; width: 100%; padding: 9px 12px; background: var\(--card-soft\); border: 1px solid var\(--line\); border-radius: 8px;">\n'
+              r'\s*<svg[^>]*>.*?</svg>\n'
+              r'\s*<span>oder sende die PDF-Dateien per <strong>E-Mail-Anhang</strong></span>\n'
+              r'\s*</div>',
+              re.S,
+          )
+          text, count = email_pattern.subn('', text, count=1)
+          if count != 1:
+              raise SystemExit(f'Expected one email alternative block, found {count}')
+
+          path.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Commit cleanup
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "copy: simplify root Fleissnote section"
+          git push origin HEAD:dev
