@@ -1,0 +1,53 @@
+name: Temp Align HW Headers
+
+on:
+  push:
+    branches: [dev]
+    paths:
+      - '.github/workflows/temp-align-hw-headers.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  align:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 0
+
+      - name: Align A1-A9 header shell to A9
+        shell: python
+        run: |
+          from pathlib import Path
+          import re
+
+          target = 'sticky top-0 z-40 bg-white/88 dark:bg-slate-900/9 backdrop-blur-xl border-b border-slate-200/80 dark:border-slate-800'
+          paths = [Path(f'hw/A{i}.html') for i in [1,2,3,4,5,7,8,9]]
+
+          for path in paths:
+              text = path.read_text(encoding='utf-8')
+              pattern = re.compile(r'<header class="([^"]*sticky[^"]*)">')
+              match = pattern.search(text)
+              if not match:
+                  raise SystemExit(f'No sticky top-level header found in {path}')
+              old_classes = match.group(1)
+              keep_no_print = ' no-print' if 'no-print' in old_classes.split() else ''
+              replacement = f'<header class="{target}{keep_no_print}">'
+              text, count = pattern.subn(replacement, text, count=1)
+              if count != 1:
+                  raise SystemExit(f'Expected one header replacement in {path}, got {count}')
+              path.write_text(text, encoding='utf-8')
+
+      - name: Commit aligned headers and remove temporary workflow
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/temp-align-hw-headers.yml
+          git add hw/A1.html hw/A2.html hw/A3.html hw/A4.html hw/A5.html hw/A7.html hw/A8.html hw/A9.html
+          git diff --cached --check
+          git commit -m "fix(hw): align A1-A9 headers with A9"
+          git push origin HEAD:dev
