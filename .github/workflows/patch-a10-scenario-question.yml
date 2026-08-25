@@ -1,0 +1,73 @@
+name: One-shot A10 Scenario Wording
+
+on:
+  push:
+    branches: [dev]
+    paths:
+      - .github/workflows/patch-a10-scenario-question.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout dev
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+
+      - name: Simplify A10 interaction wording
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('hw/A10.html')
+          text = path.read_text(encoding='utf-8')
+
+          old_keyboard = '<div id="feedback" class="min-h-[72px] mt-4 flex items-center justify-center text-sm font-bold text-center" aria-live="polite"></div><div class="flex items-center justify-center gap-2 text-[11px] text-slate-400 mt-2"><span>Tastatur:</span><span id="key-r" class="keycap">R</span><span>/</span><span id="key-h" class="keycap">H</span><span>/</span><span id="key-s" class="keycap">S</span></div></section>'
+          new_keyboard = '<div id="feedback" class="min-h-[72px] mt-4 flex items-center justify-center text-sm font-bold text-center" aria-live="polite"></div></section>'
+          if old_keyboard not in text:
+              raise SystemExit('Keyboard hint block not found')
+          text = text.replace(old_keyboard, new_keyboard, 1)
+
+          old_scene = '<div id="sceneShell" class="scene-shell enter"><div id="sceneArt" class="scene-art" aria-hidden="true"></div><div class="text-center px-2 sm:px-4 pb-2"><h2 id="sceneTitle" class="scene-title text-2xl sm:text-3xl font-black tracking-tight mt-3"></h2><p id="sceneText" class="scene-text text-sm sm:text-base text-slate-500 dark:text-slate-400 mt-2 max-w-2xl mx-auto"></p></div></div>'
+          new_scene = '<div id="sceneShell" class="scene-shell enter"><div id="sceneArt" class="scene-art" aria-hidden="true"></div><div class="text-center px-2 sm:px-4 pb-2"><h2 id="sceneTitle" class="scene-title text-2xl sm:text-3xl font-black tracking-tight mt-3"></h2><p id="sceneText" class="scene-text text-sm sm:text-base text-slate-500 dark:text-slate-400 mt-2 max-w-2xl mx-auto"></p><p class="mt-3 text-sm sm:text-base font-black text-slate-800 dark:text-slate-100">Welches Bauteil könnte dafür verantwortlich sein?</p></div></div>'
+          if old_scene not in text:
+              raise SystemExit('Scene shell block not found')
+          text = text.replace(old_scene, new_scene, 1)
+
+          old_upgrade = "{id:'upgrade',title:'Der Laptop startet plötzlich schneller',text:'Die alte mechanische Festplatte wurde durch ein Laufwerk ohne bewegliche Teile ersetzt.',cat:'ssd',why:'Eine SSD hat keine beweglichen Teile und ist meist deutlich schneller als eine HDD.'}"
+          new_upgrade = "{id:'upgrade',title:'Laptop startet plötzlich schneller.',text:'Seit einem Hardware-Upgrade braucht der Laptop beim Einschalten deutlich weniger Zeit, bis Windows bereit ist.',cat:'ssd',why:'Eine SSD hat keine beweglichen Teile und ist meist deutlich schneller als eine HDD.'}"
+          if old_upgrade not in text:
+              raise SystemExit('Upgrade scenario not found')
+          text = text.replace(old_upgrade, new_upgrade, 1)
+
+          old_handlers = "function flashKey(k,b){const cap=document.getElementById('key-'+k);if(cap){cap.classList.add('active');setTimeout(()=>cap.classList.remove('active'),160)}if(b){b.classList.add('key-hit');setTimeout(()=>b.classList.remove('key-hit'),220)}}document.querySelectorAll('.storage-btn').forEach(b=>b.addEventListener('click',()=>answer(b.dataset.cat,b)));document.addEventListener('keydown',e=>{if(e.repeat||answered||document.getElementById('quest').classList.contains('hidden'))return;const target=e.target;if(target&&['INPUT','TEXTAREA','SELECT'].includes(target.tagName))return;const k=e.key.toLowerCase(),map={r:'ram',h:'hdd',s:'ssd'};if(map[k]){e.preventDefault();const b=document.querySelector(`.storage-btn[data-cat=\"${map[k]}\"]`);flashKey(k,b);answer(map[k],b)}});document.addEventListener('DOMContentLoaded'"
+          new_handlers = "document.querySelectorAll('.storage-btn').forEach(b=>b.addEventListener('click',()=>answer(b.dataset.cat,b)));document.addEventListener('DOMContentLoaded'"
+          if old_handlers not in text:
+              raise SystemExit('Keyboard handler block not found')
+          text = text.replace(old_handlers, new_handlers, 1)
+
+          checks = [
+              'Welches Bauteil könnte dafür verantwortlich sein?',
+              "title:'Laptop startet plötzlich schneller.'",
+              'Seit einem Hardware-Upgrade braucht der Laptop',
+          ]
+          for check in checks:
+              if check not in text:
+                  raise SystemExit('Validation failed: ' + check)
+          for forbidden in ['<span>Tastatur:</span>', "map={r:'ram',h:'hdd',s:'ssd'}"]:
+              if forbidden in text:
+                  raise SystemExit('Still present: ' + forbidden)
+
+          path.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Commit patch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add hw/A10.html
+          git commit -m "ui: simplify A10 scenario prompts"
+          git push origin HEAD:dev
