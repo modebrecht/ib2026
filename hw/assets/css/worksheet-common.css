@@ -71,3 +71,8 @@ body:has(#sceneShell) main > section:first-child p {
 #sceneShell .scene-title {
   margin-top: .45rem;
 }
+
+/* A9: the E/V/A choices already explain what the learner must decide. */
+body:has(#sceneShell) #sceneShell .text-center > p:last-of-type {
+  display: none;
+}
