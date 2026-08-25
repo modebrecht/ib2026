@@ -13,6 +13,18 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: dev
+      - name: Repair patch script syntax
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('.github/scripts/patch_a13_final_theme_check.py')
+          s=p.read_text(encoding='utf-8')
+          needle="sub:'Digitale Dienste sind grundsätzlich schlecht'}]}\n}\nfor a,b"
+          repl="sub:'Digitale Dienste sind grundsätzlich schlecht'}]}\",\n}\nfor a,b"
+          if needle in s:
+              s=s.replace(needle,repl,1)
+          p.write_text(s,encoding='utf-8')
+          PY
       - name: Apply final theme audit
         run: python .github/scripts/patch_a13_final_theme_check.py
       - name: Commit changes
