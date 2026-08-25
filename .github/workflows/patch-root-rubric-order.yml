@@ -1,0 +1,90 @@
+name: One-shot Root Rubric Order
+
+on:
+  push:
+    branches: [dev]
+    paths:
+      - .github/workflows/patch-root-rubric-order.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout dev
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+
+      - name: Move Bewertungskriterien before Inhaltliche Fragen
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          path = Path('index.html')
+          text = path.read_text(encoding='utf-8')
+
+          content_marker = '<!-- Content Checklist -->'
+          rubric_marker = '<!-- Evaluation Rubric / Bewertungsraster -->'
+
+          c = text.find(content_marker)
+          r = text.find(rubric_marker)
+          if c < 0 or r < 0:
+              raise SystemExit(f'Markers not found: content={c}, rubric={r}')
+          if r < c:
+              print('Already in requested order; nothing to change.')
+              raise SystemExit(0)
+
+          def extract_div_block(src, marker_pos):
+              start = src.find('<div', marker_pos)
+              if start < 0:
+                  raise SystemExit('Opening div after marker not found')
+              token_re = re.compile(r'<div\b[^>]*>|</div\s*>', re.I)
+              depth = 0
+              for m in token_re.finditer(src, start):
+                  token = m.group(0).lower()
+                  if token.startswith('<div'):
+                      depth += 1
+                  else:
+                      depth -= 1
+                      if depth == 0:
+                          return start, m.end()
+              raise SystemExit('Could not find matching closing div')
+
+          rubric_div_start, rubric_div_end = extract_div_block(text, r)
+          # Include the rubric comment and surrounding indentation/newline with the moved block.
+          rubric_start = text.rfind('\n', 0, r) + 1
+          rubric_end = rubric_div_end
+          while rubric_end < len(text) and text[rubric_end] in ' \t':
+              rubric_end += 1
+          if rubric_end < len(text) and text[rubric_end] == '\n':
+              rubric_end += 1
+
+          rubric_block = text[rubric_start:rubric_end]
+          without = text[:rubric_start] + text[rubric_end:]
+          content_pos = without.find(content_marker)
+          if content_pos < 0:
+              raise SystemExit('Content marker disappeared after extraction')
+          content_line_start = without.rfind('\n', 0, content_pos) + 1
+          updated = without[:content_line_start] + rubric_block + without[content_line_start:]
+
+          if updated.find(rubric_marker) > updated.find(content_marker):
+              raise SystemExit('Reorder validation failed')
+
+          path.write_text(updated, encoding='utf-8')
+          PY
+
+      - name: Commit reorder
+        run: |
+          if git diff --quiet -- index.html; then
+            echo "No change needed"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "ui: show Bewertungskriterien before content questions"
+          git push origin HEAD:dev
