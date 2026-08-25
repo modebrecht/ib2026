@@ -10,3 +10,17 @@
   background: rgba(15, 23, 42, .60);
   border-bottom-color: rgba(51, 65, 85, .50);
 }
+
+/* A8: keep the hardware card compact enough to fit without extra scrolling */
+#componentShell > .component-visual + div {
+  display: none;
+}
+
+#componentShell #component {
+  min-height: 0;
+  margin-top: .35rem;
+}
+
+#componentShell #componentQuestion {
+  margin-top: .2rem;
+}
