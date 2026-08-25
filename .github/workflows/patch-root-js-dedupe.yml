@@ -22,34 +22,26 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
-
+          import re
           path = Path('index.html')
           text = path.read_text(encoding='utf-8')
-
-          replacements = {
-              "    const themeToggle = document.getElementById('themeToggle');\n": "",
-              "    const fontSizeRange = document.getElementById('fontSizeRange');\n": "",
-              "    const fontSizeValue = document.getElementById('fontSizeValue');\n": "",
-              """    function setFontSize(percent) {
-      const value = Math.min(250, Math.max(80, Number(percent) || 100));
-      document.documentElement.style.setProperty('--font-scale', value / 100);
-      fontSizeRange.value = value;
-      fontSizeValue.value = `${value}%`;
-      fontSizeValue.textContent = `${value}%`;
-      localStorage.setItem('ib-font-size', value);
-    }
-
-""": "",
-              "    fontSizeRange.addEventListener('input', () => setFontSize(fontSizeRange.value));\n\n": "",
-              "    // Initialize\n    setFontSize(localStorage.getItem('ib-font-size') || 100);\n    restoreKachelStates();\n": "    restoreKachelStates();\n",
-          }
-
-          for old, new in replacements.items():
+          for old in (
+              "    const themeToggle = document.getElementById('themeToggle');\n",
+              "    const fontSizeRange = document.getElementById('fontSizeRange');\n",
+              "    const fontSizeValue = document.getElementById('fontSizeValue');\n",
+              "    fontSizeRange.addEventListener('input', () => setFontSize(fontSizeRange.value));\n\n",
+          ):
               count = text.count(old)
               if count != 1:
-                  raise SystemExit(f'Expected exactly one match, found {count}: {old[:80]!r}')
-              text = text.replace(old, new)
-
+                  raise SystemExit(f'Expected exactly one match, found {count}: {old!r}')
+              text = text.replace(old, '')
+          text, count = re.subn(r'\n    function setFontSize\(percent\) \{.*?\n    \}\n', '\n', text, count=1, flags=re.S)
+          if count != 1:
+              raise SystemExit(f'Expected one duplicate setFontSize function, found {count}')
+          old_init = "    // Initialize\n    setFontSize(localStorage.getItem('ib-font-size') || 100);\n    restoreKachelStates();\n"
+          if text.count(old_init) != 1:
+              raise SystemExit('Expected one duplicate font initialization block')
+          text = text.replace(old_init, '    restoreKachelStates();\n')
           path.write_text(text, encoding='utf-8')
           PY
 
