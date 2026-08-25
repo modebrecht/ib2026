@@ -257,7 +257,7 @@
                         <p class="text-xs text-slate-500 dark:text-slate-400">Informatische Bildung • IT-Hardware • A1</p>
                     </div>
                 </div>
-                <div class="flex items-center gap-3">
+                <div class="hidden flex items-center gap-3">
                     <div class="text-right">
                         <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Fortschritt</span>
                         <span id="completionBadge" class="text-sm font-bold text-onedrive-600 dark:text-onedrive-400">0 / 3 erledigt</span>
@@ -562,12 +562,10 @@
               var score;
               
               if (window.innerWidth >= 768) {
-                  // Desktop: Prefer wider layouts that utilize screen width nicely
-                  possibleFitW = Math.min(maxW, 220); // Cap max size so cards aren't huge
-                  possibleFitW = Math.min(possibleFitW, (maxH * 1.5) / 1.25); // Allow some vertical scrolling
-                  score = possibleFitW * testCols; // Maximize horizontal space utilization!
+                  possibleFitW = Math.min(maxW, 220);
+                  possibleFitW = Math.min(possibleFitW, (maxH * 1.5) / 1.25);
+                  score = possibleFitW * testCols;
               } else {
-                  // Mobile: Strictly fit to 1 screen, maximize absolute card size
                   possibleFitW = Math.min(maxW, maxH / 1.25);
                   score = possibleFitW;
               }
@@ -582,10 +580,9 @@
           var cols = bestCols;
           var fitCardW = bestFitW;
           var absoluteMaxW = (boardWidth - (gap * (cols - 1))) / cols;
-          var minW = window.innerWidth < 768 ? 75 : 120; // lower min width for desktop slightly to allow wider grids
+          var minW = window.innerWidth < 768 ? 75 : 120;
           
-          fitCardW = Math.max(minW, fitCardW); 
-          // CRITICAL: Never exceed the available horizontal space, otherwise we get horizontal scrolling!
+          fitCardW = Math.max(minW, fitCardW);
           fitCardW = Math.min(fitCardW, absoluteMaxW);
           
           var fitCardH = fitCardW * 1.25;
@@ -867,7 +864,7 @@
                       type: 'table',
                       heading: '📊 Übersicht der absolvierten Schwierigkeitsgrade',
                       headers: ['Schwierigkeitsgrad', 'Status', 'Punkte', 'Zeit', 'Züge', 'Bewertung'],
-                      colWidths: [49, 31, 27, 24, 20, 23], // mm, muss zu contentW (174mm) passen
+                      colWidths: [49, 31, 27, 24, 20, 23],
                       rows: rows
                   },
                   {
@@ -947,7 +944,6 @@
             loadStudentInfo();
             applyDefaultClassAndDate();
 
-            // Sync global Vorname
             var globalVorname = localStorage.getItem('studentVorname') || localStorage.getItem('student_vorname');
             var nameEl = document.getElementById('studentName');
             if (nameEl) {
@@ -965,7 +961,6 @@
             if(sizeSlider){ sizeSlider.value = state.cardMin; sizeVal.textContent = state.cardMin+'px'; document.documentElement.style.setProperty('--card-min', state.cardMin+'px'); sizeSlider.addEventListener('input', function(){ state.cardMin = Number(sizeSlider.value); sizeVal.textContent = state.cardMin+'px'; document.documentElement.style.setProperty('--card-min', state.cardMin+'px'); localStorage.setItem('memCardMin', state.cardMin); }); }
             if(textSlider){ textSlider.value = state.textSize; textSizeVal.textContent = state.textSize+'px'; document.documentElement.style.setProperty('--card-text', state.textSize+'px'); textSlider.addEventListener('input', function(){ state.textSize = Number(textSlider.value); textSizeVal.textContent = state.textSize+'px'; document.documentElement.style.setProperty('--card-text', state.textSize+'px'); localStorage.setItem('memTextSize', state.textSize); }); }
             
-            // Auto-start Memory game immediately on page load
             startGame();
         })();
     </script>
