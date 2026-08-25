@@ -1,0 +1,99 @@
+name: One-shot A13 A9 Header
+
+on:
+  push:
+    branches: [dev]
+    paths:
+      - .github/workflows/patch-a13-a9-header.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout dev
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+
+      - name: Align Green IT source with shared worksheet shell
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('hw/A23.html')
+          text = path.read_text(encoding='utf-8')
+
+          css = '<link rel="stylesheet" href="assets/css/worksheet-common.css">'
+          if css not in text:
+              anchor = '<link rel="stylesheet" href="assets/css/fontawesome.min.css">'
+              if anchor not in text:
+                  raise SystemExit('Font Awesome stylesheet anchor not found')
+              text = text.replace(anchor, anchor + '\n    ' + css, 1)
+
+          if '.progress-glow{' not in text:
+              style_end = text.index('    </style>')
+              extra = '''        .progress-glow{background:linear-gradient(90deg,#0078d4,#7c3aed,#10b981);background-size:200% 100%;animation:flow 3.5s linear infinite}\n        @keyframes flow{to{background-position:200% 0}}\n'''
+              text = text[:style_end] + extra + text[style_end:]
+
+          marker = '    <!-- Sticky Header Bar -->'
+          start = text.index(marker)
+          header_start = text.index('    <header', start)
+          header_end = text.index('    </header>', header_start) + len('    </header>')
+          new_header = '''    <!-- Sticky Header Bar -->
+    <header class="sticky top-0 z-40 worksheet-header no-print">
+        <div class="max-w-5xl mx-auto p-3 flex items-center justify-between gap-3">
+            <div class="min-w-0">
+                <div class="text-[10px] uppercase font-black tracking-[.16em] text-slate-400">A9 · Grüne IT &amp; Nachhaltigkeit</div>
+                <div class="flex items-center gap-2 mt-.5">
+                    <div id="headerPercentText" class="font-black text-onedrive-600 dark:text-blue-400">0% bearbeitet</div>
+                    <span class="hidden sm:inline text-slate-300 dark:text-slate-700">•</span>
+                    <div class="hidden sm:block text-xs font-bold text-slate-400">5 Aufträge</div>
+                </div>
+            </div>
+            <div class="flex gap-2 shrink-0">
+                <button onclick="toggleDarkMode()" title="Dunkelmodus" class="w-10 h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-900">
+                    <i id="themeIcon" class="fa-solid fa-moon"></i>
+                </button>
+                <button id="hdrPdfBtn" onclick="handlePrint()" class="w-10 h-10 rounded-xl bg-slate-200 text-slate-400 dark:bg-slate-800 dark:text-slate-600" title="PDF nach Abschluss">
+                    <i id="printIcon" class="fa-solid fa-lock"></i>
+                </button>
+                <button onclick="confirmReset()" title="Zurücksetzen" class="w-10 h-10 rounded-xl border border-rose-200 dark:border-rose-900/60 bg-white/70 dark:bg-slate-900 text-rose-600">
+                    <i class="fa-solid fa-rotate-right"></i>
+                </button>
+            </div>
+        </div>
+        <div class="h-1 bg-slate-200 dark:bg-slate-800 overflow-hidden">
+            <div id="progressBar" class="h-1 progress-glow transition-all duration-300" style="width:0"></div>
+        </div>
+    </header>'''
+          text = text[:start] + new_header + text[header_end:]
+
+          text = text.replace("percent + '% erledigt'", "percent + '% bearbeitet'")
+
+          checks = [
+              'assets/css/worksheet-common.css',
+              'assets/js/worksheet-common.js',
+              'worksheet-header no-print',
+              'max-w-5xl mx-auto p-3',
+              'id="headerPercentText"',
+              'id="hdrPdfBtn"',
+              'id="progressBar"',
+              'fa-solid fa-lock',
+          ]
+          for check in checks:
+              if check not in text:
+                  raise SystemExit(f'Validation failed: {check}')
+
+          path.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Commit alignment
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add hw/A23.html
+          git commit -m "ui: align A13 Green IT header with A9"
+          git push origin HEAD:dev
