@@ -1,0 +1,53 @@
+name: A1-A9 Render
+
+on:
+  push:
+    branches:
+      - render
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e2e-smoke-hw-a1-a9-render
+  cancel-in-progress: false
+
+jobs:
+  smoke:
+    name: Chromium smoke A1-A9 · Render
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      BASE_URL: https://dev-ib2026.onrender.com
+
+    steps:
+      - name: Checkout render
+        uses: actions/checkout@v4
+        with:
+          ref: render
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Playwright
+        run: |
+          npm init -y >/dev/null
+          npm install --no-save @playwright/test
+          npx playwright install --with-deps chromium
+
+      - name: Run A1-A9 Render smoke
+        run: npx playwright test e2e/hw-a1-a9.spec.js --browser=chromium --workers=1 --reporter=line,html
+
+      - name: Upload failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-smoke-hw-a1-a9-render-${{ github.run_id }}
+          path: |
+            test-results/
+            playwright-report/
+          if-no-files-found: ignore
+          retention-days: 7
