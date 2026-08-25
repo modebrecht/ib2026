@@ -1,0 +1,23 @@
+name: One-shot A13 Energy Init Fix
+on:
+  push:
+    branches: [dev]
+    paths:
+      - .github/workflows/fix-a13-energy-init.yml
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: dev
+      - run: python .github/scripts/fix_a13_energy_init.py
+      - run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add hw/A13.html
+          git diff --cached --quiet && exit 0
+          git commit -m "fix: require A13 energy calculator interaction"
+          git push origin dev
