@@ -29,6 +29,7 @@ jobs:
               "meta:'Bauform 2,5″ · SATA · meist AHCI'": "meta:'2,5″ · SATA'",
               "meta:'M.2 · SATA · AHCI'": "meta:'M.2 · SATA'",
               "meta:'M.2 · PCIe · NVMe'": "meta:'M.2 · PCIe / NVMe'",
+              "desc:'Transportable SSD im Gehäuse, typischerweise über USB-C, USB oder Thunderbolt.'": "desc:'Transportable SSD im Gehäuse, typischerweise über USB oder USB-C.'",
               "meta:'extern · USB/Thunderbolt · Protokoll je nach Gehäuse'": "meta:'extern · USB / USB-C'",
               '<option value="sata">SATA / AHCI</option>': '<option value="sata">SATA</option>',
               '<option value="external">Extern über USB / Thunderbolt</option>': '<option value="external">Extern über USB</option>',
