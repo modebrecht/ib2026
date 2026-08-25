@@ -1,6 +1,6 @@
 /* Shared worksheet header glassmorphism */
 .worksheet-header {
-  background: rgba(255, 255, 255, .60);
+  background: rgba(255, 255, 255, .35);
   backdrop-filter: blur(20px) saturate(160%);
   -webkit-backdrop-filter: blur(20px) saturate(160%);
   border-bottom: 1px solid rgba(255, 255, 255, .40);
