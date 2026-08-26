@@ -4,32 +4,6 @@
   // A1-A6 are always accessible from the course overview.
   // Quest progression inside A1/A2 is handled by the shared isQuestUnlocked()
   // rules from ../tk/xp.js (Q1 -> Q2 -> Q3 and Q4 -> Q5 -> Q6).
-  // Q7 is the A3 resource marker, not a gated learning quest.
-  if(typeof window.isQuestUnlocked==='function'){
-    var sharedQuestUnlock=window.isQuestUnlocked;
-    window.isQuestUnlocked=function(questId){
-      if(questId==='q7')return true;
-      return sharedQuestUnlock(questId);
-    };
-  }
-
-  function migrateA3LegacyProgress(){
-    var key='tk_a3_progress_v1',progress={};
-    try{progress=JSON.parse(localStorage.getItem(key)||'{}');}catch(e){progress={};}
-    var scores=typeof getQuestScores==='function'?getQuestScores():{};
-    var second=progress.second;
-    var oldSecondDone=(typeof second==='string'&&second.trim().length>0)||(typeof second==='number'&&isFinite(second));
-    var legacyCompleted=oldSecondDone||(scores.q7||0)>=100;
-    if(!legacyCompleted)return;
-
-    var changed=false;
-    if(progress.completed!==true){progress.completed=true;changed=true;}
-    if(progress.migratedFromLegacy!==true){progress.migratedFromLegacy=true;changed=true;}
-    // Alte A3-Abschlüsse haben ihre damalige Belohnung bereits erhalten.
-    if(progress.rewarded!==true){progress.rewarded=true;changed=true;}
-    if(changed)localStorage.setItem(key,JSON.stringify(progress));
-    if((scores.q7||0)<100&&typeof saveQuestScore==='function')saveQuestScore('q7',100);
-  }
 
   function installChordKeyHoldStyles(){
     if(document.getElementById('tk2-chord-key-hold'))return;
@@ -66,12 +40,11 @@
       var isAltGr=row.closest('.tk2-altgr-scene');
       var keys=Array.from(row.querySelectorAll(isAltGr?'.key':'.tk2-key,.tk2-u-key'));
       var index=keys.indexOf(key);
-      if(index<1)return; // Modifier alone is not yet a chord.
+      if(index<1)return;
 
       var oldTimer=rowTimers.get(row);
       if(oldTimer)window.clearTimeout(oldTimer);
 
-      // Hold every key already reached in the chord. Ctrl+Shift+V grows 2 -> 3.
       keys.forEach(function(k,i){
         if(i<=index)k.classList.add('tk2-chord-held');
       });
@@ -98,7 +71,6 @@
 
     document.addEventListener('DOMContentLoaded',function(){
       observe();
-      // Theory scenes are inserted dynamically; pick up later replacements/replays too.
       var treeObserver=new MutationObserver(observe);
       treeObserver.observe(document.body,{childList:true,subtree:true});
     });
@@ -119,7 +91,6 @@
     });
   }
 
-  migrateA3LegacyProgress();
   installChordKeyHoldStyles();
   installChordHoldTiming();
   document.addEventListener('DOMContentLoaded',openIndexCards);
