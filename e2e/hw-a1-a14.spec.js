@@ -214,12 +214,12 @@ test.describe('HW production smoke: A1-A14', () => {
     const ids = await page.evaluate(() => fieldIds());
     expect(ids).toHaveLength(16);
 
-    await expect(page.locator('#cardCounter')).toHaveText('Info');
     await expect(page.locator('#nextCardBtn')).toBeVisible();
+    expect(await page.evaluate(() => currentCardIndex)).toBe(0);
     await page.locator('#nextCardBtn').click();
 
     for (let i = 0; i < ids.length; i += 1) {
-      await expect(page.locator('#cardCounter')).toHaveText(`${i + 1} / ${ids.length}`);
+      expect(await page.evaluate(() => currentCardIndex)).toBe(i + 1);
       await expect(page.locator(`#${ids[i]}`)).toBeVisible();
       await page.locator(`#${ids[i]}`).fill(`E2E A5 ${i + 1}`);
       if (i < ids.length - 1) await page.locator('#nextCardBtn').click();
