@@ -17,12 +17,10 @@
     .word-icon{width:72px;height:72px;margin:0 auto 13px;border-radius:19px;display:grid;place-items:center;background:rgba(37,99,235,.18);border:1px solid rgba(96,165,250,.35);font-size:1.85rem;color:#93c5fd;font-weight:900;font-family:'Space Grotesk',sans-serif}
     .download-card h2{font-family:'Space Grotesk',sans-serif;margin:.3rem 0 .5rem;font-size:1.45rem}
     .download-card p{margin:.2rem auto 1.1rem;color:var(--text-muted);line-height:1.6;max-width:590px}
-    .btn-download,.btn-next,.btn-back{display:inline-flex;align-items:center;justify-content:center;gap:9px;border:0;border-radius:14px;padding:14px 22px;font-family:inherit;font-weight:800;font-size:1rem;text-decoration:none;cursor:pointer;transition:.18s}
+    .btn-download,.btn-next{display:inline-flex;align-items:center;justify-content:center;gap:9px;border:0;border-radius:14px;padding:14px 22px;font-family:inherit;font-weight:800;font-size:1rem;text-decoration:none;cursor:pointer;transition:.18s}
     .btn-download{background:linear-gradient(135deg,#6366f1,#4338ca);color:#fff;box-shadow:0 10px 25px rgba(79,70,229,.25)}
     .btn-next{background:linear-gradient(135deg,#10b981,#047857);color:#fff}
-    .btn-next[aria-disabled="true"]{opacity:.45;pointer-events:none;filter:saturate(.4)}
-    .btn-back{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff}
-    .btn-download:hover,.btn-next:hover,.btn-back:hover{transform:translateY(-2px)}
+    .btn-download:hover,.btn-next:hover{transform:translateY(-2px)}
     .use-note{margin-top:18px;padding:16px 18px;border-radius:16px;background:rgba(59,130,246,.075);border:1px solid rgba(96,165,250,.2);text-align:left}
     .use-note strong{display:block;color:#dbeafe;margin-bottom:8px}
     .use-note ul{margin:0;padding-left:1.2rem;color:#cbd5e1;line-height:1.65}
@@ -30,7 +28,7 @@
     .completion-card.is-visible{display:block}
     .completion-card h3{font-family:'Space Grotesk',sans-serif;margin:0 0 .4rem;color:#a7f3d0}
     .completion-card p{margin:0 0 14px;color:var(--text-muted);line-height:1.55}
-    @media(max-width:480px){.container{padding:1rem}.resource-hero,.download-card{border-radius:18px}.btn-download,.btn-next,.btn-back{width:100%;box-sizing:border-box}}
+    @media(max-width:480px){.container{padding:1rem}.resource-hero,.download-card{border-radius:18px}.btn-download,.btn-next{width:100%;box-sizing:border-box}}
   </style>
 </head>
 <body>
@@ -43,42 +41,33 @@
   </header>
 
   <main class="container">
-    <section class="card lock-screen" id="a3-lock-screen" style="display:none">
-      <div class="lock-icon">🔒</div>
-      <h2 style="font-family:'Space Grotesk',sans-serif;color:#fca5a5">A3 ist noch gesperrt</h2>
-      <p style="color:var(--text-muted);max-width:560px">Du benötigst mindestens <strong>70 % richtig</strong> in Quest 6 von A2.</p>
-      <a href="A2.html" class="btn-back">Zurück zu A2 ➔</a>
+    <section class="resource-hero">
+      <span class="resource-kicker">A3 · Nachschlagewerk</span>
+      <h1>Dein Merkblatt zu Tastenkürzeln</h1>
+      <p>In A1 hast du die wichtigsten Tastenkürzel bereits kennengelernt und geübt. Hier sicherst du dir ein Merkblatt, das du bei späteren Aufgaben zum Nachschauen verwenden darfst.</p>
     </section>
 
-    <div id="a3-content-wrap">
-      <section class="resource-hero">
-        <span class="resource-kicker">A3 · Nachschlagewerk</span>
-        <h1>Dein Merkblatt zu Tastenkürzeln</h1>
-        <p>In A1 hast du die wichtigsten Tastenkürzel bereits kennengelernt und geübt. Hier sicherst du dir ein Merkblatt, das du bei späteren Aufgaben zum Nachschauen verwenden darfst.</p>
-      </section>
+    <section class="download-card">
+      <div class="word-icon">W</div>
+      <h2>Tastenkombinationen</h2>
+      <p>Lade das Merkblatt herunter und bewahre es auf. Es ist eine Hilfe für später – keine neue Prüfung.</p>
+      <a id="theory-download" href="../tk/Tastenkombinationen_A3.docx" download="Tastenkombinationen_A3.docx" class="btn-download">↓ Merkblatt herunterladen</a>
 
-      <section class="download-card">
-        <div class="word-icon">W</div>
-        <h2>Tastenkombinationen</h2>
-        <p>Lade das Merkblatt herunter und bewahre es auf. Es ist eine Hilfe für später – keine neue Prüfung.</p>
-        <a id="theory-download" href="../tk/Tastenkombinationen_A3.docx" download="Tastenkombinationen_A3.docx" class="btn-download">↓ Merkblatt herunterladen</a>
+      <div class="use-note">
+        <strong>Gut zu wissen</strong>
+        <ul>
+          <li>Viele Tastenkürzel funktionieren in mehreren Programmen gleich.</li>
+          <li>Du musst nicht jedes Kürzel jederzeit auswendig wissen.</li>
+          <li>Dieses Merkblatt darfst du bei späteren Aufgaben als Hilfe verwenden.</li>
+        </ul>
+      </div>
+    </section>
 
-        <div class="use-note">
-          <strong>Gut zu wissen</strong>
-          <ul>
-            <li>Viele Tastenkürzel funktionieren in mehreren Programmen gleich.</li>
-            <li>Du musst nicht jedes Kürzel jederzeit auswendig wissen.</li>
-            <li>Dieses Merkblatt darfst du bei späteren Aufgaben als Hilfe verwenden.</li>
-          </ul>
-        </div>
-      </section>
-
-      <section class="completion-card" id="completion-card">
-        <h3>Merkblatt gesichert ✓</h3>
-        <p>A3 ist damit abgeschlossen. Das bedeutet nicht, dass du alles auswendig können musst – du hast jetzt ein Nachschlagewerk für später.</p>
-        <a href="A4.html" class="btn-next" id="next-a4">Weiter zu A4 ➔</a>
-      </section>
-    </div>
+    <section class="completion-card" id="completion-card">
+      <h3>Merkblatt gesichert ✓</h3>
+      <p>A3 ist damit abgeschlossen. Das bedeutet nicht, dass du alles auswendig können musst – du hast jetzt ein Nachschlagewerk für später.</p>
+      <a href="A4.html" class="btn-next" id="next-a4">Weiter zu A4 ➔</a>
+    </section>
   </main>
 
   <script src="../tk/xp.js"></script>
