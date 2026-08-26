@@ -1,0 +1,40 @@
+name: Remove A6 legacy completion fallback
+
+on:
+  push:
+    branches: [dev]
+    paths:
+      - '.github/workflows/remove-a6-legacy.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: dev
+      - name: Remove manualDoneA5 fallback from root
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          old = "if (parsed && (parsed.manualDoneA6 === true || parsed.manualDoneA5 === true)) markDone('title-A6');"
+          new = "if (parsed && parsed.manualDoneA6 === true) markDone('title-A6');"
+          count = s.count(old)
+          if count != 1:
+              raise SystemExit(f'Expected exactly one legacy condition, found {count}')
+          p.write_text(s.replace(old, new), encoding='utf-8')
+          PY
+      - name: Commit fix
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "fix: remove manualDoneA5 fallback from A6 root status"
+          git push origin HEAD:dev
