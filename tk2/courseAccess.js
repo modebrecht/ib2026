@@ -13,6 +13,24 @@
     };
   }
 
+  function migrateA3LegacyProgress(){
+    var key='tk_a3_progress_v1',progress={};
+    try{progress=JSON.parse(localStorage.getItem(key)||'{}');}catch(e){progress={};}
+    var scores=typeof getQuestScores==='function'?getQuestScores():{};
+    var second=progress.second;
+    var oldSecondDone=(typeof second==='string'&&second.trim().length>0)||(typeof second==='number'&&isFinite(second));
+    var legacyCompleted=oldSecondDone||(scores.q7||0)>=100;
+    if(!legacyCompleted)return;
+
+    var changed=false;
+    if(progress.completed!==true){progress.completed=true;changed=true;}
+    if(progress.migratedFromLegacy!==true){progress.migratedFromLegacy=true;changed=true;}
+    // Alte A3-Abschlüsse haben ihre damalige Belohnung bereits erhalten.
+    if(progress.rewarded!==true){progress.rewarded=true;changed=true;}
+    if(changed)localStorage.setItem(key,JSON.stringify(progress));
+    if((scores.q7||0)<100&&typeof saveQuestScore==='function')saveQuestScore('q7',100);
+  }
+
   function installChordKeyHoldStyles(){
     if(document.getElementById('tk2-chord-key-hold'))return;
     var style=document.createElement('style');
@@ -101,6 +119,7 @@
     });
   }
 
+  migrateA3LegacyProgress();
   installChordKeyHoldStyles();
   installChordHoldTiming();
   document.addEventListener('DOMContentLoaded',openIndexCards);
