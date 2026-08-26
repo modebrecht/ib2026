@@ -5,14 +5,25 @@
   // Quest progression inside A1/A2 is handled by the shared isQuestUnlocked()
   // rules from ../tk/xp.js (Q1 -> Q2 -> Q3 and Q4 -> Q5 -> Q6).
 
-  function purgeLegacyA3QuestScore(){
-    var key='tk_quest_scores_v1';
+  function syncA3CompatibilityScore(){
+    var scoreKey='tk_quest_scores_v1',progressKey='tk_a3_progress_v1';
     try{
-      var scores=JSON.parse(localStorage.getItem(key)||'{}');
-      if(Object.prototype.hasOwnProperty.call(scores,'q7')){
-        delete scores.q7;
-        localStorage.setItem(key,JSON.stringify(scores));
-      }
+      var scores=JSON.parse(localStorage.getItem(scoreKey)||'{}');
+      var progress=JSON.parse(localStorage.getItem(progressKey)||'{}');
+      var choices=Array.isArray(progress.choices)?progress.choices:[];
+      var shortcuts=choices.map(function(c){return(c&&c.shortcut||'').trim();});
+      var reasonsValid=choices.length===3&&choices.every(function(c){
+        var text=(c&&c.reason||'').trim();
+        return text.length>=5&&/[A-Za-zÄÖÜäöüß]/.test(text);
+      });
+      var shortcutsValid=shortcuts.length===3&&!shortcuts.some(function(v){return!v;})&&new Set(shortcuts).size===3;
+      var currentA3Done=progress.schemaVersion===2&&progress.downloaded===true&&progress.completed===true&&shortcutsValid&&reasonsValid;
+
+      // q7 ist nur noch ein Kompatibilitätsmarker für ältere Root-Logik.
+      // Historische Pizza-q7-Werte werden entfernt, solange die neue A3 nicht abgeschlossen ist.
+      if(currentA3Done)scores.q7=100;
+      else delete scores.q7;
+      localStorage.setItem(scoreKey,JSON.stringify(scores));
     }catch(e){}
   }
 
@@ -100,7 +111,7 @@
     });
   }
 
-  purgeLegacyA3QuestScore();
+  syncA3CompatibilityScore();
   installChordKeyHoldStyles();
   installChordHoldTiming();
   document.addEventListener('DOMContentLoaded',openIndexCards);
