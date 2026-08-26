@@ -1811,7 +1811,7 @@
           const a6Data = localStorage.getItem('hw_autosave_A6.html');
           if (a6Data) {
             const parsed = JSON.parse(a6Data);
-            if (parsed && (parsed.manualDoneA6 === true || parsed.manualDoneA5 === true)) markDone('title-A6');
+            if (parsed && parsed.manualDoneA6 === true) markDone('title-A6');
           }
 
           const a7Data = localStorage.getItem('hw_autosave_A7.html');
