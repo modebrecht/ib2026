@@ -1,0 +1,25 @@
+name: One-shot A11 RPG Dialogue
+on:
+  push:
+    branches: [dev]
+    paths:
+      - .github/workflows/a11-rpg-dialogue.yml
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: dev
+      - name: Patch A11 dialogue
+        run: python .github/scripts/a11_rpg_dialogue.py
+      - name: Commit changes
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add hw/A11.html
+          git diff --cached --quiet && exit 0
+          git commit -m "ui: add RPG-style two-step customer dialogue to A11"
+          git push origin dev
