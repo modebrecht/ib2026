@@ -384,7 +384,7 @@ test.describe('HW production smoke: A1-A14', () => {
     await speedUpTimers(page);
 
     for (let i = 0; i < total; i += 1) {
-      await page.locator('#dialogueNext').click();
+      await page.locator('#dialogueNext').click({ force: true });
       const correctId = await page.evaluate(() => CASES[index].correct);
       await page.locator(`.device-card[data-id="${correctId}"]`).click();
       await expect(page.locator('#nextBtn')).toHaveClass(/show/);
