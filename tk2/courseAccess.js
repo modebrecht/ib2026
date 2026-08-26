@@ -5,17 +5,26 @@
   // Quest progression inside A1/A2 is handled by the shared isQuestUnlocked()
   // rules from ../tk/xp.js (Q1 -> Q2 -> Q3 and Q4 -> Q5 -> Q6).
 
+  function purgeLegacyA3QuestScore(){
+    var key='tk_quest_scores_v1';
+    try{
+      var scores=JSON.parse(localStorage.getItem(key)||'{}');
+      if(Object.prototype.hasOwnProperty.call(scores,'q7')){
+        delete scores.q7;
+        localStorage.setItem(key,JSON.stringify(scores));
+      }
+    }catch(e){}
+  }
+
   function installChordKeyHoldStyles(){
     if(document.getElementById('tk2-chord-key-hold'))return;
     var style=document.createElement('style');
     style.id='tk2-chord-key-hold';
     style.textContent=''
-      // A1: a chord that has reached its second key stays visibly pressed together.
       +'.tk2-doc-scene .tk2-key.tk2-chord-held,'
       +'.tk2-utility-scene .tk2-u-key.tk2-chord-held{filter:drop-shadow(0 0 11px rgba(56,189,248,.95))!important;translate:0 4px!important}'
       +'.tk2-doc-scene .tk2-key.tk2-chord-held rect,'
       +'.tk2-utility-scene .tk2-u-key.tk2-chord-held rect{fill:#1d4ed8!important;stroke:#93c5fd!important;stroke-width:2!important}'
-      // A2: AltGr and the character key stay visibly pressed together as one chord.
       +'.tk2-altgr-scene .key.tk2-chord-held{filter:drop-shadow(0 0 12px rgba(245,158,11,.98))!important;translate:0 5px!important}'
       +'.tk2-altgr-scene .key.tk2-chord-held rect{fill:#78350f!important;stroke:#fbbf24!important;stroke-opacity:1!important;stroke-width:2.5!important}'
       +'.tk2-altgr-scene .keys:has(.key-main[style*="drop-shadow"]) .key-alt{filter:drop-shadow(0 0 12px rgba(245,158,11,.98))!important}'
@@ -91,6 +100,7 @@
     });
   }
 
+  purgeLegacyA3QuestScore();
   installChordKeyHoldStyles();
   installChordHoldTiming();
   document.addEventListener('DOMContentLoaded',openIndexCards);
