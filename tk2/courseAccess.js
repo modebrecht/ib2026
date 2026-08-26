@@ -1,8 +1,9 @@
 (function(){
   'use strict';
 
-  // All course sections and quests are intentionally accessible at all times.
-  window.isQuestUnlocked=function(){return true;};
+  // A1-A6 are always accessible from the course overview.
+  // Quest progression inside A1/A2 is handled by the shared isQuestUnlocked()
+  // rules from ../tk/xp.js (Q1 -> Q2 -> Q3 and Q4 -> Q5 -> Q6).
 
   function installChordKeyHoldStyles(){
     if(document.getElementById('tk2-chord-key-hold'))return;
