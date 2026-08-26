@@ -49,3 +49,5 @@ jobs:
             playwright-report/
           if-no-files-found: ignore
           retention-days: 7
+
+# rerun after A11 stability fix
