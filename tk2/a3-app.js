@@ -32,13 +32,13 @@
   }
 
   document.addEventListener('DOMContentLoaded',function(){
-    var unlocked=typeof isQuestUnlocked==='function'?isQuestUnlocked('q7'):true;
     var lock=byId('a3-lock-screen');
     var content=byId('a3-content-wrap');
 
-    if(lock)lock.style.display=unlocked?'none':'flex';
-    if(content)content.style.display=unlocked?'block':'none';
-    if(!unlocked)return;
+    // Arbeitsblätter sind immer offen. Die interne Lernprogression anderer
+    // Quests darf den Zugriff auf A3 nicht blockieren.
+    if(lock)lock.style.display='none';
+    if(content)content.style.display='block';
 
     var progress=parseProgress();
     if(progress.completed){
