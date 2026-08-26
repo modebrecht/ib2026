@@ -4,6 +4,14 @@
   // A1-A6 are always accessible from the course overview.
   // Quest progression inside A1/A2 is handled by the shared isQuestUnlocked()
   // rules from ../tk/xp.js (Q1 -> Q2 -> Q3 and Q4 -> Q5 -> Q6).
+  // Q7 is the A3 resource marker, not a gated learning quest.
+  if(typeof window.isQuestUnlocked==='function'){
+    var sharedQuestUnlock=window.isQuestUnlocked;
+    window.isQuestUnlocked=function(questId){
+      if(questId==='q7')return true;
+      return sharedQuestUnlock(questId);
+    };
+  }
 
   function installChordKeyHoldStyles(){
     if(document.getElementById('tk2-chord-key-hold'))return;
