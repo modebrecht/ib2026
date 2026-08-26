@@ -2,6 +2,7 @@
   'use strict';
 
   var STORAGE_KEY='tk_a3_progress_v1';
+  var QUEST_SCORES_KEY='tk_quest_scores_v1';
   var SCHEMA_VERSION=2;
   var SHORTCUTS=[
     ['Ctrl + C','Kopieren'],['Ctrl + X','Ausschneiden'],['Ctrl + V','Einfügen'],['Ctrl + Shift + V','Ohne Formatierung einfügen'],
@@ -25,15 +26,30 @@
     localStorage.setItem(STORAGE_KEY,JSON.stringify(progress));
     if(window.tk2Pdf&&typeof window.tk2Pdf.sync==='function')window.tk2Pdf.sync();
   }
+  function reasonValid(reason){
+    var text=(reason||'').trim();
+    return text.length>=5&&/[A-Za-zÄÖÜäöüß]/.test(text);
+  }
   function choicesComplete(progress){
     var choices=progress.choices||[];
     if(choices.length!==3)return false;
     var shortcuts=choices.map(function(c){return(c.shortcut||'').trim();});
     if(shortcuts.some(function(v){return!v;}))return false;
     if(new Set(shortcuts).size!==3)return false;
-    return choices.every(function(c){return(c.reason||'').trim().length>=2;});
+    return choices.every(function(c){return reasonValid(c.reason);});
   }
   function isCompleted(progress){return progress.downloaded===true&&choicesComplete(progress);}
+
+  // q7 bleibt nur als technischer Kompatibilitätsmarker für die alte Root-Anzeige.
+  // Ein historischer Pizza-q7 wird entfernt; 100 wird nur für die NEUE A3 vergeben.
+  function syncCompatibilityScore(completed){
+    try{
+      var scores=JSON.parse(localStorage.getItem(QUEST_SCORES_KEY)||'{}');
+      if(completed)scores.q7=100;
+      else delete scores.q7;
+      localStorage.setItem(QUEST_SCORES_KEY,JSON.stringify(scores));
+    }catch(e){}
+  }
 
   function renderCompleted(progress){
     var card=byId('completion-card'),hint=byId('choice-hint');
@@ -41,7 +57,7 @@
     if(hint){
       if(progress.completed)hint.textContent='✓ Merkblatt gesichert und drei persönliche Kürzel festgelegt.';
       else if(!progress.downloaded)hint.textContent='Lade zuerst das Merkblatt herunter und fülle danach alle drei Zeilen aus.';
-      else hint.textContent='Merkblatt gesichert ✓ Jetzt noch drei unterschiedliche Kürzel mit je einem „weil …“ ausfüllen.';
+      else hint.textContent='Merkblatt gesichert ✓ Wähle drei unterschiedliche Kürzel und schreibe bei jedem kurz dazu, warum (mind. 5 Zeichen).';
     }
   }
 
@@ -55,8 +71,19 @@
         progress.rewarded=true;
       }
     }
+    syncCompatibilityScore(progress.completed===true);
     saveProgress(progress);
     renderCompleted(progress);
+  }
+
+  function syncDisabledOptions(progress){
+    var selected=(progress.choices||[]).map(function(c){return(c.shortcut||'').trim();});
+    document.querySelectorAll('.shortcut-choice').forEach(function(select,index){
+      Array.from(select.options).forEach(function(option){
+        if(!option.value){option.disabled=false;return;}
+        option.disabled=selected.some(function(value,otherIndex){return otherIndex!==index&&value===option.value;});
+      });
+    });
   }
 
   function fillSelects(progress){
@@ -69,11 +96,12 @@
       });
       select.value=(progress.choices[index]&&progress.choices[index].shortcut)||'';
     });
+    syncDisabledOptions(progress);
   }
 
   document.addEventListener('DOMContentLoaded',function(){
     var progress=parseProgress();
-    // Überschreibt alte Pizza-Strukturen erst mit dem neuen Schema, sobald A3 geöffnet wird.
+    // Beim ersten Öffnen wird jede alte Pizza-Struktur durch das neue Schema ersetzt.
     saveProgress(progress);
     fillSelects(progress);
 
@@ -91,6 +119,7 @@
     document.querySelectorAll('.shortcut-choice').forEach(function(select,index){
       select.addEventListener('change',function(){
         progress.choices[index].shortcut=select.value;
+        syncDisabledOptions(progress);
         evaluate(progress);
       });
     });
