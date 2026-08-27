@@ -1,0 +1,50 @@
+name: A5 Premium Pass 1
+on:
+  push:
+    branches: [dev]
+    paths:
+      - '.github/workflows/a5-premium-pass-1-once.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 0
+      - name: Patch
+        run: python .github/scripts/a5_premium_pass_1.py
+      - name: Verify
+        run: |
+          node --check tk2/a4Scenes.js
+          node --check tk2/sceneKeycaps.js
+          grep -q "var CHORD_HOLD_MS=800;" tk2/sceneKeycaps.js
+          git diff --exit-code -- tk2/sceneKeycaps.js
+          python - <<'PY'
+          from pathlib import Path
+          s=Path('tk2/a4Scenes.js').read_text(encoding='utf-8')
+          checks=[
+            'class="desktop-extra-window"',
+            'class="lock-details"',
+            'class="hung-badge"',
+            'class="tm-problem-row"',
+            'class="clip-item clip-item-1"',
+            'class="explorer-active-dot"',
+            "translate(0 124) scale(.64)",
+            "translate(215 182) scale(.20)",
+            "translate(0 82) scale(.96)",
+            "translate(72 154) scale(.30)",
+            "window.tk2SceneKeycaps.pressSequence"
+          ]
+          for c in checks: assert c in s,c
+          print('A5 premium pass 1/2 checks OK; 800ms hold preserved')
+          PY
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tk2/a4Scenes.js
+          git commit -m "tk2: premium pass A5 Windows scenes part 1"
+          git push origin dev
