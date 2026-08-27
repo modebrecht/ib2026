@@ -1,0 +1,44 @@
+name: A6 buttons only
+on:
+  push:
+    branches: [dev]
+    paths:
+      - '.github/workflows/a6-buttons-only-once.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 0
+      - name: Patch A6
+        run: python .github/scripts/a6_buttons_only.py
+      - name: Verify
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          h=Path('tk2/A6.html').read_text(encoding='utf-8')
+          j=Path('tk2/a6-app.js').read_text(encoding='utf-8')
+          assert '<select' not in h.lower()
+          assert '.answer-select' not in h
+          assert '.fifty-option' not in h
+          assert "createElement('select')" not in j
+          assert "querySelectorAll('select')" not in j
+          assert "className='answer-options'" in j
+          assert "className='answer-option'" in j
+          assert 'function useHint(card,hint,q)' in j
+          Path('/tmp/a6.js').write_text(j,encoding='utf-8')
+          print('A6 buttons-only checks OK')
+          PY
+          node --check /tmp/a6.js
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tk2/A6.html tk2/a6-app.js
+          git commit -m "tk2: replace A6 dropdowns with answer buttons"
+          git push origin dev
