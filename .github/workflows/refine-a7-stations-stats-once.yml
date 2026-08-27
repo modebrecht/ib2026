@@ -1,0 +1,48 @@
+name: Refine A7 station stats
+on:
+  push:
+    branches: [dev]
+    paths:
+      - '.github/workflows/refine-a7-stations-stats-once.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 0
+      - name: Apply A7 station/statistics patch
+        run: python .github/scripts/refine_a7_stations_stats.py
+      - name: Verify structure and semantics
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          a7=Path('tk2/A7.html').read_text(encoding='utf-8')
+          idx=Path('tk2/index.html').read_text(encoding='utf-8')
+          required=[
+            'data-view="stats"','id="view-stats"','id="stationStats"','renderStats()',
+            'stationSummary()','completed:stations.ready','pdfReady:stations.ready',
+            "stations.challenge?'':'Challenge'", "stations.hunt?'':'Fehlerjagd'", "stations.memory?'':'Memory'",
+            '3 / 3 Stationen','Challenge, Fehlerjagd und Memory jeweils mindestens einmal vollständig',
+            'jede Station 1× · Ziel 70 %'
+          ]
+          for n in required: assert n in a7 or n in idx, n
+          assert 'TRAINING_MIN_RUNS' not in a7
+          assert 'mindestens zwei Runden' not in a7
+          scripts=re.findall(r'<script(?: [^>]*)?>(.*?)</script>',a7,re.S)
+          main=max(scripts,key=len)
+          Path('/tmp/a7-inline.js').write_text(main,encoding='utf-8')
+          print('A7 station/statistics checks OK')
+          PY
+          node --check /tmp/a7-inline.js
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tk2/A7.html tk2/index.html
+          git commit -m "tk2: require every A7 station and add stats tab"
+          git push origin dev
