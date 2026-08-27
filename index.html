@@ -538,7 +538,7 @@
     .hw-task-list .task-check{font-size:18px;font-weight:950;line-height:1;animation:checkPop .42s cubic-bezier(.2,1.3,.3,1) both}
     a.btn-link:empty{display:none!important}
     .silent-card-link{cursor:pointer}
-    .hw-task-list .task-card:nth-child(2){animation-delay:.035s}.hw-task-list .task-card:nth-child(3){animation-delay:.07s}.hw-task-list .task-card:nth-child(4){animation-delay:.105s}.hw-task-list .task-card:nth-child(5){animation-delay:.14s}.hw-task-list .task-card:nth-child(6){animation-delay:.175s}.hw-task-list .task-card:nth-child(7){animation-delay:.21s}.hw-task-list .task-card:nth-child(8){animation-delay:.245s}.hw-task-list .task-card:nth-child(9){animation-delay:.28s}
+    .hw-task-list .task-card:nth-child(2){animation-delay:.035s}.hw-task-list .task-card:nth-child(3){animation-delay:.07s}.hw-task-list .task-card:nth-child(4){animation-delay:.105s}.hw-task-list .task-card:nth-child(5){animation-delay:.14s}.hw-task-list .task-card:nth-child(6){animation-delay:.175s}.hw-task-list .task-card:nth-child(7){animation-delay:.21s}.hw-task-list .task-card:nth-child(8){animation-delay:.245s}.hw-task-list .task-card:nth-child(9){animation-delay:.28s}.hw-task-list .task-card:nth-child(10){animation-delay:.315s}.hw-task-list .task-card:nth-child(11){animation-delay:.35s}.hw-task-list .task-card:nth-child(12){animation-delay:.385s}.hw-task-list .task-card:nth-child(13){animation-delay:.42s}.hw-task-list .task-card:nth-child(14){animation-delay:.455s}
     @keyframes taskCardIn{from{opacity:0;transform:translateY(12px) scale(.988)}to{opacity:1;transform:none}}@keyframes completionSweep{from{transform:scaleX(0);opacity:0}to{transform:scaleX(1);opacity:1}}@keyframes checkPop{from{opacity:0;transform:scale(.4) rotate(-18deg)}to{opacity:1;transform:none}}
     @media(max-width:560px){.hw-task-list .task-card{min-height:60px;padding:9px 10px;border-radius:19px}.hw-task-list .btn-link{min-width:62px;height:40px;padding:0 11px;border-radius:14px}.hw-task-list .unterkachel-title .task-number{width:46px;height:38px;border-radius:13px}.hw-task-list .unterkachel-title .task-name{margin-left:10px;padding-left:11px}.hw-task-list .task-card::before{inset:0 0 0 44%}}
     @media(prefers-reduced-motion:reduce){.hw-task-list .task-card,.hw-task-list .task-card::before,.hw-task-list .task-check{animation:none!important;transition:none!important}}
@@ -864,7 +864,7 @@
               </div>
               <div>
                 <h3 class="kachel-title">IT Hardware</h3>
-                <p class="kachel-subtitle">Computeraufbau &amp; Komponenten</p>
+                <p class="kachel-subtitle">Hardware · Kaufberatung · Green IT</p>
               </div>
             </div>
             <div class="toggle-arrow">▼</div>
@@ -997,7 +997,7 @@
       <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
         <div>
           <h4 class="unterkachel-title" id="title-A11" style="margin-bottom: 2px;">
-             <span class="task-number">A11</span><span class="task-name">Kaufberatung</span>
+             <span class="task-number">A11</span><span class="task-name">Kaufberatung im Tech Shop</span>
           </h4>
         </div>
         <a href="hw/A11.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"></a>
@@ -1811,7 +1811,7 @@
           const a6Data = localStorage.getItem('hw_autosave_A6.html');
           if (a6Data) {
             const parsed = JSON.parse(a6Data);
-            if (parsed && (parsed.manualDoneA6 === true || parsed.manualDoneA5 === true)) markDone('title-A6');
+            if (parsed && parsed.manualDoneA6 === true) markDone('title-A6');
           }
 
           const a7Data = localStorage.getItem('hw_autosave_A7.html');
@@ -1830,6 +1830,44 @@
           if (a9Data) {
             const parsed = JSON.parse(a9Data);
             if (parsed && Number(parsed.bestScore) >= 8) markDone('title-A9');
+          }
+
+
+          const a10Data = localStorage.getItem('onedrive_a10_storage_scenarios_9sek_v2');
+          if (a10Data) {
+            const parsed = JSON.parse(a10Data);
+            if (parsed && Number(parsed.bestScore) >= 7) markDone('title-A10');
+          }
+
+          const a11Data = localStorage.getItem('onedrive_a11_shop_9sek_v5');
+          if (a11Data) {
+            const parsed = JSON.parse(a11Data);
+            if (parsed && Array.isArray(parsed.done) && parsed.done.length >= 5) markDone('title-A11');
+          }
+
+          const a12Data = localStorage.getItem('onedrive_a12_schnittstellen_9sek');
+          if (a12Data) {
+            const parsed = JSON.parse(a12Data);
+            const choices = parsed && parsed.choices ? parsed.choices : {};
+            const expected = {
+              'usb-a':'data','usb-c':'data','hdmi':'av','dp':'av','rj45':'network','audio':'av',
+              'vga':'av','dvi':'av','usb-b':'data','micro-usb':'data','lightning':'data','power':'power'
+            };
+            if (Object.keys(expected).every(function(key) { return choices[key] === expected[key]; })) markDone('title-A12');
+          }
+
+          const a13Data = localStorage.getItem('onedrive_a13_green_it_learning_v1');
+          if (a13Data) {
+            const parsed = JSON.parse(a13Data);
+            const st = parsed && parsed.state ? parsed.state : {};
+            const vals = parsed && parsed.vals ? parsed.vals : {};
+            if (st.task2 === true && st.task3 === true && st.procure === true && st.recycle === true && String(vals.oldDevices || '') !== '') markDone('title-A13');
+          }
+
+          const a14Data = localStorage.getItem('onedrive_a14_green_it_scenarios_9sek_v1');
+          if (a14Data) {
+            const parsed = JSON.parse(a14Data);
+            if (parsed && Number(parsed.bestScore) >= 10) markDone('title-A14');
           }
 
           let tkCourseDone = false;
