@@ -97,21 +97,55 @@ jobs:
                 C: { first: 100, best: 100 },
                 D: { first: 100, best: 100 }
               }));
+
+              const now = new Date().toISOString();
+              localStorage.setItem('tk_a7_training_v1', JSON.stringify({
+                schemaVersion: 1,
+                modes: {
+                  challenge: {
+                    all: { completedRuns: 2, correct: 18, wrong: 2, lastAccuracy: 90, bestAccuracy: 100, lastAt: now, retries: 0 }
+                  },
+                  hunt: {
+                    all: { completedRuns: 1, correct: 9, wrong: 1, lastAccuracy: 90, bestAccuracy: 90, lastAt: now, retries: 0 }
+                  },
+                  memory: {
+                    all: { completedRuns: 3, pairs: 12, moves: 15, points: 220, lastEfficiency: 80, bestEfficiency: 100, lastDiff: 'easy', lastElapsed: 1000, lastAt: now }
+                  }
+                }
+              }));
+
               localStorage.setItem('tk_a7_progress_v1', JSON.stringify({
                 schemaVersion: 2,
                 completed: true,
                 completedStations: 3,
-                stations: { challenge: 1, hunt: 1, memory: 1 },
-                completedRuns: 3,
-                accuracy: 100,
+                stations: { challenge: 2, hunt: 1, memory: 3 },
+                completedRuns: 6,
+                accuracy: 90,
                 target: 70,
                 targetReached: true,
                 pdfReady: true,
-                updatedAt: new Date().toISOString()
+                updatedAt: now
               }));
             });
 
             await page.goto(`${baseUrl}/tk2/index.html`, { waitUntil: 'domcontentloaded' });
+
+            const a7Sheet = await page.evaluate(() => {
+              if (!window.tk2Pdf || typeof window.tk2Pdf.collectSheets !== 'function') return null;
+              const sheets = window.tk2Pdf.collectSheets();
+              return sheets.find((sheet) => sheet.id === 'A7') || null;
+            });
+            if (!a7Sheet) {
+              throw new Error('Gesamt-PDF dataset does not contain A7.');
+            }
+            if (!Array.isArray(a7Sheet.rows) || a7Sheet.rows.length !== 4) {
+              throw new Error(`Expected 4 A7 statistic rows in Gesamt-PDF dataset, got ${a7Sheet.rows && a7Sheet.rows.length}.`);
+            }
+            const a7Labels = a7Sheet.rows.map((row) => row.label);
+            for (const expected of ['Challenge', 'Fehlerjagd', 'Memory', 'Gesamt']) {
+              if (!a7Labels.includes(expected)) throw new Error(`Missing A7 Gesamt-PDF row: ${expected}`);
+            }
+            console.log('A7 Gesamt-PDF dataset verified:', a7Sheet.rows);
 
             const exportButton = page.locator('button, a').filter({ hasText: 'Zwischenstand erzeugen' });
             if (await exportButton.count() !== 1) {
