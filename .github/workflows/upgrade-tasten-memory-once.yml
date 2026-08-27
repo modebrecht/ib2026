@@ -1,0 +1,96 @@
+name: Upgrade tasten memory once
+
+on:
+  push:
+    paths:
+      - '.github/workflows/upgrade-tasten-memory-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  upgrade:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 0
+
+      - name: Upgrade memory feel
+        shell: python
+        run: |
+          from pathlib import Path
+          import re
+
+          path = Path('tk2/tasten.html')
+          text = path.read_text(encoding='utf-8')
+
+          css = r'''\.memory-toolbar\{.*?\n\.fav-grid\{'''
+          css_replacement = r'''.memory-toolbar{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-bottom:14px;padding:11px;border:1px solid var(--line);border-radius:17px;background:color-mix(in srgb,var(--panel) 92%,transparent);box-shadow:0 8px 24px rgba(24,39,75,.05)}.memory-toolbar select{height:42px;border:1px solid var(--line);border-radius:12px;background:var(--panel2);color:var(--text);padding:0 11px;font-weight:700}.memory-stats{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}.memory-stats span{padding:8px 11px;border:1px solid var(--line);border-radius:11px;background:var(--panel2);font-weight:800;font-size:.84rem}.memory-stats .memory-hit{color:var(--green)}
+.memory-stage{position:relative;padding:clamp(12px,2vw,22px);border:1px solid var(--line);border-radius:25px;background:radial-gradient(circle at 50% -20%,color-mix(in srgb,var(--blue) 13%,transparent),transparent 48%),var(--panel2);overflow:hidden;min-height:360px}.memory-stage::before{content:"";position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(circle at 18% 20%,color-mix(in srgb,var(--blue) 8%,transparent) 0 2px,transparent 3px),radial-gradient(circle at 78% 68%,color-mix(in srgb,var(--indigo) 7%,transparent) 0 2px,transparent 3px);background-size:48px 48px,62px 62px;opacity:.55}.memory-board{position:relative;z-index:1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(8px,1.2vw,13px)}
+.memory-card{appearance:none;border:0;background:transparent;padding:0;aspect-ratio:1.45;perspective:1100px;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;animation:memoryFlyIn .55s cubic-bezier(.34,1.56,.64,1) backwards;transition:transform .18s ease,filter .18s ease}.memory-card:hover{transform:translateY(-3px) scale(1.015)}.memory-card:active{transform:translateY(1px) scale(.985)}.memory-card:focus-visible{outline:3px solid color-mix(in srgb,var(--blue) 40%,transparent);outline-offset:4px;border-radius:19px}.memory-card.matched{cursor:default}.memory-card.matched:hover{transform:none}
+.memory-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .46s cubic-bezier(.34,1.56,.64,1)}.memory-card.flipped .memory-inner,.memory-card.matched .memory-inner{transform:rotateY(180deg)}.memory-face{position:absolute;inset:0;border-radius:19px;backface-visibility:hidden;-webkit-backface-visibility:hidden;border:2px solid var(--line);display:grid;place-items:center;padding:12px;text-align:center;overflow:hidden}.memory-front{background-image:radial-gradient(circle at 50% 40%,rgba(96,165,250,.22),transparent 46%),linear-gradient(145deg,#111a3d,#172554 52%,#0b1124);color:white;border-color:#f59e0b;box-shadow:inset 0 0 0 1px rgba(251,191,36,.22),inset 0 0 28px rgba(245,158,11,.13),0 10px 26px rgba(15,23,42,.20)}.memory-front::before{content:"⌨";font-size:clamp(1.55rem,3.5vw,2.45rem);filter:drop-shadow(0 4px 8px rgba(0,0,0,.35))}.memory-front::after{content:"Shortcut";position:absolute;bottom:10px;font-size:.62rem;text-transform:uppercase;letter-spacing:.16em;font-weight:900;color:rgba(254,240,138,.82)}.memory-back{transform:rotateY(180deg);background:linear-gradient(180deg,var(--panel),var(--panel2));font-weight:850;box-shadow:0 8px 22px rgba(24,39,75,.08);font-size:clamp(.75rem,1.55vw,.95rem);line-height:1.3}.memory-back .keys{margin:0;justify-content:center}.memory-back kbd{font-size:clamp(.66rem,1.3vw,.82rem);padding:7px 8px}
+.memory-card.matched .memory-back{border-color:#10b981;box-shadow:0 0 0 2px #10b981,0 12px 28px rgba(16,185,129,.25);background:linear-gradient(180deg,color-mix(in srgb,#ecfdf5 80%,var(--panel)),color-mix(in srgb,#d1fae5 55%,var(--panel)))}html[data-theme="dark"] .memory-card.matched .memory-back{background:linear-gradient(180deg,#064e3b,#052e2b);color:#ecfdf5}.memory-card.just-matched{animation:memoryMatchPop .52s cubic-bezier(.34,1.56,.64,1)}.memory-card.mismatch{animation:memoryShake .42s linear}.memory-card.mismatch .memory-back{border-color:#ef4444;box-shadow:0 0 0 2px #ef4444,0 12px 28px rgba(239,68,68,.22);background:linear-gradient(180deg,color-mix(in srgb,#fef2f2 80%,var(--panel)),color-mix(in srgb,#fee2e2 50%,var(--panel)))}html[data-theme="dark"] .memory-card.mismatch .memory-back{background:linear-gradient(180deg,#7f1d1d,#450a0a);color:#fff1f2}
+.memory-progress{position:relative;z-index:1;height:7px;border-radius:99px;background:color-mix(in srgb,var(--line) 75%,transparent);overflow:hidden;margin:0 0 14px}.memory-progress>span{display:block;height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,var(--blue),var(--indigo),var(--green));background-size:220% 100%;transition:width .35s cubic-bezier(.2,.8,.2,1);animation:memoryProgressFlow 3s linear infinite}.memory-win{position:absolute;z-index:8;inset:0;display:grid;place-items:center;padding:22px;background:rgba(7,17,31,.38);backdrop-filter:blur(7px);opacity:0;pointer-events:none;transition:.25s}.memory-win.show{opacity:1;pointer-events:auto}.memory-win-card{width:min(430px,92%);padding:28px;border-radius:25px;background:var(--panel);border:1px solid var(--line);box-shadow:0 28px 80px rgba(0,0,0,.28);text-align:center;animation:memoryWinPop .55s cubic-bezier(.34,1.56,.64,1)}.memory-win-icon{font-size:3.2rem;display:block;margin-bottom:8px;animation:memoryTrophy 1s ease-in-out infinite alternate}.memory-win h3{font-size:1.65rem;margin:0 0 7px;letter-spacing:-.04em}.memory-win p{color:var(--muted);margin:0 0 16px}.memory-spark{position:absolute;z-index:7;width:9px;height:9px;border-radius:2px;background:#fbbf24;pointer-events:none;animation:memorySpark .85s ease-out forwards}
+@keyframes memoryFlyIn{from{opacity:0;transform:translateY(36px) scale(.82) rotateX(-15deg)}to{opacity:1;transform:none}}@keyframes memoryShake{20%{transform:translateX(-5px) rotate(-1deg)}40%{transform:translateX(5px) rotate(1deg)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}@keyframes memoryMatchPop{0%{transform:scale(1)}45%{transform:scale(1.055)}100%{transform:scale(1)}}@keyframes memoryProgressFlow{to{background-position:220% 0}}@keyframes memoryWinPop{from{opacity:0;transform:scale(.78) translateY(18px)}to{opacity:1;transform:none}}@keyframes memoryTrophy{to{transform:translateY(-5px) rotate(4deg)}}@keyframes memorySpark{0%{opacity:1;transform:translate(0,0) rotate(0)}100%{opacity:0;transform:translate(var(--dx),var(--dy)) rotate(220deg)}}
+@media(prefers-reduced-motion:reduce){.memory-card,.memory-inner,.memory-win-card,.memory-win-icon,.memory-progress>span,.memory-spark{animation:none!important;transition:none!important}}
+.fav-grid{'''
+          text, n = re.subn(css, css_replacement, text, count=1, flags=re.S)
+          if n != 1:
+              raise SystemExit(f'CSS memory block replacement failed: {n}')
+
+          old_html = '''          <div class="memory-board" id="memoryBoard"></div>\n          <div class="empty" id="memoryMessage"></div>'''
+          new_html = '''          <div class="memory-stage" id="memoryStage">\n            <div class="memory-progress" aria-hidden="true"><span id="memoryProgress"></span></div>\n            <div class="memory-board" id="memoryBoard"></div>\n            <div class="empty" id="memoryMessage"></div>\n            <div class="memory-win" id="memoryWin">\n              <div class="memory-win-card">\n                <span class="memory-win-icon">🏆</span>\n                <h3>Memory geschafft!</h3>\n                <p id="memoryWinText">Stark gespielt.</p>\n                <button class="solid-btn" id="memoryWinRestart">Nochmal spielen</button>\n              </div>\n            </div>\n          </div>'''
+          if old_html not in text:
+              raise SystemExit('Memory HTML marker not found')
+          text = text.replace(old_html, new_html, 1)
+
+          text = text.replace('<span id="memoryMoves">0 Züge</span><span id="memoryTime">0 s</span>', '<span id="memoryMoves">0 Züge</span><span class="memory-hit" id="memoryHits">0 / 6 Paare</span><span id="memoryTime">0 s</span>', 1)
+
+          js_pattern = r'''const memory=\{cards:\[\],first:null,second:null,lock:false,moves:0,matches:0,start:null,timer:null\};.*?function applyPrefs\(\)\{'''
+          js_replacement = r'''const memory={cards:[],first:null,second:null,lock:false,moves:0,matches:0,start:null,timer:null,pairCount:0};
+function haptic(pattern){try{if(navigator.vibrate)navigator.vibrate(pattern)}catch(_){}}
+function fillMemoryCategories(){const s=$('#memoryCategory');s.innerHTML='<option value="all">Alle Kategorien</option>'+Object.entries(categories).map(([id,c])=>`<option value="${id}">${c.label}</option>`).join('')}
+function memoryPool(){const cat=$('#memoryCategory').value;return shortcuts.filter(s=>cat==='all'||s.cat===cat)}
+function updateMemoryHUD(){const total=Math.max(1,memory.pairCount);$('#memoryHits').textContent=`${memory.matches} / ${memory.pairCount} Paare`;$('#memoryProgress').style.width=`${Math.round(memory.matches/total*100)}%`}
+function initMemory(){clearInterval(memory.timer);Object.assign(memory,{cards:[],first:null,second:null,lock:false,moves:0,matches:0,start:null,timer:null,pairCount:0});$('#memoryMoves').textContent='0 Züge';$('#memoryTime').textContent='0 s';$('#memoryWin').classList.remove('show');let pairCount=Number($('#memoryPairs').value),pool=memoryPool();if(pool.length<pairCount){pairCount=pool.length;$('#memoryMessage').style.display='block';$('#memoryMessage').textContent=`In dieser Kategorie gibt es ${pool.length} Kürzel. Das Spiel nutzt alle davon.`}else $('#memoryMessage').style.display='none';memory.pairCount=pairCount;updateMemoryHUD();const selected=[...pool].sort(()=>Math.random()-.5).slice(0,pairCount);const cards=[];selected.forEach(s=>{cards.push({id:s.id,type:'title',html:escapeHtml(s.title)});cards.push({id:s.id,type:'keys',html:`<div class="keys" style="justify-content:center;margin:0">${keyMarkup(s)}</div>`})});cards.sort(()=>Math.random()-.5);memory.cards=cards;const board=$('#memoryBoard');board.innerHTML='';cards.forEach((c,i)=>{const el=document.createElement('button');el.type='button';el.className='memory-card';el.style.animationDelay=`${Math.min(i*35,420)}ms`;el.dataset.index=i;el.setAttribute('aria-label','Memory-Karte umdrehen');el.innerHTML=`<span class="memory-inner"><span class="memory-face memory-front"></span><span class="memory-face memory-back">${c.html}</span></span>`;el.onclick=()=>flipMemory(el);board.appendChild(el)});updateMemoryBest()}
+function startTimer(){if(memory.timer)return;memory.start=Date.now();memory.timer=setInterval(()=>{$('#memoryTime').textContent=`${Math.floor((Date.now()-memory.start)/1000)} s`},1000)}
+function flipMemory(el){if(memory.lock||el===memory.first||el.classList.contains('matched')||el.classList.contains('flipped'))return;startTimer();haptic(8);el.classList.add('flipped');if(!memory.first){memory.first=el;return}memory.second=el;memory.moves++;$('#memoryMoves').textContent=`${memory.moves} Züge`;const a=memory.cards[+memory.first.dataset.index],b=memory.cards[+memory.second.dataset.index];if(a.id===b.id&&a.type!==b.type){const first=memory.first,second=memory.second;first.classList.add('matched','just-matched');second.classList.add('matched','just-matched');memory.matches++;updateMemoryHUD();haptic([18,34,28]);setTimeout(()=>{first.classList.remove('just-matched');second.classList.remove('just-matched')},520);resetMemoryTurn();if(memory.matches===memory.cards.length/2)finishMemory()}else{memory.lock=true;const first=memory.first,second=memory.second;first.classList.add('mismatch');second.classList.add('mismatch');haptic([28,36,28]);setTimeout(()=>{first.classList.remove('flipped','mismatch');second.classList.remove('flipped','mismatch');resetMemoryTurn()},900)}}
+function resetMemoryTurn(){memory.first=null;memory.second=null;memory.lock=false}
+function memoryBestKey(){return `ib-shortcut-memory-${$('#memoryCategory').value}-${$('#memoryPairs').value}`}
+function updateMemoryBest(){const b=read(memoryBestKey(),null);$('#memoryBest').textContent=b?`Best: ${b.moves} Züge · ${b.time}s`:'Best: –'}
+function memorySparks(){const stage=$('#memoryStage');if(!stage)return;for(let i=0;i<20;i++){const s=document.createElement('i');s.className='memory-spark';const a=Math.random()*Math.PI*2,d=70+Math.random()*170;s.style.left='50%';s.style.top='50%';s.style.setProperty('--dx',`${Math.cos(a)*d}px`);s.style.setProperty('--dy',`${Math.sin(a)*d}px`);s.style.background=['#fbbf24','#60a5fa','#34d399','#a78bfa'][i%4];stage.appendChild(s);setTimeout(()=>s.remove(),900)}}
+function finishMemory(){clearInterval(memory.timer);memory.timer=null;const time=Math.max(1,Math.floor((Date.now()-memory.start)/1000)),old=read(memoryBestKey(),null),isBest=!old||memory.moves<old.moves||(memory.moves===old.moves&&time<old.time);if(isBest)localStorage.setItem(memoryBestKey(),JSON.stringify({moves:memory.moves,time}));updateMemoryBest();$('#memoryWinText').textContent=`${memory.moves} Züge · ${time}s${isBest?' · Neuer Bestwert ✨':''}`;setTimeout(()=>{$('#memoryWin').classList.add('show');memorySparks();haptic([28,45,28,45,65])},420)}
+function applyPrefs(){'''
+          text, n = re.subn(js_pattern, js_replacement, text, count=1, flags=re.S)
+          if n != 1:
+              raise SystemExit(f'JS memory block replacement failed: {n}')
+
+          old_handlers = "$('#memoryRestart').onclick=initMemory;$('#memoryCategory').onchange=initMemory;$('#memoryPairs').onchange=initMemory;"
+          new_handlers = "$('#memoryRestart').onclick=initMemory;$('#memoryWinRestart').onclick=initMemory;$('#memoryCategory').onchange=initMemory;$('#memoryPairs').onchange=initMemory;"
+          if old_handlers not in text:
+              raise SystemExit('Memory handler marker not found')
+          text = text.replace(old_handlers, new_handlers, 1)
+
+          # Mobile layout: preserve two-column board but give cards a little more height.
+          text = text.replace('.memory-card{aspect-ratio:1.25}', '.memory-card{aspect-ratio:1.18}', 1)
+
+          path.write_text(text, encoding='utf-8')
+          print('Upgraded tk2/tasten.html memory')
+
+      - name: Sanity checks
+        run: |
+          grep -q 'function haptic' tk2/tasten.html
+          grep -q 'memory-card.mismatch' tk2/tasten.html
+          grep -q 'memoryWinRestart' tk2/tasten.html
+          grep -q 'memoryProgress' tk2/tasten.html
+          grep -q "id:'degree'" tk2/tasten.html
+
+      - name: Commit upgrade
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tk2/tasten.html
+          git commit -m "tk2: upgrade shortcut memory feel"
+          git push origin HEAD:dev
