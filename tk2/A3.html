@@ -26,10 +26,12 @@
     .use-note strong{display:block;color:#dbeafe;margin-bottom:8px}
     .use-note ul{margin:0;padding-left:1.2rem;color:#cbd5e1;line-height:1.65}
     .choice-list{display:grid;gap:12px;margin-top:18px}
-    .choice-row{display:grid;grid-template-columns:36px minmax(150px,.8fr) auto minmax(180px,1.3fr);gap:10px;align-items:center;padding:12px;border-radius:14px;background:rgba(15,23,42,.72);border:1px solid rgba(148,163,184,.16)}
+    .choice-row{display:grid;grid-template-columns:36px minmax(150px,.8fr) auto minmax(180px,1.3fr);gap:10px;align-items:center;padding:12px;border-radius:14px;background:rgba(15,23,42,.72);border:1px solid rgba(148,163,184,.16);transition:.18s}
+    .choice-row:has(input:disabled){opacity:.48}
     .choice-number{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:rgba(99,102,241,.16);color:#c7d2fe;font-weight:900}
     .choice-row input{width:100%;min-width:0;border:1px solid rgba(148,163,184,.25);border-radius:10px;background:#0f172a;color:#f8fafc;font:inherit;padding:10px 11px;outline:none}
     .choice-row input:focus{border-color:#818cf8;box-shadow:0 0 0 3px rgba(99,102,241,.14)}
+    .choice-row input:disabled{cursor:not-allowed}
     .shortcut-choice{font-family:'Space Grotesk',monospace!important;font-weight:700!important}
     .choice-because{color:#a5b4fc;font-weight:800}
     .choice-hint{margin-top:12px;color:#94a3b8;font-size:.9rem;line-height:1.5}
@@ -76,8 +78,8 @@
 
     <section class="download-card">
       <div class="file-icon">PDF</div>
-      <h2>Tastenkombinationen</h2>
-      <p>Lade das Merkblatt herunter und bewahre es auf. Es ist dein Nachschlagewerk für die weiteren Aufgaben – keine neue Prüfung.</p>
+      <h2>1. Merkblatt anschauen</h2>
+      <p>Lade das Merkblatt herunter, öffne es und verschaffe dir zuerst einen Überblick über die Tastenkombinationen.</p>
       <a id="theory-download" href="Tastenkombinationen_Theorie.pdf" download="Tastenkombinationen_Theorie.pdf" class="btn-download">↓ PDF herunterladen</a>
 
       <div class="use-note">
@@ -92,22 +94,22 @@
     </section>
 
     <section class="choice-card">
-      <span class="resource-kicker">Meine drei Kürzel</span>
-      <h2>Welche drei willst du ab heute wirklich benutzen?</h2>
-      <p>Suche dir im Merkblatt drei unterschiedliche Tastenkombinationen aus. Schreibe die Kürzel selbst auf und ergänze jeweils kurz, warum du sie im Alltag verwenden möchtest.</p>
+      <span class="resource-kicker">Schritt 2</span>
+      <h2>Drei Kürzel auswählen</h2>
+      <p>Nachdem du das Merkblatt angeschaut hast, wählst du drei unterschiedliche Tastenkombinationen aus. Schreibe die Kürzel selbst auf und ergänze jeweils kurz, warum du sie im Alltag verwenden möchtest.</p>
       <div class="choice-list">
         <label class="choice-row"><span class="choice-number">1</span><input class="shortcut-choice" data-index="0" type="text" maxlength="60" autocomplete="off" spellcheck="false" placeholder="z. B. Ctrl + C"><span class="choice-because">weil</span><input class="shortcut-reason" data-index="0" type="text" maxlength="120" placeholder="… ich damit schneller kopieren kann."></label>
-        <label class="choice-row"><span class="choice-number">2</span><input class="shortcut-choice" data-index="1" type="text" maxlength="60" autocomplete="off" spellcheck="false" placeholder="z. B. Ctrl + Z"><span class="choice-because">weil</span><input class="shortcut-reason" data-index="1" type="text" maxlength="120" placeholder="…"></label>
-        <label class="choice-row"><span class="choice-number">3</span><input class="shortcut-choice" data-index="2" type="text" maxlength="60" autocomplete="off" spellcheck="false" placeholder="z. B. Win + L"><span class="choice-because">weil</span><input class="shortcut-reason" data-index="2" type="text" maxlength="120" placeholder="…"></label>
+        <label class="choice-row"><span class="choice-number">2</span><input class="shortcut-choice" data-index="1" type="text" maxlength="60" autocomplete="off" spellcheck="false"><span class="choice-because">weil</span><input class="shortcut-reason" data-index="1" type="text" maxlength="120"></label>
+        <label class="choice-row"><span class="choice-number">3</span><input class="shortcut-choice" data-index="2" type="text" maxlength="60" autocomplete="off" spellcheck="false"><span class="choice-because">weil</span><input class="shortcut-reason" data-index="2" type="text" maxlength="120"></label>
       </div>
-      <div class="choice-hint" id="choice-hint">Trage drei unterschiedliche Kürzel ein und begründe jedes kurz.</div>
+      <div class="choice-hint" id="choice-hint">1. Lade zuerst das Merkblatt herunter und schau es dir an.</div>
     </section>
 
     <section class="onedrive-card" id="onedrive-step">
       <div class="onedrive-head">
         <div class="onedrive-icon" aria-hidden="true">☁</div>
         <div>
-          <span class="resource-kicker">Zum Schluss</span>
+          <span class="resource-kicker">Schritt 3 · Zum Schluss</span>
           <h2>Merkblatt in OneDrive sichern</h2>
         </div>
       </div>
@@ -117,7 +119,7 @@
         <span class="onedrive-checkmark" aria-hidden="true"></span>
         <span class="onedrive-copy">
           <strong>PDF im OneDrive-Ordner „IB“ abgelegt</strong>
-          <small id="onedrive-status">Nach dem Download kannst du diesen Schritt bestätigen.</small>
+          <small id="onedrive-status">Zuerst Merkblatt anschauen und drei Kürzel auswählen.</small>
         </span>
       </label>
     </section>
