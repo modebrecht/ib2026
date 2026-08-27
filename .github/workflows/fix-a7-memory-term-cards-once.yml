@@ -1,0 +1,43 @@
+name: Fix A7 memory term cards
+on:
+  push:
+    branches: [dev]
+    paths:
+      - '.github/workflows/fix-a7-memory-term-cards-once.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 0
+      - name: Patch
+        run: python .github/scripts/fix_a7_memory_term_cards.py
+      - name: Verify
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path('tk2/A7.html').read_text(encoding='utf-8')
+          assert '⌨️' not in s
+          assert 'mem-term-emoji' not in s
+          assert 'mem-term-symbol' in s
+          assert "item?.cat==='altgr'" in s
+          assert "kind:'term',shortcut:s" in s
+          assert 'background:rgba(245,158,11,.12)' in s
+          scripts=re.findall(r'<script[^>]*>(.*?)</script>',s,re.S)
+          assert scripts
+          Path('/tmp/a7.js').write_text('\n'.join(scripts),encoding='utf-8')
+          print('A7 memory term card checks OK')
+          PY
+          node --check /tmp/a7.js
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tk2/A7.html
+          git commit -m "tk2: align A7 memory symbols with A2"
+          git push origin dev
