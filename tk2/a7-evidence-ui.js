@@ -51,6 +51,41 @@
     };
   }
 
+  function stationDetail(data, mode){
+    var buckets = Object.values((data.modes && data.modes[mode]) || {});
+    var runs = buckets.reduce(function(sum, b){ return sum + (Number(b.completedRuns) || 0); }, 0);
+    var correct = buckets.reduce(function(sum, b){ return sum + (Number(b.correct) || 0); }, 0);
+    var wrong = buckets.reduce(function(sum, b){ return sum + (Number(b.wrong) || 0); }, 0);
+    var attempts = correct + wrong;
+    var moves = buckets.reduce(function(sum, b){ return sum + (Number(b.moves) || 0); }, 0);
+    var pairs = buckets.reduce(function(sum, b){ return sum + (Number(b.pairs) || 0); }, 0);
+    return {
+      runs: runs,
+      correct: correct,
+      wrong: wrong,
+      attempts: attempts,
+      accuracy: attempts ? Math.round(correct / attempts * 100) : null,
+      moves: moves,
+      pairs: pairs
+    };
+  }
+
+  function statisticsData(data){
+    var challenge = stationDetail(data, 'challenge');
+    var hunt = stationDetail(data, 'hunt');
+    var memory = stationDetail(data, 'memory');
+    var overallCorrect = challenge.correct + hunt.correct;
+    var overallWrong = challenge.wrong + hunt.wrong;
+    var overallAttempts = overallCorrect + overallWrong;
+    return {
+      challenge: challenge,
+      hunt: hunt,
+      memory: memory,
+      overallAttempts: overallAttempts,
+      overallAccuracy: overallAttempts ? Math.round(overallCorrect / overallAttempts * 100) : null
+    };
+  }
+
   function rowData(data){
     var modes = ['challenge', 'hunt', 'memory'];
     var ids = new Set();
@@ -154,7 +189,7 @@
     var student = typeof requireStudentName === 'function' ? requireStudentName() : '';
     if (!student) return;
 
-    var rows = rowData(data);
+    var stats = statisticsData(data);
     var canvas = document.createElement('canvas');
     canvas.width = 1200;
     canvas.height = 850;
@@ -171,63 +206,95 @@
     ctx.textAlign = 'center';
     ctx.fillStyle = '#7dd3fc';
     ctx.font = '800 20px sans-serif';
-    ctx.fillText('INFORMATIK B25 – A7', 600, 88);
+    ctx.fillText('INFORMATIK B25 – A7', 600, 82);
     ctx.fillStyle = '#fff';
     ctx.font = '800 36px sans-serif';
-    ctx.fillText('TRAININGSNACHWEIS TASTENKÜRZEL', 600, 145);
+    ctx.fillText('TRAININGSNACHWEIS TASTENKÜRZEL', 600, 136);
     ctx.fillStyle = '#94a3b8';
     ctx.font = '500 17px sans-serif';
-    ctx.fillText('Abgeschlossene Trainingsrunden', 600, 180);
+    ctx.fillText('Statistik des abgeschlossenen Trainings', 600, 168);
 
     ctx.fillStyle = 'rgba(56,189,248,.13)';
     ctx.strokeStyle = '#38bdf8';
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.roundRect(235, 205, 730, 64, 16);
+    ctx.roundRect(235, 190, 730, 58, 16);
     ctx.fill();
     ctx.stroke();
     ctx.fillStyle = '#bae6fd';
-    ctx.font = '800 27px sans-serif';
-    ctx.fillText(student, 600, 246);
+    ctx.font = '800 26px sans-serif';
+    ctx.fillText(student, 600, 228);
 
-    ctx.fillStyle = '#34d399';
-    ctx.font = '800 23px sans-serif';
-    ctx.fillText('3/3 Stationen abgeschlossen', 600, 306);
-    ctx.fillStyle = '#cbd5e1';
-    ctx.font = '700 18px sans-serif';
-    ctx.fillText('Challenge ' + s.challenge + '× · Fehlerjagd ' + s.hunt + '× · Memory ' + s.memory + '× · Gesamt ' + s.total + ' Runden', 600, 340);
+    function card(x, title, detail, isMemory){
+      ctx.fillStyle = 'rgba(15,23,42,.78)';
+      ctx.strokeStyle = '#334155';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.roundRect(x, 285, 315, 300, 20);
+      ctx.fill();
+      ctx.stroke();
 
-    ctx.fillStyle = 'rgba(15,23,42,.72)';
+      ctx.textAlign = 'left';
+      ctx.fillStyle = '#f8fafc';
+      ctx.font = '800 24px sans-serif';
+      ctx.fillText(title, x + 24, 328);
+      ctx.fillStyle = detail.runs > 0 ? '#34d399' : '#94a3b8';
+      ctx.font = '700 14px sans-serif';
+      ctx.fillText(detail.runs > 0 ? 'erledigt ✓' : 'noch offen', x + 24, 355);
+
+      var labels = isMemory ?
+        [['Runden', String(detail.runs)], ['Paare', String(detail.pairs)], ['Züge', String(detail.moves)], ['Genauigkeit', 'separat']] :
+        [['Runden', String(detail.runs)], ['Genauigkeit', detail.accuracy === null ? '–' : detail.accuracy + ' %'], ['richtig', String(detail.correct)], ['falsch', String(detail.wrong)]];
+
+      labels.forEach(function(item, index){
+        var col = index % 2;
+        var row = Math.floor(index / 2);
+        var bx = x + 24 + col * 140;
+        var by = 390 + row * 86;
+        ctx.fillStyle = 'rgba(148,163,184,.08)';
+        ctx.beginPath();
+        ctx.roundRect(bx, by, 125, 68, 12);
+        ctx.fill();
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = '600 13px sans-serif';
+        ctx.fillText(item[0], bx + 12, by + 24);
+        ctx.fillStyle = '#e2e8f0';
+        ctx.font = '800 20px sans-serif';
+        ctx.fillText(item[1], bx + 12, by + 52);
+      });
+    }
+
+    card(85, 'Challenge', stats.challenge, false);
+    card(443, 'Fehlerjagd', stats.hunt, false);
+    card(801, 'Memory', stats.memory, true);
+
+    ctx.fillStyle = 'rgba(15,23,42,.78)';
+    ctx.strokeStyle = '#334155';
+    ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.roundRect(85, 375, 1030, 355, 20);
+    ctx.roundRect(85, 620, 1030, 105, 18);
     ctx.fill();
+    ctx.stroke();
+
     ctx.textAlign = 'left';
     ctx.fillStyle = '#94a3b8';
-    ctx.font = '700 14px sans-serif';
-    ctx.fillText('SET', 125, 410);
-    ctx.fillText('CHALLENGE', 485, 410);
-    ctx.fillText('FEHLERJAGD', 650, 410);
-    ctx.fillText('MEMORY', 830, 410);
-    ctx.fillText('GESAMT', 990, 410);
+    ctx.font = '600 15px sans-serif';
+    ctx.fillText('Gesamtgenauigkeit aus Challenge + Fehlerjagd', 120, 657);
+    ctx.fillStyle = '#f8fafc';
+    ctx.font = '800 28px sans-serif';
+    ctx.fillText(stats.overallAccuracy === null ? '–' : stats.overallAccuracy + ' %', 120, 697);
 
-    var y = 450;
-    rows.slice(0, 7).forEach(function(row){
-      ctx.fillStyle = '#e2e8f0';
-      ctx.font = '700 17px sans-serif';
-      ctx.fillText(row.label, 125, y);
-      ctx.fillStyle = '#cbd5e1';
-      ctx.font = '600 16px sans-serif';
-      ctx.fillText(String(row.challenge), 520, y);
-      ctx.fillText(String(row.hunt), 690, y);
-      ctx.fillText(String(row.memory), 855, y);
-      ctx.fillText(String(row.total), 1015, y);
-      y += 40;
-    });
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = '600 15px sans-serif';
+    ctx.fillText('Gesammelte Antworten / Entscheidungen', 665, 657);
+    ctx.fillStyle = '#f8fafc';
+    ctx.font = '800 28px sans-serif';
+    ctx.fillText(String(stats.overallAttempts), 665, 697);
 
     ctx.textAlign = 'center';
     ctx.fillStyle = '#94a3b8';
     ctx.font = '500 14px sans-serif';
-    ctx.fillText('PDF-Freigabe nach je 1 vollständigen Runde: Challenge · Fehlerjagd · Memory · ' + new Date().toLocaleDateString('de-CH'), 600, 790);
+    ctx.fillText('3/3 Stationen abgeschlossen · ' + new Date().toLocaleDateString('de-CH'), 600, 782);
 
     function makePdf(){
       var pdf = new window.jspdf.jsPDF({orientation:'landscape', unit:'mm', format:[297,210]});
