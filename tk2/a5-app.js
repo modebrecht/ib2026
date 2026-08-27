@@ -13,8 +13,8 @@
     {group:'Programme & Werkzeuge',keys:'Alt + F4',desc:'Aktives Fenster oder Programm schliessen',mode:'closeWindow',flow:['Fenster aktiv','Alt + F4','Fenster geschlossen']},
     {group:'Fenster anordnen',keys:'Win + ←',desc:'Aktives Fenster links andocken',mode:'snapLeft',flow:['Fenster frei','Win + ←','Links angedockt']},
     {group:'Fenster anordnen',keys:'Win + →',desc:'Aktives Fenster rechts andocken',mode:'snapRight',flow:['Fenster frei','Win + →','Rechts angedockt']},
-    {group:'Fenster anordnen',keys:'Win + ↑',desc:'Aktives Fenster maximieren',mode:'snapRight',flow:['Fenster normal','Win + ↑','Maximiert']},
-    {group:'Fenster anordnen',keys:'Win + ↓',desc:'Aktives Fenster verkleinern oder minimieren',mode:'desktop',flow:['Fenster maximiert','Win + ↓','Verkleinert / minimiert']}
+    {group:'Fenster anordnen',keys:'Win + ↑',desc:'Aktives Fenster maximieren',mode:'maximize',flow:['Fenster normal','Win + ↑','Maximiert']},
+    {group:'Fenster anordnen',keys:'Win + ↓',desc:'Aktives Fenster verkleinern oder minimieren',mode:'minimize',flow:['Fenster maximiert','Win + ↓','Verkleinert / minimiert']}
   ]};
 
   var DATA=[
