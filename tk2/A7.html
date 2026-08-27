@@ -597,7 +597,7 @@ $('#memoryRestart').onclick=initMemory;$('#memoryCategory').onchange=initMemory;
 $('#downloadEvidencePdf').onclick=downloadTrainingPdf;
 $('#favoriteCopyLink').onclick=copyFavoriteShareLink;$('#favoriteQr').onclick=openFavoriteQr;$('#shareCopyModal').onclick=copyFavoriteShareLink;$('#shareClose').onclick=closeFavoriteQr;$('#favoriteShareModal').addEventListener('click',e=>{if(e.target.id==='favoriteShareModal')closeFavoriteQr()});$('#sharedImport').onclick=importSharedFavorites;$('#sharedDismiss').onclick=dismissSharedFavorites;
 
-renderHome();renderLearn();fillMemoryCategories();startChallenge();startHunt();renderFavorites();updateFavoriteUI();renderStats();renderEvidence();$('#best').textContent=state.best;applyPrefs();readSharedFavoritesFromHash();
+renderHome();renderLearn();fillMemoryCategories();startChallenge();startHunt();renderFavorites();updateFavoriteUI();renderStats();renderEvidence();applyPrefs();readSharedFavoritesFromHash();
 </script>
 </body>
 </html>
