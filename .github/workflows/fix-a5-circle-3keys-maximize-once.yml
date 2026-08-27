@@ -30,7 +30,7 @@ jobs:
           assert "scale('+keyScale+')" not in s
           assert 'circle cx="310" cy="76" r="74"' not in s
           assert 'circle cx="315" cy="83" r="94"' not in s
-          assert s.count("translate(win,'translate(-126 -35) scale(1.51 1.25)')")==2
+          assert s.count("transform(win,'translate(-126 -35) scale(1.51 1.25)')")==2
           for keys in ["keys:['Win','Shift','S']","keys:['Ctrl','Shift','Esc']","keys:['Ctrl','Shift','Tab']"]:
               assert keys in s, keys
           print('A5 visual regression checks OK; 800ms key hold preserved')
