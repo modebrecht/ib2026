@@ -4,6 +4,8 @@ on:
     branches: [dev]
     paths:
       - '.github/workflows/add-tasten-weighted-learning-once.yml'
+permissions:
+  contents: write
 jobs:
   patch:
     runs-on: ubuntu-latest
