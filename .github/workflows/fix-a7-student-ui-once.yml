@@ -1,0 +1,52 @@
+name: Fix A7 student UI
+on:
+  push:
+    branches: [dev]
+    paths:
+      - '.github/workflows/fix-a7-student-ui-once.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 0
+      - name: Patch
+        run: python .github/scripts/fix_a7_student_ui.py
+      - name: Verify
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          s=Path('tk2/A7.html').read_text(encoding='utf-8')
+          assert 'A7 · Tastenkürzel trainieren' in s
+          assert 'Hier übst du die Tastenkürzel aus A1–A6.' in s
+          assert 'TK2-Kurs' not in s
+          assert '@ schreiben' not in s
+          assert 'Programme wechseln' in s
+          assert '.hero .challenge-key{' in s
+          assert 'color:#172033!important' in s
+          assert 'advanceTimer:null' in s
+          assert 'correct?2000:3000' in s
+          assert "$('#challengeNext').hidden=true;challenge.advanceTimer" in s
+          assert "$('#practiceAnswer').innerHTML=`<div class=\"keys\">${keyMarkup(item)}</div>" not in s
+          print('A7 requested UI/auto-advance checks OK')
+          PY
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path('tk2/A7.html').read_text(encoding='utf-8')
+          scripts=re.findall(r'<script[^>]*>(.*?)</script>',s,re.S)
+          assert scripts
+          Path('/tmp/a7.js').write_text('\n'.join(scripts),encoding='utf-8')
+          PY
+          node --check /tmp/a7.js
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tk2/A7.html
+          git commit -m "tk2: simplify A7 hero and auto-advance challenge"
+          git push origin dev
