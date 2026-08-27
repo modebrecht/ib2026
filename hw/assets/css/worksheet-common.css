@@ -1,0 +1,78 @@
+/* Shared worksheet header glassmorphism */
+.worksheet-header {
+  background: rgba(255, 255, 255, .35);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border-bottom: 1px solid rgba(255, 255, 255, .40);
+}
+
+.dark .worksheet-header {
+  background: rgba(15, 23, 42, .60);
+  border-bottom-color: rgba(51, 65, 85, .50);
+}
+
+/* A8: keep the hardware card compact enough to fit without extra scrolling */
+#componentShell > .component-visual + div {
+  display: none;
+}
+
+#componentShell #component {
+  min-height: 0;
+  margin-top: .35rem;
+}
+
+#componentShell #componentQuestion {
+  margin-top: .2rem;
+}
+
+/* A8: the "Kurze Repetition" pill adds height without useful information. */
+body:has(#componentShell) main > section:first-child .inline-flex {
+  display: none;
+}
+
+body:has(#componentShell) main > section:first-child h1 {
+  margin-top: 0;
+}
+
+/* A9: icon + title on one compact row; description below. */
+body:has(#sceneShell) main > section:first-child > div:first-child {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  column-gap: .85rem;
+  row-gap: .45rem;
+}
+
+body:has(#sceneShell) main > section:first-child > div:first-child > div:nth-child(2) {
+  display: contents;
+}
+
+body:has(#sceneShell) main > section:first-child > div:first-child > div:first-child {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: .9rem;
+  font-size: 1.1rem;
+}
+
+body:has(#sceneShell) main > section:first-child h1 {
+  margin-top: 0;
+}
+
+body:has(#sceneShell) main > section:first-child p {
+  grid-column: 1 / -1;
+  margin-top: 0;
+}
+
+/* A9: "Szenario" is redundant and only costs vertical space. */
+#sceneShell .scene-art + div > div:first-child {
+  display: none;
+}
+
+#sceneShell .scene-title {
+  margin-top: .45rem;
+}
+
+/* A9: the E/V/A choices already explain what the learner must decide. */
+body:has(#sceneShell) #sceneShell .text-center > p:last-of-type {
+  display: none;
+}

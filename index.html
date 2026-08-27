@@ -517,6 +517,31 @@
       box-shadow: 0 4px 12px rgba(37,99,235,.35);
     }
 
+    /* Premium hardware task list */
+    .hw-task-list{gap:10px;margin-top:12px}
+    .hw-task-list .task-card{position:relative;overflow:hidden;isolation:isolate;min-height:66px;padding:10px 12px 10px 14px;border-radius:22px;background:linear-gradient(135deg,var(--card),var(--card-soft));border:1px solid var(--line);box-shadow:0 9px 24px rgba(15,23,42,.06);cursor:pointer;transition:transform .22s cubic-bezier(.2,.9,.2,1),border-color .22s ease,box-shadow .22s ease;animation:taskCardIn .46s cubic-bezier(.2,.9,.2,1) both}
+    .hw-task-list .task-card>div{position:relative;z-index:2;width:100%}
+    .hw-task-list .task-card::before{content:"";position:absolute;inset:0 0 0 48%;z-index:0;background:linear-gradient(90deg,rgba(16,185,129,0),rgba(16,185,129,.08) 22%,rgba(16,185,129,.18));opacity:0;transform:scaleX(0);transform-origin:right center}
+    .hw-task-list .task-card::after{content:"";position:absolute;width:115px;height:115px;border-radius:50%;right:-72px;top:-72px;background:rgba(0,120,212,.075);z-index:0;transition:transform .35s ease,opacity .35s ease}
+    .hw-task-list .task-card:hover,.hw-task-list .task-card:focus-visible{transform:translateY(-2px);border-color:rgba(0,120,212,.40);box-shadow:0 16px 34px rgba(15,23,42,.105);outline:none}
+    .hw-task-list .task-card:hover::after{transform:scale(1.38)}
+    .hw-task-list .unterkachel-title{font-size:calc(15px * var(--font-scale));line-height:1.18;gap:0;flex:1;min-width:0}
+    .hw-task-list .unterkachel-title .task-number{display:inline-flex;width:54px;height:42px;border-radius:15px;align-items:center;justify-content:center;flex:0 0 auto;color:#fff;background:linear-gradient(135deg,#0078d4,#2563eb);border:0;box-shadow:0 9px 19px rgba(0,120,212,.22);font-size:calc(13px * var(--font-scale));font-weight:950;letter-spacing:-.02em}
+    .hw-task-list .unterkachel-title .task-name{display:inline!important;width:auto!important;height:auto!important;min-width:0;border:0!important;border-left:1px solid var(--line)!important;background:transparent!important;box-shadow:none!important;border-radius:0!important;justify-content:flex-start!important;margin-left:13px;padding-left:14px;font-size:inherit!important;color:var(--text);white-space:normal}
+    .hw-task-list .btn-link{width:auto;height:42px;padding:0 14px;border-radius:15px;gap:8px;font-size:calc(11px * var(--font-scale));font-weight:850;background:linear-gradient(135deg,#0078d4,#2563eb);box-shadow:0 9px 19px rgba(37,99,235,.20)}
+    .hw-task-list .task-card.task-done{border-color:rgba(16,185,129,.34);box-shadow:0 10px 26px rgba(16,185,129,.08)}
+    .hw-task-list .task-card.task-done::before{opacity:1;animation:completionSweep .7s cubic-bezier(.2,.9,.2,1) both}
+    .hw-task-list .task-card.task-done::after{background:rgba(16,185,129,.11)}
+    .hw-task-list .task-card.task-done .task-number{background:linear-gradient(135deg,#059669,#34d399);box-shadow:0 9px 20px rgba(16,185,129,.23)}
+    .hw-task-list .task-card.task-done .task-name{border-left-color:rgba(16,185,129,.32)!important}
+    .hw-task-list .task-card.task-done .btn-link{background:linear-gradient(135deg,#059669,#10b981)!important;box-shadow:0 9px 20px rgba(16,185,129,.22)!important}
+    .hw-task-list .task-check{font-size:18px;font-weight:950;line-height:1;animation:checkPop .42s cubic-bezier(.2,1.3,.3,1) both}
+    a.btn-link:empty{display:none!important}
+    .silent-card-link{cursor:pointer}
+    .hw-task-list .task-card:nth-child(2){animation-delay:.035s}.hw-task-list .task-card:nth-child(3){animation-delay:.07s}.hw-task-list .task-card:nth-child(4){animation-delay:.105s}.hw-task-list .task-card:nth-child(5){animation-delay:.14s}.hw-task-list .task-card:nth-child(6){animation-delay:.175s}.hw-task-list .task-card:nth-child(7){animation-delay:.21s}.hw-task-list .task-card:nth-child(8){animation-delay:.245s}.hw-task-list .task-card:nth-child(9){animation-delay:.28s}.hw-task-list .task-card:nth-child(10){animation-delay:.315s}.hw-task-list .task-card:nth-child(11){animation-delay:.35s}.hw-task-list .task-card:nth-child(12){animation-delay:.385s}.hw-task-list .task-card:nth-child(13){animation-delay:.42s}.hw-task-list .task-card:nth-child(14){animation-delay:.455s}
+    @keyframes taskCardIn{from{opacity:0;transform:translateY(12px) scale(.988)}to{opacity:1;transform:none}}@keyframes completionSweep{from{transform:scaleX(0);opacity:0}to{transform:scaleX(1);opacity:1}}@keyframes checkPop{from{opacity:0;transform:scale(.4) rotate(-18deg)}to{opacity:1;transform:none}}
+    @media(max-width:560px){.hw-task-list .task-card{min-height:60px;padding:9px 10px;border-radius:19px}.hw-task-list .btn-link{min-width:62px;height:40px;padding:0 11px;border-radius:14px}.hw-task-list .unterkachel-title .task-number{width:46px;height:38px;border-radius:13px}.hw-task-list .unterkachel-title .task-name{margin-left:10px;padding-left:11px}.hw-task-list .task-card::before{inset:0 0 0 44%}}
+    @media(prefers-reduced-motion:reduce){.hw-task-list .task-card,.hw-task-list .task-card::before,.hw-task-list .task-check{animation:none!important;transition:none!important}}
 
     /* OneDrive Folder Preview (from i.html) */
     .path {
@@ -839,163 +864,182 @@
               </div>
               <div>
                 <h3 class="kachel-title">IT Hardware</h3>
-                <p class="kachel-subtitle">Computeraufbau &amp; Komponenten</p>
               </div>
             </div>
             <div class="toggle-arrow">▼</div>
           </div>
 
           <div class="kachel-body">
-            <div class="unterkacheln">
+            <div class="unterkacheln hw-task-list">
               <!-- Unterkachel: A1 IT-Hardware Memory -->
-              <div class="unterkachel">
+              <div class="unterkachel task-card">
                 <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
                   <div>
                     <h4 class="unterkachel-title" id="title-A1" style="margin-bottom: 2px;">
-                       A1: IT-Hardware Memory
+                       <span class="task-number">A1</span><span class="task-name">IT-Hardware Memory</span>
                     </h4>
-                    <p style="font-size: calc(13px * var(--font-scale)); color: var(--muted); margin: 0;">
-                      Einstieg: Begriffe &amp; Komponenten spielerisch entdecken
-                    </p>
                   </div>
-                  <a href="hw/A1.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
+                  <a href="hw/A1.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"></a>
                 </div>
               </div>
 
               <!-- Unterkachel: A2 EVA Prinzip -->
-              <div class="unterkachel">
+              <div class="unterkachel task-card">
                 <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
                   <div>
                     <h4 class="unterkachel-title" id="title-A2" style="margin-bottom: 2px;">
-                       A2: Das EVA-Prinzip
+                       <span class="task-number">A2</span><span class="task-name">Das EVA-Prinzip</span>
                     </h4>
-                    <p style="font-size: calc(13px * var(--font-scale)); color: var(--muted); margin: 0;">
-                      Eingabe - Verarbeitung - Ausgabe im Alltag &amp; Beispiele
-                    </p>
                   </div>
-                  <a href="hw/A2.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
+                  <a href="hw/A2.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"></a>
                 </div>
               </div>
 
               <!-- Unterkachel: A3 Hardware -->
-              <div class="unterkachel">
+              <div class="unterkachel task-card">
                 <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
                   <div>
                     <h4 class="unterkachel-title" id="title-A3" style="margin-bottom: 2px;">
-                       A3: Computeraufbau
+                       <span class="task-number">A3</span><span class="task-name">Computeraufbau</span>
                     </h4>
-                    <p style="font-size: calc(13px * var(--font-scale)); color: var(--muted); margin: 0;">
-                      Aufbau eines Computers &amp; 15 Kernkomponenten im Detail
-                    </p>
                   </div>
-                  <a href="hw/A3.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
+                  <a href="hw/A3.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"></a>
                 </div>
               </div>
 
               <!-- Unterkachel: A4 Anschlüsse & Kabel -->
-              <div class="unterkachel">
+              <div class="unterkachel task-card">
                 <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
                   <div>
                     <h4 class="unterkachel-title" id="title-A4" style="margin-bottom: 2px;">
-                       A4: Anschlüsse &amp; PC-Kabel
+                       <span class="task-number">A4</span><span class="task-name">Anschlüsse &amp; PC-Kabel</span>
                     </h4>
-                    <p style="font-size: calc(13px * var(--font-scale)); color: var(--muted); margin: 0;">
-                      Schnittstellen, Monitor-Kabel &amp; Datenübertragung
-                    </p>
                   </div>
-                  <a href="hw/A4.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
+                  <a href="hw/A4.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"></a>
                 </div>
               </div>
 
               <!-- Unterkachel: A5 Schnittstellen & PC-Kabel -->
-              <div class="unterkachel">
+              <div class="unterkachel task-card">
                 <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
                   <div>
                     <h4 class="unterkachel-title" id="title-A5" style="margin-bottom: 2px;">
-                       A5: Schnittstellen &amp; PC-Kabel
+                       <span class="task-number">A5</span><span class="task-name">Schnittstellen &amp; PC-Kabel</span>
                     </h4>
-                    <p style="font-size: calc(13px * var(--font-scale)); color: var(--muted); margin: 0;">
-                      16 Anschlüsse aus A4 erkennen &amp; ihre Verwendung erklären
-                    </p>
                   </div>
-                  <a href="hw/A5.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
+                  <a href="hw/A5.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"></a>
                 </div>
               </div>
 
               <!-- Unterkachel: A6 Mainboard-Anschlüsse -->
-              <div class="unterkachel">
+              <div class="unterkachel task-card">
                 <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
                   <div>
                     <h4 class="unterkachel-title" id="title-A6" style="margin-bottom: 2px;">
-                       A6: Mainboard-Anschlüsse
+                       <span class="task-number">A6</span><span class="task-name">Mainboard-Anschlüsse</span>
                     </h4>
-                    <p style="font-size: calc(13px * var(--font-scale)); color: var(--muted); margin: 0;">
-                      Anschlüsse &amp; Schnittstellen auf dem Mainboard bestimmen
-                    </p>
                   </div>
-                  <a href="hw/A6.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
+                  <a href="hw/A6.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"></a>
                 </div>
               </div>
 
               <!-- Unterkachel: A7 TROUBLESHOOTER -->
-              <div class="unterkachel">
+              <div class="unterkachel task-card">
                 <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
                   <div>
                     <h4 class="unterkachel-title" id="title-A7" style="margin-bottom: 2px;">
-                       A7: TROUBLESHOOTER
+                       <span class="task-number">A7</span><span class="task-name">TROUBLESHOOTER</span>
                     </h4>
-                    <p style="font-size: calc(13px * var(--font-scale)); color: var(--muted); margin: 0;">
-                      Hardware-Probleme &amp; Störungen im Troubleshooter lösen
-                    </p>
                   </div>
-                  <a href="hw/A7.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
+                  <a href="hw/A7.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"></a>
                 </div>
               </div>
 
               <!-- Unterkachel: A8 EVA-Repetition -->
-              <div class="unterkachel">
+              <div class="unterkachel task-card">
                 <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
                   <div>
                     <h4 class="unterkachel-title" id="title-A8" style="margin-bottom: 2px;">
-                       A8: EVA-Repetition
+                       <span class="task-number">A8</span><span class="task-name">EVA-Repetition</span>
                     </h4>
-                    <p style="font-size: calc(13px * var(--font-scale)); color: var(--muted); margin: 0;">
-                      15 Hardware-Komponenten dem EVA-Prinzip zuordnen
-                    </p>
                   </div>
-                  <a href="hw/A8.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
+                  <a href="hw/A8.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"></a>
                 </div>
               </div>
 
               <!-- Unterkachel: A9 EVA-Szenarien -->
-              <div class="unterkachel">
+              <div class="unterkachel task-card">
                 <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
                   <div>
                     <h4 class="unterkachel-title" id="title-A9" style="margin-bottom: 2px;">
-                       A9: EVA-Szenarien
+                       <span class="task-number">A9</span><span class="task-name">EVA-Szenarien</span>
                     </h4>
-                    <p style="font-size: calc(13px * var(--font-scale)); color: var(--muted); margin: 0;">
-                      6 Alltagsszenarien: Eingabe, Verarbeitung oder Ausgabe erkennen
-                    </p>
                   </div>
-                  <a href="hw/A9.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
+                  <a href="hw/A9.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"></a>
                 </div>
               </div>
 
-              <!-- Unterkachel: AEXAM Hardware-Wissenstest -->
-              <div class="unterkachel">
-                <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
-                  <div>
-                    <h4 class="unterkachel-title" id="title-AEXAM" style="margin-bottom: 2px;">
-                       AEXAM: Hardware-Wissenstest
-                    </h4>
-                    <p style="font-size: calc(13px * var(--font-scale)); color: var(--muted); margin: 0;">
-                      20 Fragen zu Komponenten &amp; Schnittstellen &ndash; Wissenstest
-                    </p>
-                  </div>
-                  <a href="hw/AEXAM.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
-                </div>
-              </div>
+    <!-- Unterkachel: A10 RAM, HDD oder SSD -->
+    <div class="unterkachel task-card">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+        <div>
+          <h4 class="unterkachel-title" id="title-A10" style="margin-bottom: 2px;">
+             <span class="task-number">A10</span><span class="task-name">RAM, HDD oder SSD?</span>
+          </h4>
+        </div>
+        <a href="hw/A10.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"></a>
+      </div>
+    </div>
+
+    <!-- Unterkachel: A11 Kaufberatung -->
+    <div class="unterkachel task-card">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+        <div>
+          <h4 class="unterkachel-title" id="title-A11" style="margin-bottom: 2px;">
+             <span class="task-number">A11</span><span class="task-name">Kaufberatung im Tech Shop</span>
+          </h4>
+        </div>
+        <a href="hw/A11.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"></a>
+      </div>
+    </div>
+
+    <!-- Unterkachel: A12 Schnittstellen sortieren -->
+    <div class="unterkachel task-card">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+        <div>
+          <h4 class="unterkachel-title" id="title-A12" style="margin-bottom: 2px;">
+             <span class="task-number">A12</span><span class="task-name">Schnittstellen sortieren</span>
+          </h4>
+        </div>
+        <a href="hw/A12.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"></a>
+      </div>
+    </div>
+
+    <!-- Unterkachel: A13 Grüne IT -->
+    <div class="unterkachel task-card">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+        <div>
+          <h4 class="unterkachel-title" id="title-A13" style="margin-bottom: 2px;">
+             <span class="task-number">A13</span><span class="task-name">Grüne IT &amp; Nachhaltigkeit</span>
+          </h4>
+        </div>
+        <a href="hw/A13.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"></a>
+      </div>
+    </div>
+
+    <!-- Unterkachel: A14 Green-IT-Challenge -->
+    <div class="unterkachel task-card">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+        <div>
+          <h4 class="unterkachel-title" id="title-A14" style="margin-bottom: 2px;">
+             <span class="task-number">A14</span><span class="task-name">Green-IT-Challenge</span>
+          </h4>
+        </div>
+        <a href="hw/A14.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"></a>
+      </div>
+    </div>
+
+
             </div>
           </div>
         </div>
@@ -1009,7 +1053,6 @@
               </div>
               <div>
                 <h3 class="kachel-title">Vortrag Hardware Komponente</h3>
-                <p class="kachel-subtitle">Auftrag, Anforderungen &amp; Themenpools</p>
               </div>
             </div>
             <div class="toggle-arrow">▼</div>
@@ -1024,81 +1067,6 @@
                   <span class="badge" style="background: var(--blue-soft); color: var(--blue);">⏱️ Solo: mind. 5 Min</span>
                   <span class="badge" style="background: var(--blue-soft); color: var(--blue);">⏱️ 2er-Team: mind. 8 Min</span>
                   <span class="badge" style="background: #eefaf2; color: #107c41; border-color: #bde7cf;">📁 Abgabe: PPTX oder HTML</span>
-                </div>
-              </div>
-
-                                                        <!-- Content Checklist -->
-              <div style="background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px;">
-                <h4 style="font-size: calc(14px * var(--font-scale)); font-weight: 700; margin: 0 0 8px 0; color: var(--text);">
-                  🎤 Inhaltliche Fragen (Checkliste):
-                </h4>
-                <ul style="margin: 0; padding-left: 18px; font-size: calc(13px * var(--font-scale)); color: var(--text); line-height: 1.5;">
-                  <li><strong>Funktion &amp; Aufgabe:</strong> Welche Funktion hat eure Hardware-Komponente?</li>
-                  <li><strong>Fachbegriffe:</strong> Welche wichtigen Begriffe &amp; Kennzahlen muss man kennen?</li>
-                  <li><strong>Einsatzbereich:</strong> Wo und wofür wird die Komponente im Computer eingesetzt?</li>
-                  <li><strong>Bedeutung für den PC:</strong> Warum ist die Komponente für das Funktionieren des PCs wichtig?</li>
-                  <li><strong>Funktionsweise:</strong> Wie arbeitet die Komponente im Hintergrund?</li>
-                  <li><strong>Verständliche Präsentation:</strong> Erklärt euer Thema so anschaulich, dass die ganze Klasse es versteht.</li>
-                </ul>
-              </div>
-
-              <!-- Solo Topics -->
-              <div style="background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px;">
-                <h4 style="font-size: calc(14px * var(--font-scale)); font-weight: 700; margin: 0 0 8px 0; color: var(--text);">
-                  👤 Mögliche Solo-Themen (Einzelarbeit):
-                </h4>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px; font-size: calc(12px * var(--font-scale));">
-                  <div style="padding: 8px; background: var(--card-soft); border: 1px solid var(--line); border-radius: 8px;">
-                    <strong>🧠 CPU / Prozessor</strong><br><span style="color: var(--muted);">Zentrale Recheneinheit &amp; Taktfrequenz</span>
-                  </div>
-                  <div style="padding: 8px; background: var(--card-soft); border: 1px solid var(--line); border-radius: 8px;">
-                    <strong>🎨 Grafikkarte (GPU)</strong><br><span style="color: var(--muted);">Grafikberechnung &amp; Bildausgabe</span>
-                  </div>
-                  <div style="padding: 8px; background: var(--card-soft); border: 1px solid var(--line); border-radius: 8px;">
-                    <strong>🔌 Mainboard</strong><br><span style="color: var(--muted);">Hauptplatine &amp; Verbindungszentrale</span>
-                  </div>
-                  <div style="padding: 8px; background: var(--card-soft); border: 1px solid var(--line); border-radius: 8px;">
-                    <strong>⚡ RAM (Arbeitsspeicher)</strong><br><span style="color: var(--muted);">Flüchtiger Schnellspeicher</span>
-                  </div>
-                  <div style="padding: 8px; background: var(--card-soft); border: 1px solid var(--line); border-radius: 8px;">
-                    <strong>🚀 SSD / HDD Speicher</strong><br><span style="color: var(--muted);">Dauerhafter Massenspeicher</span>
-                  </div>
-                  <div style="padding: 8px; background: var(--card-soft); border: 1px solid var(--line); border-radius: 8px;">
-                    <strong>🔋 Netzteil (PSU)</strong><br><span style="color: var(--muted);">Stromversorgung &amp; Transformation</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- 2-Person Team Topics -->
-              <div style="background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px;">
-                <h4 style="font-size: calc(14px * var(--font-scale)); font-weight: 700; margin: 0 0 8px 0; color: var(--text);">
-                  👥 Mögliche 2er-Team-Themen:
-                </h4>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px; font-size: calc(12px * var(--font-scale));">
-                  <div style="padding: 8px; background: var(--card-soft); border: 1px solid var(--line); border-radius: 8px;">
-                    <strong>🎮 GPU + Monitor-Anschlüsse</strong><br><span style="color: var(--muted);">HDMI, DisplayPort, DVI, VGA</span>
-                  </div>
-                  <div style="padding: 8px; background: var(--card-soft); border: 1px solid var(--line); border-radius: 8px;">
-                    <strong>🔌 Mainboard + Anschlüsse</strong><br><span style="color: var(--muted);">Sockel, PCIe, SATA, M.2, Strom</span>
-                  </div>
-                  <div style="padding: 8px; background: var(--card-soft); border: 1px solid var(--line); border-radius: 8px;">
-                    <strong>📏 RAM + SSD/HDD</strong><br><span style="color: var(--muted);">Arbeitsspeicher vs. Massenspeicher</span>
-                  </div>
-                  <div style="padding: 8px; background: var(--card-soft); border: 1px solid var(--line); border-radius: 8px;">
-                    <strong>⚡ Netzteil + Stromversorgung</strong><br><span style="color: var(--muted);">Watt, Effizienz, Kabel management</span>
-                  </div>
-                  <div style="padding: 8px; background: var(--card-soft); border: 1px solid var(--line); border-radius: 8px;">
-                    <strong>🌬️ Gehäuse + Airflow/Kühlung</strong><br><span style="color: var(--muted);">Lüfter, Luftstrom, Staubfilter</span>
-                  </div>
-                  <div style="padding: 8px; background: var(--card-soft); border: 1px solid var(--line); border-radius: 8px;">
-                    <strong>❄️ CPU, CPU-Kühlung + Paste</strong><br><span style="color: var(--muted);">Prozessor, Luft- &amp; Wasserkühlung, Wärmeleitpaste</span>
-                  </div>
-                  <div style="padding: 8px; background: var(--card-soft); border: 1px solid var(--line); border-radius: 8px;">
-                    <strong>💻 Laptop vs. Desktop-PC</strong><br><span style="color: var(--muted);">Unterschiede, Leistung, Akku</span>
-                  </div>
-                  <div style="padding: 8px; background: var(--card-soft); border: 1px solid var(--line); border-radius: 8px;">
-                    <strong>📱 Smartphone vs. PC-Hardware</strong><br><span style="color: var(--muted);">SoC, Kamera vs. CPU/GPU/RAM</span>
-                  </div>
                 </div>
               </div>
 
@@ -1159,7 +1127,77 @@
                   </ul>
                 </div>
               </div>
+                                                        <!-- Content Checklist -->
+              <div style="background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px;">
+                <h4 style="font-size: calc(14px * var(--font-scale)); font-weight: 700; margin: 0 0 8px 0; color: var(--text);">
+                  🎤 Inhaltliche Fragen (Checkliste):
+                </h4>
+                <ul style="margin: 0; padding-left: 18px; font-size: calc(13px * var(--font-scale)); color: var(--text); line-height: 1.5;">
+                  <li><strong>Funktion &amp; Aufgabe:</strong> Welche Funktion hat eure Hardware-Komponente?</li>
+                  <li><strong>Fachbegriffe:</strong> Welche wichtigen Begriffe &amp; Kennzahlen muss man kennen?</li>
+                  <li><strong>Einsatzbereich:</strong> Wo und wofür wird die Komponente im Computer eingesetzt?</li>
+                  <li><strong>Bedeutung für den PC:</strong> Warum ist die Komponente für das Funktionieren des PCs wichtig?</li>
+                  <li><strong>Funktionsweise:</strong> Wie arbeitet die Komponente im Hintergrund?</li>
+                  <li><strong>Verständliche Präsentation:</strong> Erklärt euer Thema so anschaulich, dass die ganze Klasse es versteht.</li>
+                </ul>
+              </div>
 
+
+              <!-- Solo Topics -->
+              <details style="background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px;">
+                <summary style="font-size: calc(14px * var(--font-scale)); font-weight: 700; color: var(--text); cursor: pointer; user-select: none;">👤 Solo-Themen</summary>
+                <div style="display: grid; margin-top: 10px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px; font-size: calc(12px * var(--font-scale));">
+                  <div style="padding: 8px; background: var(--card-soft); border: 1px solid var(--line); border-radius: 8px;">
+                    <strong>🧠 CPU / Prozessor</strong><br><span style="color: var(--muted);">Zentrale Recheneinheit &amp; Taktfrequenz</span>
+                  </div>
+                  <div style="padding: 8px; background: var(--card-soft); border: 1px solid var(--line); border-radius: 8px;">
+                    <strong>🎨 Grafikkarte (GPU)</strong><br><span style="color: var(--muted);">Grafikberechnung &amp; Bildausgabe</span>
+                  </div>
+                  <div style="padding: 8px; background: var(--card-soft); border: 1px solid var(--line); border-radius: 8px;">
+                    <strong>🔌 Mainboard</strong><br><span style="color: var(--muted);">Hauptplatine &amp; Verbindungszentrale</span>
+                  </div>
+                  <div style="padding: 8px; background: var(--card-soft); border: 1px solid var(--line); border-radius: 8px;">
+                    <strong>⚡ RAM (Arbeitsspeicher)</strong><br><span style="color: var(--muted);">Flüchtiger Schnellspeicher</span>
+                  </div>
+                  <div style="padding: 8px; background: var(--card-soft); border: 1px solid var(--line); border-radius: 8px;">
+                    <strong>🚀 SSD / HDD Speicher</strong><br><span style="color: var(--muted);">Dauerhafter Massenspeicher</span>
+                  </div>
+                  <div style="padding: 8px; background: var(--card-soft); border: 1px solid var(--line); border-radius: 8px;">
+                    <strong>🔋 Netzteil (PSU)</strong><br><span style="color: var(--muted);">Stromversorgung &amp; Transformation</span>
+                  </div>
+                </div>
+              </details>
+
+              <!-- 2-Person Team Topics -->
+              <details style="background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px;">
+                <summary style="font-size: calc(14px * var(--font-scale)); font-weight: 700; color: var(--text); cursor: pointer; user-select: none;">👥 2er-Team-Themen</summary>
+                <div style="display: grid; margin-top: 10px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px; font-size: calc(12px * var(--font-scale));">
+                  <div style="padding: 8px; background: var(--card-soft); border: 1px solid var(--line); border-radius: 8px;">
+                    <strong>🎮 GPU + Monitor-Anschlüsse</strong><br><span style="color: var(--muted);">HDMI, DisplayPort, DVI, VGA</span>
+                  </div>
+                  <div style="padding: 8px; background: var(--card-soft); border: 1px solid var(--line); border-radius: 8px;">
+                    <strong>🔌 Mainboard + Anschlüsse</strong><br><span style="color: var(--muted);">Sockel, PCIe, SATA, M.2, Strom</span>
+                  </div>
+                  <div style="padding: 8px; background: var(--card-soft); border: 1px solid var(--line); border-radius: 8px;">
+                    <strong>📏 RAM + SSD/HDD</strong><br><span style="color: var(--muted);">Arbeitsspeicher vs. Massenspeicher</span>
+                  </div>
+                  <div style="padding: 8px; background: var(--card-soft); border: 1px solid var(--line); border-radius: 8px;">
+                    <strong>⚡ Netzteil + Stromversorgung</strong><br><span style="color: var(--muted);">Watt, Effizienz, Kabel management</span>
+                  </div>
+                  <div style="padding: 8px; background: var(--card-soft); border: 1px solid var(--line); border-radius: 8px;">
+                    <strong>🌬️ Gehäuse + Airflow/Kühlung</strong><br><span style="color: var(--muted);">Lüfter, Luftstrom, Staubfilter</span>
+                  </div>
+                  <div style="padding: 8px; background: var(--card-soft); border: 1px solid var(--line); border-radius: 8px;">
+                    <strong>❄️ CPU, CPU-Kühlung + Paste</strong><br><span style="color: var(--muted);">Prozessor, Luft- &amp; Wasserkühlung, Wärmeleitpaste</span>
+                  </div>
+                  <div style="padding: 8px; background: var(--card-soft); border: 1px solid var(--line); border-radius: 8px;">
+                    <strong>💻 Laptop vs. Desktop-PC</strong><br><span style="color: var(--muted);">Unterschiede, Leistung, Akku</span>
+                  </div>
+                  <div style="padding: 8px; background: var(--card-soft); border: 1px solid var(--line); border-radius: 8px;">
+                    <strong>📱 Smartphone vs. PC-Hardware</strong><br><span style="color: var(--muted);">SoC, Kamera vs. CPU/GPU/RAM</span>
+                  </div>
+                </div>
+              </details>
             </div>
           </div>
         </div>
@@ -1173,74 +1211,72 @@
               </div>
               <div>
                 <h3 class="kachel-title">Fleissnote</h3>
-                <p class="kachel-subtitle">Zusatzleistung &amp; Erfüllungskriterien</p>
               </div>
             </div>
             <div class="toggle-arrow">▼</div>
           </div>
 
           <div class="kachel-body">
-            <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 14px;">
-              
-              <div style="background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px;">
-                <div style="display: flex; flex-direction: column; gap: 8px; font-size: calc(13px * var(--font-scale));">
-                  
-                  <div style="padding: 10px 12px; background: var(--card-soft); border: 1px solid var(--line); border-radius: 8px; display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
-                    <div>
-                      <strong style="color: var(--blue);">A1.PDF</strong>
-                      <span style="color: var(--text); margin-left: 6px;">Minimum 3 Modi gelöst</span>
-                    </div>
-                    <span class="badge" style="background: #eefaf2; color: #107c41; border-color: #bde7cf;">🌟 Ultra = BONUS</span>
-                  </div>
+            <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 14px; width: 100%;">
 
-                  <div style="padding: 10px 12px; background: var(--card-soft); border: 1px solid var(--line); border-radius: 8px;">
-                    <strong style="color: var(--blue);">A2.PDF</strong>
-                    <span style="color: var(--text); margin-left: 6px;">6x Alltagsbeispiele zum EVA-Prinzip</span>
-                  </div>
+              <div style="display: flex; flex-direction: column; gap: 8px; width: 100%; font-size: calc(13px * var(--font-scale));">
+                <div style="display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 14px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 1px 2px rgba(0,0,0,.03); flex-wrap: wrap;">
+                  <strong style="color: var(--blue); flex: 0 0 105px; font-weight: 800;">A1.PDF</strong>
+                  <span style="color: var(--text); flex: 1 1 180px; line-height: 1.35;">3 Modi abgeschlossen</span>
+                </div>
 
-                  <div style="padding: 10px 12px; background: var(--card-soft); border: 1px solid var(--line); border-radius: 8px;">
-                    <strong style="color: var(--blue);">A3.PDF</strong>
-                    <span style="color: var(--text); margin-left: 6px;">Alle Komponenten und Analogien ausgefüllt</span>
-                  </div>
+                <div style="display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 14px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 1px 2px rgba(0,0,0,.03); flex-wrap: wrap;">
+                  <strong style="color: var(--blue); flex: 0 0 105px; font-weight: 800;">A2.PDF</strong>
+                  <span style="color: var(--text); flex: 1 1 180px; line-height: 1.35;">Arbeitsblatt zu 100% ausgefüllt</span>
+                </div>
 
-                  <div style="padding: 10px 12px; background: var(--card-soft); border: 1px solid var(--line); border-radius: 8px;">
-                    <strong style="color: var(--blue);">A4.PDF</strong>
-                    <span style="color: var(--text); margin-left: 6px;">Praxis-Test Kabel &amp; Anschlüsse fehlerfrei (16/16)</span>
-                  </div>
+                <div style="display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 14px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 1px 2px rgba(0,0,0,.03); flex-wrap: wrap;">
+                  <strong style="color: var(--blue); flex: 0 0 105px; font-weight: 800;">A3.PDF</strong>
+                  <span style="color: var(--text); flex: 1 1 180px; line-height: 1.35;">Funktionen aller 14 Komponenten ausgefüllt</span>
+                </div>
 
-                  <div style="padding: 10px 12px; background: var(--card-soft); border: 1px solid var(--line); border-radius: 8px;">
-                    <strong style="color: var(--blue);">A5.PDF</strong>
-                    <span style="color: var(--text); margin-left: 6px;">Schnittstellen &amp; PC-Kabel vertieft</span>
-                  </div>
+                <div style="display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 14px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 1px 2px rgba(0,0,0,.03); flex-wrap: wrap;">
+                  <strong style="color: var(--blue); flex: 0 0 105px; font-weight: 800;">A4.PDF</strong>
+                  <span style="color: var(--text); flex: 1 1 180px; line-height: 1.35;">16/16 Anschlüsse richtig beantwortet</span>
+                </div>
 
-                  <div style="padding: 10px 12px; background: var(--card-soft); border: 1px solid var(--line); border-radius: 8px;">
-                    <strong style="color: var(--blue);">A6.PDF</strong>
-                    <span style="color: var(--text); margin-left: 6px;">Mainboard-Anschlüsse vollständig zugeordnet</span>
-                  </div>
+                <div style="display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 14px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 1px 2px rgba(0,0,0,.03); flex-wrap: wrap;">
+                  <strong style="color: var(--blue); flex: 0 0 105px; font-weight: 800;">A5.PDF</strong>
+                  <span style="color: var(--text); flex: 1 1 180px; line-height: 1.35;">Verwendung aller 16 Anschlüsse erklärt</span>
+                </div>
 
-                  <div style="padding: 10px 12px; background: var(--card-soft); border: 1px solid var(--line); border-radius: 8px;">
-                    <strong style="color: var(--blue);">A7.PDF</strong>
-                    <span style="color: var(--text); margin-left: 6px;">Hardware-Troubleshooter gelöst</span>
-                  </div>
+                <div style="display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 14px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 1px 2px rgba(0,0,0,.03); flex-wrap: wrap;">
+                  <strong style="color: var(--blue); flex: 0 0 105px; font-weight: 800;">A6.PDF</strong>
+                  <span style="color: var(--text); flex: 1 1 180px; line-height: 1.35;">Mainboard-Anschlüsse vollständig bearbeitet</span>
+                </div>
 
+                <div style="display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 14px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 1px 2px rgba(0,0,0,.03); flex-wrap: wrap;">
+                  <strong style="color: var(--blue); flex: 0 0 105px; font-weight: 800;">A7.PDF</strong>
+                  <span style="color: var(--text); flex: 1 1 180px; line-height: 1.35;">7/7 Troubleshooter-Fälle, jeweils mindestens Bronze</span>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 14px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 1px 2px rgba(0,0,0,.03); flex-wrap: wrap;">
+                  <strong style="color: var(--blue); flex: 0 0 105px; font-weight: 800;">A8.PDF</strong>
+                  <span style="color: var(--text); flex: 1 1 180px; line-height: 1.35;">Mindestens 12/15 EVA-Zuordnungen richtig</span>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 14px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 1px 2px rgba(0,0,0,.03); flex-wrap: wrap;">
+                  <strong style="color: var(--blue); flex: 0 0 105px; font-weight: 800;">A9.PDF</strong>
+                  <span style="color: var(--text); flex: 1 1 180px; line-height: 1.35;">Mindestens 8/12 Alltagsszenarien richtig</span>
                 </div>
               </div>
 
               <!-- Abgabe Box -->
-              <div style="background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px;">
+              <div style="width: 100%; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px;">
                 <h4 style="font-size: calc(14px * var(--font-scale)); font-weight: 700; margin: 0 0 10px 0; color: var(--text); display: flex; align-items: center; gap: 6px;">
                   <span>📤 Abgabe:</span>
                 </h4>
-                <div style="display: flex; flex-direction: column; gap: 8px; font-size: calc(13px * var(--font-scale));">
-                  <div style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: var(--card-soft); border: 1px solid var(--line); border-radius: 8px;">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
-                    <span>Lade die generierten <strong>PDFs in deinen OneDrive-Ordner hoch</strong> und teile ihn mit deiner Informatiklehrperson</span>
-                  </div>
-                  <div style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: var(--card-soft); border: 1px solid var(--line); border-radius: 8px;">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-                    <span>oder sende die PDF-Dateien per <strong>E-Mail-Anhang</strong></span>
-                  </div>
-                </div>
+                <div style="display: flex; flex-direction: column; gap: 8px; width: 100%; font-size: calc(13px * var(--font-scale));">
+        <div style="display: flex; align-items: center; gap: 8px; width: 100%; padding: 9px 12px; background: var(--card-soft); border: 1px solid var(--line); border-radius: 8px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
+          <span>Lade die <strong>PDFs in deinen OneDrive-Ordner hoch</strong> und teile ihn mit deiner Informatiklehrperson</span>
+        </div>
+      </div>
               </div>
 
             </div>
@@ -1255,39 +1291,21 @@
         </div>
 
         <!-- Tile 1: Tastenkombinationen -->
-        <div class="kachel open" id="tkKachel">
-          <div class="kachel-header" onclick="toggleKachel(this)">
+        <div class="kachel" id="tkKachel">
+          <div class="kachel-header" style="cursor: default;">
             <div class="kachel-title-wrap">
               <div class="kachel-icon">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M6 8h.01"/><path d="M10 8h.01"/><path d="M14 8h.01"/><path d="M18 8h.01"/><path d="M8 12h.01"/><path d="M12 12h.01"/><path d="M16 12h.01"/><path d="M7 16h10"/></svg>
               </div>
               <div>
-                <h3 class="kachel-title">Tastenkombinationen</h3>
-                <p class="kachel-subtitle">Animierter Lernkurs A1–A5 &amp; Praxis</p>
+                <h3 class="kachel-title" id="title-TK-Overview">Tastenkombinationen</h3>
               </div>
             </div>
-            <div class="toggle-arrow">▼</div>
-          </div>
-
-          <div class="kachel-body">
-            <div class="unterkacheln">
-              <div class="unterkachel">
-                <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
-                  <div>
-                    <h4 class="unterkachel-title" id="title-TK-Overview" style="margin-bottom: 2px;">
-                      Kurs-Übersicht
-                    </h4>
-                    <p style="font-size: calc(13px * var(--font-scale)); color: var(--muted); margin: 0;">
-                      Animierter Kurs mit XP, Fortschritt, Wiederholung &amp; PDF
-                    </p>
-                  </div>
-                  <a href="tk2/index.html" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
-                </div>
-              </div>
-            </div>
+            <a href="tk2/index.html" target="_blank" rel="noopener" class="btn-link" title="Kurs in neuem Tab öffnen" aria-label="Kurs in neuem Tab öffnen">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
+            </a>
           </div>
         </div>
-
         <!-- Tile 2: Berufsorientierung -->
         <div class="kachel" id="boKachel">
           <div class="kachel-header" onclick="toggleKachel(this)">
@@ -1297,7 +1315,6 @@
               </div>
               <div>
                 <h3 class="kachel-title">Berufsorientierung</h3>
-                <p class="kachel-subtitle">Bewerbungsdossier</p>
               </div>
             </div>
             <div class="toggle-arrow">▼</div>
@@ -1312,7 +1329,7 @@
                   <h4 class="unterkachel-title">
                     <span>📁</span> Ordnerstruktur BO
                   </h4>
-                  <a href="https://ib-onedrive.vercel.app" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
+                  <a href="https://ib-onedrive.vercel.app" target="_blank" rel="noopener" class="btn-link" title="In neuem Tab öffnen" aria-label="In neuem Tab öffnen"></a>
                 </div>
 
                 <div class="path">
@@ -1381,7 +1398,6 @@
               </div>
               <div>
                 <h3 class="kachel-title">Accounts</h3>
-                <p class="kachel-subtitle">Microsoft und Google Account</p>
               </div>
             </div>
             <div class="toggle-arrow">▼</div>
@@ -1449,9 +1465,13 @@
     <footer class="site-footer">
       <div class="footer-container">
         <div class="copyright">&copy; 2026 GSU</div>
-        <div>
+        <div style="display:flex; align-items:center; justify-content:center; gap:8px; flex-wrap:wrap;">
+          <a href="https://bo2026.vercel.app" target="_blank" rel="noopener" class="footer-link">
+            <span>BO 2026</span>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+          </a>
           <a href="https://WAH2026.vercel.app" target="_blank" rel="noopener" class="footer-link">
-            <span>Planung 2026</span>
+            <span>WAH 2026</span>
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
           </a>
         </div>
@@ -1462,9 +1482,6 @@
   <script>
     const gearBtn = document.getElementById('gearBtn');
     const settingsPanel = document.getElementById('settingsPanel');
-    const themeToggle = document.getElementById('themeToggle');
-    const fontSizeRange = document.getElementById('fontSizeRange');
-    const fontSizeValue = document.getElementById('fontSizeValue');
 
     function saveKachelStates() {
       const states = {};
@@ -1493,20 +1510,6 @@
       saveKachelStates();
     }
 
-    function setTheme(theme) {
-      document.body.setAttribute('data-theme', theme);
-      themeToggle.checked = theme === 'dark';
-      localStorage.setItem('ib-theme', theme);
-    }
-
-    function setFontSize(percent) {
-      const value = Math.min(250, Math.max(80, Number(percent) || 100));
-      document.documentElement.style.setProperty('--font-scale', value / 100);
-      fontSizeRange.value = value;
-      fontSizeValue.value = `${value}%`;
-      fontSizeValue.textContent = `${value}%`;
-      localStorage.setItem('ib-font-size', value);
-    }
 
     gearBtn.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -1519,15 +1522,6 @@
       }
     });
 
-    themeToggle.addEventListener('change', () => {
-      setTheme(themeToggle.checked ? 'dark' : 'light');
-    });
-
-    fontSizeRange.addEventListener('input', () => setFontSize(fontSizeRange.value));
-
-    // Initialize
-    setTheme(localStorage.getItem('ib-theme') || 'light');
-    setFontSize(localStorage.getItem('ib-font-size') || 100);
     restoreKachelStates();
   </script>
 
@@ -1559,12 +1553,11 @@
 
         function saveTheme(theme) {
           localStorage.setItem(THEME_KEY, theme);
-          localStorage.setItem('onedrive_theme', theme);
           applyTheme(theme);
         }
 
         function initTheme() {
-          const saved = localStorage.getItem(THEME_KEY) || localStorage.getItem('onedrive_theme');
+          const saved = localStorage.getItem(THEME_KEY);
           if (saved) {
             applyTheme(saved);
           } else {
@@ -1696,7 +1689,7 @@
         });
 
         window.addEventListener('storage', function(e) {
-          if (e.key === THEME_KEY || e.key === 'onedrive_theme') {
+          if (e.key === THEME_KEY) {
             if (e.newValue) applyTheme(e.newValue);
           }
           if (e.key === FONT_KEY || e.key === 'onedrive_font_size') {
@@ -1710,8 +1703,52 @@
     </script>
 
     <script>
+
+      function initPremiumTaskCards() {
+        document.querySelectorAll('#hwKachel .task-card').forEach(function(card) {
+          const link = card.querySelector('.btn-link');
+          const title = card.querySelector('.unterkachel-title');
+          if (!link || !title) return;
+          card.tabIndex = 0;
+          card.setAttribute('role', 'link');
+          card.setAttribute('aria-label', title.textContent.trim() + ' öffnen');
+          card.addEventListener('click', function(event) {
+            if (event.target.closest('.btn-link')) return;
+            link.click();
+          });
+          card.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault();
+              link.click();
+            }
+          });
+        });
+      }
+
+      function initSilentLaunchCards() {
+        document.querySelectorAll('#col-b25 .unterkachel').forEach(function(card) {
+          const link = card.querySelector('.btn-link');
+          const title = card.querySelector('.unterkachel-title');
+          if (!link || !title) return;
+          card.classList.add('silent-card-link');
+          card.tabIndex = 0;
+          card.setAttribute('role', 'link');
+          card.setAttribute('aria-label', title.textContent.trim() + ' öffnen');
+          card.addEventListener('click', function(event) {
+            if (event.target.closest('a')) return;
+            link.click();
+          });
+          card.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault();
+              link.click();
+            }
+          });
+        });
+      }
+
       function checkCompletionStatus() {
-        const checkSvgHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+        const checkSvgHTML = '<span class="task-check" aria-hidden="true">✓</span>';
 
         if (!document.getElementById('done-btn-style')) {
            const style = document.createElement('style');
@@ -1728,8 +1765,10 @@
               const btn = kachel.querySelector('.btn-link');
               if (btn && !btn.classList.contains('btn-done')) {
                 btn.classList.add('btn-done');
-                btn.innerHTML = checkSvgHTML;
+                btn.innerHTML = '<span class="btn-status-text">Erledigt</span>' + checkSvgHTML;
                 btn.title = 'Erfolgreich abgeschlossen! (Erneut öffnen)';
+                kachel.classList.add('task-done');
+                kachel.setAttribute('data-status', 'done');
               }
             }
           }
@@ -1767,7 +1806,7 @@
           const a6Data = localStorage.getItem('hw_autosave_A6.html');
           if (a6Data) {
             const parsed = JSON.parse(a6Data);
-            if (parsed && parsed.manualDoneA5 === true) markDone('title-A6');
+            if (parsed && parsed.manualDoneA6 === true) markDone('title-A6');
           }
 
           const a7Data = localStorage.getItem('hw_autosave_A7.html');
@@ -1785,13 +1824,45 @@
           const a9Data = localStorage.getItem('onedrive_a9_eva_scenarios_8sek');
           if (a9Data) {
             const parsed = JSON.parse(a9Data);
-            if (parsed && Number(parsed.bestScore) >= 4) markDone('title-A9');
+            if (parsed && Number(parsed.bestScore) >= 8) markDone('title-A9');
           }
 
-          const aexamData = localStorage.getItem('onedrive_aexam_worksheet_8sek');
-          if (aexamData) {
-            const parsed = JSON.parse(aexamData);
-            if (parsed && parsed.percent === 100) markDone('title-AEXAM');
+
+          const a10Data = localStorage.getItem('onedrive_a10_storage_scenarios_9sek_v2');
+          if (a10Data) {
+            const parsed = JSON.parse(a10Data);
+            if (parsed && Number(parsed.bestScore) >= 7) markDone('title-A10');
+          }
+
+          const a11Data = localStorage.getItem('onedrive_a11_shop_9sek_v5');
+          if (a11Data) {
+            const parsed = JSON.parse(a11Data);
+            if (parsed && Array.isArray(parsed.done) && parsed.done.length >= 5) markDone('title-A11');
+          }
+
+          const a12Data = localStorage.getItem('onedrive_a12_schnittstellen_9sek');
+          if (a12Data) {
+            const parsed = JSON.parse(a12Data);
+            const choices = parsed && parsed.choices ? parsed.choices : {};
+            const expected = {
+              'usb-a':'data','usb-c':'data','hdmi':'av','dp':'av','rj45':'network','audio':'av',
+              'vga':'av','dvi':'av','usb-b':'data','micro-usb':'data','lightning':'data','power':'power'
+            };
+            if (Object.keys(expected).every(function(key) { return choices[key] === expected[key]; })) markDone('title-A12');
+          }
+
+          const a13Data = localStorage.getItem('onedrive_a13_green_it_learning_v1');
+          if (a13Data) {
+            const parsed = JSON.parse(a13Data);
+            const st = parsed && parsed.state ? parsed.state : {};
+            const vals = parsed && parsed.vals ? parsed.vals : {};
+            if (st.task2 === true && st.task3 === true && st.procure === true && st.recycle === true && String(vals.oldDevices || '') !== '') markDone('title-A13');
+          }
+
+          const a14Data = localStorage.getItem('onedrive_a14_green_it_scenarios_9sek_v1');
+          if (a14Data) {
+            const parsed = JSON.parse(a14Data);
+            if (parsed && Number(parsed.bestScore) >= 10) markDone('title-A14');
           }
 
           let tkCourseDone = false;
@@ -1829,7 +1900,11 @@
         }
       }
 
-      document.addEventListener('DOMContentLoaded', checkCompletionStatus);
+      document.addEventListener('DOMContentLoaded', function() {
+        initPremiumTaskCards();
+        initSilentLaunchCards();
+        checkCompletionStatus();
+      });
       document.addEventListener('visibilitychange', () => {
         if (!document.hidden) checkCompletionStatus();
       });

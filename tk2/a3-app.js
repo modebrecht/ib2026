@@ -2,168 +2,134 @@
   'use strict';
 
   var STORAGE_KEY='tk_a3_progress_v1';
-  var startTime=0;
-  var timerId=null;
-  var running=false;
+  var QUEST_SCORES_KEY='tk_quest_scores_v1';
+  var SCHEMA_VERSION=2;
+  var SHORTCUTS=[
+    ['Ctrl + C','Kopieren'],['Ctrl + X','Ausschneiden'],['Ctrl + V','Einfügen'],['Ctrl + Shift + V','Ohne Formatierung einfügen'],
+    ['Ctrl + Z','Rückgängig'],['Ctrl + Y','Wiederherstellen'],['Ctrl + S','Speichern'],['Ctrl + A','Alles markieren'],
+    ['Ctrl + F','Suchen'],['Ctrl + H','Suchen und ersetzen'],['Ctrl + P','Drucken'],['Ctrl + O','Datei öffnen'],
+    ['Ctrl + Home','Zum Anfang'],['Ctrl + End','Zum Ende']
+  ];
 
   function byId(id){return document.getElementById(id);}
-  function parseProgress(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');}catch(e){return{};}}
-  function saveProgress(progress){localStorage.setItem(STORAGE_KEY,JSON.stringify(progress));if(window.tk2Pdf&&typeof window.tk2Pdf.sync==='function')window.tk2Pdf.sync();}
-  function formatTime(ms){
-    var totalSeconds=Math.max(0,Math.floor(ms/1000));
-    var minutes=Math.floor(totalSeconds/60);
-    var seconds=totalSeconds%60;
-    return String(minutes).padStart(2,'0')+':'+String(seconds).padStart(2,'0');
+  function freshProgress(){return{schemaVersion:SCHEMA_VERSION,downloaded:false,choices:[{shortcut:'',reason:''},{shortcut:'',reason:''},{shortcut:'',reason:''}],completed:false,rewarded:false};}
+  function parseProgress(){
+    var progress;
+    try{progress=JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');}catch(e){progress={};}
+    // Alte Pizza-Daten (first/second/q7) zählen bewusst nicht mehr als A3-Abschluss.
+    if(!progress||progress.schemaVersion!==SCHEMA_VERSION)return freshProgress();
+    if(!Array.isArray(progress.choices)||progress.choices.length!==3)progress.choices=freshProgress().choices;
+    return progress;
   }
-  function render(){if(running)byId('boss-timer').textContent=formatTime(Date.now()-startTime);}
-
-  function downloadDocx(){
-    if(!window.A3_PIZZA_DOCX_BASE64){alert('Die Word-Datei konnte nicht geladen werden.');return;}
-    var binary=atob(window.A3_PIZZA_DOCX_BASE64);
-    var bytes=new Uint8Array(binary.length);
-    for(var i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);
-    var blob=new Blob([bytes],{type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
-    var url=URL.createObjectURL(blob);
-    var a=document.createElement('a');
-    a.href=url;
-    a.download='A3_Pizza-Werkstatt.docx';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    window.setTimeout(function(){URL.revokeObjectURL(url);},1000);
-    var progress=parseProgress();
-    progress.downloaded=true;
-    saveProgress(progress);
+  function saveProgress(progress){
+    progress.schemaVersion=SCHEMA_VERSION;
+    localStorage.setItem(STORAGE_KEY,JSON.stringify(progress));
+    if(window.tk2Pdf&&typeof window.tk2Pdf.sync==='function')window.tk2Pdf.sync();
   }
-
-  function ensureCompletionReward(progress){
-    if(progress.rewarded)return;
-    addGlobalXP(50);
-    progress.rewarded=true;
-    progress.completed=true;
-    saveProgress(progress);
+  function reasonValid(reason){
+    var text=(reason||'').trim();
+    return text.length>=5&&/[A-Za-zÄÖÜäöüß]/.test(text);
   }
+  function choicesComplete(progress){
+    var choices=progress.choices||[];
+    if(choices.length!==3)return false;
+    var shortcuts=choices.map(function(c){return(c.shortcut||'').trim();});
+    if(shortcuts.some(function(v){return!v;}))return false;
+    if(new Set(shortcuts).size!==3)return false;
+    return choices.every(function(c){return reasonValid(c.reason);});
+  }
+  function isCompleted(progress){return progress.downloaded===true&&choicesComplete(progress);}
 
-  function showFirstReady(progress){
-    byId('boss-timer').textContent=progress.first||'00:00';
-    byId('run-instruction').textContent='Runde 2: Scrolle im selben Word-Dokument auf Seite 2. Starte erst, wenn Seite 2 bereit ist.';
-    byId('start-boss-btn').style.display='inline-flex';
-    byId('start-boss-btn').textContent='▶ Runde 2 starten';
-    byId('stop-boss-btn').style.display='none';
-    byId('result-time-msg').style.display='block';
-    byId('result-prefix').textContent='Runde 1: ';
-    byId('result-time-value').textContent=progress.first;
-    byId('result-next').textContent=' gespeichert. Jetzt im selben Dokument auf Seite 2 wechseln.';
-    byId('completion-panel').style.display='none';
+  // q7 bleibt nur als technischer Kompatibilitätsmarker für die alte Root-Anzeige.
+  // Ein historischer Pizza-q7 wird entfernt; 100 wird nur für die NEUE A3 vergeben.
+  function syncCompatibilityScore(completed){
+    try{
+      var scores=JSON.parse(localStorage.getItem(QUEST_SCORES_KEY)||'{}');
+      if(completed)scores.q7=100;
+      else delete scores.q7;
+      localStorage.setItem(QUEST_SCORES_KEY,JSON.stringify(scores));
+    }catch(e){}
   }
 
-  function applyReflection(progress){
-    document.querySelectorAll('.choice-btn').forEach(function(btn){
-      btn.classList.toggle('selected',btn.dataset.choice===progress.preference);
-    });
-    if(byId('remember-shortcut'))byId('remember-shortcut').value=progress.rememberShortcut||'';
-  }
-
-  function showCompleted(progress){
-    ensureCompletionReward(progress);
-    byId('boss-timer').textContent=progress.second||'00:00';
-    byId('run-instruction').textContent='Beide Pizza-Runden sind abgeschlossen.';
-    byId('start-boss-btn').style.display='none';
-    byId('stop-boss-btn').style.display='none';
-    byId('result-time-msg').style.display='block';
-    byId('result-prefix').textContent='Runde 2 mit Shortcuts: ';
-    byId('result-time-value').textContent=progress.second;
-    byId('result-next').textContent=' · Runde 1: '+progress.first;
-    byId('completion-panel').style.display='block';
-    byId('completion-note').textContent='Runde 1 ohne Shortcuts: '+progress.first+' · Runde 2 mit Shortcuts: '+progress.second+'. Entscheide jetzt kurz, welche Bedienung für dich angenehmer war.';
-    applyReflection(progress);
-  }
-
-  function showInitial(){
-    byId('boss-timer').textContent='00:00';
-    byId('run-instruction').textContent='Öffne die Word-Datei und bleibe auf Seite 1. Starte den Timer erst, wenn das Dokument bereit ist.';
-    byId('start-boss-btn').style.display='inline-flex';
-    byId('start-boss-btn').textContent='▶ Runde 1 starten';
-    byId('stop-boss-btn').style.display='none';
-    byId('result-time-msg').style.display='none';
-    byId('completion-panel').style.display='none';
-  }
-
-  function refreshFromProgress(){
-    var progress=parseProgress();
-    if(progress.second){showCompleted(progress);return;}
-    if(progress.first){showFirstReady(progress);return;}
-    showInitial();
-  }
-
-  function startBossChallenge(){
-    if(running)return;
-    var progress=parseProgress();
-    if(progress.second)return;
-    running=true;
-    startTime=Date.now();
-    byId('boss-timer').textContent='00:00';
-    byId('start-boss-btn').style.display='none';
-    byId('stop-boss-btn').style.display='inline-flex';
-    byId('result-time-msg').style.display='none';
-    byId('completion-panel').style.display='none';
-    byId('timer-box').classList.add('is-running');
-    timerId=window.setInterval(render,250);
-  }
-
-  function stopBossChallenge(){
-    if(!running)return;
-    running=false;
-    if(timerId){window.clearInterval(timerId);timerId=null;}
-    var elapsed=Date.now()-startTime;
-    var text=formatTime(elapsed);
-    var progress=parseProgress();
-    byId('timer-box').classList.remove('is-running');
-
-    if(!progress.first){
-      progress.first=text;
-      progress.firstMs=elapsed;
-      progress.attempts=1;
-      saveProgress(progress);
-      showFirstReady(progress);
-      return;
+  function renderCompleted(progress){
+    var card=byId('completion-card'),hint=byId('choice-hint');
+    if(card)card.classList.toggle('is-visible',progress.completed===true);
+    if(hint){
+      if(progress.completed)hint.textContent='✓ Merkblatt gesichert und drei persönliche Kürzel festgelegt.';
+      else if(!progress.downloaded)hint.textContent='Lade zuerst das Merkblatt herunter und fülle danach alle drei Zeilen aus.';
+      else hint.textContent='Merkblatt gesichert ✓ Wähle drei unterschiedliche Kürzel und schreibe bei jedem kurz dazu, warum (mind. 5 Zeichen).';
     }
+  }
 
-    progress.second=text;
-    progress.secondMs=elapsed;
-    progress.attempts=2;
-    progress.completed=true;
+  function evaluate(progress){
+    var wasCompleted=progress.completed===true;
+    progress.completed=isCompleted(progress);
+    if(progress.completed&&!wasCompleted){
+      progress.completedAt=new Date().toISOString();
+      if(!progress.rewarded&&typeof addGlobalXP==='function'){
+        addGlobalXP(50);
+        progress.rewarded=true;
+      }
+    }
+    syncCompatibilityScore(progress.completed===true);
     saveProgress(progress);
-    showCompleted(progress);
+    renderCompleted(progress);
+  }
+
+  function syncDisabledOptions(progress){
+    var selected=(progress.choices||[]).map(function(c){return(c.shortcut||'').trim();});
+    document.querySelectorAll('.shortcut-choice').forEach(function(select,index){
+      Array.from(select.options).forEach(function(option){
+        if(!option.value){option.disabled=false;return;}
+        option.disabled=selected.some(function(value,otherIndex){return otherIndex!==index&&value===option.value;});
+      });
+    });
+  }
+
+  function fillSelects(progress){
+    document.querySelectorAll('.shortcut-choice').forEach(function(select,index){
+      SHORTCUTS.forEach(function(item){
+        var option=document.createElement('option');
+        option.value=item[0];
+        option.textContent=item[0]+' · '+item[1];
+        select.appendChild(option);
+      });
+      select.value=(progress.choices[index]&&progress.choices[index].shortcut)||'';
+    });
+    syncDisabledOptions(progress);
   }
 
   document.addEventListener('DOMContentLoaded',function(){
-    var unlocked=isQuestUnlocked('q7');
-    byId('a3-lock-screen').style.display=unlocked?'none':'flex';
-    byId('a3-content-wrap').style.display=unlocked?'block':'none';
+    var progress=parseProgress();
+    // Beim ersten Öffnen wird jede alte Pizza-Struktur durch das neue Schema ersetzt.
+    saveProgress(progress);
+    fillSelects(progress);
 
-    var download=byId('docx-download-btn');
-    if(download)download.addEventListener('click',downloadDocx);
+    document.querySelectorAll('.shortcut-reason').forEach(function(input,index){
+      input.value=(progress.choices[index]&&progress.choices[index].reason)||'';
+    });
 
-    document.querySelectorAll('.choice-btn').forEach(function(btn){
-      btn.addEventListener('click',function(){
-        var progress=parseProgress();
-        progress.preference=btn.dataset.choice;
-        saveProgress(progress);
-        applyReflection(progress);
+    var download=byId('theory-download');
+    if(download)download.addEventListener('click',function(){
+      progress.downloaded=true;
+      if(!progress.downloadedAt)progress.downloadedAt=new Date().toISOString();
+      evaluate(progress);
+    });
+
+    document.querySelectorAll('.shortcut-choice').forEach(function(select,index){
+      select.addEventListener('change',function(){
+        progress.choices[index].shortcut=select.value;
+        syncDisabledOptions(progress);
+        evaluate(progress);
+      });
+    });
+    document.querySelectorAll('.shortcut-reason').forEach(function(input,index){
+      input.addEventListener('input',function(){
+        progress.choices[index].reason=input.value;
+        evaluate(progress);
       });
     });
 
-    var remember=byId('remember-shortcut');
-    if(remember)remember.addEventListener('change',function(){
-      var progress=parseProgress();
-      progress.rememberShortcut=remember.value;
-      saveProgress(progress);
-    });
-
-    if(unlocked)refreshFromProgress();
+    evaluate(progress);
   });
-
-  window.startBossChallenge=startBossChallenge;
-  window.stopBossChallenge=stopBossChallenge;
 })();

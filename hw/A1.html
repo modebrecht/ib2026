@@ -30,6 +30,7 @@
         }
     </script>
     <link rel="stylesheet" href="assets/css/fontawesome.min.css">
+<link rel="stylesheet" href="assets/css/worksheet-common.css">
     <style>
         @import url('assets/fonts/inter.css');
         * { transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease; -webkit-tap-highlight-color: transparent; }
@@ -194,12 +195,18 @@
             80% { transform: translateX(3px); }
         }
 
-    </style>
+    
+        .premium-progress{position:relative;overflow:hidden;background:linear-gradient(90deg,#0078d4 0%,#7c3aed 38%,#10b981 68%,#0078d4 100%);background-size:240% 100%;box-shadow:0 0 12px rgba(0,120,212,.34);animation:premiumProgressFlow 3.4s linear infinite}
+        .premium-progress::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 20%,rgba(255,255,255,.72) 48%,transparent 76%);transform:translateX(-130%);animation:premiumProgressShine 2.3s ease-in-out infinite}
+        @keyframes premiumProgressFlow{to{background-position:240% 0}}
+        @keyframes premiumProgressShine{0%,35%{transform:translateX(-130%)}75%,100%{transform:translateX(130%)}}
+        @media(prefers-reduced-motion:reduce){.premium-progress,.premium-progress::after{animation:none!important}}
+</style>
 </head>
 <body class="bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-full flex flex-col font-sans antialiased">
 
     <!-- Header -->
-    <header class="sticky top-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm no-print">
+    <header class="sticky top-0 z-40 worksheet-header no-print">
         <div class="max-w-[1920px] w-full mx-auto px-4 sm:px-8 py-2.5 flex items-center justify-between gap-4">
             <div class="flex items-center gap-3 min-w-0">
                 <div class="w-9 h-9 rounded-lg bg-onedrive-500 text-white flex items-center justify-center font-bold shadow-md shadow-onedrive-500/20 shrink-0">
@@ -233,7 +240,7 @@
             </div>
         </div>
         <div class="w-full bg-slate-200 dark:bg-slate-800 h-1">
-            <div id="progressBar" class="bg-onedrive-500 h-1 transition-all duration-300" style="width: 0%"></div>
+            <div id="progressBar" class="premium-progress h-1 transition-all duration-500" style="width: 0%"></div>
         </div>
     </header>
 
@@ -251,7 +258,7 @@
                         <p class="text-xs text-slate-500 dark:text-slate-400">Informatische Bildung • IT-Hardware • A1</p>
                     </div>
                 </div>
-                <div class="flex items-center gap-3">
+                <div class="hidden flex items-center gap-3">
                     <div class="text-right">
                         <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Fortschritt</span>
                         <span id="completionBadge" class="text-sm font-bold text-onedrive-600 dark:text-onedrive-400">0 / 3 erledigt</span>
