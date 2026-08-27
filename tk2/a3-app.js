@@ -56,6 +56,21 @@
     });
   }
 
+  function syncChoiceValidation(progress){
+    var enabled=progress.downloaded===true;
+    var keys=(progress.choices||[]).map(function(c){return duplicateKey(c.shortcut);});
+    document.querySelectorAll('.shortcut-choice').forEach(function(input,index){
+      var value=(progress.choices[index]&&progress.choices[index].shortcut)||'';
+      var key=keys[index];
+      var duplicate=key&&keys.filter(function(k){return k===key;}).length>1;
+      input.classList.toggle('is-invalid',enabled&&value.trim()!==''&&(!shortcutValid(value)||duplicate));
+    });
+    document.querySelectorAll('.shortcut-reason').forEach(function(input,index){
+      var value=(progress.choices[index]&&progress.choices[index].reason)||'';
+      input.classList.toggle('is-invalid',enabled&&value.trim()!==''&&!reasonValid(value));
+    });
+  }
+
   function syncOneDriveStep(progress){
     var checkbox=byId('onedrive-confirm'),status=byId('onedrive-status');
     if(!checkbox)return;
@@ -74,6 +89,7 @@
     var card=byId('completion-card'),hint=byId('choice-hint');
     if(card)card.classList.toggle('is-visible',progress.completed===true);
     syncChoiceStep(progress);
+    syncChoiceValidation(progress);
     syncOneDriveStep(progress);
     if(hint){
       if(progress.completed)hint.textContent='✓ Merkblatt angeschaut, drei Kürzel ausgewählt und in OneDrive gesichert.';
