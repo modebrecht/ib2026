@@ -49,3 +49,4 @@ jobs:
           git add tk2/A1.html tk2/A4.html tk2/docTextScene.js tk2/utilityScenes-base.js tk2/utilityNavigationScenes.js tk2/a4Scenes.js tk/shared.css
           git commit -m "tk2: reuse A1 keycaps and finish component in A4"
           git push origin dev
+# rerun after loader fix
