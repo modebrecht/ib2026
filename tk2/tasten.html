@@ -1,1761 +1,237 @@
 <!DOCTYPE html>
-<html lang="de" data-theme="light" data-font-size="normal">
+<html lang="de" data-theme="light" data-size="normal">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tastenkombinationen · Shortcut Training</title>
-  <style>
-    :root{
-      --bg:#f5f9ff; --bg2:#edf6ff; --panel:rgba(255,255,255,.78); --panel-strong:rgba(255,255,255,.94);
-      --line:rgba(26,91,168,.14); --text:#102033; --muted:#60738a; --primary:#0f6cbd; --primary2:#28a7ee;
-      --primary3:#005a9e; --accent:#8fe5ff; --good:#0f7b6c; --warn:#b65c00; --shadow:0 24px 70px rgba(16,58,115,.16);
-      --shadow2:0 14px 36px rgba(20,83,160,.13); --radius:26px; --sidebar:292px; --tile:rgba(255,255,255,.82);
-    }
-    html[data-theme="dark"]{
-      --bg:#07111f; --bg2:#0c1d33; --panel:rgba(17,32,52,.82); --panel-strong:rgba(20,38,62,.96);
-      --line:rgba(148,197,255,.16); --text:#eef6ff; --muted:#a9bdd3; --primary:#58aaf7; --primary2:#45d6ff; --primary3:#8ac7ff;
-      --accent:#90e6ff; --good:#61d7c8; --warn:#ffc15d; --shadow:0 26px 76px rgba(0,0,0,.42); --shadow2:0 16px 42px rgba(0,0,0,.28); --tile:rgba(18,35,57,.9);
-    }
-    html[data-font-size="small"]{ font-size:14px; }
-    html[data-font-size="normal"]{ font-size:16px; }
-    html[data-font-size="large"]{ font-size:18px; }
-    *{ box-sizing:border-box; }
-    html{ scroll-behavior:smooth; }
-    body{ margin:0; min-height:100vh; font-family:"Segoe UI",system-ui,-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif; color:var(--text); background:radial-gradient(circle at 12% 6%, rgba(80,190,255,.28), transparent 32%), radial-gradient(circle at 92% 8%, rgba(15,108,189,.19), transparent 30%), linear-gradient(135deg,var(--bg),var(--bg2)); overflow-x:hidden; }
-    body::before, body::after{ content:""; position:fixed; width:420px; height:420px; border-radius:999px; z-index:-2; filter:blur(8px); opacity:.62; pointer-events:none; }
-    body::before{ left:-160px; top:190px; background:radial-gradient(circle, rgba(40,167,238,.22), transparent 67%); animation:drift 14s ease-in-out infinite alternate; }
-    body::after{ right:-130px; bottom:-90px; background:radial-gradient(circle, rgba(75,126,255,.17), transparent 68%); animation:drift 18s ease-in-out infinite alternate-reverse; }
-    @keyframes drift{ from{ transform:translate3d(0,0,0) scale(1); } to{ transform:translate3d(24px,-20px,0) scale(1.08); } }
-    .app{ display:grid; grid-template-columns:var(--sidebar) minmax(0,1fr); min-height:100vh; }
-    .sidebar{ position:sticky; top:0; height:100vh; padding:22px 18px; border-right:1px solid var(--line); background:color-mix(in srgb, var(--panel-strong) 74%, transparent); backdrop-filter:blur(22px) saturate(150%); box-shadow:12px 0 50px rgba(21,92,172,.07); overflow-y:auto; }
-    .brand{ display:flex; align-items:center; gap:12px; padding:12px 10px 18px; margin-bottom:8px; }
-    .brand-mark{ position:relative; width:42px; height:42px; border-radius:14px; background:linear-gradient(135deg,var(--primary),var(--primary2)); box-shadow:0 12px 28px rgba(15,108,189,.28); display:grid; place-items:center; }
-    .brand-mark::before{ content:""; width:23px; height:13px; border-radius:999px; background:#fff; box-shadow:-10px 4px 0 -3px rgba(255,255,255,.96), 10px 4px 0 -2px rgba(255,255,255,.86); }
-    .brand-title{ line-height:1.05; } .brand-title strong{ display:block; font-size:1.02rem; letter-spacing:-.02em; } .brand-title span{ color:var(--muted); font-size:.82rem; }
-    .nav-title{ margin:18px 12px 8px; font-size:.72rem; font-weight:900; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
-    .nav-btn{ width:100%; border:0; display:flex; align-items:center; gap:12px; padding:12px 13px; margin:5px 0; border-radius:16px; background:transparent; color:var(--text); cursor:pointer; text-align:left; font:inherit; transition:.2s ease; }
-    .nav-btn:hover,.nav-btn.active{ background:linear-gradient(135deg, rgba(15,108,189,.13), rgba(40,167,238,.11)); color:var(--primary3); }
-    .nav-ico{ width:32px; height:32px; border-radius:11px; display:grid; place-items:center; background:rgba(15,108,189,.10); font-size:1.05rem; flex:0 0 auto; }
-    .nav-btn.active .nav-ico{ background:var(--primary); color:white; }
-    .progress-shell{ margin:22px 8px 12px; padding:16px; border:1px solid var(--line); background:var(--panel); border-radius:22px; }
-    .progress-label{ display:flex; justify-content:space-between; gap:14px; font-size:.82rem; color:var(--muted); margin-bottom:9px; }
-    .progress-track{ height:10px; border-radius:999px; background:rgba(15,108,189,.14); overflow:hidden; }
-    .progress-bar{ width:0%; height:100%; border-radius:inherit; background:linear-gradient(90deg,var(--primary),var(--primary2)); transition:width .35s ease; }
-    main{ padding:26px clamp(18px,4vw,58px) 70px; }
-    .topbar{ display:flex; align-items:center; justify-content:space-between; gap:18px; margin-bottom:26px; position:relative; }
-    .crumb{ display:flex; align-items:center; gap:10px; color:var(--muted); font-size:.92rem; }
-    .top-actions{ display:flex; align-items:center; gap:10px; }
-    .status-pill,.gear-btn{ display:inline-flex; align-items:center; gap:9px; padding:9px 12px; border-radius:999px; background:var(--panel); border:1px solid var(--line); color:var(--text); box-shadow:0 10px 24px rgba(30,84,142,.08); white-space:nowrap; }
-    .gear-btn{ width:42px; height:42px; justify-content:center; cursor:pointer; font-size:1.05rem; }
-    .dot{ width:10px; height:10px; border-radius:50%; background:var(--good); box-shadow:0 0 0 6px color-mix(in srgb, var(--good) 16%, transparent); }
-    .settings-panel{ position:absolute; right:0; top:54px; z-index:40; width:min(355px, calc(100vw - 30px)); border-radius:24px; border:1px solid var(--line); background:var(--panel-strong); box-shadow:var(--shadow); padding:16px; backdrop-filter:blur(22px); }
-    .settings-panel[hidden]{ display:none; }
-    .setting-row{ display:grid; gap:8px; padding:10px 0; border-bottom:1px solid var(--line); }
-    .setting-row:last-child{ border-bottom:0; }
-    .setting-row strong{ font-size:.86rem; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; }
-    .segmented{ display:flex; gap:6px; flex-wrap:wrap; padding:5px; border-radius:16px; background:rgba(15,108,189,.08); }
-    .segmented button{ border:0; border-radius:12px; padding:9px 11px; background:transparent; color:var(--text); font-weight:850; cursor:pointer; flex:1; min-width:78px; }
-    .segmented button.active{ background:var(--primary); color:#fff; box-shadow:0 8px 20px rgba(15,108,189,.22); }
-    .hero{ position:relative; overflow:hidden; min-height:360px; border-radius:34px; padding:clamp(25px,5vw,52px); background:linear-gradient(135deg, rgba(15,108,189,.96), rgba(40,167,238,.86)), radial-gradient(circle at 70% 30%, rgba(255,255,255,.5), transparent 38%); color:white; box-shadow:var(--shadow); isolation:isolate; }
-    .hero::before{ content:""; position:absolute; inset:-150px -140px auto auto; width:500px; height:500px; border-radius:999px; background:radial-gradient(circle, rgba(255,255,255,.32), transparent 64%); z-index:-1; animation:pulse 7s ease-in-out infinite alternate; }
-    .hero::after{ content:""; position:absolute; inset:auto -120px -190px auto; width:520px; height:420px; border-radius:44%; background:rgba(255,255,255,.12); transform:rotate(-14deg); z-index:-1; }
-    @keyframes pulse{ to{ transform:scale(1.1) translate(-18px,18px); } }
-    .hero-grid{ display:grid; grid-template-columns:minmax(0,1.05fr) minmax(270px,.72fr); gap:32px; align-items:center; }
-    .eyebrow{ display:inline-flex; align-items:center; gap:9px; padding:8px 12px; border:1px solid rgba(255,255,255,.34); background:rgba(255,255,255,.13); border-radius:999px; font-weight:800; font-size:.88rem; backdrop-filter:blur(10px); }
-    h1{ margin:18px 0 14px; font-size:clamp(2.35rem,6.7vw,5.8rem); line-height:.91; letter-spacing:-.075em; max-width:880px; }
-    .hero p{ max-width:760px; margin:0; font-size:clamp(1.02rem,1.6vw,1.24rem); line-height:1.65; color:rgba(255,255,255,.9); }
-    .hero-actions{ display:flex; flex-wrap:wrap; gap:12px; margin-top:26px; }
-    .btn{ border:0; appearance:none; border-radius:16px; padding:13px 16px; font-weight:850; cursor:pointer; color:#063763; background:white; box-shadow:0 14px 24px rgba(2,42,82,.18); transition:.2s ease; text-decoration:none; display:inline-flex; align-items:center; gap:10px; font:inherit; font-weight:850; }
-    .btn:hover{ transform:translateY(-2px); box-shadow:0 18px 32px rgba(2,42,82,.22); } .btn.secondary{ color:white; background:rgba(255,255,255,.13); border:1px solid rgba(255,255,255,.32); box-shadow:none; backdrop-filter:blur(12px); }
-    .floating-window{ position:relative; min-height:270px; border-radius:26px; border:1px solid rgba(255,255,255,.3); background:rgba(255,255,255,.16); box-shadow:0 22px 52px rgba(0,38,85,.25); backdrop-filter:blur(14px); overflow:hidden; transform:translateY(47px) rotate(1deg); margin-top: 20px; }
-    .window-bar{ height:44px; display:flex; align-items:center; gap:8px; padding:0 14px; background:rgba(255,255,255,.2); border-bottom:1px solid rgba(255,255,255,.18); } .circle{ width:11px; height:11px; border-radius:50%; background:rgba(255,255,255,.72); }
-    .window-content{ padding:18px; display:grid; gap:14px; } .mini-file{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px; border-radius:18px; background:rgba(255,255,255,.2); border:1px solid rgba(255,255,255,.16); animation:floaty 4.8s ease-in-out infinite; } .mini-file:nth-child(2){ animation-delay:.7s; } .mini-file:nth-child(3){ animation-delay:1.3s; } @keyframes floaty{ 50%{ transform:translateY(-7px); } } .mini-file span{ font-weight:850; color:white; } .mini-file em{ font-style:normal; color:rgba(255,255,255,.78); font-size:.86rem; }
-    .toolbar{ display:grid; grid-template-columns:minmax(220px,1fr) auto; gap:14px; align-items:center; margin:28px 0 18px; }
-    .search{ position:relative; } .search input{ width:100%; border:1px solid var(--line); background:var(--panel-strong); color:var(--text); border-radius:20px; padding:16px 18px 16px 48px; font:inherit; box-shadow:0 10px 30px rgba(26,91,168,.08); outline:none; transition:.2s ease; }
-    .search input:focus{ border-color:rgba(15,108,189,.45); box-shadow:0 0 0 5px rgba(15,108,189,.09); } .search::before{ content:"⌕"; position:absolute; left:18px; top:50%; transform:translateY(-50%); font-size:1.35rem; color:var(--primary); z-index:1; font-weight:900; }
-    .view-switch{ display:flex; gap:8px; padding:6px; border-radius:18px; border:1px solid var(--line); background:var(--panel); box-shadow:0 10px 30px rgba(26,91,168,.08); }
-    .filter-btn{ border:0; border-radius:13px; padding:10px 12px; background:transparent; color:var(--text); cursor:pointer; font-weight:850; } .filter-btn.active{ background:var(--primary); color:white; }
-    section{ scroll-margin-top:24px; } .section-head{ display:flex; justify-content:space-between; align-items:end; gap:16px; margin:34px 0 18px; } h2{ margin:0; font-size:clamp(1.45rem,3vw,2.45rem); letter-spacing:-.045em; line-height:1; } .section-head p{ margin:9px 0 0; color:var(--muted); line-height:1.5; max-width:760px; } .count-chip{ flex:0 0 auto; border-radius:999px; padding:9px 12px; color:var(--primary3); background:rgba(15,108,189,.10); font-weight:850; font-size:.87rem; }
-    .card-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; }
-    .shortcut-card{ position:relative; min-height:190px; padding:18px; border-radius:24px; border:1px solid var(--line); background:var(--panel); box-shadow:var(--shadow2); backdrop-filter:blur(18px) saturate(140%); overflow:hidden; transition:.2s ease; }
-    .shortcut-card:hover{ transform:translateY(-4px); border-color:rgba(15,108,189,.25); box-shadow:0 22px 46px rgba(20,83,160,.18); }
-    .shortcut-card::after{ content:""; position:absolute; right:-36px; top:-42px; width:116px; height:116px; border-radius:50%; background:linear-gradient(135deg, rgba(15,108,189,.11), rgba(40,167,238,.05)); pointer-events:none; }
-    .card-top{ position:relative; z-index:1; display:flex; justify-content:space-between; align-items:start; gap:10px; margin-bottom:14px; } .badge{ display:inline-flex; align-items:center; gap:7px; padding:7px 9px; border-radius:999px; background:rgba(15,108,189,.09); color:var(--primary3); font-size:.76rem; font-weight:900; text-transform:uppercase; letter-spacing:.08em; }
-    .star-btn{ border:0; width:38px; height:38px; border-radius:14px; background:var(--panel-strong); cursor:pointer; color:var(--muted); font-size:1.15rem; transition:.18s ease; } .star-btn.active{ color:#b65c00; background:#fff3d8; }
-    .shortcut-card h3{ position:relative; z-index:1; margin:0 0 12px; font-size:1.08rem; line-height:1.22; letter-spacing:-.02em; }
-    .keys{ position:relative; z-index:1; display:flex; flex-wrap:wrap; gap:6px; margin:10px 0 13px; align-items:center; }
-    kbd{ display:inline-flex; align-items:center; justify-content:center; min-height:34px; min-width:38px; padding:6px 10px; border-radius:11px; border:1px solid rgba(40,76,116,.18); background:linear-gradient(180deg,#fff,#edf5ff); box-shadow:0 3px 0 rgba(32,72,112,.18), 0 10px 16px rgba(22,70,125,.08); font-family:inherit; font-weight:900; color:#163857; }
-    .plus{ color:var(--muted); font-weight:900; padding:0 1px; } .shortcut-card p{ position:relative; z-index:1; margin:0; color:var(--muted); line-height:1.52; font-size:.94rem; } .card-actions{ position:relative; z-index:1; display:flex; gap:8px; margin-top:15px; flex-wrap:wrap; }
-    .small-btn{ border:1px solid var(--line); background:var(--panel-strong); color:var(--text); border-radius:12px; padding:8px 10px; font-weight:850; cursor:pointer; font-size:.84rem; } .small-btn:hover{ background:var(--panel-strong); border-color:rgba(15,108,189,.35); }
-    .favorites-zone{ margin-top:28px; border-radius:32px; padding:clamp(20px,4vw,34px); border:1px solid var(--line); background:linear-gradient(135deg, color-mix(in srgb, var(--panel-strong) 90%, transparent), color-mix(in srgb, var(--panel) 84%, transparent)); box-shadow:var(--shadow); backdrop-filter:blur(20px); }
-    .fav-actions{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:flex-end; } .fav-inventory{ display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr)); gap:12px; min-height:126px; padding:12px; border-radius:26px; border:1px dashed color-mix(in srgb, var(--primary) 38%, transparent); background:rgba(15,108,189,.055); }
-    .fav-tile{ position:relative; min-height:138px; display:flex; flex-direction:column; gap:10px; padding:14px; border-radius:20px; border:1px solid var(--line); background:var(--tile); box-shadow:0 12px 28px rgba(15,55,105,.10); cursor:grab; user-select:none; transition:.18s ease; }
-    .fav-tile:active{ cursor:grabbing; } .fav-tile.dragging{ opacity:.45; transform:scale(.98); } .fav-tile.drop-target{ outline:3px solid color-mix(in srgb, var(--primary2) 62%, transparent); outline-offset:2px; }
-    .fav-top{ display:flex; justify-content:space-between; gap:8px; align-items:start; } .handle{ display:inline-flex; align-items:center; gap:6px; color:var(--muted); font-weight:900; font-size:.8rem; letter-spacing:.04em; } .handle::before{ content:"⋮⋮"; letter-spacing:-.12em; color:var(--primary); font-size:1.15rem; }
-    .fav-title{ font-weight:900; line-height:1.15; letter-spacing:-.02em; } .fav-desc{ color:var(--muted); line-height:1.35; font-size:.84rem; margin:0; } .fav-tools{ display:flex; gap:6px; flex-wrap:wrap; margin-top:auto; } .icon-btn{ border:1px solid var(--line); border-radius:11px; background:var(--panel-strong); color:var(--text); padding:6px 8px; cursor:pointer; font-weight:850; }
-    .fav-empty{ display:none; padding:28px; text-align:center; color:var(--muted); border:1px dashed rgba(15,108,189,.24); border-radius:22px; background:rgba(255,255,255,.07); }
-    .training{ margin-top:36px; border-radius:30px; padding:clamp(22px,4vw,36px); border:1px solid var(--line); background:linear-gradient(135deg, var(--panel-strong), var(--panel)); box-shadow:var(--shadow); backdrop-filter:blur(20px); }
-    .training-grid{ display:grid; grid-template-columns:1fr; gap:22px; align-items:stretch; } .practice-box{ min-height:230px; border-radius:24px; padding:22px; color:white; background:linear-gradient(135deg,#063763,#0f6cbd 58%,#28a7ee); display:flex; flex-direction:column; justify-content:space-between; overflow:hidden; position:relative; } .practice-box::after{ content:""; position:absolute; width:240px; height:240px; right:-90px; bottom:-130px; border-radius:50%; background:rgba(255,255,255,.18); } .practice-task{ position:relative; z-index:1; font-size:clamp(1.5rem,4vw,2.8rem); line-height:1.04; letter-spacing:-.05em; font-weight:900; margin:0; } .practice-answer{ position:relative; z-index:1; display:none; margin-top:18px; } .practice-answer.show{ display:block; animation:pop .22s ease; } @keyframes pop{ from{ transform:scale(.96); opacity:0; } to{ transform:scale(1); opacity:1; } } .practice-controls{ position:relative; z-index:1; display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; }
-    .tip-list{ display:grid; gap:12px; } .tip{ display:flex; gap:12px; align-items:flex-start; padding:15px; border-radius:20px; border:1px solid var(--line); background:var(--panel); } .tip strong{ display:block; margin-bottom:4px; } .tip p{ margin:0; color:var(--muted); line-height:1.45; font-size:.92rem; } .tip-icon{ width:38px; height:38px; flex:0 0 auto; border-radius:14px; display:grid; place-items:center; background:rgba(15,108,189,.10); }
-    .toast{ position:fixed; left:50%; bottom:22px; transform:translateX(-50%) translateY(20px); opacity:0; pointer-events:none; padding:12px 15px; border-radius:16px; background:#0e2336; color:white; box-shadow:0 18px 40px rgba(0,0,0,.2); transition:.25s ease; z-index:50; font-weight:850; } .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
-    .empty{ display:none; padding:30px; text-align:center; color:var(--muted); border:1px dashed rgba(15,108,189,.24); border-radius:24px; background:var(--panel); } .footer{ margin-top:32px; color:var(--muted); font-size:.88rem; line-height:1.55; }
-    @media (max-width:980px){ .app{ grid-template-columns:1fr; } .sidebar{ position:relative; height:auto; display:block; border-right:0; border-bottom:1px solid var(--line); } .nav-wrap{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px; } .progress-shell{ display:none; } .hero-grid,.training-grid{ grid-template-columns:1fr; } .floating-window{ min-height:230px; } }
-    @media (max-width:720px){ main{ padding:18px 14px 48px; } .topbar{ align-items:flex-start; flex-direction:column; } .top-actions{ width:100%; justify-content:space-between; } .status-pill{ white-space:normal; } .hero{ border-radius:28px; padding:28px 20px; } .toolbar{ grid-template-columns:1fr; } .view-switch{ overflow:auto; justify-content:flex-start; } .section-head{ align-items:start; flex-direction:column; } .fav-actions{ justify-content:flex-start; } .card-grid{ grid-template-columns:1fr; } .nav-wrap{ grid-template-columns:1fr; } h1{ font-size:3.05rem; } }
-    @media (prefers-reduced-motion:reduce){ *,*::before,*::after{ animation:none !important; transition:none !important; scroll-behavior:auto !important; } }
-    .quiz-options { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 18px; }
-    @media (max-width: 600px) { .quiz-options { grid-template-columns: 1fr; } }
-    .quiz-btn {
-      border: 1px solid rgba(255,255,255,0.25);
-      border-radius: 16px;
-      padding: 14px 16px;
-      background: rgba(255,255,255,0.15);
-      color: white;
-      font-weight: 800;
-      cursor: pointer;
-      text-align: left;
-      transition: all 0.2s ease;
-      font-family: inherit;
-      font-size: 0.95rem;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .quiz-btn:hover:not(:disabled) {
-      background: rgba(255,255,255,0.25);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-    }
-    .quiz-btn:active:not(:disabled) {
-      transform: translateY(0);
-    }
-    .quiz-btn:disabled {
-      cursor: not-allowed;
-      opacity: 0.7;
-    }
-    .quiz-btn.correct {
-      background: var(--good) !important;
-      border-color: var(--good) !important;
-      color: white !important;
-      animation: correct-pop 0.35s ease;
-    }
-    .quiz-btn.wrong {
-      background: #c92a2a !important;
-      border-color: #c92a2a !important;
-      color: white !important;
-      animation: wrong-shake 0.4s ease;
-    }
-    @keyframes correct-pop {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-      100% { transform: scale(1); }
-    }
-    @keyframes wrong-shake {
-      0%, 100% { transform: translateX(0); }
-      20%, 60% { transform: translateX(-6px); }
-      40%, 80% { transform: translateX(6px); }
-    }
-    .practice-stats {
-      display: flex;
-      gap: 12px;
-      font-size: 0.85rem;
-      font-weight: 800;
-      margin-bottom: 12px;
-    }
-    .stat-pill {
-      padding: 6px 12px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.18);
-      color: white;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      backdrop-filter: blur(10px);
-    }
-
-    .memory-board {
-      margin-top: 18px;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-      gap: 14px;
-      perspective: 1000px;
-    }
-    .memory-card {
-      aspect-ratio: 4 / 3;
-      min-height: 95px;
-      cursor: pointer;
-      position: relative;
-      transform-style: preserve-3d;
-      transition: transform 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      border-radius: 18px;
-      box-shadow: 0 8px 24px rgba(26,91,168,0.08);
-    }
-    .memory-card:active {
-      transform: scale(0.97);
-    }
-    .memory-card.flipped {
-      transform: rotateY(180deg);
-    }
-    .memory-card-front, .memory-card-back {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      backface-visibility: hidden;
-      border-radius: 18px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 10px;
-      text-align: center;
-      font-size: 0.85rem;
-      font-weight: 800;
-      box-sizing: border-box;
-      border: 1px solid var(--line);
-    }
-    .memory-card-front {
-      background: linear-gradient(135deg, var(--primary), var(--primary2));
-      color: white;
-      font-size: 1.5rem;
-    }
-    .memory-card-front::after {
-      content: "🧩";
-      opacity: 0.65;
-    }
-    .memory-card-back {
-      background: var(--panel-strong);
-      color: var(--text);
-      transform: rotateY(180deg);
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .memory-card.matched .memory-card-back {
-      border-color: var(--good);
-      background: color-mix(in srgb, var(--good) 12%, var(--panel-strong));
-      color: var(--good);
-    }
-    .memory-card.mismatched .memory-card-back {
-      border-color: #c92a2a;
-      background: color-mix(in srgb, #c92a2a 12%, var(--panel-strong));
-      color: #c92a2a;
-    }
-    .memory-controls {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 22px;
-      padding-bottom: 16px;
-      border-bottom: 1px solid var(--line);
-    }
-    .memory-stats {
-      display: flex;
-      gap: 16px;
-      font-weight: 850;
-      color: var(--muted);
-      align-items: center;
-    }
-    .memory-stats strong {
-      color: var(--text);
-    }
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.55);
-      backdrop-filter: blur(8px);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease;
-    }
-    .modal-overlay.show {
-      opacity: 1;
-      pointer-events: auto;
-    }
-    .win-modal {
-      background: var(--panel-strong);
-      border: 1px solid var(--line);
-      border-radius: 28px;
-      padding: clamp(24px, 5vw, 42px);
-      max-width: 450px;
-      width: 90%;
-      text-align: center;
-      box-shadow: var(--shadow);
-      transform: scale(0.9);
-      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      color: var(--text);
-    }
-    .modal-overlay.show .win-modal {
-      transform: scale(1);
-    }
-    .win-emoji {
-      font-size: 3.5rem;
-      margin-bottom: 14px;
-      display: inline-block;
-      animation: correct-pop 0.6s ease infinite alternate;
-    }
-    #practiceMode {
-      background: rgba(255, 255, 255, 0.15);
-      color: white;
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      font-weight: 800;
-      padding: 10px 32px 10px 12px;
-      border-radius: 12px;
-      cursor: pointer;
-      outline: none;
-      font-family: inherit;
-      font-size: 0.9rem;
-      transition: all 0.2s ease;
-      margin-right: 6px;
-      appearance: none;
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='white'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 12px center;
-      background-size: 10px;
-    }
-    #practiceMode:hover {
-      background: rgba(255, 255, 255, 0.22);
-      border-color: rgba(255, 255, 255, 0.35);
-    }
-    #practiceMode option {
-      background-color: var(--panel-strong) !important;
-      color: var(--text) !important;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Tastenkombinationen · Training</title>
+<style>
+:root{--bg:#f4f7fb;--panel:#fff;--panel2:#f8fafc;--text:#172033;--muted:#667085;--line:#e5eaf2;--blue:#2563eb;--blue2:#60a5fa;--indigo:#4f46e5;--green:#0f9f7f;--red:#dc2626;--amber:#d97706;--shadow:0 18px 55px rgba(24,39,75,.10);--radius:22px;--rail:238px}
+html[data-theme="dark"]{--bg:#0a1020;--panel:#111a2d;--panel2:#162137;--text:#f3f6fb;--muted:#9aa8bf;--line:#26354f;--blue:#60a5fa;--blue2:#38bdf8;--indigo:#818cf8;--green:#34d399;--red:#fb7185;--amber:#fbbf24;--shadow:0 18px 55px rgba(0,0,0,.28)}
+html[data-size="small"]{font-size:14px}html[data-size="normal"]{font-size:16px}html[data-size="large"]{font-size:18px}
+*{box-sizing:border-box}html,body{height:100%}body{margin:0;font-family:Inter,"Segoe UI",system-ui,-apple-system,sans-serif;color:var(--text);background:var(--bg);overflow:hidden}button,input,select{font:inherit}button{color:inherit}
+.app{height:100dvh;display:grid;grid-template-columns:var(--rail) minmax(0,1fr)}
+.rail{background:color-mix(in srgb,var(--panel) 94%,transparent);border-right:1px solid var(--line);padding:18px 14px;display:flex;flex-direction:column;gap:18px;z-index:20}
+.brand{display:flex;align-items:center;gap:11px;padding:7px 8px}.logo{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,var(--blue),var(--blue2));display:grid;place-items:center;color:white;font-weight:950;box-shadow:0 10px 25px rgba(37,99,235,.25)}.brand strong{display:block;letter-spacing:-.02em}.brand small{display:block;color:var(--muted);margin-top:2px}
+.nav{display:grid;gap:6px}.nav-btn{border:0;background:transparent;border-radius:14px;padding:11px 12px;display:flex;align-items:center;gap:11px;cursor:pointer;text-align:left;font-weight:750}.nav-btn:hover{background:var(--panel2)}.nav-btn.active{background:color-mix(in srgb,var(--blue) 11%,var(--panel));color:var(--blue)}.nav-ico{width:30px;height:30px;border-radius:10px;display:grid;place-items:center;background:var(--panel2);font-size:1rem}.nav-btn.active .nav-ico{background:var(--blue);color:#fff}
+.rail-foot{margin-top:auto;display:grid;gap:10px}.rail-stat{padding:12px;border:1px solid var(--line);border-radius:15px;background:var(--panel2)}.rail-stat-row{display:flex;justify-content:space-between;gap:10px;font-size:.82rem;color:var(--muted);margin-bottom:8px}.progress{height:7px;border-radius:99px;background:color-mix(in srgb,var(--line) 75%,transparent);overflow:hidden}.progress>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--blue2));border-radius:inherit;transition:.25s}
+.shell{min-width:0;height:100dvh;display:grid;grid-template-rows:auto minmax(0,1fr)}
+.topbar{height:72px;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 clamp(18px,3vw,34px);border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--panel) 88%,transparent);backdrop-filter:blur(18px);z-index:10}.crumb{display:flex;align-items:center;gap:9px;min-width:0}.crumb a{color:var(--muted);text-decoration:none;font-weight:700}.crumb b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.top-actions{display:flex;align-items:center;gap:8px}.icon-btn{width:40px;height:40px;border:1px solid var(--line);border-radius:13px;background:var(--panel);cursor:pointer;display:grid;place-items:center}.icon-btn:hover{border-color:color-mix(in srgb,var(--blue) 40%,var(--line));color:var(--blue)}
+.settings{position:fixed;right:22px;top:64px;width:min(340px,calc(100vw - 28px));padding:16px;border:1px solid var(--line);border-radius:18px;background:var(--panel);box-shadow:var(--shadow);z-index:50}.settings[hidden]{display:none}.setting{padding:10px 0}.setting+ .setting{border-top:1px solid var(--line)}.setting strong{font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em}.seg{display:flex;gap:6px;margin-top:8px;padding:4px;background:var(--panel2);border-radius:12px}.seg button{flex:1;border:0;background:transparent;border-radius:9px;padding:8px;cursor:pointer;font-weight:750}.seg button.active{background:var(--panel);box-shadow:0 3px 12px rgba(0,0,0,.08);color:var(--blue)}
+.viewport{min-height:0;overflow:hidden;position:relative}.view{display:none;height:100%;overflow:auto;padding:clamp(18px,3vw,34px);overscroll-behavior:contain}.view.active{display:block}.view-inner{max-width:1260px;margin:0 auto}.view-head{display:flex;align-items:end;justify-content:space-between;gap:18px;margin-bottom:20px}.eyebrow{font-size:.78rem;font-weight:850;text-transform:uppercase;letter-spacing:.09em;color:var(--blue)}h1,h2,h3,p{margin-top:0}.view-head h1{font-size:clamp(1.8rem,4vw,3rem);letter-spacing:-.05em;margin:.3rem 0 .35rem}.view-head p{color:var(--muted);margin:0;line-height:1.5}.count-pill{flex:0 0 auto;border:1px solid var(--line);border-radius:99px;padding:8px 12px;background:var(--panel);font-weight:800;color:var(--muted)}
+.hero{min-height:min(430px,52vh);border-radius:30px;padding:clamp(26px,5vw,58px);background:linear-gradient(135deg,#1d4ed8,#2563eb 48%,#38bdf8);color:white;position:relative;overflow:hidden;box-shadow:0 24px 70px rgba(37,99,235,.22);display:grid;grid-template-columns:minmax(0,1.2fr) minmax(280px,.7fr);gap:34px;align-items:center}.hero:after{content:"";position:absolute;width:430px;height:430px;border-radius:50%;right:-140px;top:-180px;background:rgba(255,255,255,.14)}.hero-copy{position:relative;z-index:1}.hero-kicker{display:inline-flex;padding:7px 11px;border-radius:99px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);font-weight:800;font-size:.83rem}.hero h1{font-size:clamp(2.6rem,7vw,5.7rem);line-height:.9;letter-spacing:-.075em;margin:18px 0 16px;max-width:780px}.hero p{max-width:720px;line-height:1.6;color:rgba(255,255,255,.88);font-size:1.04rem}.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}.btn{border:0;border-radius:14px;padding:12px 16px;background:white;color:#1849a9;font-weight:850;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px}.btn.secondary{background:rgba(255,255,255,.13);color:white;border:1px solid rgba(255,255,255,.28)}.btn.dark{background:var(--text);color:var(--panel)}
+.key-stack{position:relative;z-index:1;display:grid;gap:12px}.key-demo{padding:16px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.13);border-radius:18px;backdrop-filter:blur(10px);display:flex;justify-content:space-between;align-items:center;gap:12px}.key-demo span{font-size:.82rem;color:rgba(255,255,255,.76)}
+.stats-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:18px}.stat-card{border:1px solid var(--line);background:var(--panel);border-radius:18px;padding:16px;box-shadow:0 8px 24px rgba(24,39,75,.05);cursor:pointer;text-align:left}.stat-card:hover{transform:translateY(-2px);box-shadow:var(--shadow)}.stat-card strong{font-size:1.55rem;display:block;letter-spacing:-.04em}.stat-card span{font-size:.84rem;color:var(--muted)}
+.toolbar{display:grid;grid-template-columns:minmax(220px,1fr) auto;gap:12px;margin-bottom:14px}.search{position:relative}.search:before{content:"⌕";position:absolute;left:15px;top:50%;transform:translateY(-50%);color:var(--blue);font-size:1.2rem;font-weight:900}.search input{width:100%;height:46px;padding:0 15px 0 42px;border:1px solid var(--line);border-radius:14px;background:var(--panel);color:var(--text);outline:none}.search input:focus{border-color:var(--blue);box-shadow:0 0 0 4px color-mix(in srgb,var(--blue) 10%,transparent)}.category-tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px}.chip{border:1px solid var(--line);border-radius:99px;background:var(--panel);padding:8px 11px;cursor:pointer;font-weight:750;font-size:.85rem}.chip.active{background:var(--blue);border-color:var(--blue);color:white}.learn-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.shortcut{border:1px solid var(--line);border-radius:18px;background:var(--panel);padding:16px;min-height:178px;display:flex;flex-direction:column;box-shadow:0 8px 24px rgba(24,39,75,.045)}.shortcut-top{display:flex;justify-content:space-between;gap:10px;align-items:center}.tag{font-size:.74rem;font-weight:850;text-transform:uppercase;letter-spacing:.05em;color:var(--blue);background:color-mix(in srgb,var(--blue) 9%,var(--panel));padding:5px 8px;border-radius:99px}.star{border:0;background:transparent;font-size:1.25rem;cursor:pointer;color:#aab3c2}.star.active{color:#f59e0b}.shortcut h3{font-size:1rem;margin:13px 0 10px;line-height:1.3}.keys{display:flex;align-items:center;flex-wrap:wrap;gap:5px;margin:0 0 11px}.plus{font-size:.78rem;color:var(--muted);font-weight:900}kbd{font:800 .78rem/1 "Segoe UI",system-ui,sans-serif;padding:7px 9px;border-radius:9px;background:linear-gradient(var(--panel),var(--panel2));border:1px solid var(--line);box-shadow:0 2px 0 color-mix(in srgb,var(--line) 90%,#9ca3af);white-space:nowrap}.shortcut p{color:var(--muted);font-size:.87rem;line-height:1.45;margin:0 0 12px}.card-foot{margin-top:auto;display:flex;justify-content:space-between;align-items:center;gap:8px}.practice-link{border:0;background:transparent;color:var(--blue);font-weight:800;cursor:pointer;padding:5px 0}.empty{display:none;text-align:center;padding:44px;border:1px dashed var(--line);border-radius:18px;color:var(--muted)}
+.practice-layout{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:16px}.practice-card{min-height:440px;border:1px solid var(--line);background:var(--panel);border-radius:26px;padding:clamp(22px,4vw,40px);display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;box-shadow:var(--shadow)}.practice-card .prompt-label{font-size:.78rem;color:var(--muted);font-weight:850;text-transform:uppercase;letter-spacing:.08em}.practice-card h2{font-size:clamp(1.7rem,4vw,3rem);letter-spacing:-.05em;margin:14px 0 18px;max-width:720px}.answer{display:none;margin-top:8px}.answer.show{display:block}.answer .keys{justify-content:center}.answer kbd{font-size:1rem;padding:11px 14px}.answer p{color:var(--muted);margin:14px auto 0;max-width:620px;line-height:1.5}.practice-actions{display:flex;gap:9px;flex-wrap:wrap;justify-content:center;margin-top:22px}.solid-btn,.soft-btn{border:0;border-radius:13px;padding:11px 14px;font-weight:800;cursor:pointer}.solid-btn{background:var(--blue);color:white}.soft-btn{background:var(--panel2);border:1px solid var(--line)}.side-card{border:1px solid var(--line);background:var(--panel);border-radius:22px;padding:18px;height:max-content}.side-card h3{margin:0 0 12px}.mode-select{width:100%;height:42px;border:1px solid var(--line);border-radius:11px;background:var(--panel2);color:var(--text);padding:0 10px}.mini-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.mini-stat{padding:12px;border-radius:13px;background:var(--panel2)}.mini-stat span{display:block;color:var(--muted);font-size:.75rem}.mini-stat strong{font-size:1.2rem}.quiz-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;width:min(680px,100%);margin-top:8px}.quiz-option{border:1px solid var(--line);border-radius:14px;background:var(--panel2);padding:13px;cursor:pointer;font-weight:800}.quiz-option:hover{border-color:var(--blue)}.quiz-option.correct{border-color:var(--green);background:color-mix(in srgb,var(--green) 10%,var(--panel))}.quiz-option.wrong{border-color:var(--red);background:color-mix(in srgb,var(--red) 9%,var(--panel))}.quiz-option:disabled{cursor:default}
+.memory-toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:14px}.memory-toolbar select{height:40px;border:1px solid var(--line);border-radius:11px;background:var(--panel);color:var(--text);padding:0 10px}.memory-stats{margin-left:auto;display:flex;gap:8px}.memory-stats span{padding:8px 10px;border:1px solid var(--line);border-radius:11px;background:var(--panel);font-weight:750;font-size:.84rem}.memory-board{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.memory-card{aspect-ratio:1.65;perspective:800px;cursor:pointer}.memory-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:.35s}.memory-card.flipped .memory-inner,.memory-card.matched .memory-inner{transform:rotateY(180deg)}.memory-face{position:absolute;inset:0;border-radius:16px;backface-visibility:hidden;border:1px solid var(--line);display:grid;place-items:center;padding:11px;text-align:center}.memory-front{background:linear-gradient(135deg,var(--blue),var(--indigo));color:white;font-size:1.5rem;font-weight:900}.memory-back{transform:rotateY(180deg);background:var(--panel);font-weight:800}.memory-card.matched .memory-back{border-color:var(--green);box-shadow:0 0 0 3px color-mix(in srgb,var(--green) 10%,transparent)}
+.fav-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.favorite-card{border:1px solid var(--line);background:var(--panel);border-radius:18px;padding:16px}.favorite-card h3{font-size:1rem;margin:10px 0}.favorite-card p{color:var(--muted);font-size:.86rem;line-height:1.45}.remove-btn{border:0;background:transparent;color:var(--red);font-weight:800;cursor:pointer;padding:4px 0}
+.mobile-nav{display:none}.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:var(--text);color:var(--panel);padding:10px 14px;border-radius:99px;font-weight:800;box-shadow:var(--shadow);z-index:100;transition:.2s}.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:1050px){.learn-grid,.fav-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.stats-grid{grid-template-columns:repeat(3,1fr)}.practice-layout{grid-template-columns:1fr}.side-card{display:grid;grid-template-columns:1fr auto;align-items:end;gap:14px}.mini-stats{margin:0}.memory-board{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:760px){body{overflow:hidden}.app{display:block}.rail{display:none}.shell{height:100dvh;grid-template-rows:58px minmax(0,1fr) 72px}.topbar{height:58px;padding:0 13px}.crumb a,.crumb span{display:none}.view{padding:15px 13px 24px}.view-head{align-items:flex-start}.view-head h1{font-size:1.8rem}.hero{min-height:auto;grid-template-columns:1fr;padding:26px 20px;border-radius:22px}.hero h1{font-size:clamp(2.6rem,13vw,4.4rem)}.key-stack{grid-template-columns:repeat(3,1fr)}.key-demo{display:block;padding:11px}.key-demo span{display:none}.stats-grid{grid-template-columns:repeat(2,1fr)}.toolbar{grid-template-columns:1fr}.category-tabs{overflow-x:auto;flex-wrap:nowrap;padding-bottom:3px}.chip{white-space:nowrap}.learn-grid,.fav-grid{grid-template-columns:1fr}.shortcut{min-height:0}.practice-card{min-height:390px;padding:24px 16px}.side-card{grid-template-columns:1fr}.quiz-options{grid-template-columns:1fr}.memory-board{grid-template-columns:repeat(2,minmax(0,1fr))}.memory-card{aspect-ratio:1.25}.memory-stats{width:100%;margin-left:0}.mobile-nav{display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid var(--line);background:color-mix(in srgb,var(--panel) 95%,transparent);padding:7px 5px calc(7px + env(safe-area-inset-bottom));z-index:20}.mobile-nav button{border:0;background:transparent;border-radius:11px;padding:5px 2px;color:var(--muted);font-size:.69rem;font-weight:750;display:grid;place-items:center;gap:3px}.mobile-nav button i{font-style:normal;font-size:1.15rem}.mobile-nav button.active{color:var(--blue);background:color-mix(in srgb,var(--blue) 9%,var(--panel))}.toast{bottom:88px}}
+@media(max-width:420px){.stats-grid{grid-template-columns:1fr 1fr}.stat-card{padding:13px}.key-stack{display:none}.hero{display:block}.view-head .count-pill{display:none}.memory-face{font-size:.78rem}}
+</style>
 </head>
 <body>
-  <div class="app">
-    <aside class="sidebar" aria-label="Navigation">
-      <div class="nav-wrap">
-        <button class="nav-btn active" data-scroll="hero"><span class="nav-ico">☁️</span><span data-i18n="home">Start</span></button>
-        <button class="nav-btn" data-scroll="allgemein"><span class="nav-ico">⌘</span><span>Allgemein</span></button>
-        <button class="nav-btn" data-scroll="fenster"><span class="nav-ico">▣</span><span>Fenster</span></button>
-        <button class="nav-btn" data-scroll="power"><span class="nav-ico">⚡</span><span>Power</span></button>
-        <button class="nav-btn" data-scroll="training"><span class="nav-ico">🎯</span><span data-i18n="trainingNav">Training</span></button>
-        <button class="nav-btn" data-scroll="memory"><span class="nav-ico">🧩</span><span data-i18n="memoryNav">Memory</span></button>
-        <button class="nav-btn" data-scroll="favorites"><span class="nav-ico">⭐</span><span>Meine Favoriten</span></button>
-      </div>
-    </aside>
+<div class="app">
+  <aside class="rail">
+    <div class="brand"><div class="logo">⌨</div><div><strong>Shortcut Lab</strong><small>IB · B25</small></div></div>
+    <nav class="nav" aria-label="Bereiche">
+      <button class="nav-btn active" data-view="home"><span class="nav-ico">⌂</span>Start</button>
+      <button class="nav-btn" data-view="learn"><span class="nav-ico">⌘</span>Lernen</button>
+      <button class="nav-btn" data-view="train"><span class="nav-ico">◎</span>Training</button>
+      <button class="nav-btn" data-view="memory"><span class="nav-ico">▦</span>Memory</button>
+      <button class="nav-btn" data-view="favorites"><span class="nav-ico">★</span>Favoriten</button>
+    </nav>
+    <div class="rail-foot">
+      <div class="rail-stat"><div class="rail-stat-row"><span>Favoriten</span><b id="railProgress">0 / 44</b></div><div class="progress"><span id="railBar"></span></div></div>
+    </div>
+  </aside>
 
-    <main>
-      <div class="topbar">
-        <div class="crumb">Home <span>›</span> IB <span>›</span> Tastenkombinationen.html</div>
-        <div class="top-actions">
-          <div class="status-pill"><span class="dot"></span><span data-i18n="status">Interaktives Lernblatt · selbstständig ausprobieren</span></div>
-          <button class="gear-btn" id="settingsToggle" aria-label="Einstellungen öffnen">⚙️</button>
-        </div>
-        <div class="settings-panel" id="settingsPanel" hidden>
-          <h3 style="margin:0 0 4px;letter-spacing:-.03em" data-i18n="settings">Einstellungen</h3>
-          <div class="setting-row"><strong data-i18n="fontSize">Schriftgrösse</strong><div class="segmented" data-setting-group="fontSize"><button data-font-size="small" data-i18n="small">Klein</button><button data-font-size="normal" data-i18n="normal">Normal</button><button data-font-size="large" data-i18n="large">Gross</button></div></div>
-          <div class="setting-row"><strong data-i18n="appearance">Darstellung</strong><div class="segmented" data-setting-group="theme"><button data-theme="light" data-i18n="white">White</button><button data-theme="dark" data-i18n="dark">Dark</button></div></div>
-          <div class="setting-row"><strong data-i18n="language">Sprache</strong><div class="segmented" data-setting-group="lang"><button data-lang="de" data-i18n="german">Deutsch</button><button data-lang="en" data-i18n="english">English</button></div></div>
-        </div>
+  <div class="shell">
+    <header class="topbar">
+      <div class="crumb"><a href="index.html">← Kurs</a><span>›</span><b id="crumbTitle">Shortcut Lab</b></div>
+      <div class="top-actions">
+        <button class="icon-btn" id="quickSearch" title="Shortcuts durchsuchen">⌕</button>
+        <button class="icon-btn" id="settingsToggle" title="Einstellungen">⚙</button>
       </div>
+    </header>
 
-      <header class="hero" id="hero">
-        <div class="hero-grid">
-          <div>
-            <div class="eyebrow" data-i18n="eyebrow">✨ Windows-Shortcuts schneller lernen</div>
-            <h1 data-i18n="title">Tastenkombinationen</h1>
-            <p data-i18n="heroText">Viele PC-Aufgaben gehen mit Tastenkombinationen deutlich schneller. Lies die Shortcuts durch, teste sie direkt am Computer und nutze die Übungskarten, bis du die wichtigsten Kombinationen automatisch findest.</p>
-            <div class="hero-actions"><a class="btn" href="#allgemein" data-i18n="start">🚀 Loslegen</a><a class="btn secondary" href="#training" data-i18n="trainNow">🎯 Direkt üben</a></div>
+    <main class="viewport">
+      <section class="view active" id="view-home">
+        <div class="view-inner">
+          <div class="hero">
+            <div class="hero-copy">
+              <span class="hero-kicker">A3 · 44 / 44 Kürzel</span>
+              <h1>Tastenkürzel,<br>die hängen bleiben.</h1>
+              <p>Der komplette Stoff des A3-Merkblatts – aber als interaktives Werkzeug. Nachschlagen, favorisieren, trainieren und im Memory festigen.</p>
+              <div class="hero-actions"><button class="btn" data-go="learn">Alle Kürzel ansehen →</button><button class="btn secondary" data-go="train">Direkt trainieren</button></div>
+            </div>
+            <div class="key-stack" aria-hidden="true">
+              <div class="key-demo"><div class="keys"><kbd>CTRL</kbd><span class="plus">+</span><kbd>C</kbd></div><span>Kopieren</span></div>
+              <div class="key-demo"><div class="keys"><kbd>WIN</kbd><span class="plus">+</span><kbd>V</kbd></div><span>Zwischenablage</span></div>
+              <div class="key-demo"><div class="keys"><kbd>ALTGR</kbd><span class="plus">+</span><kbd>2</kbd></div><span>@ schreiben</span></div>
+            </div>
           </div>
-          <div class="floating-window" aria-hidden="true"><div class="window-bar"><span class="circle"></span><span class="circle"></span><span class="circle"></span></div><div class="window-content"><div class="mini-file"><span>CTRL + C</span><em>copy</em></div><div class="mini-file"><span>WIN + D</span><em>desktop</em></div><div class="mini-file"><span>ALT + TAB</span><em>switch</em></div></div></div>
+          <div class="stats-grid" id="homeCategories"></div>
         </div>
-      </header>
-
-      <div class="toolbar">
-        <label class="search"><input id="searchInput" type="search" data-i18n-placeholder="searchPlaceholder" placeholder="Shortcut, Befehl oder Taste suchen …" /></label>
-        <div class="view-switch" role="group" aria-label="Filter"><button class="filter-btn active" data-filter="all" data-i18n="all">Alle</button><button class="filter-btn" data-filter="favorites" data-i18n="favorites">Favoriten</button><button class="filter-btn" data-filter="allgemein" data-i18n="general">Allgemein</button><button class="filter-btn" data-filter="fenster" data-i18n="windows">Fenster</button><button class="filter-btn" data-filter="power" data-i18n="power">Power</button><button class="filter-btn" data-filter="tipp" data-i18n="tips">Tipps</button></div>
-      </div>
-
-      <section class="favorites-zone" id="favorites">
-        <div class="section-head" style="margin-top:0"><div><h2 data-i18n="favTitle">Meine Favoriten</h2><p data-i18n="favText">Hier landen deine gespeicherten Shortcuts. Ziehe die Kacheln wie in einem Inventar an die gewünschte Position. Die Reihenfolge wird lokal gespeichert.</p></div><div class="fav-actions"><span class="count-chip" id="favCount">0 Favoriten</span><button class="small-btn" id="exportFavorites" data-i18n="exportHtml">HTML exportieren</button><button class="small-btn" id="resetFavoriteOrder" data-i18n="resetOrder">Reihenfolge zurücksetzen</button><button class="small-btn" id="clearFavorites" data-i18n="clearFavs">Favoriten leeren</button></div></div>
-        <div class="count-chip" style="display:inline-flex;margin-bottom:12px" data-i18n="inventoryHint">Drag & Drop · gespeichert im Browser</div>
-        <div class="fav-inventory" id="favoriteInventory"></div>
-        <div class="fav-empty" id="favoriteEmpty" data-i18n="favEmpty">Noch keine Favoriten gespeichert. Tippe bei einem Shortcut auf den Stern.</div>
       </section>
 
-      <section id="allgemein"><div class="section-head"><div><h2 data-i18n="generalTitle">Allgemeine Befehle</h2><p data-i18n="generalText">Diese Kombinationen funktionieren fast überall: in Dokumenten, Tabellen, Bildern, Browsern und vielen Programmen.</p></div><span class="count-chip">14 Shortcuts</span></div><div class="card-grid" id="gridGeneral"></div></section>
-      <section id="fenster"><div class="section-head"><div><h2 data-i18n="windowTitle">Fenster verwalten</h2><p data-i18n="windowText">Wenn mehrere Programme offen sind, helfen dir diese Shortcuts beim Wechseln, Minimieren, Maximieren und Aufräumen.</p></div><span class="count-chip">5 Shortcuts</span></div><div class="card-grid" id="gridWindow"></div></section>
-      <section id="power"><div class="section-head"><div><h2 data-i18n="powerTitle">Power Moves</h2><p data-i18n="powerText">Für fortgeschrittene Fensterverwaltung, schnelle Suche, Sicherheit und Screenshots.</p></div><span class="count-chip">5 Shortcuts</span></div><div class="card-grid" id="gridPower"></div></section>
-      <div class="empty" id="emptyState">Keine Treffer. Probiere ein anderes Suchwort.</div>
-
-      <section class="training" id="training">
-        <div class="section-head" style="margin-top:0">
-          <div>
-            <h2 data-i18n="trainingTitle">Mini-Training</h2>
-            <p data-i18n="trainingText">Aufgabe lesen, Shortcut im Kopf suchen, dann Lösung anzeigen. Danach neue Karte ziehen.</p>
-          </div>
-          <span class="count-chip" id="roundInfo">Karte 1</span>
+      <section class="view" id="view-learn">
+        <div class="view-inner">
+          <div class="view-head"><div><span class="eyebrow">Nachschlagen</span><h1>Alle Tastenkürzel</h1><p>Exakt derselbe Stoff wie im A3-Theorieblatt.</p></div><span class="count-pill" id="learnCount">44 Kürzel</span></div>
+          <div class="toolbar"><div class="search"><input id="searchInput" type="search" placeholder="Befehl oder Tastenkombination suchen …" autocomplete="off"></div></div>
+          <div class="category-tabs" id="categoryTabs"></div>
+          <div class="learn-grid" id="learnGrid"></div>
+          <div class="empty" id="learnEmpty">Keine passenden Tastenkürzel gefunden.</div>
         </div>
-        <div class="training-grid">
-          <div class="practice-box">
-            <div>
-              <div class="practice-stats">
-                <span class="stat-pill" title="Aktuelle Serie / Current Streak">🔥 <span id="streakCount">0</span></span>
-                <span class="stat-pill" title="Rekord / High Score">🏆 <span id="bestStreak">0</span></span>
-              </div>
-              <p class="practice-task" id="practiceTask">Speichern</p>
-              <div class="practice-answer" id="practiceAnswer"></div>
-              <div class="quiz-options" id="quizOptions" style="display:none"></div>
+      </section>
+
+      <section class="view" id="view-train">
+        <div class="view-inner">
+          <div class="view-head"><div><span class="eyebrow">Abrufen statt nur lesen</span><h1>Training</h1><p>Lösung erst im Kopf suchen – dann prüfen.</p></div><span class="count-pill" id="roundPill">1 / 44</span></div>
+          <div class="practice-layout">
+            <div class="practice-card">
+              <span class="prompt-label" id="practiceLabel">Welche Tastenkombination passt?</span>
+              <h2 id="practicePrompt">Kopieren</h2>
+              <div class="quiz-options" id="quizOptions"></div>
+              <div class="answer" id="practiceAnswer"></div>
+              <div class="practice-actions"><button class="solid-btn" id="revealBtn">Lösung zeigen</button><button class="soft-btn" id="nextBtn">Nächste Karte →</button></div>
             </div>
-            <div class="practice-controls">
-              <select id="practiceMode">
-                <option value="quiz" selected data-i18n="modeQuiz">Modus: Quiz</option>
-                <option value="classic" data-i18n="modeClassic">Modus: Lernkarten</option>
-                <option value="imposter" data-i18n="modeImposter">Modus: Fehlersuche</option>
-              </select>
-              <button class="btn" id="showAnswer" type="button" data-i18n="showAnswer">Lösung zeigen</button>
-              <button class="btn secondary" id="nextCard" type="button" data-i18n="nextCard">Neue Karte</button>
-            </div>
+            <aside class="side-card">
+              <div><h3>Trainingsmodus</h3><select class="mode-select" id="practiceMode"><option value="classic">Lernkarten</option><option value="quiz">4er-Quiz</option><option value="imposter">Fehler finden</option></select></div>
+              <div class="mini-stats"><div class="mini-stat"><span>Serie</span><strong id="streak">0</strong></div><div class="mini-stat"><span>Bestwert</span><strong id="best">0</strong></div></div>
+            </aside>
           </div>
         </div>
       </section>
 
-      <section class="training" id="memory" style="margin-top: 36px">
-        <div class="section-head" style="margin-top:0">
-          <div>
-            <h2 data-i18n="memoryTitle">Memory-Spiel</h2>
-            <p data-i18n="memoryText">Finde die passenden Paare: Ein Begriff (Name) gehört zu seiner Tastenkombination.</p>
-          </div>
-          <span class="count-chip" id="memoryBestPill">Beste: -</span>
+      <section class="view" id="view-memory">
+        <div class="view-inner">
+          <div class="view-head"><div><span class="eyebrow">Zuordnen</span><h1>Memory</h1><p>Begriff und Tastenkombination als Paar finden.</p></div><span class="count-pill" id="memoryBest">Best: –</span></div>
+          <div class="memory-toolbar"><select id="memoryCategory"></select><select id="memoryPairs"><option value="4">4 Paare</option><option value="6" selected>6 Paare</option><option value="8">8 Paare</option></select><button class="soft-btn" id="memoryRestart">Neu mischen</button><div class="memory-stats"><span id="memoryMoves">0 Züge</span><span id="memoryTime">0 s</span></div></div>
+          <div class="memory-board" id="memoryBoard"></div>
+          <div class="empty" id="memoryMessage"></div>
         </div>
-        <div class="memory-controls">
-          <div style="display:flex; gap: 8px; flex-wrap: wrap;" id="memoryCatFilter">
-            <button class="small-btn filter-btn active" data-memory-cat="all" data-i18n="all">Alle</button>
-            <button class="small-btn filter-btn" data-memory-cat="favorites" data-i18n="favorites">Favoriten</button>
-            <button class="small-btn filter-btn" data-memory-cat="allgemein">Allgemein</button>
-            <button class="small-btn filter-btn" data-memory-cat="fenster">Fenster</button>
-            <button class="small-btn filter-btn" data-memory-cat="power">Power</button>
-          </div>
-          <div style="display:flex; gap: 8px; align-items:center;">
-            <label style="font-size:0.85rem; font-weight:800;" data-i18n="memoryPairs">Paare:</label>
-            <select id="memoryPairsCount" class="small-btn" style="outline: none; font-weight: 800; padding: 8px 10px; border-radius: 12px; cursor: pointer;">
-              <option value="4">4 Paare (8 Karten)</option>
-              <option value="6" selected>6 Paare (12 Karten)</option>
-              <option value="8">8 Paare (16 Karten)</option>
-              <option value="12">12 Paare (24 Karten)</option>
-            </select>
-            <button class="btn" id="restartMemory" style="padding: 8px 14px; border-radius: 14px; font-size: 0.85rem;" data-i18n="restart">Neu starten</button>
-          </div>
-        </div>
-        
-        <div class="memory-stats">
-          <div><span data-i18n="moves">Züge</span>: <strong id="memoryMoves">0</strong></div>
-          <div><span data-i18n="time">Zeit</span>: <strong id="memoryTime">0s</strong></div>
-          <div id="memoryMessage" style="color:var(--warn); font-weight: 800; margin-left: auto;"></div>
-        </div>
-
-        <div class="memory-board" id="memoryBoard"></div>
       </section>
 
-      <!-- Win Modal Overlay -->
-      <div class="modal-overlay" id="winModalOverlay">
-        <div class="win-modal">
-          <span class="win-emoji">🏆</span>
-          <h2 style="margin: 0 0 10px;" data-i18n="winTitle">Glückwunsch!</h2>
-          <p style="margin: 0 0 20px; font-size: 1.05rem;" data-i18n="winText">Du hast alle Paare erfolgreich gefunden!</p>
-          <div style="background:rgba(15,108,189,0.08); border-radius: 18px; padding: 16px; margin-bottom: 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-weight: 800; text-align: left;">
-            <div><span data-i18n="moves">Züge</span>: <span id="winMoves" style="color:var(--primary3)">0</span></div>
-            <div><span data-i18n="time">Zeit</span>: <span id="winTime" style="color:var(--primary3)">0s</span></div>
-            <div style="grid-column: span 2; border-top: 1px solid var(--line); padding-top: 8px; margin-top: 4px;">
-              <span data-i18n="bestStats">Beste Leistung (Züge/Zeit):</span> <span id="winBest" style="color:var(--good)">-</span>
-            </div>
-          </div>
-          <button class="btn" id="closeWinModal" style="width:100%; justify-content:center;" data-i18n="playAgain">Nochmal spielen</button>
+      <section class="view" id="view-favorites">
+        <div class="view-inner">
+          <div class="view-head"><div><span class="eyebrow">Persönliche Auswahl</span><h1>Meine Favoriten</h1><p>Deine wichtigsten Kürzel bleiben lokal in diesem Browser gespeichert.</p></div><span class="count-pill" id="favoriteCount">0 Favoriten</span></div>
+          <div class="fav-grid" id="favoriteGrid"></div>
+          <div class="empty" id="favoriteEmpty">Noch keine Favoriten. Markiere beim Lernen ein Kürzel mit ★.</div>
         </div>
-      </div>
-      <p class="footer" data-i18n="footer">Quelle: Arbeitsblatt Tastenkombinationen. Alle Daten, Einstellungen und Favoriten bleiben im localStorage dieses Browsers.</p>
+      </section>
     </main>
+
+    <nav class="mobile-nav" aria-label="Mobile Navigation">
+      <button class="active" data-view="home"><i>⌂</i>Start</button><button data-view="learn"><i>⌘</i>Lernen</button><button data-view="train"><i>◎</i>Training</button><button data-view="memory"><i>▦</i>Memory</button><button data-view="favorites"><i>★</i>Favoriten</button>
+    </nav>
   </div>
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</div>
 
-  <script>
-    const shortcuts = [
-    {
-        "id": "copy",
-        "cat": "allgemein",
-        "group": "gridGeneral",
-        "keys": [
-            "CTRL",
-            "C"
-        ],
-        "tag": {
-            "de": "Allgemein",
-            "en": "General"
-        },
-        "title": {
-            "de": "Kopieren eines ausgewählten Elements",
-            "en": "Copy a selected item"
-        },
-        "desc": {
-            "de": "Kopiert Text, Bilder, Dateien oder andere ausgewählte Elemente in die Zwischenablage.",
-            "en": "Copies text, pictures, files, or other selected items to the clipboard."
-        }
-    },
-    {
-        "id": "cut",
-        "cat": "allgemein",
-        "group": "gridGeneral",
-        "keys": [
-            "CTRL",
-            "X"
-        ],
-        "tag": {
-            "de": "Allgemein",
-            "en": "General"
-        },
-        "title": {
-            "de": "Ausschneiden eines ausgewählten Elements",
-            "en": "Cut a selected item"
-        },
-        "desc": {
-            "de": "Entfernt das ausgewählte Element und legt es in die Zwischenablage.",
-            "en": "Removes the selected item and places it on the clipboard."
-        }
-    },
-    {
-        "id": "paste",
-        "cat": "allgemein",
-        "group": "gridGeneral",
-        "keys": [
-            "CTRL",
-            "V"
-        ],
-        "tag": {
-            "de": "Allgemein",
-            "en": "General"
-        },
-        "title": {
-            "de": "Einfügen eines ausgewählten Elements",
-            "en": "Paste a selected item"
-        },
-        "desc": {
-            "de": "Fügt den Inhalt der Zwischenablage an der aktuellen Stelle ein.",
-            "en": "Inserts the clipboard content at the current position."
-        }
-    },
-    {
-        "id": "save",
-        "cat": "allgemein",
-        "group": "gridGeneral",
-        "keys": [
-            "CTRL",
-            "S"
-        ],
-        "tag": {
-            "de": "Allgemein",
-            "en": "General"
-        },
-        "title": {
-            "de": "Speichern",
-            "en": "Save"
-        },
-        "desc": {
-            "de": "Speichert die aktuelle Datei. Besonders wichtig bei längeren Arbeiten.",
-            "en": "Saves the current file. Especially important during longer work sessions."
-        }
-    },
-    {
-        "id": "undo",
-        "cat": "allgemein",
-        "group": "gridGeneral",
-        "keys": [
-            "CTRL",
-            "Z"
-        ],
-        "tag": {
-            "de": "Allgemein",
-            "en": "General"
-        },
-        "title": {
-            "de": "Rückgängig machen",
-            "en": "Undo"
-        },
-        "desc": {
-            "de": "Macht die letzte Aktion rückgängig und rettet oft versehentliche Änderungen.",
-            "en": "Reverses the last action and often saves accidental changes."
-        }
-    },
-    {
-        "id": "redo",
-        "cat": "allgemein",
-        "group": "gridGeneral",
-        "keys": [
-            "CTRL",
-            "Y"
-        ],
-        "tag": {
-            "de": "Allgemein",
-            "en": "General"
-        },
-        "title": {
-            "de": "Wiederholen",
-            "en": "Redo"
-        },
-        "desc": {
-            "de": "Stellt die zuletzt rückgängig gemachte Aktion wieder her.",
-            "en": "Restores the most recently undone action."
-        }
-    },
-    {
-        "id": "select-all",
-        "cat": "allgemein",
-        "group": "gridGeneral",
-        "keys": [
-            "CTRL",
-            "A"
-        ],
-        "tag": {
-            "de": "Allgemein",
-            "en": "General"
-        },
-        "title": {
-            "de": "Alles auswählen",
-            "en": "Select all"
-        },
-        "desc": {
-            "de": "Markiert den gesamten Inhalt im aktuellen Bereich.",
-            "en": "Selects all content in the current area."
-        }
-    },
-    {
-        "id": "print",
-        "cat": "allgemein",
-        "group": "gridGeneral",
-        "keys": [
-            "CTRL",
-            "P"
-        ],
-        "tag": {
-            "de": "Allgemein",
-            "en": "General"
-        },
-        "title": {
-            "de": "Drucken",
-            "en": "Print"
-        },
-        "desc": {
-            "de": "Öffnet den Druckdialog.",
-            "en": "Opens the print dialog."
-        }
-    },
-    {
-        "id": "find",
-        "cat": "allgemein",
-        "group": "gridGeneral",
-        "keys": [
-            "CTRL",
-            "F"
-        ],
-        "tag": {
-            "de": "Allgemein",
-            "en": "General"
-        },
-        "title": {
-            "de": "Suchen und Ersetzen",
-            "en": "Find and replace"
-        },
-        "desc": {
-            "de": "Öffnet die Suche im Dokument, Browser oder Programm.",
-            "en": "Opens search in a document, browser, or program."
-        }
-    },
-    {
-        "id": "new-window",
-        "cat": "allgemein",
-        "group": "gridGeneral",
-        "keys": [
-            "CTRL",
-            "N"
-        ],
-        "tag": {
-            "de": "Allgemein",
-            "en": "General"
-        },
-        "title": {
-            "de": "Neues Fenster öffnen",
-            "en": "Open a new window"
-        },
-        "desc": {
-            "de": "Öffnet in vielen Programmen ein neues Fenster.",
-            "en": "Opens a new window in many programs."
-        }
-    },
-    {
-        "id": "open-file",
-        "cat": "allgemein",
-        "group": "gridGeneral",
-        "keys": [
-            "CTRL",
-            "O"
-        ],
-        "tag": {
-            "de": "Allgemein",
-            "en": "General"
-        },
-        "title": {
-            "de": "Datei öffnen",
-            "en": "Open a file"
-        },
-        "desc": {
-            "de": "Öffnet den Dialog zum Auswählen einer Datei.",
-            "en": "Opens the dialog for choosing a file."
-        }
-    },
-    {
-        "id": "start-menu",
-        "cat": "allgemein",
-        "group": "gridGeneral",
-        "keys": [
-            "CTRL",
-            "ESC"
-        ],
-        "tag": {
-            "de": "Allgemein",
-            "en": "General"
-        },
-        "title": {
-            "de": "Windows-Startmenü anzeigen",
-            "en": "Show the Windows Start menu"
-        },
-        "desc": {
-            "de": "Zeigt das Startmenü auch ohne Windows-Taste an.",
-            "en": "Shows the Start menu even without using the Windows key."
-        }
-    },
-    {
-        "id": "document-start",
-        "cat": "allgemein",
-        "group": "gridGeneral",
-        "keys": [
-            "CTRL",
-            "HOME"
-        ],
-        "tag": {
-            "de": "Allgemein",
-            "en": "General"
-        },
-        "title": {
-            "de": "Zum Anfang eines Dokuments gehen",
-            "en": "Go to the start of a document"
-        },
-        "desc": {
-            "de": "Springt ganz nach oben beziehungsweise an den Anfang.",
-            "en": "Jumps to the very top or beginning."
-        }
-    },
-    {
-        "id": "document-end",
-        "cat": "allgemein",
-        "group": "gridGeneral",
-        "keys": [
-            "CTRL",
-            "END"
-        ],
-        "tag": {
-            "de": "Allgemein",
-            "en": "General"
-        },
-        "title": {
-            "de": "Zum Ende eines Dokuments gehen",
-            "en": "Go to the end of a document"
-        },
-        "desc": {
-            "de": "Springt ganz nach unten beziehungsweise ans Ende.",
-            "en": "Jumps to the very bottom or end."
-        }
-    },
-    {
-        "id": "switch-windows",
-        "cat": "fenster",
-        "group": "gridWindow",
-        "keys": [
-            "ALT",
-            "TAB"
-        ],
-        "tag": {
-            "de": "Fenster",
-            "en": "Windows"
-        },
-        "title": {
-            "de": "Zwischen geöffneten Fenstern wechseln",
-            "en": "Switch between open windows"
-        },
-        "desc": {
-            "de": "Zeigt eine Übersicht offener Fenster. ALT gedrückt halten und mit TAB auswählen.",
-            "en": "Shows an overview of open windows. Hold ALT and choose with TAB."
-        }
-    },
-    {
-        "id": "show-desktop",
-        "cat": "fenster",
-        "group": "gridWindow",
-        "keys": [
-            "WIN",
-            "D"
-        ],
-        "tag": {
-            "de": "Fenster",
-            "en": "Windows"
-        },
-        "title": {
-            "de": "Alle Fenster minimieren und Desktop anzeigen",
-            "en": "Minimize all windows and show the desktop"
-        },
-        "desc": {
-            "de": "Räumt den Bildschirm sofort auf. Nochmals drücken bringt die Fenster zurück.",
-            "en": "Clears the screen instantly. Press again to bring the windows back."
-        }
-    },
-    {
-        "id": "minimize-window",
-        "cat": "fenster",
-        "group": "gridWindow",
-        "keys": [
-            "WIN",
-            "↓"
-        ],
-        "tag": {
-            "de": "Fenster",
-            "en": "Windows"
-        },
-        "title": {
-            "de": "Fenster minimieren",
-            "en": "Minimize a window"
-        },
-        "desc": {
-            "de": "Verkleinert ein maximiertes Fenster oder minimiert ein normales Fenster.",
-            "en": "Restores a maximized window or minimizes a normal window."
-        }
-    },
-    {
-        "id": "maximize-window",
-        "cat": "fenster",
-        "group": "gridWindow",
-        "keys": [
-            "WIN",
-            "↑"
-        ],
-        "tag": {
-            "de": "Fenster",
-            "en": "Windows"
-        },
-        "title": {
-            "de": "Fenster maximieren",
-            "en": "Maximize a window"
-        },
-        "desc": {
-            "de": "Maximiert das aktive Fenster auf die ganze Bildschirmfläche.",
-            "en": "Maximizes the active window to fill the screen."
-        }
-    },
-    {
-        "id": "snap-window",
-        "cat": "fenster",
-        "group": "gridWindow",
-        "keys": [
-            "WIN",
-            "← / →"
-        ],
-        "tag": {
-            "de": "Fenster",
-            "en": "Windows"
-        },
-        "title": {
-            "de": "Fenster andocken und vergleichen",
-            "en": "Snap and compare windows"
-        },
-        "desc": {
-            "de": "Schiebt das Fenster an die linke oder rechte Bildschirmseite, ideal zum Vergleichen.",
-            "en": "Moves the window to the left or right side of the screen, ideal for comparing."
-        }
-    },
-    {
-        "id": "task-manager",
-        "cat": "power",
-        "group": "gridPower",
-        "keys": [
-            "CTRL",
-            "SHIFT",
-            "ESC"
-        ],
-        "tag": {
-            "de": "Power",
-            "en": "Power"
-        },
-        "title": {
-            "de": "Task-Manager öffnen",
-            "en": "Open Task Manager"
-        },
-        "desc": {
-            "de": "Öffnet den Task-Manager direkt ohne Zwischenschritte.",
-            "en": "Opens Task Manager directly without extra steps."
-        }
-    },
-    {
-        "id": "lock-pc",
-        "cat": "power",
-        "group": "gridPower",
-        "keys": [
-            "WIN",
-            "L"
-        ],
-        "tag": {
-            "de": "Power",
-            "en": "Power"
-        },
-        "title": {
-            "de": "PC sperren oder Benutzer wechseln",
-            "en": "Lock the PC or switch users"
-        },
-        "desc": {
-            "de": "Sperrt den PC und zeigt den Anmeldebildschirm.",
-            "en": "Locks the PC and shows the sign-in screen."
-        }
-    },
-    {
-        "id": "search-files",
-        "cat": "tipp power",
-        "group": "gridPower",
-        "keys": [
-            "WIN",
-            "S"
-        ],
-        "tag": {
-            "de": "Tipp",
-            "en": "Tip"
-        },
-        "title": {
-            "de": "Dateien und Ordner suchen",
-            "en": "Search for files and folders"
-        },
-        "desc": {
-            "de": "Öffnet die Windows-Suche für Programme, Dateien und Ordner.",
-            "en": "Opens Windows Search for apps, files, and folders."
-        }
-    },
-    {
-        "id": "help",
-        "cat": "tipp power",
-        "group": "gridPower",
-        "keys": [
-            "WIN",
-            "F1"
-        ],
-        "tag": {
-            "de": "Tipp",
-            "en": "Tip"
-        },
-        "title": {
-            "de": "Hilfe öffnen",
-            "en": "Open help"
-        },
-        "desc": {
-            "de": "Öffnet die Hilfe, wenn du in Windows nicht weiterkommst.",
-            "en": "Opens help when you get stuck in Windows."
-        }
-    },
-    {
-        "id": "screenshot",
-        "cat": "tipp power",
-        "group": "gridPower",
-        "keys": [
-            "PRT SCR"
-        ],
-        "tag": {
-            "de": "Tipp",
-            "en": "Tip"
-        },
-        "title": {
-            "de": "Screenshot machen",
-            "en": "Take a screenshot"
-        },
-        "desc": {
-            "de": "Macht ein Bild der Bildschirmanzeige. Danach mit CTRL + V in ein Dokument einfügen.",
-            "en": "Captures the screen. Paste it into a document with CTRL + V afterwards."
-        }
-    }
-];
-    const i18n = {
-    "de": {
-        "status": "Interaktives Lernblatt · selbstständig ausprobieren",
-        "eyebrow": "✨ Windows-Shortcuts schneller lernen",
-        "title": "Tastenkombinationen",
-        "heroText": "Viele PC-Aufgaben gehen mit Tastenkombinationen deutlich schneller. Lies die Shortcuts durch, teste sie direkt am Computer und nutze die Übungskarten, bis du die wichtigsten Kombinationen automatisch findest.",
-        "start": "🚀 Loslegen",
-        "trainNow": "🎯 Direkt üben",
-        "settings": "Einstellungen",
-        "fontSize": "Schriftgrösse",
-        "appearance": "Darstellung",
-        "language": "Sprache",
-        "small": "Klein",
-        "normal": "Normal",
-        "large": "Gross",
-        "white": "White",
-        "dark": "Dark",
-        "german": "Deutsch",
-        "english": "English",
-        "searchPlaceholder": "Shortcut, Befehl oder Taste suchen …",
-        "all": "Alle",
-        "favorites": "Favoriten",
-        "general": "Allgemein",
-        "windows": "Fenster",
-        "power": "Power",
-        "tips": "Tipps",
-        "favTitle": "Meine Favoriten",
-        "favText": "Hier landen deine gespeicherten Shortcuts. Ziehe die Kacheln wie in einem Inventar an die gewünschte Position. Die Reihenfolge wird lokal gespeichert.",
-        "favCount": "0 Favoriten",
-        "exportHtml": "HTML exportieren",
-        "clearFavs": "Favoriten leeren",
-        "favEmpty": "Noch keine Favoriten gespeichert. Tippe bei einem Shortcut auf den Stern.",
-        "generalTitle": "Allgemeine Befehle",
-        "generalText": "Diese Kombinationen funktionieren fast überall: in Dokumenten, Tabellen, Bildern, Browsern und vielen Programmen.",
-        "windowTitle": "Fenster verwalten",
-        "windowText": "Wenn mehrere Programme offen sind, helfen dir diese Shortcuts beim Wechseln, Minimieren, Maximieren und Aufräumen.",
-        "powerTitle": "Power Moves",
-        "powerText": "Für fortgeschrittene Fensterverwaltung, schnelle Suche, Sicherheit und Screenshots.",
-        "trainingTitle": "Mini-Training",
-        "trainingText": "Aufgabe lesen, Shortcut im Kopf suchen, dann Lösung anzeigen. Danach neue Karte ziehen.",
-        "card": "Karte",
-        "showAnswer": "Lösung zeigen",
-        "nextCard": "Neue Karte",
-        "copyShortcut": "Shortcut kopieren",
-        "practice": "Üben",
-        "remove": "Entfernen",
-        "moveUp": "hoch",
-        "moveDown": "runter",
-        "copied": "Shortcut kopiert",
-        "saved": "Favorit gespeichert",
-        "removed": "Favorit entfernt",
-        "exported": "Favoriten als HTML exportiert",
-        "cleared": "Favoriten geleert",
-        "noResults": "Keine Treffer. Probiere ein anderes Suchwort.",
-        "progress": "Gemerkt",
-        "folder": "Ordner",
-        "home": "Start",
-        "trainingNav": "Training",
-        "footer": "Quelle: Arbeitsblatt Tastenkombinationen. Alle Daten, Einstellungen und Favoriten bleiben im localStorage dieses Browsers.",
-        "inventoryHint": "Drag & Drop · gespeichert im Browser",
-        "emptyFilterFav": "Noch keine Favoriten gespeichert. Nutze den Stern auf einer Shortcut-Karte.",
-        "resetOrder": "Reihenfolge zurücksetzen",
-        "memoryNav": "Memory",
-        "modeClassic": "Modus: Lernkarten",
-        "modeQuiz": "Modus: Quiz",
-        "modeImposter": "Modus: Fehlersuche",
-        "memoryTitle": "Memory-Spiel",
-        "memoryText": "Finde die passenden Paare: Ein Begriff (Name) gehört zu seiner Tastenkombination.",
-        "memoryPairs": "Paare:",
-        "restart": "Neu starten",
-        "moves": "Züge",
-        "time": "Zeit",
-        "winTitle": "Glückwunsch!",
-        "winText": "Du hast alle Paare erfolgreich gefunden!",
-        "bestStats": "Beste Leistung (Züge/Zeit):",
-        "playAgain": "Nochmal spielen",
-        "notEnoughFavs": "Nicht genügend Favoriten vorhanden! (Mindestens {count} benötigt).",
-        "imposterQuest": "Welche Paarung ist FALSCH?"
-    },
-    "en": {
-        "status": "Interactive worksheet · try it yourself",
-        "eyebrow": "✨ Learn Windows shortcuts faster",
-        "title": "Keyboard shortcuts",
-        "heroText": "Many PC tasks are much faster with keyboard shortcuts. Read through the shortcuts, test them directly on the computer, and use the practice cards until the most important combinations become automatic.",
-        "start": "🚀 Start",
-        "trainNow": "🎯 Practice now",
-        "settings": "Settings",
-        "fontSize": "Font size",
-        "appearance": "Appearance",
-        "language": "Language",
-        "small": "Small",
-        "normal": "Normal",
-        "large": "Large",
-        "white": "White",
-        "dark": "Dark",
-        "german": "Deutsch",
-        "english": "English",
-        "searchPlaceholder": "Search shortcut, command, or key …",
-        "all": "All",
-        "favorites": "Favorites",
-        "general": "General",
-        "windows": "Windows",
-        "power": "Power",
-        "tips": "Tips",
-        "favTitle": "My favorites",
-        "favText": "Your saved shortcuts appear here. Drag the tiles like an inventory to put them in the order you want. The order is saved locally.",
-        "favCount": "0 favorites",
-        "exportHtml": "Export HTML",
-        "clearFavs": "Clear favorites",
-        "favEmpty": "No favorites saved yet. Tap the star on a shortcut.",
-        "generalTitle": "General commands",
-        "generalText": "These combinations work almost everywhere: in documents, tables, images, browsers, and many programs.",
-        "windowTitle": "Manage windows",
-        "windowText": "When several programs are open, these shortcuts help you switch, minimize, maximize, and tidy up.",
-        "powerTitle": "Power moves",
-        "powerText": "For advanced window management, quick search, security, and screenshots.",
-        "trainingTitle": "Mini training",
-        "trainingText": "Read the task, think of the shortcut, then reveal the solution. After that, draw a new card.",
-        "card": "Card",
-        "showAnswer": "Show answer",
-        "nextCard": "New card",
-        "copyShortcut": "Copy shortcut",
-        "practice": "Practice",
-        "remove": "Remove",
-        "moveUp": "up",
-        "moveDown": "down",
-        "copied": "Shortcut copied",
-        "saved": "Favorite saved",
-        "removed": "Favorite removed",
-        "exported": "Favorites exported as HTML",
-        "cleared": "Favorites cleared",
-        "noResults": "No results. Try another search term.",
-        "progress": "Saved",
-        "folder": "Ordner",
-        "home": "Start",
-        "trainingNav": "Training",
-        "footer": "Source: keyboard shortcuts worksheet. All data, settings, and favorites stay in this browser’s localStorage.",
-        "inventoryHint": "Drag & drop · saved in browser",
-        "emptyFilterFav": "No favorites saved yet. Use the star on a shortcut card.",
-        "resetOrder": "Reset order",
-        "memoryNav": "Memory",
-        "modeClassic": "Mode: Flashcards",
-        "modeQuiz": "Mode: Quiz",
-        "modeImposter": "Mode: Find Imposter",
-        "memoryTitle": "Memory Game",
-        "memoryText": "Find matching pairs: A term (name) and its key combination.",
-        "memoryPairs": "Pairs:",
-        "restart": "Restart",
-        "moves": "Moves",
-        "time": "Time",
-        "winTitle": "Congratulations!",
-        "winText": "You found all matching pairs!",
-        "bestStats": "Best Performance (Moves/Time):",
-        "playAgain": "Play Again",
-        "notEnoughFavs": "Not enough favorites! (At least {count} needed).",
-        "imposterQuest": "Which pairing is WRONG?"
-    }
+<div class="settings" id="settings" hidden>
+  <div class="setting"><strong>Darstellung</strong><div class="seg"><button data-theme="light">Hell</button><button data-theme="dark">Dunkel</button></div></div>
+  <div class="setting"><strong>Schriftgrösse</strong><div class="seg"><button data-size="small">Klein</button><button data-size="normal">Normal</button><button data-size="large">Gross</button></div></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const categories={
+  general:{label:'Allgemein',short:'Allgemein',count:11,icon:'⌘'},
+  programs:{label:'Word / Programme',short:'Programme',count:4,icon:'▤'},
+  browser:{label:'Browser & Tabs',short:'Browser',count:7,icon:'◎'},
+  windows:{label:'Windows & Fenster',short:'Windows',count:12,icon:'▣'},
+  altgr:{label:'Sonderzeichen mit AltGr',short:'AltGr',count:10,icon:'@'}
 };
-    const SETTINGS_KEY = 'ib-shortcut-ui-settings-v3';
-    const FAVORITES_KEY = 'ib-shortcut-favorites-v3';
-    const FAVORITE_ORDER_KEY = 'ib-shortcut-favorite-order-v3';
-    const LEGACY_FAVORITES_KEY = 'ib-shortcut-favorites-v2';
-    const LEGACY_STARS_KEY = 'shortcut-stars';
+const shortcuts=[
+{id:'copy',cat:'general',keys:['CTRL','C'],title:'Kopieren',desc:'Kopiert die aktuelle Auswahl in die Zwischenablage.'},
+{id:'cut',cat:'general',keys:['CTRL','X'],title:'Ausschneiden',desc:'Entfernt die Auswahl und legt sie in die Zwischenablage.'},
+{id:'paste',cat:'general',keys:['CTRL','V'],title:'Einfügen',desc:'Fügt den Inhalt der Zwischenablage ein.'},
+{id:'paste-plain',cat:'general',keys:['CTRL','SHIFT','V'],title:'Einfügen ohne Formatierung',desc:'Fügt kopierten Text ohne seine ursprüngliche Formatierung ein.'},
+{id:'undo',cat:'general',keys:['CTRL','Z'],title:'Rückgängig machen',desc:'Macht den letzten Arbeitsschritt rückgängig.'},
+{id:'redo',cat:'general',keys:['CTRL','Y'],title:'Wiederherstellen',desc:'Nimmt ein Rückgängig wieder zurück.'},
+{id:'save',cat:'general',keys:['CTRL','S'],title:'Speichern',desc:'Speichert das aktuelle Dokument oder die aktuelle Datei.'},
+{id:'select-all',cat:'general',keys:['CTRL','A'],title:'Alles markieren',desc:'Markiert den gesamten Inhalt im aktuellen Bereich.'},
+{id:'find',cat:'general',keys:['CTRL','F'],title:'Suchen',desc:'Öffnet die Suche im aktuellen Dokument, Browser oder Programm.'},
+{id:'home',cat:'general',keys:['CTRL','HOME'],title:'Zum Anfang des Dokuments',desc:'Springt direkt an den Anfang eines längeren Dokuments.'},
+{id:'end',cat:'general',keys:['CTRL','END'],title:'Zum Ende des Dokuments',desc:'Springt direkt an das Ende eines längeren Dokuments.'},
+{id:'new',cat:'programs',keys:['CTRL','N'],title:'Neues Dokument / neues Fenster',desc:'Öffnet je nach Programm ein neues Dokument oder Fenster.'},
+{id:'replace',cat:'programs',keys:['CTRL','H'],title:'Suchen und Ersetzen',desc:'Öffnet in vielen Programmen „Suchen und Ersetzen“. Im Browser kann stattdessen der Verlauf erscheinen.'},
+{id:'print',cat:'programs',keys:['CTRL','P'],title:'Druckdialog öffnen',desc:'Öffnet die Druckansicht oder den Druckdialog.'},
+{id:'open',cat:'programs',keys:['CTRL','O'],title:'Datei öffnen',desc:'Öffnet den Dialog zum Auswählen einer Datei.'},
+{id:'new-tab',cat:'browser',keys:['CTRL','T'],title:'Neue Browser-Registerkarte',desc:'Öffnet einen neuen Tab im Browser.'},
+{id:'close-tab',cat:'browser',keys:['CTRL','W'],title:'Aktuellen Browser-Tab schliessen',desc:'Schliesst nur den aktuellen Tab – nicht das ganze Programm.'},
+{id:'reopen-tab',cat:'browser',keys:['CTRL','SHIFT','T'],title:'Geschlossenen Tab wieder öffnen',desc:'Öffnet den zuletzt geschlossenen Browser-Tab erneut.'},
+{id:'next-tab',cat:'browser',keys:['CTRL','TAB'],title:'Zum nächsten Browser-Tab',desc:'Wechselt zum nächsten geöffneten Tab.'},
+{id:'prev-tab',cat:'browser',keys:['CTRL','SHIFT','TAB'],title:'Zum vorherigen Browser-Tab',desc:'Wechselt zum vorherigen geöffneten Tab.'},
+{id:'refresh',cat:'browser',keys:['F5'],title:'Webseite aktualisieren',desc:'Lädt die aktuelle Webseite neu.'},
+{id:'address',cat:'browser',keys:['CTRL','L'],title:'Browser-Adressleiste markieren',desc:'Setzt den Fokus direkt auf die Adressleiste.'},
+{id:'lock',cat:'windows',keys:['WIN','L'],title:'Computer sperren',desc:'Sperrt den Computer und zeigt den Anmeldebildschirm.'},
+{id:'desktop',cat:'windows',keys:['WIN','D'],title:'Desktop anzeigen',desc:'Blendet alle Fenster aus und zeigt den Desktop.'},
+{id:'explorer',cat:'windows',keys:['WIN','E'],title:'Datei-Explorer öffnen',desc:'Öffnet den Windows-Datei-Explorer.'},
+{id:'snip',cat:'windows',keys:['WIN','SHIFT','S'],title:'Bildschirmausschnitt aufnehmen',desc:'Startet das Werkzeug für einen Bildschirm-Ausschnitt.'},
+{id:'switch',cat:'windows',keys:['ALT','TAB'],title:'Zwischen Programmen wechseln',desc:'Wechselt schnell zwischen geöffneten Fenstern und Programmen.'},
+{id:'task',cat:'windows',keys:['CTRL','SHIFT','ESC'],title:'Task-Manager direkt öffnen',desc:'Öffnet den Task-Manager ohne zusätzlichen Zwischenschritt.'},
+{id:'clipboard',cat:'windows',keys:['WIN','V'],title:'Zwischenablageverlauf öffnen',desc:'Zeigt mehrere zuletzt kopierte Inhalte der Zwischenablage.'},
+{id:'close-app',cat:'windows',keys:['ALT','F4'],title:'Aktives Fenster / Programm schliessen',desc:'Schliesst das ganze aktive Fenster oder Programm.'},
+{id:'snap-left',cat:'windows',keys:['WIN','←'],title:'Fenster links andocken',desc:'Ordnet das aktive Fenster an der linken Bildschirmhälfte an.'},
+{id:'snap-right',cat:'windows',keys:['WIN','→'],title:'Fenster rechts andocken',desc:'Ordnet das aktive Fenster an der rechten Bildschirmhälfte an.'},
+{id:'maximize',cat:'windows',keys:['WIN','↑'],title:'Fenster maximieren',desc:'Maximiert das aktive Fenster.'},
+{id:'minimize',cat:'windows',keys:['WIN','↓'],title:'Fenster verkleinern / minimieren',desc:'Verkleinert oder minimiert das aktive Fenster.'},
+{id:'at',cat:'altgr',keys:['ALTGR','2'],title:'@ · Klammeraffe',desc:'Für E-Mail-Adressen: AltGr gedrückt halten und 2 tippen.'},
+{id:'hash',cat:'altgr',keys:['ALTGR','3'],title:'# · Hashtag / Raute',desc:'Schreibt das Rautezeichen #.'},
+{id:'euro',cat:'altgr',keys:['ALTGR','E'],title:'€ · Euro-Zeichen',desc:'Schreibt das Euro-Zeichen €.'},
+{id:'pipe',cat:'altgr',keys:['ALTGR','7'],title:'| · Senkrechter Strich',desc:'Schreibt den senkrechten Strich (Pipe).'},
+{id:'backslash',cat:'altgr',keys:['ALTGR','<'],title:'\\ · Backslash',desc:'Schreibt einen Backslash, zum Beispiel für Dateipfade.'},
+{id:'bracket-open',cat:'altgr',keys:['ALTGR','Ü'],title:'[ · Eckige Klammer auf',desc:'Schreibt eine öffnende eckige Klammer.'},
+{id:'bracket-close',cat:'altgr',keys:['ALTGR','¨'],title:'] · Eckige Klammer zu',desc:'Schreibt eine schliessende eckige Klammer.'},
+{id:'brace-open',cat:'altgr',keys:['ALTGR','Ä'],title:'{ · Geschweifte Klammer auf',desc:'Schreibt eine öffnende geschweifte Klammer.'},
+{id:'brace-close',cat:'altgr',keys:['ALTGR','$'],title:'} · Geschweifte Klammer zu',desc:'Schreibt eine schliessende geschweifte Klammer.'},
+{id:'degree',cat:'altgr',keys:['ALTGR','4'],title:'° · Gradzeichen',desc:'Schreibt das Gradzeichen °. Alternative auf der CH-Tastatur: SHIFT + §.'}
+];
+const STORE={favorites:'ib-shortcut-favorites-v4',theme:'ib-shortcut-theme-v4',size:'ib-shortcut-size-v4',best:'ib-shortcut-best-v4'};
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const read=(k,f)=>{try{const v=localStorage.getItem(k);return v===null?f:JSON.parse(v)}catch{return f}};
+const state={view:'home',cat:'all',query:'',favorites:new Set(read(STORE.favorites,[]).filter(id=>shortcuts.some(s=>s.id===id))),practiceOrder:[],practiceIndex:0,streak:0,best:read(STORE.best,0)};
+function saveFavorites(){localStorage.setItem(STORE.favorites,JSON.stringify([...state.favorites]));updateFavoriteUI()}
+function keyText(s){return s.keys.join(' + ')}
+function keyMarkup(s){return s.keys.map((k,i)=>`<kbd>${escapeHtml(k)}</kbd>${i<s.keys.length-1?'<span class="plus">+</span>':''}`).join('')}
+function escapeHtml(v){return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function toast(text){const el=$('#toast');el.textContent=text;el.classList.add('show');clearTimeout(window.__toast);window.__toast=setTimeout(()=>el.classList.remove('show'),1500)}
+function showView(name){state.view=name;$$('.view').forEach(v=>v.classList.toggle('active',v.id===`view-${name}`));$$('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===name));const titles={home:'Shortcut Lab',learn:'Alle Tastenkürzel',train:'Training',memory:'Memory',favorites:'Favoriten'};$('#crumbTitle').textContent=titles[name];if(name==='learn')setTimeout(()=>$('#searchInput').focus({preventScroll:true}),0);if(name==='favorites')renderFavorites();if(name==='memory'&&!$('#memoryBoard').children.length)initMemory();}
+function renderHome(){const host=$('#homeCategories');host.innerHTML='';Object.entries(categories).forEach(([id,c])=>{const b=document.createElement('button');b.className='stat-card';b.innerHTML=`<strong>${c.count}</strong><span>${c.icon} ${c.label}</span>`;b.onclick=()=>{state.cat=id;renderLearn();showView('learn')};host.appendChild(b)})}
+function renderCategoryTabs(){const host=$('#categoryTabs');host.innerHTML='';[['all','Alle'],...Object.entries(categories).map(([id,c])=>[id,c.short])].forEach(([id,label])=>{const b=document.createElement('button');b.className='chip'+(state.cat===id?' active':'');b.textContent=label;b.onclick=()=>{state.cat=id;renderLearn()};host.appendChild(b)})}
+function renderLearn(){renderCategoryTabs();const grid=$('#learnGrid');grid.innerHTML='';const q=state.query.toLowerCase();const list=shortcuts.filter(s=>(state.cat==='all'||s.cat===state.cat)&&(!q||`${s.title} ${s.desc} ${keyText(s)}`.toLowerCase().includes(q)));list.forEach(s=>{const card=document.createElement('article');card.className='shortcut';const fav=state.favorites.has(s.id);card.innerHTML=`<div class="shortcut-top"><span class="tag">${escapeHtml(categories[s.cat].short)}</span><button class="star ${fav?'active':''}" data-fav="${s.id}" aria-label="Favorit">${fav?'★':'☆'}</button></div><h3>${escapeHtml(s.title)}</h3><div class="keys">${keyMarkup(s)}</div><p>${escapeHtml(s.desc)}</p><div class="card-foot"><button class="practice-link" data-practice="${s.id}">Jetzt üben →</button></div>`;grid.appendChild(card)});$('#learnCount').textContent=`${list.length} Kürzel`;$('#learnEmpty').style.display=list.length?'none':'block'}
+function updateFavoriteUI(){const count=state.favorites.size;$('#railProgress').textContent=`${count} / 44`;$('#railBar').style.width=`${count/44*100}%`;$('#favoriteCount').textContent=`${count} Favorit${count===1?'':'en'}`;$$('[data-fav]').forEach(b=>{const on=state.favorites.has(b.dataset.fav);b.classList.toggle('active',on);b.textContent=on?'★':'☆'});if(state.view==='favorites')renderFavorites()}
+function renderFavorites(){const grid=$('#favoriteGrid');grid.innerHTML='';const list=shortcuts.filter(s=>state.favorites.has(s.id));list.forEach(s=>{const card=document.createElement('article');card.className='favorite-card';card.innerHTML=`<span class="tag">${escapeHtml(categories[s.cat].short)}</span><h3>${escapeHtml(s.title)}</h3><div class="keys">${keyMarkup(s)}</div><p>${escapeHtml(s.desc)}</p><button class="remove-btn" data-remove="${s.id}">Aus Favoriten entfernen</button>`;grid.appendChild(card)});$('#favoriteEmpty').style.display=list.length?'none':'block';$('#favoriteCount').textContent=`${list.length} Favorit${list.length===1?'':'en'}`}
+function shufflePractice(firstId=null){state.practiceOrder=shortcuts.map(s=>s.id).sort(()=>Math.random()-.5);if(firstId){state.practiceOrder=state.practiceOrder.filter(id=>id!==firstId);state.practiceOrder.unshift(firstId)}state.practiceIndex=0}
+function practiceItem(){return shortcuts.find(s=>s.id===state.practiceOrder[state.practiceIndex])||shortcuts[0]}
+function distractors(item,n=3){return shortcuts.filter(s=>s.id!==item.id).sort(()=>Math.random()-.5).slice(0,n)}
+function renderPractice(){if(!state.practiceOrder.length)shufflePractice();const item=practiceItem(),mode=$('#practiceMode').value;$('#roundPill').textContent=`${state.practiceIndex+1} / 44`;$('#practicePrompt').textContent=mode==='imposter'?'Welche Paarung ist falsch?':item.title;$('#practiceLabel').textContent=mode==='imposter'?'Fehler finden':'Welche Tastenkombination passt?';$('#practiceAnswer').classList.remove('show');$('#practiceAnswer').innerHTML=`<div class="keys">${keyMarkup(item)}</div><p>${escapeHtml(item.desc)}</p>`;$('#quizOptions').innerHTML='';$('#revealBtn').style.display=mode==='classic'?'':'none';if(mode==='classic')return;
+ if(mode==='quiz'){[item,...distractors(item)].sort(()=>Math.random()-.5).forEach(choice=>{const b=document.createElement('button');b.className='quiz-option';b.textContent=keyText(choice);b.onclick=()=>gradeQuiz(b,choice.id===item.id,item);$('#quizOptions').appendChild(b)})}
+ else{const others=distractors(item,4),wrong=others[0],wrongKeys=others[1];const pairs=[item,...others.slice(2,4)].map(s=>({text:`${s.title}: ${keyText(s)}`,wrong:false}));pairs.push({text:`${wrong.title}: ${keyText(wrongKeys)}`,wrong:true});pairs.sort(()=>Math.random()-.5).forEach(p=>{const b=document.createElement('button');b.className='quiz-option';b.textContent=p.text;b.onclick=()=>gradeQuiz(b,p.wrong,item);$('#quizOptions').appendChild(b)})}}
+function gradeQuiz(btn,correct,item){$$('.quiz-option').forEach(b=>b.disabled=true);btn.classList.add(correct?'correct':'wrong');if(correct){state.streak++;state.best=Math.max(state.best,state.streak);localStorage.setItem(STORE.best,JSON.stringify(state.best));toast('Richtig ✓')}else{state.streak=0;toast('Nicht ganz')};$('#streak').textContent=state.streak;$('#best').textContent=state.best;$('#practiceAnswer').classList.add('show')}
+function nextPractice(){state.practiceIndex=(state.practiceIndex+1)%state.practiceOrder.length;renderPractice()}
+const memory={cards:[],first:null,second:null,lock:false,moves:0,matches:0,start:null,timer:null};
+function fillMemoryCategories(){const s=$('#memoryCategory');s.innerHTML='<option value="all">Alle Kategorien</option>'+Object.entries(categories).map(([id,c])=>`<option value="${id}">${c.label}</option>`).join('')}
+function memoryPool(){const cat=$('#memoryCategory').value;return shortcuts.filter(s=>cat==='all'||s.cat===cat)}
+function initMemory(){clearInterval(memory.timer);Object.assign(memory,{cards:[],first:null,second:null,lock:false,moves:0,matches:0,start:null,timer:null});$('#memoryMoves').textContent='0 Züge';$('#memoryTime').textContent='0 s';let pairCount=Number($('#memoryPairs').value),pool=memoryPool();if(pool.length<pairCount){pairCount=pool.length;$('#memoryMessage').style.display='block';$('#memoryMessage').textContent=`In dieser Kategorie gibt es ${pool.length} Kürzel. Das Spiel nutzt alle davon.`}else $('#memoryMessage').style.display='none';const selected=[...pool].sort(()=>Math.random()-.5).slice(0,pairCount);const cards=[];selected.forEach(s=>{cards.push({id:s.id,type:'title',html:escapeHtml(s.title)});cards.push({id:s.id,type:'keys',html:`<div class="keys" style="justify-content:center;margin:0">${keyMarkup(s)}</div>`})});cards.sort(()=>Math.random()-.5);memory.cards=cards;const board=$('#memoryBoard');board.innerHTML='';cards.forEach((c,i)=>{const el=document.createElement('button');el.className='memory-card';el.dataset.index=i;el.innerHTML=`<span class="memory-inner"><span class="memory-face memory-front">?</span><span class="memory-face memory-back">${c.html}</span></span>`;el.onclick=()=>flipMemory(el);board.appendChild(el)});updateMemoryBest()}
+function startTimer(){if(memory.timer)return;memory.start=Date.now();memory.timer=setInterval(()=>{$('#memoryTime').textContent=`${Math.floor((Date.now()-memory.start)/1000)} s`},1000)}
+function flipMemory(el){if(memory.lock||el===memory.first||el.classList.contains('matched'))return;startTimer();el.classList.add('flipped');if(!memory.first){memory.first=el;return}memory.second=el;memory.moves++;$('#memoryMoves').textContent=`${memory.moves} Züge`;const a=memory.cards[+memory.first.dataset.index],b=memory.cards[+memory.second.dataset.index];if(a.id===b.id&&a.type!==b.type){memory.first.classList.add('matched');memory.second.classList.add('matched');memory.matches++;resetMemoryTurn();if(memory.matches===memory.cards.length/2)finishMemory()}else{memory.lock=true;setTimeout(()=>{memory.first.classList.remove('flipped');memory.second.classList.remove('flipped');resetMemoryTurn()},850)}}
+function resetMemoryTurn(){memory.first=null;memory.second=null;memory.lock=false}
+function memoryBestKey(){return `ib-shortcut-memory-${$('#memoryCategory').value}-${$('#memoryPairs').value}`}
+function updateMemoryBest(){const b=read(memoryBestKey(),null);$('#memoryBest').textContent=b?`Best: ${b.moves} Züge · ${b.time}s`:'Best: –'}
+function finishMemory(){clearInterval(memory.timer);const time=Math.max(1,Math.floor((Date.now()-memory.start)/1000)),old=read(memoryBestKey(),null);if(!old||memory.moves<old.moves||(memory.moves===old.moves&&time<old.time))localStorage.setItem(memoryBestKey(),JSON.stringify({moves:memory.moves,time}));updateMemoryBest();toast(`Geschafft · ${memory.moves} Züge · ${time}s`)}
+function applyPrefs(){const theme=localStorage.getItem(STORE.theme)||'light',size=localStorage.getItem(STORE.size)||'normal';document.documentElement.dataset.theme=theme;document.documentElement.dataset.size=size;$$('[data-theme]').forEach(b=>b.classList.toggle('active',b.dataset.theme===theme));$$('[data-size]').forEach(b=>b.classList.toggle('active',b.dataset.size===size))}
 
-    const $ = (selector, root=document) => root.querySelector(selector);
-    const $$ = (selector, root=document) => Array.from(root.querySelectorAll(selector));
-    const validIds = new Set(shortcuts.map(item => item.id));
-    const defaults = { theme:'light', lang:'de', fontSize:'normal' };
+document.addEventListener('click',e=>{const view=e.target.closest('[data-view]');if(view){showView(view.dataset.view);return}const go=e.target.closest('[data-go]');if(go){showView(go.dataset.go);return}const fav=e.target.closest('[data-fav]');if(fav){const id=fav.dataset.fav;state.favorites.has(id)?state.favorites.delete(id):state.favorites.add(id);saveFavorites();toast(state.favorites.has(id)?'Favorit gespeichert':'Favorit entfernt');return}const remove=e.target.closest('[data-remove]');if(remove){state.favorites.delete(remove.dataset.remove);saveFavorites();return}const practice=e.target.closest('[data-practice]');if(practice){shufflePractice(practice.dataset.practice);renderPractice();showView('train');return}const theme=e.target.closest('[data-theme]');if(theme){localStorage.setItem(STORE.theme,theme.dataset.theme);applyPrefs();return}const size=e.target.closest('[data-size]');if(size){localStorage.setItem(STORE.size,size.dataset.size);applyPrefs();return}if(!e.target.closest('#settings')&&!e.target.closest('#settingsToggle'))$('#settings').hidden=true});
+$('#settingsToggle').onclick=()=>$('#settings').hidden=!$('#settings').hidden;
+$('#quickSearch').onclick=()=>{showView('learn');setTimeout(()=>$('#searchInput').focus(),0)};
+$('#searchInput').addEventListener('input',e=>{state.query=e.target.value.trim();renderLearn()});
+$('#revealBtn').onclick=()=>$('#practiceAnswer').classList.add('show');$('#nextBtn').onclick=nextPractice;$('#practiceMode').onchange=renderPractice;
+$('#memoryRestart').onclick=initMemory;$('#memoryCategory').onchange=initMemory;$('#memoryPairs').onchange=initMemory;
 
-    function escapeHtml(value){ return String(value).replace(/[&<>'"]/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char])); }
-    function readJSON(key, fallback=null){ try{ const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : fallback; } catch(err){ return fallback; } }
-    function normalizeTheme(value){ value = String(value ?? '').toLowerCase(); if(['dark','dunkel','true','1'].includes(value)) return 'dark'; if(['light','white','weiss','weiß','hell','false','0'].includes(value)) return 'light'; return null; }
-    function normalizeLang(value){ value = String(value ?? '').toLowerCase(); if(value.startsWith('en')) return 'en'; if(value.startsWith('de')) return 'de'; return null; }
-    function normalizeFontSize(value){ value = String(value ?? '').toLowerCase(); if(['small','klein','s','14','14px'].includes(value)) return 'small'; if(['large','gross','groß','big','l','18','18px'].includes(value)) return 'large'; if(['normal','medium','m','16','16px'].includes(value)) return 'normal'; return null; }
-
-    function importOneDriveSettings(){
-      const imported = {};
-      const objectKeys = ['ib-onedrive-settings','ibOneDriveSettings','onedrive-settings','onedriveSettings','ib-settings','app-settings'];
-      objectKeys.forEach(key => {
-        const obj = readJSON(key, null);
-        if(obj && typeof obj === 'object'){
-          const theme = normalizeTheme(obj.theme ?? obj.mode ?? obj.appearance ?? obj.darkMode);
-          const lang = normalizeLang(obj.lang ?? obj.language ?? obj.locale);
-          const fontSize = normalizeFontSize(obj.fontSize ?? obj.fontsize ?? obj.textSize ?? obj.size);
-          if(theme) imported.theme = theme;
-          if(lang) imported.lang = lang;
-          if(fontSize) imported.fontSize = fontSize;
-        }
-      });
-      [['theme',['ib-onedrive-theme','onedrive-theme','ib-theme','theme']], ['lang',['ib-onedrive-lang','onedrive-lang','ib-lang','lang','language']], ['fontSize',['ib-onedrive-fontsize','ib-onedrive-font-size','onedrive-fontsize','fontSize','fontsize']]].forEach(([target, keys]) => {
-        keys.forEach(key => {
-          const raw = localStorage.getItem(key);
-          const normalized = target === 'theme' ? normalizeTheme(raw) : target === 'lang' ? normalizeLang(raw) : normalizeFontSize(raw);
-          if(normalized) imported[target] = normalized;
-        });
-      });
-      return imported;
-    }
-
-    function loadSettings(){
-      const own = readJSON(SETTINGS_KEY, {});
-      return { ...defaults, ...importOneDriveSettings(), ...(own && typeof own === 'object' ? own : {}) };
-    }
-
-    function loadFavoriteIds(){
-      const ids = new Set();
-      const current = readJSON(FAVORITES_KEY, null);
-      const legacyIds = readJSON(LEGACY_FAVORITES_KEY, null);
-      const source = Array.isArray(current) ? current : Array.isArray(legacyIds) ? legacyIds : [];
-      source.forEach(id => { if(validIds.has(String(id))) ids.add(String(id)); });
-      const legacyIndexes = readJSON(LEGACY_STARS_KEY, []);
-      if(Array.isArray(legacyIndexes)) legacyIndexes.forEach(index => { const item = shortcuts[Number(index)]; if(item) ids.add(item.id); });
-      return ids;
-    }
-
-    function loadFavoriteOrder(stars){
-      const saved = readJSON(FAVORITE_ORDER_KEY, []);
-      const order = [];
-      if(Array.isArray(saved)) saved.forEach(id => { id = String(id); if(stars.has(id) && !order.includes(id)) order.push(id); });
-      shortcuts.forEach(item => { if(stars.has(item.id) && !order.includes(item.id)) order.push(item.id); });
-      return order;
-    }
-
-    const state = { filter:'all', query:'', stars:loadFavoriteIds(), favoriteOrder:[], practiceIndex:0, practiceOrder:[], settings:loadSettings(), draggedId:null, quizStreak:0, quizBest:readJSON('ib-shortcut-quiz-best-v3', 0) };
-    state.favoriteOrder = loadFavoriteOrder(state.stars);
-
-    const memoryState = {
-      category: 'all',
-      pairsCount: 6,
-      cards: [],
-      firstCard: null,
-      secondCard: null,
-      lockBoard: false,
-      moves: 0,
-      matchesFound: 0,
-      startTime: null,
-      timerInterval: null,
-      timeElapsed: 0
-    };
-
-    function t(key){ const lang = state.settings.lang === 'en' ? 'en' : 'de'; return (i18n[lang] && i18n[lang][key]) || i18n.de[key] || key; }
-    function tx(item, field){ const lang = state.settings.lang === 'en' ? 'en' : 'de'; return (item[field] && (item[field][lang] || item[field].de)) || ''; }
-    function keyMarkup(keys){ return keys.map((key,index) => `<kbd>${escapeHtml(key)}</kbd>${index < keys.length - 1 ? '<span class="plus">+</span>' : ''}`).join(''); }
-    function shortcutText(item){ return item.keys.join(' + '); }
-    function getShortcut(id){ return shortcuts.find(item => item.id === id); }
-
-    function saveSettings(){ localStorage.setItem(SETTINGS_KEY, JSON.stringify(state.settings)); }
-    function saveFavorites(){
-      state.favoriteOrder = state.favoriteOrder.filter(id => state.stars.has(id) && validIds.has(id));
-      shortcuts.forEach(item => { if(state.stars.has(item.id) && !state.favoriteOrder.includes(item.id)) state.favoriteOrder.push(item.id); });
-      const ids = [...state.stars].filter(id => validIds.has(id));
-      localStorage.setItem(FAVORITES_KEY, JSON.stringify(ids));
-      localStorage.setItem(FAVORITE_ORDER_KEY, JSON.stringify(state.favoriteOrder));
-    }
-
-    function applySettings(){
-      document.documentElement.dataset.theme = state.settings.theme;
-      document.documentElement.dataset.fontSize = state.settings.fontSize;
-      document.documentElement.lang = state.settings.lang;
-      $$('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
-      $$('[data-i18n-placeholder]').forEach(el => { el.placeholder = t(el.dataset.i18nPlaceholder); });
-      $$('button[data-theme]').forEach(btn => btn.classList.toggle('active', btn.dataset.theme === state.settings.theme));
-      $$('button[data-font-size]').forEach(btn => btn.classList.toggle('active', btn.dataset.fontSize === state.settings.fontSize));
-      $$('button[data-lang]').forEach(btn => btn.classList.toggle('active', btn.dataset.lang === state.settings.lang));
-      saveSettings();
-      renderCards();
-      renderFavorites();
-      loadPractice();
-      initMemoryBoard();
-    }
-
-    function createCard(item){
-      const card = document.createElement('article');
-      card.className = 'shortcut-card';
-      card.dataset.id = item.id;
-      card.dataset.cat = item.cat;
-      card.dataset.search = `${item.title.de} ${item.title.en} ${item.keys.join(' ')} ${item.desc.de} ${item.desc.en} ${item.tag.de} ${item.tag.en}`.toLowerCase();
-      const starred = state.stars.has(item.id);
-      card.innerHTML = `<div class="card-top"><span class="badge">${escapeHtml(tx(item,'tag'))}</span><button class="star-btn ${starred ? 'active' : ''}" title="${escapeHtml(t('favorites'))}" aria-label="${escapeHtml(t('favorites'))}" data-star="${escapeHtml(item.id)}">${starred ? '★' : '☆'}</button></div><h3>${escapeHtml(tx(item,'title'))}</h3><div class="keys">${keyMarkup(item.keys)}</div><p>${escapeHtml(tx(item,'desc'))}</p><div class="card-actions"><button class="small-btn" data-copy="${escapeHtml(item.id)}">${escapeHtml(t('copyShortcut'))}</button><button class="small-btn" data-practice="${escapeHtml(item.id)}">${escapeHtml(t('practice'))}</button></div>`;
-      return card;
-    }
-
-    function renderCards(){
-      ['gridGeneral','gridWindow','gridPower'].forEach(id => { const el = document.getElementById(id); if(el) el.innerHTML = ''; });
-      shortcuts.forEach(item => { const grid = document.getElementById(item.group); if(grid) grid.appendChild(createCard(item)); });
-      updateProgress(false);
-      applyFilters();
-    }
-
-    function applyFilters(){
-      let visible = 0;
-      const sectionCounts = { allgemein:0, fenster:0, power:0 };
-      $$('.shortcut-card').forEach(card => {
-        const matchesFavorites = state.filter !== 'favorites' || state.stars.has(card.dataset.id);
-        const cats = card.dataset.cat.split(' ');
-        const matchesFilter = state.filter === 'all' || state.filter === 'favorites' || cats.includes(state.filter);
-        const matchesSearch = !state.query || card.dataset.search.includes(state.query);
-        const show = matchesFavorites && matchesFilter && matchesSearch;
-        card.style.display = show ? '' : 'none';
-        if(show){
-          visible++;
-          if(card.closest('#allgemein')) sectionCounts.allgemein++;
-          if(card.closest('#fenster')) sectionCounts.fenster++;
-          if(card.closest('#power')) sectionCounts.power++;
-        }
-      });
-
-      Object.entries({ allgemein:'#allgemein', fenster:'#fenster', power:'#power' }).forEach(([key, selector]) => {
-        const section = $(selector);
-        if(!section) return;
-        const showSection = state.filter === 'all' && !state.query ? true : sectionCounts[key] > 0;
-        section.style.display = showSection ? '' : 'none';
-      });
-
-      const empty = $('#emptyState');
-      empty.textContent = state.filter === 'favorites' ? t('emptyFilterFav') : t('noResults');
-      empty.style.display = visible ? 'none' : 'block';
-    }
-
-    function updateProgress(shouldSave=true){
-      if(shouldSave) saveFavorites();
-      const starCountEl = $('#starCount');
-      if (starCountEl) starCountEl.textContent = `${state.stars.size} / ${shortcuts.length}`;
-      const progressBarEl = $('#progressBar');
-      if (progressBarEl) progressBarEl.style.width = `${Math.round(state.stars.size / shortcuts.length * 100)}%`;
-      $$('.star-btn').forEach(btn => { const starred = state.stars.has(btn.dataset.star); btn.classList.toggle('active', starred); btn.textContent = starred ? '★' : '☆'; });
-      renderFavorites();
-    }
-
-    function renderFavorites(){
-      if(!$('#favoriteInventory')) return;
-      state.favoriteOrder = state.favoriteOrder.filter(id => state.stars.has(id) && validIds.has(id));
-      shortcuts.forEach(item => { if(state.stars.has(item.id) && !state.favoriteOrder.includes(item.id)) state.favoriteOrder.push(item.id); });
-      const grid = $('#favoriteInventory');
-      grid.innerHTML = '';
-      const empty = $('#favoriteEmpty');
-      const count = state.favoriteOrder.length;
-      $('#favCount').textContent = state.settings.lang === 'en' ? `${count} favorite${count === 1 ? '' : 's'}` : `${count} Favorit${count === 1 ? '' : 'en'}`;
-      empty.style.display = count ? 'none' : 'block';
-      grid.style.display = count ? 'grid' : 'none';
-      state.favoriteOrder.forEach((id, index) => {
-        const item = getShortcut(id); if(!item) return;
-        const tile = document.createElement('article');
-        tile.className = 'fav-tile';
-        tile.draggable = true;
-        tile.dataset.favId = id;
-        tile.innerHTML = `<div class="fav-top"><span class="handle">#${index + 1}</span><button class="icon-btn" data-star="${escapeHtml(id)}" title="${escapeHtml(t('remove'))}">★</button></div><div class="fav-title">${escapeHtml(tx(item,'title'))}</div><div class="keys">${keyMarkup(item.keys)}</div><p class="fav-desc">${escapeHtml(tx(item,'desc'))}</p><div class="fav-tools"><button class="icon-btn" data-move-fav="up" data-id="${escapeHtml(id)}">↑ ${escapeHtml(t('moveUp'))}</button><button class="icon-btn" data-move-fav="down" data-id="${escapeHtml(id)}">↓ ${escapeHtml(t('moveDown'))}</button><button class="icon-btn" data-copy="${escapeHtml(id)}">⧉</button></div>`;
-        grid.appendChild(tile);
-      });
-      saveFavorites();
-    }
-
-    function moveFavorite(id, direction){
-      const index = state.favoriteOrder.indexOf(id);
-      if(index < 0) return;
-      const target = direction === 'up' ? index - 1 : index + 1;
-      if(target < 0 || target >= state.favoriteOrder.length) return;
-      [state.favoriteOrder[index], state.favoriteOrder[target]] = [state.favoriteOrder[target], state.favoriteOrder[index]];
-      renderFavorites();
-    }
-
-    function reorderFavorite(draggedId, targetId){
-      if(!draggedId || !targetId || draggedId === targetId) return;
-      const from = state.favoriteOrder.indexOf(draggedId);
-      const to = state.favoriteOrder.indexOf(targetId);
-      if(from < 0 || to < 0) return;
-      const [moved] = state.favoriteOrder.splice(from, 1);
-      state.favoriteOrder.splice(to, 0, moved);
-      renderFavorites();
-    }
-
-    function toast(message){ const el = $('#toast'); el.textContent = message; el.classList.add('show'); clearTimeout(window.__toastTimer); window.__toastTimer = setTimeout(() => el.classList.remove('show'), 1600); }
-
-    function shufflePractice(){ state.practiceOrder = shortcuts.map(item => item.id).sort(() => Math.random() - .5); state.practiceIndex = 0; }
-    
-    function getRandomDistractors(currentId, count) {
-      const others = shortcuts.filter(s => s.id !== currentId);
-      const shuffled = others.sort(() => Math.random() - 0.5);
-      return shuffled.slice(0, count);
-    }
-
-    function loadPractice(id=null){
-      if(!state.practiceOrder.length) shufflePractice();
-      if(id){ const found = state.practiceOrder.indexOf(id); if(found >= 0) state.practiceIndex = found; else { state.practiceOrder.unshift(id); state.practiceIndex = 0; } }
-      const item = getShortcut(state.practiceOrder[state.practiceIndex]) || shortcuts[0];
-
-      $('#streakCount').textContent = state.quizStreak;
-      $('#bestStreak').textContent = state.quizBest;
-
-      const mode = $('#practiceMode').value;
-      const quizOptionsEl = $('#quizOptions');
-      const practiceAnswerEl = $('#practiceAnswer');
-      const showAnswerEl = $('#showAnswer');
-
-      practiceAnswerEl.classList.remove('show');
-
-      if (mode === 'classic') {
-        $('#practiceTask').textContent = tx(item, 'title');
-        showAnswerEl.style.display = '';
-        quizOptionsEl.style.display = 'none';
-        practiceAnswerEl.innerHTML = `<div class="keys">${keyMarkup(item.keys)}</div><p style="margin:10px 0 0;color:var(--muted);line-height:1.45">${escapeHtml(tx(item,'desc'))}</p>`;
-      } else if (mode === 'quiz') {
-        $('#practiceTask').textContent = tx(item, 'title');
-        showAnswerEl.style.display = 'none';
-        quizOptionsEl.style.display = 'grid';
-        practiceAnswerEl.innerHTML = `<div class="keys">${keyMarkup(item.keys)}</div><p style="margin:10px 0 0;color:var(--muted);line-height:1.45">${escapeHtml(tx(item,'desc'))}</p>`;
-
-        const distractors = getRandomDistractors(item.id, 3);
-        const choices = [item, ...distractors].sort(() => Math.random() - 0.5);
-
-        quizOptionsEl.innerHTML = '';
-        choices.forEach(choice => {
-          const btn = document.createElement('button');
-          btn.className = 'quiz-btn';
-          btn.type = 'button';
-          btn.innerHTML = `<span>${shortcutText(choice)}</span>`;
-          btn.addEventListener('click', () => {
-            if (choice.id === item.id) {
-              btn.classList.add('correct');
-              state.quizStreak++;
-              if (state.quizStreak > state.quizBest) {
-                state.quizBest = state.quizStreak;
-                localStorage.setItem('ib-shortcut-quiz-best-v3', JSON.stringify(state.quizBest));
-              }
-              toast(state.settings.lang === 'en' ? 'Correct!' : 'Richtig!');
-            } else {
-              btn.classList.add('wrong');
-              state.quizStreak = 0;
-              $$('.quiz-btn', quizOptionsEl).forEach(b => {
-                if (b.textContent.trim() === shortcutText(item)) {
-                  b.classList.add('correct');
-                }
-              });
-              toast(state.settings.lang === 'en' ? 'Wrong!' : 'Falsch!');
-            }
-            $('#streakCount').textContent = state.quizStreak;
-            $('#bestStreak').textContent = state.quizBest;
-            $$('.quiz-btn', quizOptionsEl).forEach(b => b.disabled = true);
-            practiceAnswerEl.classList.add('show');
-          });
-          quizOptionsEl.appendChild(btn);
-        });
-      } else if (mode === 'imposter') {
-        $('#practiceTask').textContent = t('imposterQuest');
-        showAnswerEl.style.display = 'none';
-        quizOptionsEl.style.display = 'grid';
-        
-        const correctOptions = [item, ...getRandomDistractors(item.id, 2)];
-        const imposterBase = getRandomDistractors(item.id, 4);
-        const wrongItem = imposterBase[0];
-        const wrongKeysSource = imposterBase[1];
-        
-        const pairings = correctOptions.map(o => ({
-          id: o.id,
-          isImposter: false,
-          text: `${tx(o, 'title')}: ${shortcutText(o)}`,
-          item: o
-        }));
-        
-        pairings.push({
-          id: wrongItem.id,
-          isImposter: true,
-          text: `${tx(wrongItem, 'title')}: ${shortcutText(wrongKeysSource)}`,
-          item: wrongItem
-        });
-        
-        pairings.sort(() => Math.random() - 0.5);
-
-        quizOptionsEl.innerHTML = '';
-        practiceAnswerEl.innerHTML = `<h4 style="margin: 0 0 6px; font-weight: 850;">${state.settings.lang === 'en' ? 'Imposter Revealed' : 'Fehler aufgedeckt'}</h4><p>${state.settings.lang === 'en' ? 'The incorrect pairing was:' : 'Die falsche Paarung war:'} <strong>${tx(wrongItem, 'title')} = ${shortcutText(wrongItem)}</strong></p><p style="margin: 8px 0 0; color:var(--muted);">${escapeHtml(tx(wrongItem, 'desc'))}</p>`;
-
-        pairings.forEach(p => {
-          const btn = document.createElement('button');
-          btn.className = 'quiz-btn';
-          btn.type = 'button';
-          btn.innerHTML = `<span style="font-size: 0.82rem; text-align: left; line-height: 1.25">${escapeHtml(p.text)}</span>`;
-          btn.addEventListener('click', () => {
-            if (p.isImposter) {
-              btn.classList.add('correct');
-              state.quizStreak++;
-              if (state.quizStreak > state.quizBest) {
-                state.quizBest = state.quizStreak;
-                localStorage.setItem('ib-shortcut-quiz-best-v3', JSON.stringify(state.quizBest));
-              }
-              toast(state.settings.lang === 'en' ? 'Correct!' : 'Richtig!');
-            } else {
-              btn.classList.add('wrong');
-              state.quizStreak = 0;
-              $$('.quiz-btn', quizOptionsEl).forEach((b, idx) => {
-                if (pairings[idx].isImposter) {
-                  b.classList.add('correct');
-                }
-              });
-              toast(state.settings.lang === 'en' ? 'Wrong!' : 'Falsch!');
-            }
-            $('#streakCount').textContent = state.quizStreak;
-            $('#bestStreak').textContent = state.quizBest;
-            $$('.quiz-btn', quizOptionsEl).forEach(b => b.disabled = true);
-            practiceAnswerEl.classList.add('show');
-          });
-          quizOptionsEl.appendChild(btn);
-        });
-      }
-
-      $('#roundInfo').textContent = `${t('card')} ${state.practiceIndex + 1} / ${shortcuts.length}`;
-    }
-
-    function renderMemoryBest() {
-      const cat = memoryState.category;
-      const count = memoryState.pairsCount;
-      const key = `ib-memory-best-${cat}-${count}`;
-      const best = readJSON(key, null);
-      if (best) {
-        $('#memoryBestPill').textContent = state.settings.lang === 'en' 
-          ? `Best: ${best.moves} moves / ${best.time}s`
-          : `Beste: ${best.moves} Züge / ${best.time}s`;
-      } else {
-        $('#memoryBestPill').textContent = state.settings.lang === 'en' ? 'Best: -' : 'Beste: -';
-      }
-    }
-
-    function initMemoryBoard() {
-      memoryState.moves = 0;
-      memoryState.matchesFound = 0;
-      memoryState.firstCard = null;
-      memoryState.secondCard = null;
-      memoryState.lockBoard = false;
-      memoryState.timeElapsed = 0;
-      
-      clearInterval(memoryState.timerInterval);
-      memoryState.timerInterval = null;
-      
-      $('#memoryMoves').textContent = '0';
-      $('#memoryTime').textContent = '0s';
-      $('#memoryMessage').textContent = '';
-      
-      let list = [];
-      if (memoryState.category === 'all') {
-        list = [...shortcuts];
-      } else if (memoryState.category === 'favorites') {
-        list = shortcuts.filter(s => state.stars.has(s.id));
-      } else {
-        list = shortcuts.filter(s => s.cat.split(' ').includes(memoryState.category));
-      }
-      
-      const needed = Number($('#memoryPairsCount').value);
-      memoryState.pairsCount = needed;
-      renderMemoryBest();
-      
-      if (list.length < needed) {
-        $('#memoryBoard').innerHTML = '';
-        const msg = t('notEnoughFavs').replace('{count}', needed);
-        $('#memoryMessage').textContent = msg;
-        return;
-      }
-      
-      const selected = list.sort(() => Math.random() - 0.5).slice(0, needed);
-      
-      const cardsData = [];
-      selected.forEach(s => {
-        cardsData.push({
-          id: s.id,
-          type: 'title',
-          content: tx(s, 'title'),
-          shortcut: s
-        });
-        cardsData.push({
-          id: s.id,
-          type: 'keys',
-          content: keyMarkup(s.keys),
-          shortcut: s
-        });
-      });
-      
-      cardsData.sort(() => Math.random() - 0.5);
-      
-      const board = $('#memoryBoard');
-      board.innerHTML = '';
-      
-      cardsData.forEach(c => {
-        const card = document.createElement('div');
-        card.className = 'memory-card';
-        card.dataset.id = c.id;
-        card.dataset.type = c.type;
-        
-        card.innerHTML = `
-          <div class="memory-card-front"></div>
-          <div class="memory-card-back">
-            ${c.type === 'title' ? `<span style="line-height:1.25;font-size:0.8rem;">${escapeHtml(c.content)}</span>` : `<div class="keys" style="margin:0;justify-content:center;">${c.content}</div>`}
-          </div>
-        `;
-        
-        card.addEventListener('click', () => flipMemoryCard(card));
-        board.appendChild(card);
-      });
-    }
-
-    function startMemoryTimer() {
-      if (memoryState.timerInterval) return;
-      memoryState.startTime = Date.now();
-      memoryState.timerInterval = setInterval(() => {
-        memoryState.timeElapsed = Math.floor((Date.now() - memoryState.startTime) / 1000);
-        $('#memoryTime').textContent = `${memoryState.timeElapsed}s`;
-      }, 1000);
-    }
-
-    function flipMemoryCard(card) {
-      if (memoryState.lockBoard) return;
-      if (card === memoryState.firstCard) return;
-      if (card.classList.contains('matched')) return;
-      if (card.classList.contains('flipped')) return;
-      
-      startMemoryTimer();
-      card.classList.add('flipped');
-      
-      if (!memoryState.firstCard) {
-        memoryState.firstCard = card;
-        return;
-      }
-      
-      memoryState.secondCard = card;
-      checkMemoryMatch();
-    }
-
-    function checkMemoryMatch() {
-      memoryState.moves++;
-      $('#memoryMoves').textContent = memoryState.moves;
-      
-      const isMatch = memoryState.firstCard.dataset.id === memoryState.secondCard.dataset.id;
-      if (isMatch) {
-        disableMemoryCards();
-      } else {
-        unflipMemoryCards();
-      }
-    }
-
-    function disableMemoryCards() {
-      memoryState.firstCard.classList.add('matched');
-      memoryState.secondCard.classList.add('matched');
-      
-      memoryState.matchesFound++;
-      
-      resetMemoryTurn();
-      
-      if (memoryState.matchesFound === memoryState.pairsCount) {
-        clearInterval(memoryState.timerInterval);
-        memoryState.timerInterval = null;
-        showMemoryWin();
-      }
-    }
-
-    function unflipMemoryCards() {
-      memoryState.lockBoard = true;
-      memoryState.firstCard.classList.add('mismatched');
-      memoryState.secondCard.classList.add('mismatched');
-      
-      setTimeout(() => {
-        memoryState.firstCard.classList.remove('flipped', 'mismatched');
-        memoryState.secondCard.classList.remove('flipped', 'mismatched');
-        resetMemoryTurn();
-      }, 1200);
-    }
-
-    function resetMemoryTurn() {
-      memoryState.firstCard = null;
-      memoryState.secondCard = null;
-      memoryState.lockBoard = false;
-    }
-
-    function showMemoryWin() {
-      const cat = memoryState.category;
-      const count = memoryState.pairsCount;
-      const key = `ib-memory-best-${cat}-${count}`;
-      
-      let best = readJSON(key, null);
-      let isNewBest = false;
-      
-      if (!best || memoryState.moves < best.moves || (memoryState.moves === best.moves && memoryState.timeElapsed < best.time)) {
-        best = { moves: memoryState.moves, time: memoryState.timeElapsed };
-        localStorage.setItem(key, JSON.stringify(best));
-        isNewBest = true;
-      }
-      
-      $('#winMoves').textContent = memoryState.moves;
-      $('#winTime').textContent = `${memoryState.timeElapsed}s`;
-      
-      const bestText = state.settings.lang === 'en'
-        ? `${best.moves} moves / ${best.time}s ${isNewBest ? '🎉 (New Personal Best!)' : ''}`
-        : `${best.moves} Züge / ${best.time}s ${isNewBest ? '🎉 (Neuer Rekord!)' : ''}`;
-        
-      $('#winBest').textContent = bestText;
-      
-      renderMemoryBest();
-      $('#winModalOverlay').classList.add('show');
-    }
-
-    function exportFavoritesHTML(){
-      const lang = state.settings.lang === 'en' ? 'en' : 'de';
-      const title = lang === 'en' ? 'My shortcut favorites' : 'Meine Shortcut-Favoriten';
-      const items = state.favoriteOrder.map(id => getShortcut(id)).filter(Boolean);
-      const cards = items.map((item, index) => `<article class="card"><div class="num">${index + 1}</div><h2>${escapeHtml(tx(item,'title'))}</h2><div class="keys">${keyMarkup(item.keys)}</div><p>${escapeHtml(tx(item,'desc'))}</p></article>`).join('\n');
-      const exported = `<!DOCTYPE html><html lang="${lang}"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHtml(title)}</title><style>body{margin:0;font-family:Segoe UI,system-ui,sans-serif;background:#f3f8ff;color:#102033;padding:28px}header{max-width:980px;margin:0 auto 20px;padding:28px;border-radius:28px;background:linear-gradient(135deg,#0f6cbd,#28a7ee);color:white;box-shadow:0 20px 50px rgba(15,108,189,.25)}h1{margin:0;font-size:clamp(2rem,7vw,4.6rem);line-height:.95;letter-spacing:-.07em}.grid{max-width:980px;margin:auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}.card{position:relative;padding:18px;border-radius:22px;background:white;border:1px solid rgba(15,108,189,.14);box-shadow:0 12px 30px rgba(15,80,150,.12)}.num{position:absolute;right:14px;top:14px;color:#0f6cbd;font-weight:900}.keys{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}kbd{padding:7px 10px;border-radius:10px;background:linear-gradient(#fff,#edf5ff);border:1px solid #c8d9ed;box-shadow:0 3px 0 #bfd0e4;font-weight:900}.plus{font-weight:900;color:#667}p{line-height:1.5;color:#50667d}</style></head><body><header><h1>${escapeHtml(title)}</h1><p>${new Date().toLocaleDateString(lang === 'en' ? 'en-GB' : 'de-CH')} · ${items.length} Shortcuts</p></header><main class="grid">${cards || '<p>No favorites exported.</p>'}</main></body></html>`;
-      const blob = new Blob([exported], {type:'text/html;charset=utf-8'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = lang === 'en' ? 'my-shortcut-favorites.html' : 'meine-shortcut-favoriten.html';
-      document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
-      toast(t('exported'));
-    }
-
-    document.addEventListener('click', async event => {
-      const settingsToggle = event.target.closest('#settingsToggle');
-      if(settingsToggle){ $('#settingsPanel').hidden = !$('#settingsPanel').hidden; return; }
-      if(!event.target.closest('#settingsPanel') && !event.target.closest('#settingsToggle')) $('#settingsPanel').hidden = true;
-      const nav = event.target.closest('[data-scroll]');
-      if(nav){ const target = document.getElementById(nav.dataset.scroll); if(target) target.scrollIntoView({behavior:'smooth', block:'start'}); $$('.nav-btn').forEach(btn => btn.classList.toggle('active', btn === nav)); }
-      const themeBtn = event.target.closest('button[data-theme]');
-      if(themeBtn){ state.settings.theme = themeBtn.dataset.theme; applySettings(); }
-      const fontBtn = event.target.closest('button[data-font-size]');
-      if(fontBtn){ state.settings.fontSize = fontBtn.dataset.fontSize; applySettings(); }
-      const langBtn = event.target.closest('button[data-lang]');
-      if(langBtn){ state.settings.lang = langBtn.dataset.lang; applySettings(); }
-      const filter = event.target.closest('[data-filter]');
-      if(filter){ state.filter = filter.dataset.filter; $$('.filter-btn').forEach(btn => btn.classList.toggle('active', btn === filter)); applyFilters(); }
-      const star = event.target.closest('[data-star]');
-      if(star){ const id = star.dataset.star; if(state.stars.has(id)){ state.stars.delete(id); state.favoriteOrder = state.favoriteOrder.filter(x => x !== id); toast(t('removed')); } else { state.stars.add(id); if(!state.favoriteOrder.includes(id)) state.favoriteOrder.push(id); toast(t('saved')); } updateProgress(); applyFilters(); }
-      const copy = event.target.closest('[data-copy]');
-      if(copy){ const item = getShortcut(copy.dataset.copy); if(item){ const text = `${tx(item,'title')}: ${shortcutText(item)}`; try{ await navigator.clipboard.writeText(text); toast(t('copied')); } catch(err){ toast(text); } } }
-      const practice = event.target.closest('[data-practice]');
-      if(practice){ loadPractice(practice.dataset.practice); document.getElementById('training').scrollIntoView({behavior:'smooth', block:'start'}); }
-      const move = event.target.closest('[data-move-fav]');
-      if(move){ moveFavorite(move.dataset.id, move.dataset.moveFav); }
-      if(event.target.closest('#exportFavorites')) exportFavoritesHTML();
-      if(event.target.closest('#resetFavoriteOrder')){ state.favoriteOrder = shortcuts.filter(item => state.stars.has(item.id)).map(item => item.id); renderFavorites(); }
-      if(event.target.closest('#clearFavorites')){ state.stars.clear(); state.favoriteOrder = []; updateProgress(); applyFilters(); toast(t('cleared')); }
-      
-      const memCat = event.target.closest('[data-memory-cat]');
-      if (memCat) {
-        memoryState.category = memCat.dataset.memoryCat;
-        $$('.filter-btn', $('#memoryCatFilter')).forEach(btn => btn.classList.toggle('active', btn === memCat));
-        initMemoryBoard();
-      }
-      
-      if (event.target.closest('#restartMemory')) {
-        initMemoryBoard();
-      }
-      
-      if (event.target.closest('#closeWinModal')) {
-        $('#winModalOverlay').classList.remove('show');
-        initMemoryBoard();
-      }
-    });
-
-    $('#favoriteInventory').addEventListener('dragstart', event => { const tile = event.target.closest('.fav-tile'); if(!tile) return; state.draggedId = tile.dataset.favId; tile.classList.add('dragging'); event.dataTransfer.effectAllowed = 'move'; event.dataTransfer.setData('text/plain', state.draggedId); });
-    $('#favoriteInventory').addEventListener('dragend', () => { state.draggedId = null; $$('.fav-tile').forEach(tile => tile.classList.remove('dragging','drop-target')); });
-    $('#favoriteInventory').addEventListener('dragover', event => { const tile = event.target.closest('.fav-tile'); if(!tile || tile.dataset.favId === state.draggedId) return; event.preventDefault(); $$('.fav-tile').forEach(t => t.classList.toggle('drop-target', t === tile)); });
-    $('#favoriteInventory').addEventListener('drop', event => { const tile = event.target.closest('.fav-tile'); if(!tile) return; event.preventDefault(); reorderFavorite(event.dataTransfer.getData('text/plain') || state.draggedId, tile.dataset.favId); });
-
-    $('#searchInput').addEventListener('input', event => { state.query = event.target.value.trim().toLowerCase(); applyFilters(); });
-    $('#showAnswer').addEventListener('click', () => $('#practiceAnswer').classList.add('show'));
-    $('#nextCard').addEventListener('click', () => { state.practiceIndex = (state.practiceIndex + 1) % state.practiceOrder.length; loadPractice(); });
-    
-    $('#practiceMode').addEventListener('change', () => {
-      loadPractice();
-    });
-
-    $('#memoryPairsCount').addEventListener('change', () => {
-      initMemoryBoard();
-    });
-
-    shufflePractice();
-    applySettings();
-  </script>
+renderHome();renderLearn();fillMemoryCategories();shufflePractice();renderPractice();renderFavorites();updateFavoriteUI();$('#best').textContent=state.best;applyPrefs();
+</script>
 </body>
 </html>
