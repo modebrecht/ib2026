@@ -49,27 +49,37 @@
     }catch(e){}
   }
 
+  function syncChoiceStep(progress){
+    var enabled=progress.downloaded===true;
+    document.querySelectorAll('.shortcut-choice,.shortcut-reason').forEach(function(input){
+      input.disabled=!enabled;
+    });
+  }
+
   function syncOneDriveStep(progress){
     var checkbox=byId('onedrive-confirm'),status=byId('onedrive-status');
     if(!checkbox)return;
+    var choicesDone=choicesComplete(progress);
     checkbox.checked=progress.onedriveStored===true;
-    checkbox.disabled=progress.downloaded!==true;
+    checkbox.disabled=progress.downloaded!==true||!choicesDone;
     if(status){
       if(progress.onedriveStored)status.textContent='Gesichert ✓';
-      else if(progress.downloaded)status.textContent='Setze den Haken, sobald die PDF im Ordner „IB“ liegt.';
-      else status.textContent='Nach dem Download kannst du diesen Schritt bestätigen.';
+      else if(!progress.downloaded)status.textContent='Zuerst das Merkblatt herunterladen und anschauen.';
+      else if(!choicesDone)status.textContent='Trage zuerst deine drei Kürzel mit Begründung ein.';
+      else status.textContent='Setze den Haken, sobald die PDF im Ordner „IB“ liegt.';
     }
   }
 
   function renderCompleted(progress){
     var card=byId('completion-card'),hint=byId('choice-hint');
     if(card)card.classList.toggle('is-visible',progress.completed===true);
+    syncChoiceStep(progress);
     syncOneDriveStep(progress);
     if(hint){
-      if(progress.completed)hint.textContent='✓ Drei persönliche Kürzel eingetragen und Merkblatt gesichert.';
-      else if(!choicesComplete(progress))hint.textContent='Trage drei unterschiedliche Kürzel ein und begründe jedes kurz.';
-      else if(!progress.downloaded)hint.textContent='Deine drei Kürzel sind vollständig ✓ Lade jetzt noch das Merkblatt herunter.';
-      else if(!progress.onedriveStored)hint.textContent='Deine drei Kürzel sind vollständig ✓ Bestätige unten noch die Ablage in OneDrive.';
+      if(progress.completed)hint.textContent='✓ Merkblatt angeschaut, drei Kürzel ausgewählt und in OneDrive gesichert.';
+      else if(!progress.downloaded)hint.textContent='1. Lade zuerst das Merkblatt herunter und schau es dir an.';
+      else if(!choicesComplete(progress))hint.textContent='PDF heruntergeladen ✓ 2. Trage jetzt drei unterschiedliche Kürzel mit Begründung ein.';
+      else if(!progress.onedriveStored)hint.textContent='Drei Kürzel vollständig ✓ 3. Sichere das Merkblatt jetzt in OneDrive und bestätige unten den Haken.';
     }
   }
 
