@@ -10,7 +10,7 @@
     body{font-family:'Outfit',sans-serif;background:radial-gradient(circle at 10% 0,rgba(59,130,246,.10),transparent 30rem),var(--bg-dark);color:var(--text-main);min-height:100vh;overflow-x:hidden}
     .back-link:hover{color:#60a5fa}.badge-a5{--badge-accent:#3b82f6;--badge-accent-rgb:59,130,246;--badge-text:#93c5fd}
     .course-intro{border-color:rgba(59,130,246,.35)}.course-intro h1,.lesson-title,.sheet-title,.stage-label{font-family:'Space Grotesk',sans-serif}.course-intro h1{font-size:clamp(1.5rem,4vw,2rem);margin-bottom:.5rem}.course-intro p,.lesson-intro,.sheet-desc{color:var(--text-muted);line-height:1.55}
-    .flow-strip{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.flow-strip span{padding:6px 9px;border-radius:999px;background:rgba(148,163,184,.07);border:1px solid rgba(148,163,184,.13);font-size:.76rem;font-weight:800;color:#cbd5e1}.flow-strip b{color:#93c5fd}
+    .flow-strip{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:20px}.flow-step{display:inline-flex;align-items:center;gap:10px;min-height:54px;padding:10px 16px;border-radius:16px;background:rgba(148,163,184,.075);border:1px solid rgba(148,163,184,.18);font-size:.98rem;font-weight:800;color:#e2e8f0;line-height:1.15;white-space:nowrap}.flow-step b{display:grid;place-items:center;width:30px;height:30px;flex:0 0 30px;border-radius:999px;background:rgba(var(--stage-rgb,59,130,246),.14);color:var(--stage-accent,#93c5fd);font-family:'Space Grotesk',sans-serif;font-size:1rem}.flow-arrow{display:grid;place-items:center;width:38px;height:38px;flex:0 0 38px;padding:0!important;border-radius:999px;background:rgba(148,163,184,.055);border:1px solid rgba(148,163,184,.14);color:#94a3b8!important;font-size:1rem!important;font-weight:900!important}.flow-final{font-family:inherit;cursor:pointer;background:rgba(16,185,129,.09);border-color:rgba(16,185,129,.30);color:#d1fae5;transition:background .16s ease,border-color .16s ease,transform .16s ease}.flow-final b{background:rgba(16,185,129,.15);color:#6ee7b7}.flow-final:hover{background:rgba(16,185,129,.14);border-color:rgba(16,185,129,.48);transform:translateY(-1px)}
     .stage{margin-top:18px}.stage-label{display:flex;align-items:center;gap:9px;margin:0 0 9px;font-size:.82rem;font-weight:900;text-transform:uppercase;letter-spacing:.06em;color:var(--stage-accent)}.stage-label span{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;background:rgba(var(--stage-rgb),.1);border:1px solid rgba(var(--stage-rgb),.24)}
     .lesson-card{padding:0;background:none;border:0;box-shadow:none}.lesson-title{font-size:1.35rem;margin-bottom:.35rem}.lesson-intro{margin-bottom:1rem}.lesson-grid{display:grid;grid-template-columns:minmax(0,1040px);justify-content:center;gap:18px;align-items:start;width:100%;margin:1rem auto 0}
     .lesson-group-title{display:flex;align-items:center;gap:12px;margin:12px 0 -2px;padding:4px 2px;width:100%}.lesson-group-title:first-child{margin-top:0}.lesson-group-icon{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;flex:0 0 36px;background:rgba(var(--stage-rgb),.10);border:1px solid rgba(var(--stage-rgb),.2);font-size:1rem}.lesson-group-title h3{margin:0;font-family:'Space Grotesk',sans-serif;font-size:1.05rem;color:#e2e8f0}.lesson-group-title p{margin:2px 0 0;color:#64748b;font-size:.8rem}
@@ -24,7 +24,7 @@
     .repeat-card,.done-card{text-align:center;display:none}.repeat-card{border-color:rgba(245,158,11,.35);background:linear-gradient(145deg,rgba(245,158,11,.055),rgba(15,23,42,.88))}.repeat-card h2{font-family:'Space Grotesk',sans-serif;color:#fde68a;margin-bottom:.35rem}.repeat-card p,.done-card p{color:var(--text-muted);margin-bottom:1rem}.done-card{border-color:rgba(16,185,129,.35)}.done-card h2{font-family:'Space Grotesk',sans-serif;color:#a7f3d0;margin-bottom:.35rem}
     .summary-rows{display:grid;gap:10px;margin-top:1rem}.summary-row{display:grid;grid-template-columns:48px 1fr auto;gap:10px;align-items:center;background:rgba(15,23,42,.7);border:1px solid var(--border-color);border-radius:14px;padding:10px 12px}.summary-q{font-family:'Space Grotesk',sans-serif;font-weight:800;text-align:center}.summary-vals{font-family:'Space Grotesk',monospace;font-weight:700;white-space:nowrap}
     @media(max-width:780px){.lesson-scene{min-height:0}.lesson-anim-card{border-radius:18px}.lesson-group-title{margin-top:14px}}@media(max-width:640px){.lesson-anim-head{padding:14px;flex-direction:column}.lesson-keys{justify-content:flex-start}.lesson-anim-foot{padding:4px 14px 14px}.lesson-scene{padding:8px 2px 4px}.answer-row{grid-template-columns:1fr}.answer-row .btn-hint{justify-self:start}.fifty-options{grid-template-columns:1fr}.summary-row{grid-template-columns:44px 1fr}.summary-vals{grid-column:2;white-space:normal}.lesson-group-title{align-items:flex-start}.lesson-group-icon{width:32px;height:32px;flex-basis:32px}}
-    @media(max-width:520px){.lesson-keys kbd{font-size:.7rem;padding:4px 7px}}
+    @media(max-width:520px){.lesson-keys kbd{font-size:.7rem;padding:4px 7px}.flow-strip{gap:8px}.flow-step{min-height:50px;padding:9px 12px;font-size:.9rem}.flow-step b{width:28px;height:28px;flex-basis:28px}.flow-arrow{width:32px;height:32px;flex-basis:32px}}
     @media(prefers-reduced-motion:reduce){.lesson-anim-card,.lesson-replay{transition:none!important}}
   </style>
   <link rel="stylesheet" href="theoryCards.css">
@@ -37,11 +37,16 @@
 
 <div class="container">
   <div class="card course-intro">
-    <div style="display:flex;justify-content:space-between;gap:14px;align-items:flex-start;flex-wrap:wrap">
-      <div><h1>Windows & Arbeitsalltag</h1><p>Du lernst zwölf neue Tastenkombinationen in drei Gruppen. Wie in A1 bis A4 zeigt jede Karte die Ausgangssituation, den Tastendruck und danach die sichtbare Wirkung.</p></div>
-      <button class="tk-btn-secondary" id="showSummaryBtn">📊 Auswertung</button>
+    <div><h1>Windows & Arbeitsalltag</h1><p>Du lernst zwölf neue Tastenkombinationen in drei Gruppen. Wie in A1 bis A4 zeigt jede Karte die Ausgangssituation, den Tastendruck und danach die sichtbare Wirkung.</p></div>
+    <div class="flow-strip" aria-label="Arbeitsablauf">
+      <span class="flow-step"><b>1</b> Theorie</span>
+      <span class="flow-arrow" aria-hidden="true">→</span>
+      <span class="flow-step"><b>2</b> Quest 9</span>
+      <span class="flow-arrow" aria-hidden="true">→</span>
+      <span class="flow-step"><b>3</b> 2. Durchgang</span>
+      <span class="flow-arrow" aria-hidden="true">→</span>
+      <button type="button" class="flow-step flow-final" id="showSummaryBtn"><b>4</b> 📊 Auswertung</button>
     </div>
-    <div class="flow-strip"><span><b>1</b> Theorie</span><span>→</span><span><b>2</b> Quest 9</span><span>→</span><span><b>3</b> 2. Durchgang</span></div>
   </div>
 
   <section class="stage" id="q9Stage" style="--stage-accent:#3b82f6;--stage-rgb:59,130,246">
