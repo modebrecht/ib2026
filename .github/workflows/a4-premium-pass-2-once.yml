@@ -1,0 +1,50 @@
+name: A4 Premium Pass 2
+on:
+  push:
+    branches: [dev]
+    paths:
+      - '.github/workflows/a4-premium-pass-2-once.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 0
+      - name: Patch
+        run: python .github/scripts/a4_premium_pass_2.py
+      - name: Verify
+        run: |
+          node --check tk2/a4Scenes.js
+          node --check tk2/sceneKeycaps.js
+          grep -q "var CHORD_HOLD_MS=800;" tk2/sceneKeycaps.js
+          git diff --exit-code -- tk2/sceneKeycaps.js
+          python - <<'PY'
+          from pathlib import Path
+          s=Path('tk2/a4Scenes.js').read_text(encoding='utf-8')
+          checks=[
+            "sceneLoopMs=cfg.family==='windows'?5600:(isA4Mode?4600:LOOP_MS)",
+            "function switchPage(toAlt,direction)",
+            'class="page-content-alt"',
+            "switchPage(true,1)",
+            "switchPage(false,-1)",
+            "parts.forEach(function(el,index)",
+            'class="doc-dim"',
+            "opacity(dim,.52)",
+            "translate(-5 0) scale(.985)",
+            "stroke-width','4'",
+            "window.tk2SceneKeycaps.pressSequence"
+          ]
+          for c in checks: assert c in s,c
+          print('A4 premium pass 2 checks OK; 800ms key hold preserved')
+          PY
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tk2/a4Scenes.js
+          git commit -m "tk2: finish A4 premium animation pass"
+          git push origin dev
