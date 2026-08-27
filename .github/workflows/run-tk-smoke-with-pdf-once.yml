@@ -1,0 +1,152 @@
+name: Run TK A1-A7 Smoke + Gesamt-PDF Once
+
+on:
+  push:
+    branches: [dev]
+    paths:
+      - '.github/workflows/run-tk-smoke-with-pdf-once.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    name: Chromium smoke TK A1-A7 + Gesamt-PDF
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      BASE_URL: https://ib2026.vercel.app
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Playwright
+        run: |
+          npm init -y >/dev/null
+          npm install --no-save @playwright/test
+          npx playwright install --with-deps chromium
+
+      - name: Run TK A1-A7 production smoke
+        run: npx playwright test e2e/tk-a1-a7.spec.js --browser=chromium --workers=1 --reporter=line,html
+
+      - name: Generate Gesamt-PDF via "Zwischenstand erzeugen"
+        run: |
+          mkdir -p smoke-artifacts
+          node <<'NODE'
+          const fs = require('fs');
+          const path = require('path');
+          const { chromium } = require('@playwright/test');
+
+          (async () => {
+            const baseUrl = (process.env.BASE_URL || 'https://ib2026.vercel.app').replace(/\/$/, '');
+            const browser = await chromium.launch();
+            const context = await browser.newContext({ acceptDownloads: true });
+            const page = await context.newPage();
+
+            await page.goto(`${baseUrl}/`, { waitUntil: 'domcontentloaded' });
+            await page.evaluate(() => {
+              localStorage.clear();
+              sessionStorage.clear();
+
+              localStorage.setItem('studentVorname', 'E2E Smoke');
+              localStorage.setItem('student_vorname', 'E2E Smoke');
+              localStorage.setItem('tk_student_name_v1', 'E2E Smoke');
+
+              localStorage.setItem('tk_quest_scores_v1', JSON.stringify({
+                q1: 100, q2: 100, q3: 100,
+                q4: 100, q5: 100, q6: 100,
+                q7: 100, q8: 100, q9: 100,
+                q10: 100, q11: 100, q12: 100, q13: 100
+              }));
+
+              localStorage.setItem('tk_a3_progress_v1', JSON.stringify({
+                schemaVersion: 2,
+                downloaded: true,
+                onedriveStored: true,
+                choices: [
+                  { shortcut: 'Ctrl + C', reason: 'Schneller kopieren' },
+                  { shortcut: 'Ctrl + Z', reason: 'Fehler rueckgaengig machen' },
+                  { shortcut: 'Win + L', reason: 'Computer schnell sperren' }
+                ],
+                completed: true,
+                rewarded: true
+              }));
+
+              localStorage.setItem('tk_a4_progress_v1', JSON.stringify({ A: { attempts: 2, first: 100, second: 100, best: 100 } }));
+              localStorage.setItem('tk_a5_progress_v1', JSON.stringify({ A: { attempts: 2, first: 100, second: 100, best: 100 } }));
+              localStorage.setItem('tk_a6_progress_v1', JSON.stringify({
+                A: { first: 100, best: 100 },
+                B: { first: 100, best: 100 },
+                C: { first: 100, best: 100 },
+                D: { first: 100, best: 100 }
+              }));
+              localStorage.setItem('tk_a7_progress_v1', JSON.stringify({
+                schemaVersion: 2,
+                completed: true,
+                completedStations: 3,
+                stations: { challenge: 1, hunt: 1, memory: 1 },
+                completedRuns: 3,
+                accuracy: 100,
+                target: 70,
+                targetReached: true,
+                pdfReady: true,
+                updatedAt: new Date().toISOString()
+              }));
+            });
+
+            await page.goto(`${baseUrl}/tk2/index.html`, { waitUntil: 'domcontentloaded' });
+
+            const exportButton = page.locator('button, a').filter({ hasText: 'Zwischenstand erzeugen' });
+            if (await exportButton.count() !== 1) {
+              throw new Error(`Expected exactly one "Zwischenstand erzeugen" button/link in tk2/index.html, found ${await exportButton.count()}.`);
+            }
+
+            const [download] = await Promise.all([
+              page.waitForEvent('download', { timeout: 30000 }),
+              exportButton.click()
+            ]);
+
+            const suggested = download.suggestedFilename();
+            if (!/\.pdf$/i.test(suggested)) throw new Error(`Expected a PDF download, got: ${suggested}`);
+
+            const output = path.resolve('smoke-artifacts', 'TK2-Gesamt-Zwischenstand-E2E.pdf');
+            await download.saveAs(output);
+
+            const bytes = fs.readFileSync(output);
+            if (bytes.length <= 1000) throw new Error(`Generated PDF is unexpectedly small: ${bytes.length} bytes.`);
+            if (bytes.subarray(0, 5).toString('ascii') !== '%PDF-') throw new Error('Generated file does not have a valid PDF signature.');
+
+            console.log(`Gesamt-PDF generated successfully: ${output} (${bytes.length} bytes; browser filename: ${suggested})`);
+            await browser.close();
+          })().catch((error) => {
+            console.error(error);
+            process.exit(1);
+          });
+          NODE
+
+      - name: Upload TK2 Gesamt-PDF
+        uses: actions/upload-artifact@v4
+        with:
+          name: tk2-gesamtpdf-${{ github.run_id }}
+          path: smoke-artifacts/TK2-Gesamt-Zwischenstand-E2E.pdf
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Upload failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-smoke-tk-a1-a7-${{ github.run_id }}
+          path: |
+            test-results/
+            playwright-report/
+          if-no-files-found: ignore
+          retention-days: 7
