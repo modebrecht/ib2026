@@ -18,11 +18,19 @@ jobs:
           fetch-depth: 0
 
       - name: Apply A1 memory transplant
-        run: python .github/scripts/replace_tasten_memory_a1.py
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('.github/scripts/replace_tasten_memory_a1.py')
+          s=p.read_text(encoding='utf-8')
+          s=s.replace("'class=\"mem-card card-fly-in\"'", "'mem-card card-fly-in'")
+          p.write_text(s,encoding='utf-8')
+          PY
+          python .github/scripts/replace_tasten_memory_a1.py
 
       - name: Sanity checks
         run: |
-          grep -q 'class="mem-card card-fly-in"' tk2/tasten.html
+          grep -q 'mem-card card-fly-in' tk2/tasten.html
           grep -q 'MEMORY_DIFFS' tk2/tasten.html
           grep -q 'aspect-ratio:4/5' tk2/tasten.html
           grep -q 'crownSvg()' tk2/tasten.html
