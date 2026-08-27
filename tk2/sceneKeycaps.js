@@ -1,6 +1,9 @@
 (function(){
   'use strict';
 
+  var CHORD_HOLD_MS=800;
+  var RELEASE_STEP_MS=100;
+
   var PROFILES={
     doc:{step:150,hold:240,duration:160},
     utility:{step:115,hold:170,duration:100}
@@ -73,13 +76,22 @@
 
   function pressSequence(keys,later,trans,name){
     var p=profile(name);
-    Array.from(keys||[]).forEach(function(key,index){
+    var list=Array.from(keys||[]);
+    if(!list.length)return;
+
+    list.forEach(function(key,index){
       later(index*p.step,function(){
         down(key,trans,name);
-        later(p.hold,function(){up(key);});
+      });
+    });
+
+    var allDownAt=Math.max(0,(list.length-1)*p.step);
+    later(allDownAt+CHORD_HOLD_MS,function(){
+      list.slice().reverse().forEach(function(key,index){
+        later(index*RELEASE_STEP_MS,function(){up(key);});
       });
     });
   }
 
-  window.tk2SceneKeycaps={markup:markup,rowWidth:rowWidth,down:down,up:up,reset:reset,resetMany:resetMany,pressSequence:pressSequence};
+  window.tk2SceneKeycaps={markup:markup,rowWidth:rowWidth,down:down,up:up,reset:reset,resetMany:resetMany,pressSequence:pressSequence,chordHoldMs:CHORD_HOLD_MS};
 })();

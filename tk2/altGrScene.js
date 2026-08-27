@@ -3,7 +3,7 @@
 
   var counter=0;
   var LOOP_MS=5000;
-  var CHORD_HOLD_MS=500;
+  var CHORD_HOLD_MS=window.tk2SceneKeycaps?window.tk2SceneKeycaps.chordHoldMs:800;
   var CONTEXT_X=410;
   var CONTEXT_Y=58;
   var FLY_X=207;
