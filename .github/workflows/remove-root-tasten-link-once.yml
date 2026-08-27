@@ -1,0 +1,35 @@
+name: Remove root tasten link
+on:
+  push:
+    branches: [dev]
+    paths:
+      - '.github/workflows/remove-root-tasten-link-once.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 0
+      - name: Patch
+        run: python .github/scripts/remove_root_tasten_link.py
+      - name: Verify
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          s=Path('index.html').read_text(encoding='utf-8')
+          assert 'href="tk2/tasten.html"' not in s
+          assert 'Tastenkürzel · Lernen &amp; Trainieren' not in s
+          assert 'href="tk2/index.html"' in s
+          print('Root tasten link removed, course link preserved')
+          PY
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "root: remove redundant tasten trainer link"
+          git push origin dev
