@@ -2,15 +2,20 @@
   'use strict';
 
   var STORAGE_KEY='tk_a4_progress_v1';
+  var GROUP_META={
+    'Dokument & Programm':{icon:'📄',title:'Dokument & Programm',desc:'Neue Dokumente und Programmfenster'},
+    'Browser-Tabs':{icon:'🗂️',title:'Browser-Tabs',desc:'Tabs öffnen, schliessen und wiederherstellen'},
+    'Im Browser navigieren':{icon:'🌐',title:'Im Browser navigieren',desc:'Seiten aktualisieren, Adressen und Tabs direkt ansteuern'}
+  };
   var META={q:8,name:'Programme & Browser',theme:{accent:'#06b6d4',rgb:'6,182,212'},lesson:[
-    {group:'Dokument & Programm',keys:'Ctrl + N',desc:'Neues Dokument oder neues Fenster erstellen',mode:'newDoc',flow:['Programm','Ctrl + N','Neues Dokument']},
-    {group:'Browser-Tabs',keys:'Ctrl + T',desc:'Neue Browser-Registerkarte öffnen',mode:'newTab',flow:['Browser','Ctrl + T','Neuer Tab']},
-    {group:'Browser-Tabs',keys:'Ctrl + W',desc:'Aktuelle Browser-Registerkarte schliessen',mode:'closeTab',flow:['Aktiver Tab','Ctrl + W','Tab schliesst']},
-    {group:'Browser-Tabs',keys:'Ctrl + Shift + T',desc:'Zuletzt geschlossenen Browser-Tab wieder öffnen',mode:'reopenTab',flow:['Tab geschlossen','Ctrl + Shift + T','Tab wieder da']},
-    {group:'Im Browser navigieren',keys:'F5',desc:'Webseite aktualisieren',mode:'refresh',flow:['Webseite','F5','Neu geladen']},
-    {group:'Im Browser navigieren',keys:'Ctrl + L',desc:'Direkt in die Browser-Adressleiste springen',mode:'addressBar',flow:['Webseite','Ctrl + L','Adresse markiert']},
-    {group:'Im Browser navigieren',keys:'Ctrl + Tab',desc:'Zum nächsten Browser-Tab wechseln',mode:'nextTab',flow:['Tab 1 aktiv','Ctrl + Tab','Tab 2 aktiv']},
-    {group:'Im Browser navigieren',keys:'Ctrl + Shift + Tab',desc:'Zum vorherigen Browser-Tab wechseln',mode:'prevTab',flow:['Tab 2 aktiv','Ctrl + Shift + Tab','Tab 1 aktiv']}
+    {group:'Dokument & Programm',title:'Neues Dokument',keys:'Ctrl + N',desc:'Ein neues Dokument oder – je nach Programm – ein neues Fenster wird geöffnet.',remember:'N steht für „New“: Du startest etwas Neues.',mode:'newDoc',flow:['Programm geöffnet','Ctrl + N','Neues Dokument']},
+    {group:'Browser-Tabs',title:'Neuen Tab öffnen',keys:'Ctrl + T',desc:'Im Browser öffnet sich sofort eine neue Registerkarte.',remember:'T steht für „Tab“.',mode:'newTab',flow:['Browser geöffnet','Ctrl + T','Neuer Tab']},
+    {group:'Browser-Tabs',title:'Aktuellen Tab schliessen',keys:'Ctrl + W',desc:'Die aktuell ausgewählte Browser-Registerkarte wird geschlossen.',remember:'Nur der aktuelle Tab verschwindet – nicht der ganze Browser.',mode:'closeTab',flow:['Aktiver Tab','Ctrl + W','Tab schliesst']},
+    {group:'Browser-Tabs',title:'Geschlossenen Tab zurückholen',keys:'Ctrl + Shift + T',desc:'Der zuletzt geschlossene Browser-Tab wird wieder geöffnet.',remember:'Sehr praktisch, wenn du einen Tab aus Versehen geschlossen hast.',mode:'reopenTab',flow:['Tab geschlossen','Ctrl + Shift + T','Tab wieder da']},
+    {group:'Im Browser navigieren',title:'Webseite aktualisieren',keys:'F5',desc:'Die aktuelle Webseite wird neu geladen.',remember:'Nutze F5, wenn eine Seite veraltet aussieht oder nicht richtig geladen hat.',mode:'refresh',flow:['Webseite','F5','Neu geladen']},
+    {group:'Im Browser navigieren',title:'Adressleiste markieren',keys:'Ctrl + L',desc:'Die komplette Adresse im Browser wird markiert, damit du sofort eine neue eingeben kannst.',remember:'Nach Ctrl + L kannst du direkt lostippen.',mode:'addressBar',flow:['Webseite','Ctrl + L','Adresse markiert']},
+    {group:'Im Browser navigieren',title:'Zum nächsten Tab wechseln',keys:'Ctrl + Tab',desc:'Der Browser wechselt zur nächsten geöffneten Registerkarte.',remember:'Wie beim Durchblättern: Ctrl + Tab geht einen Tab weiter.',mode:'nextTab',flow:['Tab 1 aktiv','Ctrl + Tab','Tab 2 aktiv']},
+    {group:'Im Browser navigieren',title:'Zum vorherigen Tab wechseln',keys:'Ctrl + Shift + Tab',desc:'Der Browser wechselt zur vorherigen geöffneten Registerkarte.',remember:'Shift dreht die Richtung von Ctrl + Tab um.',mode:'prevTab',flow:['Tab 2 aktiv','Ctrl + Shift + Tab','Tab 1 aktiv']}
   ]};
 
   var DATA=[
@@ -31,10 +36,33 @@
   function attemptCount(entry){if(!entry)return 0;if(typeof entry.attempts==='number')return entry.attempts;return typeof entry.first==='number'?1:0;}
   function scoreColor(p){return p>=80?'var(--accent-green)':p>=50?'var(--accent-amber)':'var(--accent-red)';}
   function flowHtml(flow){return flow.map(function(part,index){return(index?'<b>→</b>':'')+'<span>'+part+'</span>';}).join('');}
+  function keyHtml(keys){return keys.split(' + ').map(function(key){return '<kbd>'+key+'</kbd>';}).join('<span class="lesson-plus">+</span>');}
 
   function saveProgress(pct,answers,correct){var data=loadProgress(),old=data.A||{},previous=attemptCount(old),attempts=previous+1;data.A={first:typeof old.first==='number'?old.first:pct,second:typeof old.second==='number'?old.second:(previous===1?pct:null),last:pct,best:Math.max(typeof old.best==='number'?old.best:0,pct),answers:answers,lastCorrect:correct,attempts:attempts};localStorage.setItem(STORAGE_KEY,JSON.stringify(data));}
 
-  function renderTheory(){if(theoryRendered)return;theoryRendered=true;var grid=byId('q8TheoryGrid'),lastGroup='';META.lesson.forEach(function(item,index){if(item.group!==lastGroup){lastGroup=item.group;var group=document.createElement('div');group.className='lesson-group-title';group.textContent=item.group;grid.appendChild(group);}var card=document.createElement('article');card.className='lesson-anim-card';card.innerHTML='<div class="lesson-anim-head"><div><div class="lesson-count">Kürzel '+(index+1)+' von '+META.lesson.length+'</div><h3>'+item.desc+'</h3></div><kbd>'+item.keys+'</kbd></div><div class="lesson-scene"></div><div class="lesson-anim-foot"><div class="lesson-flow">'+flowHtml(item.flow)+'</div><button type="button" class="lesson-replay">↻ Wiederholen</button></div>';grid.appendChild(card);var scene=createA4Scene(card.querySelector('.lesson-scene'),{mode:item.mode,autoplay:false});card.querySelector('.lesson-replay').addEventListener('click',function(){scene.play();});var observer=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.target!==card)return;var visible=e.isIntersecting&&e.intersectionRatio>.18;card.classList.toggle('is-visible',visible);scene.setActive(visible);});},{threshold:[0,.18,.4]});observer.observe(card);theoryScenes.push({card:card,scene:scene,observer:observer});});}
+  function renderTheory(){
+    if(theoryRendered)return;
+    theoryRendered=true;
+    var grid=byId('q8TheoryGrid'),lastGroup='';
+    META.lesson.forEach(function(item,index){
+      if(item.group!==lastGroup){
+        lastGroup=item.group;
+        var meta=GROUP_META[item.group],group=document.createElement('div');
+        group.className='lesson-group-title';
+        group.innerHTML='<div class="lesson-group-icon">'+meta.icon+'</div><div><h3>'+meta.title+'</h3><p>'+meta.desc+'</p></div>';
+        grid.appendChild(group);
+      }
+      var card=document.createElement('article');
+      card.className='lesson-anim-card';
+      card.innerHTML='<div class="lesson-anim-head"><div><div class="lesson-count">Kürzel '+(index+1)+' von '+META.lesson.length+'</div><h3>'+item.title+'</h3></div><div class="lesson-keys">'+keyHtml(item.keys)+'</div></div><div class="lesson-scene"></div><div class="lesson-anim-foot"><div class="lesson-flow">'+flowHtml(item.flow)+'</div><p class="lesson-desc">'+item.desc+'</p><p class="lesson-remember"><strong>Merke:</strong> '+item.remember+'</p><div class="lesson-actions"><button type="button" class="lesson-replay">↻ Wiederholen</button></div></div>';
+      grid.appendChild(card);
+      var scene=createA4Scene(card.querySelector('.lesson-scene'),{mode:item.mode,autoplay:false});
+      card.querySelector('.lesson-replay').addEventListener('click',function(){scene.play();});
+      var observer=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.target!==card)return;var visible=e.isIntersecting&&e.intersectionRatio>.18;card.classList.toggle('is-visible',visible);scene.setActive(visible);});},{threshold:[0,.18,.4]});
+      observer.observe(card);
+      theoryScenes.push({card:card,scene:scene,observer:observer});
+    });
+  }
 
   function showFiftyFifty(select,hint){var row=select.parentNode,wrap=document.createElement('div'),note=document.createElement('div'),options=document.createElement('div');wrap.className='fifty-wrap';note.className='fifty-note';note.textContent='💡 Eine falsche Antwort wurde entfernt.';options.className='fifty-options';Array.from(select.options).filter(function(o){return o.value;}).forEach(function(o){var b=document.createElement('button');b.type='button';b.className='fifty-option'+(select.value===o.value?' selected':'');b.dataset.value=o.value;b.textContent=o.value;b.addEventListener('click',function(){select.value=o.value;options.querySelectorAll('.fifty-option').forEach(function(btn){btn.classList.toggle('selected',btn===b);});select.dispatchEvent(new Event('change',{bubbles:true}));});options.appendChild(b);});wrap.appendChild(note);wrap.appendChild(options);select.style.display='none';row.insertBefore(wrap,hint);}
 
