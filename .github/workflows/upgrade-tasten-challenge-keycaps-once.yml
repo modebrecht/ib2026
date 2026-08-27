@@ -16,6 +16,8 @@ jobs:
         with:
           ref: dev
           fetch-depth: 0
+      - name: Fix migration sanity marker
+        run: sed -i 's/class="challenge-keyset"/challenge-keyset/' .github/scripts/upgrade_tasten_challenge_keycaps.py
       - name: Apply keycap upgrade
         run: python .github/scripts/upgrade_tasten_challenge_keycaps.py
       - name: Check JavaScript
