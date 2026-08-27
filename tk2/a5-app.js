@@ -37,7 +37,7 @@
     {text:'Du möchtest das aktuelle Fenster verkleinern oder minimieren.',correct:'Win + ↓',wrong:['Win + ↑','Win + D']}
   ];
 
-  var fresh=false,theoryRendered=false,theoryScenes=[];
+  var fresh=false,theoryRendered=false,theoryController=null;
   function byId(id){return document.getElementById(id);}
   function shuffle(arr){return arr.map(function(v){return{v:v,s:Math.random()};}).sort(function(a,b){return a.s-b.s;}).map(function(o){return o.v;});}
   function loadProgress(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');}catch(e){return{};}}
@@ -73,24 +73,16 @@
   function renderTheory(){
     if(theoryRendered)return;
     theoryRendered=true;
-    var grid=byId('q9TheoryGrid'),lastGroup='';
-    META.lesson.forEach(function(item,index){
-      if(item.group!==lastGroup){
-        lastGroup=item.group;
-        var meta=GROUP_META[item.group],group=document.createElement('div');
-        group.className='lesson-group-title';
-        group.innerHTML='<div class="lesson-group-icon">'+meta.icon+'</div><div><h3>'+meta.title+'</h3><p>'+meta.desc+'</p></div>';
-        grid.appendChild(group);
+    theoryController=window.tk2TheoryCards.mount({
+      grid:'q9TheoryGrid',
+      groups:GROUP_META,
+      items:META.lesson,
+      accent:META.theme.accent,
+      rgb:META.theme.rgb,
+      accentText:'#93c5fd',
+      sceneFactory:function(target,item){
+        return createA4Scene(target,{mode:item.mode,autoplay:false});
       }
-      var card=document.createElement('article');
-      card.className='lesson-anim-card';
-      card.innerHTML='<div class="lesson-anim-head"><div><div class="lesson-count">Kürzel '+(index+1)+' von '+META.lesson.length+'</div><h3>'+item.title+'</h3></div><div class="lesson-keys">'+keyHtml(item.keys)+'</div></div><div class="lesson-scene"></div><div class="lesson-anim-foot"><div class="lesson-flow">'+flowHtml(item.flow)+'</div><p class="lesson-desc">'+item.desc+'</p><p class="lesson-remember"><strong>Merke:</strong> '+item.remember+'</p><div class="lesson-actions"><button type="button" class="lesson-replay">↻ Wiederholen</button></div></div>';
-      grid.appendChild(card);
-      var scene=createA4Scene(card.querySelector('.lesson-scene'),{mode:item.mode,autoplay:false});
-      card.querySelector('.lesson-replay').addEventListener('click',function(){scene.play();});
-      var observer=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.target!==card)return;var visible=e.isIntersecting&&e.intersectionRatio>.18;card.classList.toggle('is-visible',visible);scene.setActive(visible);});},{threshold:[0,.18,.4]});
-      observer.observe(card);
-      theoryScenes.push({card:card,scene:scene,observer:observer});
     });
   }
 
@@ -114,6 +106,7 @@
   function renderQuest(){
     var container=byId('q9Questions'),check=byId('q9CheckBtn'),score=byId('q9Score'),stored=loadProgress().A,completed=!fresh&&stored&&typeof stored.last==='number';
     byId('q9TheoryCard').style.display=fresh?'none':'';
+    if(theoryController)theoryController.setActive(!fresh);
     container.innerHTML='';
 
     var randomized=shuffle(DATA.map(function(q,sourceIndex){return{q:q,sourceIndex:sourceIndex};}));
