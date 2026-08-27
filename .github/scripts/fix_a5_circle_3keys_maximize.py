@@ -27,8 +27,8 @@ assert old in s, 'scaled key-row transform marker not found'
 s=s.replace(old,new,1)
 
 # 3) Keep Win+Up maximized window inside the desktop target area.
-old="translate(win,'translate(-61 -31) scale(1.5 1.42)')"
-new="translate(win,'translate(-126 -35) scale(1.51 1.25)')"
+old="transform(win,'translate(-61 -31) scale(1.5 1.42)')"
+new="transform(win,'translate(-126 -35) scale(1.51 1.25)')"
 count=s.count(old)
 assert count==2, f'expected 2 maximize transform markers, found {count}'
 s=s.replace(old,new)
