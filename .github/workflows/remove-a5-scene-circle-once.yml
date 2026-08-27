@@ -1,0 +1,35 @@
+name: Remove A5 scene circle
+on:
+  push:
+    branches: [dev]
+    paths:
+      - '.github/workflows/remove-a5-scene-circle-once.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 0
+      - name: Patch
+        run: python .github/scripts/remove_a5_scene_circle.py
+      - name: Verify
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          s=Path('tk2/a4Scenes.js').read_text(encoding='utf-8')
+          assert '<circle cx="312" cy="87" r="92" fill="#60a5fa" opacity=".35"/>' not in s
+          assert '<circle cx="500" cy="42" r="100" fill="#06b6d4" opacity=".045"/>' in s
+          print('A5 circle cleanup OK')
+          PY
+          node --check tk2/a4Scenes.js
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tk2/a4Scenes.js
+          git commit -m "tk2: remove distracting A5 scene circle"
+          git push origin dev
