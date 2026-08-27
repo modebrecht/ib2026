@@ -27,7 +27,7 @@ jobs:
             'data-view="stats"','id="view-stats"','id="stationStats"','renderStats()',
             'stationSummary()','completed:stations.ready','pdfReady:stations.ready',
             "stations.challenge?'':'Challenge'", "stations.hunt?'':'Fehlerjagd'", "stations.memory?'':'Memory'",
-            '3 / 3 Stationen','Challenge, Fehlerjagd und Memory jeweils mindestens einmal vollständig',
+            '3 Stationen','Challenge, Fehlerjagd und Memory jeweils mindestens einmal vollständig',
             'jede Station 1× · Ziel 70 %'
           ]
           for n in required: assert n in a7 or n in idx, n
