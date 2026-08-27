@@ -24,7 +24,7 @@
   function getScores(){return typeof getQuestScores==='function'?getQuestScores():parse('tk_quest_scores_v1');}
   function attemptCount(entry){if(!entry)return 0;if(num(entry.attempts))return entry.attempts;return num(entry.first)?1:0;}
 
-  function simpleRows(from,to){var scores=getScores(),rows=[];for(var q=from;q<=to;q++){var key='q'+q;if(!owns(scores,key))continue;rows.push({q:q,label:QUEST_LABELS[q],value:String(scores[key])+' %'});}return rows;}
+  function simpleRows(from,to){var scores=getScores(),rows=[];for(var q=from;q<=to;q++){var key='q'+q;if(!owns(scores,key))continue;rows.push({q:q,label:QUEST_LABELS[q],value:'Best '+String(scores[key])+' %'});}return rows;}
   function a3Rows(){
     var progress=parse(A3_PROGRESS_KEY);
     if(progress.schemaVersion!==2||progress.completed!==true||!Array.isArray(progress.choices)||progress.choices.length!==3)return[];
