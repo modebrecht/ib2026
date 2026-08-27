@@ -1,0 +1,41 @@
+name: Fix A4 A5 flow UI
+on:
+  push:
+    branches: [dev]
+    paths:
+      - '.github/workflows/fix-a4-a5-flow-ui-once.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 0
+      - name: Patch
+        run: python .github/scripts/fix_a4_a5_flow_strip.py
+      - name: Verify
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          for f,q in [('tk2/A4.html','Quest 8'),('tk2/A5.html','Quest 9')]:
+              s=Path(f).read_text(encoding='utf-8')
+              assert s.count('id="showSummaryBtn"')==1
+              assert '<b>4</b> 📊 Auswertung' in s
+              assert 'class="flow-step"><b>1</b> Theorie' in s
+              assert f'class="flow-step"><b>2</b> {q}' in s
+              assert 'class="flow-step"><b>3</b> 2. Durchgang' in s
+              assert s.count('class="flow-arrow" aria-hidden="true">→</span>')==3
+              assert '.flow-step{display:inline-flex' in s
+              assert 'min-height:54px' in s
+          print('A4/A5 flow UI checks OK')
+          PY
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tk2/A4.html tk2/A5.html
+          git commit -m "tk2: enlarge A4/A5 flow and move evaluation last"
+          git push origin dev
