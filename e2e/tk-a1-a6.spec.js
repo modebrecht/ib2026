@@ -148,7 +148,7 @@ test.describe('TK2 production smoke: A1-A6', () => {
     expectNoPageErrors(errors);
   });
 
-  test('A3: downloads real theory PDF, confirms OneDrive, writes three shortcuts and persists Done', async ({ page }) => {
+  test('A3: follows PDF -> three shortcuts -> OneDrive and persists Done', async ({ page }) => {
     const errors = collectPageErrors(page);
     await openTk(page, '/tk2/A3.html');
 
@@ -157,6 +157,11 @@ test.describe('TK2 production smoke: A1-A6', () => {
     await expect(page.locator('#theory-download')).toHaveAttribute('href', 'Tastenkombinationen_Theorie.pdf');
     await expect(page.locator('select.shortcut-choice')).toHaveCount(0);
     await expect(page.locator('input.shortcut-choice')).toHaveCount(3);
+    await expect(page.locator('.shortcut-choice').nth(0)).toHaveAttribute('placeholder', 'z. B. Ctrl + C');
+    await expect(page.locator('.shortcut-choice').nth(1)).not.toHaveAttribute('placeholder');
+    await expect(page.locator('.shortcut-choice').nth(2)).not.toHaveAttribute('placeholder');
+    await expect(page.locator('.shortcut-choice').nth(0)).toBeDisabled();
+    await expect(page.locator('.shortcut-reason').nth(0)).toBeDisabled();
     await expect(page.locator('#onedrive-confirm')).toBeVisible();
     await expect(page.locator('#onedrive-confirm')).toBeDisabled();
 
@@ -166,12 +171,9 @@ test.describe('TK2 production smoke: A1-A6', () => {
     expect(progress.downloaded).toBe(true);
     expect(progress.onedriveStored).toBe(false);
     expect(progress.completed).toBe(false);
-    await expect(page.locator('#onedrive-confirm')).toBeEnabled();
-
-    await page.locator('#onedrive-confirm').check();
-    progress = await page.evaluate(() => JSON.parse(localStorage.getItem('tk_a3_progress_v1') || '{}'));
-    expect(progress.onedriveStored).toBe(true);
-    expect(progress.completed).toBe(false);
+    await expect(page.locator('.shortcut-choice').nth(0)).toBeEnabled();
+    await expect(page.locator('.shortcut-reason').nth(0)).toBeEnabled();
+    await expect(page.locator('#onedrive-confirm')).toBeDisabled();
 
     const shortcuts = ['Ctrl + C', 'Ctrl + Z', 'Win + L'];
     const reasons = [
@@ -185,6 +187,12 @@ test.describe('TK2 production smoke: A1-A6', () => {
       await page.locator('.shortcut-reason').nth(i).fill(reasons[i]);
     }
 
+    await expect(page.locator('#onedrive-confirm')).toBeEnabled();
+    progress = await page.evaluate(() => JSON.parse(localStorage.getItem('tk_a3_progress_v1') || '{}'));
+    expect(progress.onedriveStored).toBe(false);
+    expect(progress.completed).toBe(false);
+
+    await page.locator('#onedrive-confirm').check();
     await expect(page.locator('#completion-card')).toBeVisible();
     await expect(page.locator('#next-a4')).toHaveAttribute('href', 'A4.html');
 
