@@ -1,0 +1,101 @@
+PDF_PAGES=2
+SHORTCUT_COUNT=24
+
+=== SHORTCUTS IN TASTEN.HTML ===
+CTRL + C	Kopieren eines ausgewählten Elements	[allgemein]
+CTRL + X	Ausschneiden eines ausgewählten Elements	[allgemein]
+CTRL + V	Einfügen eines ausgewählten Elements	[allgemein]
+CTRL + S	Speichern	[allgemein]
+CTRL + Z	Rückgängig machen	[allgemein]
+CTRL + Y	Wiederholen	[allgemein]
+CTRL + A	Alles auswählen	[allgemein]
+CTRL + P	Drucken	[allgemein]
+CTRL + F	Suchen und Ersetzen	[allgemein]
+CTRL + N	Neues Fenster öffnen	[allgemein]
+CTRL + O	Datei öffnen	[allgemein]
+CTRL + ESC	Windows-Startmenü anzeigen	[allgemein]
+CTRL + HOME	Zum Anfang eines Dokuments gehen	[allgemein]
+CTRL + END	Zum Ende eines Dokuments gehen	[allgemein]
+ALT + TAB	Zwischen geöffneten Fenstern wechseln	[fenster]
+WIN + D	Alle Fenster minimieren und Desktop anzeigen	[fenster]
+WIN + ↓	Fenster minimieren	[fenster]
+WIN + ↑	Fenster maximieren	[fenster]
+WIN + ← / →	Fenster andocken und vergleichen	[fenster]
+CTRL + SHIFT + ESC	Task-Manager öffnen	[power]
+WIN + L	PC sperren oder Benutzer wechseln	[power]
+WIN + S	Dateien und Ordner suchen	[tipp power]
+WIN + F1	Hilfe öffnen	[tipp power]
+PRT SCR	Screenshot machen	[tipp power]
+
+=== PDF TEXT ===
+Tastenkombinationen (Shortcuts)  
+Für viele Aufgaben gibt es unter Windows Tastenkombinationen. Wer die wichtigsten kennt, spart bei jeder 
+Arbeit am Computer Zeit. Auf diesem Blatt stehen die Befehle, die du ab sofort täglich brauchst. 
+ 
+1  Allgemeine Befehle 
+Diese Kombinationen funktionieren fast überall gleich – in Word, im Browser, im Explorer und in Tabellen. 
+Kopieren Ctrl + C 
+Ausschneiden Ctrl + X 
+Einfügen Ctrl + V 
+Einfügen ohne Formatierung Ctrl + Shift + V 
+Rückgängig machen Ctrl + Z 
+Wiederherstellen (Rückgängig zurücknehmen) Ctrl + Y 
+Speichern Ctrl + S 
+Alles markieren Ctrl + A 
+Suchen Ctrl + F 
+Zum Anfang des Dokuments springen Ctrl + Home 
+Zum Ende des Dokuments springen Ctrl + End 
+Tipp: Lies die Tastenkombinationen nicht nur durch, sondern probiere sie direkt aus. 
+ 
+2  Word / Programme 
+Diese Kürzel nutzt du vor allem in Word und anderen Programmen für Dokumente und Dateien. 
+Neues Dokument / neues Fenster Ctrl + N 
+Suchen und ersetzen* Ctrl + H 
+Druckdialog öffnen Ctrl + P 
+Datei öffnen Ctrl + O 
+[Ctrl + H] öffnet in vielen Programmen «Suchen und Ersetzen».  
+Im Browser kann die Kombination stattdessen den Verlauf öffnen. 
+ 
+3  Browser & Tabs 
+Mit diesen Kürzeln öffnest und schliesst du Tabs und navigierst im Browser. 
+Neue Browser-Registerkarte öffnen Ctrl + T 
+Aktuellen Browser-Tab schliessen Ctrl + W 
+Zuletzt geschlossenen Browser-Tab wieder öffnen Ctrl + Shift + T 
+Zum nächsten Browser-Tab wechseln Ctrl + Tab 
+Zum vorherigen Browser-Tab wechseln Ctrl + Shift + Tab 
+Webseite aktualisieren F5 
+Browser-Adressleiste markieren Ctrl + L 
+
+--- PAGE ---
+
+4  Windows, Programme & Fenster 
+Mit diesen Windows-Kürzeln öffnest du Werkzeuge, wechselst Programme und ordnest Fenster an. 
+Computer sperren Win + L 
+Desktop anzeigen Win + D 
+Datei-Explorer öffnen Win + E 
+Bildschirmausschnitt aufnehmen Win + Shift + S 
+Zwischen geöffneten Programmen wechseln Alt + Tab 
+Task-Manager direkt öffnen Ctrl + Shift + Esc 
+Zwischenablageverlauf öffnen Win + V 
+Aktives Fenster / Programm schliessen Alt + F4 
+Aktives Fenster links andocken Win + ← 
+Aktives Fenster rechts andocken Win + → 
+Aktives Fenster maximieren Win + ↑ 
+Aktives Fenster verkleinern / minimieren Win + ↓ 
+[Ctrl + W] schliesst nur den aktuellen Browser-Tab.  
+[Alt + F4] schliesst das ganze aktive Fenster oder Programm. 
+ 
+5  Sonderzeichen mit AltGr 
+Rechts neben der Leertaste liegt die Taste AltGr. Sie holt das dritte Zeichen einer Taste hervor – jenes, das unten 
+rechts aufgedruckt ist. Ohne AltGr kommst du an @, \ oder die Klammern gar nicht heran. 
+@    Klammeraffe (für jede E-Mail-Adresse) AltGr + 2 
+#    Hashtag / Raute AltGr + 3 
+€    Euro-Zeichen AltGr + E 
+|    Senkrechter Strich (Pipe) AltGr + 7 
+\    Backslash (in Dateipfaden) AltGr + < 
+[    Eckige Klammer auf AltGr + ü 
+]    Eckige Klammer zu AltGr + ¨ 
+{    Geschweifte Klammer auf AltGr + ä 
+}    Geschweifte Klammer zu AltGr + $ 
+°    Gradzeichen AltGr + 4   (oder SHIFT + §) 
+ 
