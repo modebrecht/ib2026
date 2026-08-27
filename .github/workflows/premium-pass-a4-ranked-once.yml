@@ -1,0 +1,43 @@
+name: Premium pass A4 ranked
+on:
+  push:
+    branches: [dev]
+    paths:
+      - '.github/workflows/premium-pass-a4-ranked-once.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 0
+      - name: Patch
+        run: python .github/scripts/premium_pass_a4_ranked.py
+      - name: Verify
+        run: |
+          node --check tk2/a4Scenes.js
+          python - <<'PY'
+          from pathlib import Path
+          s=Path('tk2/a4Scenes.js').read_text(encoding='utf-8')
+          checks=[
+            "var tabThreeVisible=['closeTab','reopenTab']",
+            "translate(-117 0)",
+            "rotate(360)",
+            "active-tab-indicator",
+            "new-doc-caret",
+            "scale(.72)",
+            "mark.setAttribute('width','286')",
+          ]
+          for c in checks: assert c in s,c
+          print('ranked A4 premium checks OK')
+          PY
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+modebrecht@users.noreply.github.com"
+          git add tk2/a4Scenes.js
+          git commit -m "tk2: premium pass A4 animations"
+          git push origin dev
