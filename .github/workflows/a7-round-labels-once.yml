@@ -1,0 +1,40 @@
+name: A7 round labels
+on:
+  push:
+    branches: [dev]
+    paths:
+      - '.github/workflows/a7-round-labels-once.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 0
+      - name: Patch A7
+        run: python .github/scripts/a7_round_labels.py
+      - name: Verify
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path('tk2/A7.html').read_text(encoding='utf-8')
+          assert 'Welche Tastenkombination passt? · 1 / 10' in s
+          assert 'Welche Zuordnung stimmt nicht? · 1 / 10' in s
+          assert 'Nochmals: Welche Kombination passt? · Wiederholung' in s
+          assert 'id="huntPromptLabel"' in s
+          scripts=re.findall(r'<script[^>]*>(.*?)</script>',s,re.S)
+          Path('/tmp/a7.js').write_text('\n'.join(scripts),encoding='utf-8')
+          print('A7 round labels checks OK')
+          PY
+          node --check /tmp/a7.js
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tk2/A7.html
+          git commit -m "tk2: show round progress in A7 prompts"
+          git push origin dev
