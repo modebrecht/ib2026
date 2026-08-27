@@ -131,6 +131,24 @@ html[data-theme="dark"] .favorite-bomb{background:linear-gradient(145deg,#e11d48
   .shortcut .keys .challenge-key.arrow,.favorite-card .keys .challenge-key.arrow{min-width:42px}
 }
 
+
+/* --- Fehlerjagd ---------------------------------------------------------- */
+.hunt-stage{justify-content:flex-start;padding-top:clamp(24px,4vw,38px)}
+.hunt-stage .prompt-label{margin-bottom:18px}
+.hunt-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;width:min(820px,100%)}
+.hunt-option{position:relative;min-height:150px;border:1px solid var(--line);border-radius:20px;background:color-mix(in srgb,var(--panel) 90%,var(--panel2));padding:18px;cursor:pointer;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:15px;text-align:left;box-shadow:0 8px 24px rgba(15,23,42,.06);transition:.18s ease;-webkit-tap-highlight-color:transparent}
+.hunt-option:hover:not(:disabled){transform:translateY(-2px);border-color:color-mix(in srgb,var(--blue) 42%,var(--line));box-shadow:0 13px 30px rgba(15,23,42,.1)}
+.hunt-option strong{font-size:1rem;line-height:1.3;padding-right:28px}
+.hunt-option .challenge-keyset{justify-content:flex-start}
+.hunt-option.false-alarm{border-color:#ef4444;background:color-mix(in srgb,#ef4444 7%,var(--panel));animation:challengeWrong .38s ease}
+.hunt-option.false-alarm:after{content:'✓ Diese stimmt';position:absolute;right:12px;top:10px;font-size:.69rem;font-weight:900;color:#dc2626}
+.hunt-option.caught{border-color:#10b981;background:color-mix(in srgb,#10b981 8%,var(--panel));box-shadow:0 0 0 2px color-mix(in srgb,#10b981 35%,transparent),0 13px 30px rgba(16,185,129,.15)}
+.hunt-option.caught .challenge-key{--key-bottom:#059669;border-color:#34d399;border-bottom-color:#059669;background:linear-gradient(180deg,#ecfdf5 0%,#d1fae5 60%,#a7f3d0 100%);color:#065f46}
+html[data-theme="dark"] .hunt-option.caught .challenge-key{--key-bottom:#064e3b;background:linear-gradient(180deg,#047857,#065f46);color:#ecfdf5}
+.hunt-feedback{display:none;width:min(820px,100%);margin-top:16px;padding:14px 16px;border:1px solid color-mix(in srgb,var(--green) 40%,var(--line));border-radius:16px;background:color-mix(in srgb,var(--green) 7%,var(--panel));text-align:left}
+.hunt-feedback.show{display:block}.hunt-feedback strong{display:block;margin-bottom:8px}.hunt-feedback .challenge-keyset{justify-content:flex-start}.hunt-feedback p{margin:10px 0 0;color:var(--muted);font-size:.86rem}
+@media(max-width:760px){.hunt-options{grid-template-columns:1fr}.hunt-option{min-height:128px;padding:15px}.hunt-stage{padding:22px 14px}}
+
 </style>
 </head>
 <body>
@@ -146,6 +164,7 @@ html[data-theme="dark"] .favorite-bomb{background:linear-gradient(145deg,#e11d48
           <button class="header-nav-btn active" data-view="home"><span class="header-nav-ico">⌂</span><span>Start</span></button>
           <button class="header-nav-btn" data-view="learn"><span class="header-nav-ico">⌘</span><span>Lernen</span></button>
           <button class="header-nav-btn" data-view="train"><span class="header-nav-ico">◎</span><span>Challenge</span></button>
+          <button class="header-nav-btn" data-view="hunt"><span class="header-nav-ico">⌕</span><span>Fehlerjagd</span></button>
           <button class="header-nav-btn" data-view="memory"><span class="header-nav-ico">▦</span><span>Memory</span></button>
           <button class="header-nav-btn" data-view="favorites"><span class="header-nav-ico">★</span><span>Favoriten</span></button>
         </nav>
@@ -208,6 +227,32 @@ html[data-theme="dark"] .favorite-bomb{background:linear-gradient(145deg,#e11d48
                 <div class="mini-stat"><span>Direkt richtig</span><strong id="challengeDirect">0 / 10</strong></div>
                 <div class="mini-stat"><span>Serie</span><strong id="streak">0</strong></div>
                 <div class="mini-stat"><span>Wiederholungen</span><strong id="challengeRetries">0</strong></div>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" id="view-hunt">
+        <div class="view-inner">
+          <div class="view-head">
+            <div><span class="eyebrow">10 Runden · genau ein Fehler</span><h1>Fehlerjagd</h1><p>Vier Zuordnungen – eine davon ist falsch. Finde sie.</p></div>
+            <span class="count-pill" id="huntRound">1 / 10</span>
+          </div>
+          <div class="practice-layout">
+            <div class="practice-card hunt-stage">
+              <span class="prompt-label">Welche Zuordnung stimmt nicht?</span>
+              <div class="hunt-options" id="huntOptions"></div>
+              <div class="hunt-feedback" id="huntFeedback"></div>
+              <div class="practice-actions"><button class="solid-btn" id="huntNext" hidden>Weiter →</button></div>
+            </div>
+            <aside class="side-card">
+              <div><h3>Fehlerjagd</h3><select class="mode-select" id="huntCategory" aria-label="Fehlerjagd-Kategorie"></select><p style="color:var(--muted);font-size:.86rem;line-height:1.45;margin:10px 0 12px">Bis zu vier Zuordnungen pro Runde. Genau eine Kombination gehört nicht zur Bedeutung.</p><button class="soft-btn" id="huntRestart">Neue Fehlerjagd</button></div>
+              <div class="mini-stats">
+                <div class="mini-stat"><span>Punkte</span><strong id="huntScore">0 / 1000</strong></div>
+                <div class="mini-stat"><span>Gefunden</span><strong id="huntCaught">0 / 10</strong></div>
+                <div class="mini-stat"><span>Serie</span><strong id="huntStreak">0</strong></div>
+                <div class="mini-stat"><span>Fehlklicks</span><strong id="huntMisses">0</strong></div>
               </div>
             </aside>
           </div>
@@ -375,7 +420,7 @@ function challengeKeyClass(k){const u=String(k).toUpperCase();if(u==='SHIFT'||u=
 function challengeKeyMarkup(s){return `<span class=\"challenge-keyset\">${s.keys.map((k,i)=>`<span class=\"challenge-key ${challengeKeyClass(k)}\">${escapeHtml(challengeKeyLabel(k))}</span>${i<s.keys.length-1?'<span class=\"challenge-plus\">+</span>':''}`).join('')}</span>`}
 function escapeHtml(v){return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function toast(text){const el=$('#toast');el.textContent=text;el.classList.add('show');clearTimeout(window.__toast);window.__toast=setTimeout(()=>el.classList.remove('show'),1500)}
-function showView(name){state.view=name;$$('.view').forEach(v=>v.classList.toggle('active',v.id===`view-${name}`));$$('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===name));const titles={home:'Shortcut Lab',learn:'Alle Tastenkürzel',train:'Challenge',memory:'Memory',favorites:'Favoriten'};$('#crumbTitle').textContent=titles[name];if(name==='learn')setTimeout(()=>$('#searchInput').focus({preventScroll:true}),0);if(name==='favorites')renderFavorites();if(name==='memory'&&!$('#memoryBoard').children.length)initMemory();}
+function showView(name){state.view=name;$$('.view').forEach(v=>v.classList.toggle('active',v.id===`view-${name}`));$$('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===name));const titles={home:'Shortcut Lab',learn:'Alle Tastenkürzel',train:'Challenge',hunt:'Fehlerjagd',memory:'Memory',favorites:'Favoriten'};$('#crumbTitle').textContent=titles[name];if(name==='learn')setTimeout(()=>$('#searchInput').focus({preventScroll:true}),0);if(name==='favorites')renderFavorites();if(name==='memory'&&!$('#memoryBoard').children.length)initMemory();}
 function renderHome(){const host=$('#homeCategories');host.innerHTML='';Object.entries(categories).forEach(([id,c])=>{const b=document.createElement('button');b.className='stat-card';b.innerHTML=`<strong>${c.count}</strong><span>${c.icon} ${c.label}</span>`;b.onclick=()=>{state.cat=id;renderLearn();showView('learn')};host.appendChild(b)})}
 function renderCategoryTabs(){const host=$('#categoryTabs');host.innerHTML='';[['all','Alle'],...Object.entries(categories).map(([id,c])=>[id,c.short])].forEach(([id,label])=>{const b=document.createElement('button');b.className='chip'+(state.cat===id?' active':'');b.textContent=label;b.onclick=()=>{state.cat=id;renderLearn()};host.appendChild(b)})}
 function renderLearn(){renderCategoryTabs();const grid=$('#learnGrid');grid.innerHTML='';const q=state.query.toLowerCase();const list=shortcuts.filter(s=>(state.cat==='all'||s.cat===state.cat)&&(!q||`${s.title} ${s.desc} ${keyText(s)}`.toLowerCase().includes(q)));list.forEach(s=>{const card=document.createElement('article');card.className='shortcut';const fav=state.favorites.has(s.id);card.innerHTML=`<div class="shortcut-top"><span class="tag">${escapeHtml(categories[s.cat].short)}</span><button class="star ${fav?'active':''}" data-fav="${s.id}" aria-label="Favorit">${fav?'★':'☆'}</button></div><h3>${escapeHtml(s.title)}</h3><div class="keys">${keyMarkup(s)}</div><p>${escapeHtml(s.desc)}</p><div class="card-foot"><button class="practice-link" data-practice="${s.id}">Jetzt üben →</button></div>`;grid.appendChild(card)});$('#learnCount').textContent=`${list.length} Kürzel`;$('#learnEmpty').style.display=list.length?'none':'block'}
@@ -391,13 +436,23 @@ function renderChallenge(){if(challenge.index>=challenge.queue.length){finishCha
 function gradeChallenge(btn,correct,item,q){if(challenge.answered)return;challenge.answered=true;$$('.quiz-option').forEach(b=>b.disabled=true);btn.classList.add(correct?'correct':'wrong');if(!correct){const right=$('.quiz-option[data-correct="1"]');if(right)right.classList.add('correct')}if(correct){challenge.streak++;challenge.bestStreak=Math.max(challenge.bestStreak,challenge.streak);if(q.main){challenge.directCorrect++;challenge.score+=100}haptic([12,24,18]);toast('Richtig ✓')}else{challenge.streak=0;challenge.retries++;challenge.queue.push({id:item.id,main:false});haptic([24,34,24]);toast('Kommt später nochmals')}renderChallengeHUD();$('#practiceAnswer').innerHTML=`<div class="keys">${keyMarkup(item)}</div><p>${escapeHtml(item.desc)}</p>`;$('#practiceAnswer').classList.add('show');$('#challengeNext').hidden=false}
 function nextChallenge(){if(!challenge.answered)return;challenge.index++;renderChallenge()}
 function finishChallenge(){$('#roundPill').textContent='Geschafft ✓';$('#practiceLabel').textContent='Challenge abgeschlossen';$('#practicePrompt').textContent=`${challenge.total} / ${challenge.total} gemeistert 🎯`;$('#quizOptions').innerHTML='';$('#practiceAnswer').innerHTML=`<p><strong>${challenge.directCorrect} von ${challenge.total}</strong> direkt richtig · ${challenge.retries} Wiederholung${challenge.retries===1?'':'en'} · beste Serie ${challenge.bestStreak}.</p>`;$('#practiceAnswer').classList.add('show');$('#challengeNext').hidden=true;haptic([20,35,20,35,50])}
+const hunt={round:0,total:10,score:0,caught:0,streak:0,misses:0,roundMisses:0,solved:false,target:null,rows:[]};
+function huntPool(){const s=$('#huntCategory');return poolForCategory(s?s.value:'all')}
+function updateHuntHUD(){$('#huntRound').textContent=hunt.round>=hunt.total?'Geschafft ✓':`${hunt.round+1} / ${hunt.total}`;$('#huntScore').textContent=`${hunt.score} / ${hunt.total*100}`;$('#huntCaught').textContent=`${hunt.caught} / ${hunt.total}`;$('#huntStreak').textContent=hunt.streak;$('#huntMisses').textContent=hunt.misses}
+function huntWrongShortcut(item,selected){const used=new Set(selected.map(x=>x.id));let candidates=huntPool().filter(x=>x.id!==item.id&&!used.has(x.id));if(!candidates.length)candidates=shortcuts.filter(x=>x.id!==item.id&&!used.has(x.id));if(!candidates.length)candidates=shortcuts.filter(x=>x.id!==item.id);return shuffleArray(candidates.slice())[0]||item}
+function startHunt(){Object.assign(hunt,{round:0,total:10,score:0,caught:0,streak:0,misses:0,roundMisses:0,solved:false,target:null,rows:[]});renderHunt()}
+function renderHunt(){if(hunt.round>=hunt.total){finishHunt();return}hunt.solved=false;hunt.roundMisses=0;const pool=huntPool();if(pool.length<2){$('#huntOptions').innerHTML='<div class="empty" style="display:block;grid-column:1/-1">Für die Fehlerjagd braucht es mindestens zwei Kürzel.</div>';$('#huntFeedback').classList.remove('show');$('#huntNext').hidden=true;updateHuntHUD();return}const count=Math.min(4,pool.length),selected=shuffleArray(pool.slice()).slice(0,count),targetIndex=Math.floor(Math.random()*count);hunt.rows=selected.map((item,i)=>({item,shown:i===targetIndex?huntWrongShortcut(item,selected):item,isTarget:i===targetIndex,missed:false}));hunt.target=hunt.rows[targetIndex];const host=$('#huntOptions');host.innerHTML='';hunt.rows.forEach((row,i)=>{const b=document.createElement('button');b.type='button';b.className='hunt-option';b.dataset.index=i;b.innerHTML=`<strong>${escapeHtml(row.item.title)}</strong>${challengeKeyMarkup(row.shown)}`;b.onclick=()=>gradeHunt(b,i);host.appendChild(b)});$('#huntFeedback').classList.remove('show');$('#huntFeedback').innerHTML='';$('#huntNext').hidden=true;updateHuntHUD()}
+function gradeHunt(btn,index){if(hunt.solved)return;const row=hunt.rows[index];if(!row)return;if(!row.isTarget){if(row.missed)return;row.missed=true;hunt.misses++;hunt.roundMisses++;hunt.streak=0;btn.classList.add('false-alarm');haptic([18,28,18]);toast('Diese Zuordnung stimmt');updateHuntHUD();return}hunt.solved=true;hunt.caught++;hunt.streak++;hunt.score+=Math.max(40,100-hunt.roundMisses*20);btn.classList.add('caught');$$('.hunt-option').forEach(b=>b.disabled=true);const f=$('#huntFeedback');f.innerHTML=`<strong>Fehler gefunden ✓</strong><div>${escapeHtml(row.item.title)} gehört zu:</div><div style="margin-top:10px">${challengeKeyMarkup(row.item)}</div><p>Gezeigt wurde fälschlicherweise ${escapeHtml(keyText(row.shown))}.</p>`;f.classList.add('show');$('#huntNext').hidden=false;haptic([15,25,20]);updateHuntHUD()}
+function nextHunt(){if(!hunt.solved)return;hunt.round++;renderHunt()}
+function finishHunt(){$('#huntOptions').innerHTML='';$('#huntFeedback').innerHTML=`<strong>Fehlerjagd abgeschlossen 🎯</strong><p>${hunt.caught} von ${hunt.total} Fehlern gefunden · ${hunt.misses} Fehlklick${hunt.misses===1?'':'s'} · ${hunt.score} Punkte.</p>`;$('#huntFeedback').classList.add('show');$('#huntNext').hidden=true;hunt.round=hunt.total;updateHuntHUD();haptic([20,35,20,35,50])}
+
 const MEMORY_DIFFS={easy:{label:'Einfach',pairs:4,max:80,exp:.30},medium:{label:'Mittel',pairs:8,max:120,exp:.45},hard:{label:'Schwer',pairs:10,max:140,exp:.55},ultra:{label:'Ultra',pairs:12,max:160,exp:.65}};
 const memory={cards:[],first:null,lock:false,moves:0,hits:0,points:0,start:null,timer:null,diff:'easy',pairCount:4};
 function haptic(pattern){try{if(navigator.vibrate)navigator.vibrate(pattern)}catch(_){}}
 function shuffleArray(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 function formatMemoryTime(ms){const s=Math.floor(ms/1000),m=Math.floor(s/60),r=s%60;return `${m<10?'0'+m:m}:${r<10?'0'+r:r}`}
 function activityCategoryOptions(){return '<option value="all">Alle Kategorien</option>'+Object.entries(categories).map(([id,c])=>`<option value="${id}">${c.label}</option>`).join('')+(state.favorites.size>1?'<option value="favorites">★ Favoriten</option>':'')}
-function fillActivityCategories(){['memoryCategory','challengeCategory'].forEach(id=>{const s=$('#'+id);if(!s)return;const current=s.value||'all';s.innerHTML=activityCategoryOptions();s.value=[...s.options].some(o=>o.value===current)?current:'all'})}
+function fillActivityCategories(){['memoryCategory','challengeCategory','huntCategory'].forEach(id=>{const s=$('#'+id);if(!s)return;const current=s.value||'all';s.innerHTML=activityCategoryOptions();s.value=[...s.options].some(o=>o.value===current)?current:'all'})}
 function fillMemoryCategories(){fillActivityCategories()}
 function poolForCategory(cat){if(cat==='favorites')return shortcuts.filter(s=>state.favorites.has(s.id));return shortcuts.filter(s=>cat==='all'||s.cat===cat)}
 function memoryPool(){return poolForCategory($('#memoryCategory').value)}
@@ -457,10 +512,11 @@ $('#settingsToggle').onclick=()=>$('#settings').hidden=!$('#settings').hidden;
 $('#quickSearch').onclick=()=>{showView('learn');setTimeout(()=>$('#searchInput').focus(),0)};
 $('#searchInput').addEventListener('input',e=>{state.query=e.target.value.trim();renderLearn()});
 $('#challengeNext').onclick=nextChallenge;$('#challengeRestart').onclick=()=>startChallenge();$('#challengeCategory').onchange=()=>startChallenge();
+$('#huntNext').onclick=nextHunt;$('#huntRestart').onclick=startHunt;$('#huntCategory').onchange=startHunt;
 $('#memoryRestart').onclick=initMemory;$('#memoryCategory').onchange=initMemory;$('#memoryAgain').onclick=initMemory;$$('[data-memory-diff]').forEach(b=>b.onclick=()=>setMemoryDifficulty(b.dataset.memoryDiff));window.addEventListener('resize',()=>{if(memory.cards.length)updateMemoryDimensions()});
 $('#favoriteCopyLink').onclick=copyFavoriteShareLink;$('#favoriteQr').onclick=openFavoriteQr;$('#shareCopyModal').onclick=copyFavoriteShareLink;$('#shareClose').onclick=closeFavoriteQr;$('#favoriteShareModal').addEventListener('click',e=>{if(e.target.id==='favoriteShareModal')closeFavoriteQr()});$('#sharedImport').onclick=importSharedFavorites;$('#sharedDismiss').onclick=dismissSharedFavorites;
 
-renderHome();renderLearn();fillMemoryCategories();startChallenge();renderFavorites();updateFavoriteUI();$('#best').textContent=state.best;applyPrefs();readSharedFavoritesFromHash();
+renderHome();renderLearn();fillMemoryCategories();startChallenge();startHunt();renderFavorites();updateFavoriteUI();$('#best').textContent=state.best;applyPrefs();readSharedFavoritesFromHash();
 </script>
 </body>
 </html>
