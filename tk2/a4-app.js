@@ -3,7 +3,6 @@
 
   var STORAGE_KEY='tk_a4_progress_v1';
   var META={q:8,name:'Programme & Browser',theme:{accent:'#06b6d4',rgb:'6,182,212'},lesson:[
-    {group:'Dokument & Programm',keys:'Ctrl + B',desc:'Text in Word oder vielen Textprogrammen fett formatieren',mode:'bold',flow:['Text markieren','Ctrl + B','Text wird fett']},
     {group:'Dokument & Programm',keys:'Ctrl + N',desc:'Neues Dokument oder neues Fenster erstellen',mode:'newDoc',flow:['Programm','Ctrl + N','Neues Dokument']},
     {group:'Browser-Tabs',keys:'Ctrl + T',desc:'Neue Browser-Registerkarte öffnen',mode:'newTab',flow:['Browser','Ctrl + T','Neuer Tab']},
     {group:'Browser-Tabs',keys:'Ctrl + W',desc:'Aktuelle Browser-Registerkarte schliessen',mode:'closeTab',flow:['Aktiver Tab','Ctrl + W','Tab schliesst']},
@@ -15,7 +14,6 @@
   ]};
 
   var DATA=[
-    {text:'Du möchtest Text in Word fett formatieren.',correct:'Ctrl + B',wrong:['Ctrl + F','Ctrl + N']},
     {text:'Du möchtest in Word ein neues Dokument erstellen.',correct:'Ctrl + N',wrong:['Ctrl + T','Ctrl + W']},
     {text:'Du willst im Browser einen neuen Tab öffnen.',correct:'Ctrl + T',wrong:['Ctrl + N','Ctrl + Shift + T']},
     {text:'Du willst den aktuellen Browser-Tab schliessen.',correct:'Ctrl + W',wrong:['Alt + Tab','Ctrl + T']},

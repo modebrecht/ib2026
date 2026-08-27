@@ -15,8 +15,8 @@
     .resource-hero>p{margin:0 auto;color:var(--text-muted);font-size:1.05rem;line-height:1.65;max-width:650px}
     .download-card,.choice-card{margin-top:20px;padding:clamp(24px,5vw,34px);border-radius:22px;border:1px solid rgba(129,140,248,.27);background:linear-gradient(145deg,rgba(67,56,202,.18),rgba(15,23,42,.96))}
     .download-card{text-align:center}
-    .word-icon{width:72px;height:72px;margin:0 auto 13px;border-radius:19px;display:grid;place-items:center;background:rgba(37,99,235,.18);border:1px solid rgba(96,165,250,.35);font-size:1.85rem;color:#93c5fd;font-weight:900;font-family:'Space Grotesk',sans-serif}
-    .download-card h2,.choice-card h2{font-family:'Space Grotesk',sans-serif;margin:.3rem 0 .5rem;font-size:1.45rem}
+    .file-icon{width:72px;height:72px;margin:0 auto 13px;border-radius:19px;display:grid;place-items:center;background:rgba(37,99,235,.18);border:1px solid rgba(96,165,250,.35);font-size:1.45rem;color:#93c5fd;font-weight:900;font-family:'Space Grotesk',sans-serif}
+    .download-card h2,.choice-card h2,.onedrive-card h2{font-family:'Space Grotesk',sans-serif;margin:.3rem 0 .5rem;font-size:1.45rem}
     .download-card p,.choice-card>p{margin:.2rem auto 1.1rem;color:var(--text-muted);line-height:1.6;max-width:650px}
     .btn-download,.btn-next{display:inline-flex;align-items:center;justify-content:center;gap:9px;border:0;border-radius:14px;padding:14px 22px;font-family:inherit;font-weight:800;font-size:1rem;text-decoration:none;cursor:pointer;transition:.18s}
     .btn-download{background:linear-gradient(135deg,#6366f1,#4338ca);color:#fff;box-shadow:0 10px 25px rgba(79,70,229,.25)}
@@ -28,16 +28,34 @@
     .choice-list{display:grid;gap:12px;margin-top:18px}
     .choice-row{display:grid;grid-template-columns:36px minmax(150px,.8fr) auto minmax(180px,1.3fr);gap:10px;align-items:center;padding:12px;border-radius:14px;background:rgba(15,23,42,.72);border:1px solid rgba(148,163,184,.16)}
     .choice-number{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:rgba(99,102,241,.16);color:#c7d2fe;font-weight:900}
-    .choice-row select,.choice-row input{width:100%;min-width:0;border:1px solid rgba(148,163,184,.25);border-radius:10px;background:#0f172a;color:#f8fafc;font:inherit;padding:10px 11px;outline:none}
-    .choice-row select:focus,.choice-row input:focus{border-color:#818cf8;box-shadow:0 0 0 3px rgba(99,102,241,.14)}
+    .choice-row input{width:100%;min-width:0;border:1px solid rgba(148,163,184,.25);border-radius:10px;background:#0f172a;color:#f8fafc;font:inherit;padding:10px 11px;outline:none}
+    .choice-row input:focus{border-color:#818cf8;box-shadow:0 0 0 3px rgba(99,102,241,.14)}
+    .shortcut-choice{font-family:'Space Grotesk',monospace!important;font-weight:700!important}
     .choice-because{color:#a5b4fc;font-weight:800}
     .choice-hint{margin-top:12px;color:#94a3b8;font-size:.9rem;line-height:1.5}
+    .onedrive-card{margin-top:20px;padding:clamp(22px,5vw,30px);border-radius:22px;border:1px solid rgba(96,165,250,.24);background:linear-gradient(145deg,rgba(30,64,175,.12),rgba(15,23,42,.96))}
+    .onedrive-head{display:flex;align-items:center;gap:14px;margin-bottom:10px}
+    .onedrive-icon{width:50px;height:50px;border-radius:15px;display:grid;place-items:center;flex:0 0 auto;background:rgba(59,130,246,.13);border:1px solid rgba(96,165,250,.28);font-size:1.45rem}
+    .onedrive-card>p{margin:0 0 16px;color:var(--text-muted);line-height:1.55}
+    .onedrive-confirm{position:relative;display:flex;align-items:center;gap:14px;padding:15px 16px;border-radius:16px;border:1px solid rgba(148,163,184,.2);background:rgba(15,23,42,.72);cursor:pointer;transition:.18s}
+    .onedrive-confirm:hover{border-color:rgba(129,140,248,.5);background:rgba(30,41,59,.82)}
+    .onedrive-confirm input{position:absolute;opacity:0;pointer-events:none}
+    .onedrive-checkmark{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;flex:0 0 auto;border:2px solid #64748b;background:#0f172a;box-shadow:inset 0 0 0 3px rgba(15,23,42,.9);transition:.18s}
+    .onedrive-checkmark::after{content:'✓';color:#fff;font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:900;transform:scale(0);transition:.16s}
+    .onedrive-confirm input:checked + .onedrive-checkmark{border-color:#10b981;background:#10b981;box-shadow:0 0 0 4px rgba(16,185,129,.12)}
+    .onedrive-confirm input:checked + .onedrive-checkmark::after{transform:scale(1)}
+    .onedrive-confirm:has(input:checked){border-color:rgba(16,185,129,.42);background:rgba(16,185,129,.08)}
+    .onedrive-confirm:has(input:focus-visible){outline:3px solid rgba(129,140,248,.28);outline-offset:2px}
+    .onedrive-confirm:has(input:disabled){opacity:.48;cursor:not-allowed;pointer-events:none}
+    .onedrive-copy{min-width:0}
+    .onedrive-copy strong{display:block;color:#f8fafc;font-size:1rem}
+    .onedrive-copy small{display:block;margin-top:4px;color:#94a3b8;line-height:1.45;font-size:.86rem}
     .completion-card{display:none;margin-top:18px;padding:20px;border-radius:18px;background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.2);text-align:center}
     .completion-card.is-visible{display:block}
     .completion-card h3{font-family:'Space Grotesk',sans-serif;margin:0 0 .4rem;color:#a7f3d0}
     .completion-card p{margin:0 0 14px;color:var(--text-muted);line-height:1.55}
     @media(max-width:680px){.choice-row{grid-template-columns:36px 1fr}.choice-because{grid-column:1/2;text-align:center}.choice-row input{grid-column:2/3}}
-    @media(max-width:480px){.container{padding:1rem}.resource-hero,.download-card,.choice-card{border-radius:18px}.btn-download,.btn-next{width:100%;box-sizing:border-box}}
+    @media(max-width:480px){.container{padding:1rem}.resource-hero,.download-card,.choice-card,.onedrive-card{border-radius:18px}.btn-download,.btn-next{width:100%;box-sizing:border-box}.onedrive-head{align-items:flex-start}.onedrive-icon{width:44px;height:44px}}
   </style>
 </head>
 <body>
@@ -53,21 +71,22 @@
     <section class="resource-hero">
       <span class="resource-kicker">A3 · Nachschlagewerk</span>
       <h1>Dein Merkblatt zu Tastenkürzeln</h1>
-      <p>In A1 hast du die wichtigsten Tastenkürzel bereits kennengelernt und geübt. Hier sicherst du dir ein Merkblatt, das du bei späteren Aufgaben zum Nachschauen verwenden darfst.</p>
+      <p>In A1 und A2 hast du erste Tastenkombinationen intensiv geübt. Dieses Merkblatt sammelt die wichtigen Kürzel für das ganze Modul – einige davon lernst du in A4 und A5 noch genauer kennen.</p>
     </section>
 
     <section class="download-card">
-      <div class="word-icon">W</div>
+      <div class="file-icon">PDF</div>
       <h2>Tastenkombinationen</h2>
-      <p>Lade das Merkblatt herunter und bewahre es auf. Es ist eine Hilfe für später – keine neue Prüfung.</p>
-      <a id="theory-download" href="../tk/Tastenkombinationen_A3.docx" download="Tastenkombinationen_A3.docx" class="btn-download">↓ Merkblatt herunterladen</a>
+      <p>Lade das Merkblatt herunter und bewahre es auf. Es ist dein Nachschlagewerk für die weiteren Aufgaben – keine neue Prüfung.</p>
+      <a id="theory-download" href="Tastenkombinationen_Theorie.pdf" download="Tastenkombinationen_Theorie.pdf" class="btn-download">↓ PDF herunterladen</a>
 
       <div class="use-note">
         <strong>Gut zu wissen</strong>
         <ul>
           <li>Viele Tastenkürzel funktionieren in mehreren Programmen gleich.</li>
           <li>Du musst nicht jedes Kürzel jederzeit auswendig wissen.</li>
-          <li>Dieses Merkblatt darfst du bei späteren Aufgaben als Hilfe verwenden.</li>
+          <li>Das Merkblatt enthält auch Kürzel, die du in A4 und A5 noch genauer übst.</li>
+          <li>Du darfst es bei späteren Aufgaben als Hilfe verwenden.</li>
         </ul>
       </div>
     </section>
@@ -75,18 +94,37 @@
     <section class="choice-card">
       <span class="resource-kicker">Meine drei Kürzel</span>
       <h2>Welche drei willst du ab heute wirklich benutzen?</h2>
-      <p>Wähle drei unterschiedliche Tastenkürzel und ergänze jeweils kurz, warum du sie im Alltag verwenden möchtest.</p>
+      <p>Suche dir im Merkblatt drei unterschiedliche Tastenkombinationen aus. Schreibe die Kürzel selbst auf und ergänze jeweils kurz, warum du sie im Alltag verwenden möchtest.</p>
       <div class="choice-list">
-        <label class="choice-row"><span class="choice-number">1</span><select class="shortcut-choice" data-index="0"><option value="">Kürzel wählen …</option></select><span class="choice-because">weil</span><input class="shortcut-reason" data-index="0" type="text" maxlength="120" placeholder="… ich damit schneller kopieren kann."></label>
-        <label class="choice-row"><span class="choice-number">2</span><select class="shortcut-choice" data-index="1"><option value="">Kürzel wählen …</option></select><span class="choice-because">weil</span><input class="shortcut-reason" data-index="1" type="text" maxlength="120" placeholder="…"></label>
-        <label class="choice-row"><span class="choice-number">3</span><select class="shortcut-choice" data-index="2"><option value="">Kürzel wählen …</option></select><span class="choice-because">weil</span><input class="shortcut-reason" data-index="2" type="text" maxlength="120" placeholder="…"></label>
+        <label class="choice-row"><span class="choice-number">1</span><input class="shortcut-choice" data-index="0" type="text" maxlength="60" autocomplete="off" spellcheck="false" placeholder="z. B. Ctrl + C"><span class="choice-because">weil</span><input class="shortcut-reason" data-index="0" type="text" maxlength="120" placeholder="… ich damit schneller kopieren kann."></label>
+        <label class="choice-row"><span class="choice-number">2</span><input class="shortcut-choice" data-index="1" type="text" maxlength="60" autocomplete="off" spellcheck="false" placeholder="z. B. Ctrl + Z"><span class="choice-because">weil</span><input class="shortcut-reason" data-index="1" type="text" maxlength="120" placeholder="…"></label>
+        <label class="choice-row"><span class="choice-number">3</span><input class="shortcut-choice" data-index="2" type="text" maxlength="60" autocomplete="off" spellcheck="false" placeholder="z. B. Win + L"><span class="choice-because">weil</span><input class="shortcut-reason" data-index="2" type="text" maxlength="120" placeholder="…"></label>
       </div>
-      <div class="choice-hint" id="choice-hint">A3 ist abgeschlossen, sobald das Merkblatt heruntergeladen und alle drei Zeilen ausgefüllt sind.</div>
+      <div class="choice-hint" id="choice-hint">Trage drei unterschiedliche Kürzel ein und begründe jedes kurz.</div>
+    </section>
+
+    <section class="onedrive-card" id="onedrive-step">
+      <div class="onedrive-head">
+        <div class="onedrive-icon" aria-hidden="true">☁</div>
+        <div>
+          <span class="resource-kicker">Zum Schluss</span>
+          <h2>Merkblatt in OneDrive sichern</h2>
+        </div>
+      </div>
+      <p>Erstelle in deinem OneDrive den Ordner <strong>IB</strong> (falls er noch nicht existiert) und lege das heruntergeladene Merkblatt dort ab.</p>
+      <label class="onedrive-confirm" for="onedrive-confirm">
+        <input id="onedrive-confirm" type="checkbox">
+        <span class="onedrive-checkmark" aria-hidden="true"></span>
+        <span class="onedrive-copy">
+          <strong>PDF im OneDrive-Ordner „IB“ abgelegt</strong>
+          <small id="onedrive-status">Nach dem Download kannst du diesen Schritt bestätigen.</small>
+        </span>
+      </label>
     </section>
 
     <section class="completion-card" id="completion-card">
       <h3>A3 abgeschlossen ✓</h3>
-      <p>Du hast dein Merkblatt gesichert und drei Tastenkürzel ausgewählt, die du wirklich einsetzen möchtest.</p>
+      <p>Du hast dein Merkblatt gesichert und drei Tastenkürzel selbst eingetragen, die du wirklich einsetzen möchtest.</p>
       <a href="A4.html" class="btn-next" id="next-a4">Weiter zu A4 ➔</a>
     </section>
   </main>

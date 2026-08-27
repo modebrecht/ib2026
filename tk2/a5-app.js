@@ -12,7 +12,9 @@
     {group:'Programme & Werkzeuge',keys:'Win + V',desc:'Zwischenablageverlauf öffnen',mode:'clipboard',flow:['Mehrfach kopiert','Win + V','Zwischenablage']},
     {group:'Programme & Werkzeuge',keys:'Alt + F4',desc:'Aktives Fenster oder Programm schliessen',mode:'closeWindow',flow:['Fenster aktiv','Alt + F4','Fenster geschlossen']},
     {group:'Fenster anordnen',keys:'Win + ←',desc:'Aktives Fenster links andocken',mode:'snapLeft',flow:['Fenster frei','Win + ←','Links angedockt']},
-    {group:'Fenster anordnen',keys:'Win + →',desc:'Aktives Fenster rechts andocken',mode:'snapRight',flow:['Fenster frei','Win + →','Rechts angedockt']}
+    {group:'Fenster anordnen',keys:'Win + →',desc:'Aktives Fenster rechts andocken',mode:'snapRight',flow:['Fenster frei','Win + →','Rechts angedockt']},
+    {group:'Fenster anordnen',keys:'Win + ↑',desc:'Aktives Fenster maximieren',mode:'maximize',flow:['Fenster normal','Win + ↑','Maximiert']},
+    {group:'Fenster anordnen',keys:'Win + ↓',desc:'Aktives Fenster verkleinern oder minimieren',mode:'minimize',flow:['Fenster maximiert','Win + ↓','Verkleinert / minimiert']}
   ]};
 
   var DATA=[
@@ -25,7 +27,9 @@
     {text:'Du möchtest den Verlauf deiner kopierten Inhalte öffnen.',correct:'Win + V',wrong:['Ctrl + V','Win + C']},
     {text:'Du möchtest das aktuell geöffnete Fenster oder Programm schliessen.',correct:'Alt + F4',wrong:['Ctrl + W','Win + L']},
     {text:'Du möchtest das aktuelle Fenster auf der linken Bildschirmhälfte andocken.',correct:'Win + ←',wrong:['Win + →','Win + D']},
-    {text:'Du möchtest das aktuelle Fenster auf der rechten Bildschirmhälfte andocken.',correct:'Win + →',wrong:['Win + ←','Win + D']}
+    {text:'Du möchtest das aktuelle Fenster auf der rechten Bildschirmhälfte andocken.',correct:'Win + →',wrong:['Win + ←','Win + D']},
+    {text:'Du möchtest das aktuelle Fenster maximieren.',correct:'Win + ↑',wrong:['Win + ↓','Win + →']},
+    {text:'Du möchtest das aktuelle Fenster verkleinern oder minimieren.',correct:'Win + ↓',wrong:['Win + ↑','Win + D']}
   ];
 
   var fresh=false,theoryRendered=false,theoryScenes=[];
