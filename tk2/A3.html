@@ -28,8 +28,9 @@
     .choice-list{display:grid;gap:12px;margin-top:18px}
     .choice-row{display:grid;grid-template-columns:36px minmax(150px,.8fr) auto minmax(180px,1.3fr);gap:10px;align-items:center;padding:12px;border-radius:14px;background:rgba(15,23,42,.72);border:1px solid rgba(148,163,184,.16)}
     .choice-number{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:rgba(99,102,241,.16);color:#c7d2fe;font-weight:900}
-    .choice-row select,.choice-row input{width:100%;min-width:0;border:1px solid rgba(148,163,184,.25);border-radius:10px;background:#0f172a;color:#f8fafc;font:inherit;padding:10px 11px;outline:none}
-    .choice-row select:focus,.choice-row input:focus{border-color:#818cf8;box-shadow:0 0 0 3px rgba(99,102,241,.14)}
+    .choice-row input{width:100%;min-width:0;border:1px solid rgba(148,163,184,.25);border-radius:10px;background:#0f172a;color:#f8fafc;font:inherit;padding:10px 11px;outline:none}
+    .choice-row input:focus{border-color:#818cf8;box-shadow:0 0 0 3px rgba(99,102,241,.14)}
+    .shortcut-choice{font-family:'Space Grotesk',monospace!important;font-weight:700!important}
     .choice-because{color:#a5b4fc;font-weight:800}
     .choice-hint{margin-top:12px;color:#94a3b8;font-size:.9rem;line-height:1.5}
     .completion-card{display:none;margin-top:18px;padding:20px;border-radius:18px;background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.2);text-align:center}
@@ -53,13 +54,13 @@
     <section class="resource-hero">
       <span class="resource-kicker">A3 · Nachschlagewerk</span>
       <h1>Dein Merkblatt zu Tastenkürzeln</h1>
-      <p>In A1 hast du die wichtigsten Tastenkürzel bereits kennengelernt und geübt. Hier sicherst du dir ein Merkblatt, das du bei späteren Aufgaben zum Nachschauen verwenden darfst.</p>
+      <p>In A1 und A2 hast du erste Tastenkombinationen intensiv geübt. Dieses Merkblatt sammelt die wichtigen Kürzel für das ganze Modul – einige davon lernst du in A4 und A5 noch genauer kennen.</p>
     </section>
 
     <section class="download-card">
       <div class="file-icon">PDF</div>
       <h2>Tastenkombinationen</h2>
-      <p>Lade das Merkblatt herunter und bewahre es auf. Es ist eine Hilfe für später – keine neue Prüfung.</p>
+      <p>Lade das Merkblatt herunter und bewahre es auf. Es ist dein Nachschlagewerk für die weiteren Aufgaben – keine neue Prüfung.</p>
       <a id="theory-download" href="Tastenkombinationen_Theorie.pdf" download="Tastenkombinationen_Theorie.pdf" class="btn-download">↓ PDF herunterladen</a>
 
       <div class="use-note">
@@ -67,7 +68,8 @@
         <ul>
           <li>Viele Tastenkürzel funktionieren in mehreren Programmen gleich.</li>
           <li>Du musst nicht jedes Kürzel jederzeit auswendig wissen.</li>
-          <li>Dieses Merkblatt darfst du bei späteren Aufgaben als Hilfe verwenden.</li>
+          <li>Das Merkblatt enthält auch Kürzel, die du in A4 und A5 noch genauer übst.</li>
+          <li>Du darfst es bei späteren Aufgaben als Hilfe verwenden.</li>
         </ul>
       </div>
     </section>
@@ -75,18 +77,18 @@
     <section class="choice-card">
       <span class="resource-kicker">Meine drei Kürzel</span>
       <h2>Welche drei willst du ab heute wirklich benutzen?</h2>
-      <p>Wähle drei unterschiedliche Tastenkürzel und ergänze jeweils kurz, warum du sie im Alltag verwenden möchtest.</p>
+      <p>Suche dir im Merkblatt drei unterschiedliche Tastenkombinationen aus. Schreibe die Kürzel selbst auf und ergänze jeweils kurz, warum du sie im Alltag verwenden möchtest.</p>
       <div class="choice-list">
-        <label class="choice-row"><span class="choice-number">1</span><select class="shortcut-choice" data-index="0"><option value="">Kürzel wählen …</option></select><span class="choice-because">weil</span><input class="shortcut-reason" data-index="0" type="text" maxlength="120" placeholder="… ich damit schneller kopieren kann."></label>
-        <label class="choice-row"><span class="choice-number">2</span><select class="shortcut-choice" data-index="1"><option value="">Kürzel wählen …</option></select><span class="choice-because">weil</span><input class="shortcut-reason" data-index="1" type="text" maxlength="120" placeholder="…"></label>
-        <label class="choice-row"><span class="choice-number">3</span><select class="shortcut-choice" data-index="2"><option value="">Kürzel wählen …</option></select><span class="choice-because">weil</span><input class="shortcut-reason" data-index="2" type="text" maxlength="120" placeholder="…"></label>
+        <label class="choice-row"><span class="choice-number">1</span><input class="shortcut-choice" data-index="0" type="text" maxlength="60" autocomplete="off" spellcheck="false" placeholder="z. B. Ctrl + C"><span class="choice-because">weil</span><input class="shortcut-reason" data-index="0" type="text" maxlength="120" placeholder="… ich damit schneller kopieren kann."></label>
+        <label class="choice-row"><span class="choice-number">2</span><input class="shortcut-choice" data-index="1" type="text" maxlength="60" autocomplete="off" spellcheck="false" placeholder="z. B. Ctrl + Z"><span class="choice-because">weil</span><input class="shortcut-reason" data-index="1" type="text" maxlength="120" placeholder="…"></label>
+        <label class="choice-row"><span class="choice-number">3</span><input class="shortcut-choice" data-index="2" type="text" maxlength="60" autocomplete="off" spellcheck="false" placeholder="z. B. Win + L"><span class="choice-because">weil</span><input class="shortcut-reason" data-index="2" type="text" maxlength="120" placeholder="…"></label>
       </div>
-      <div class="choice-hint" id="choice-hint">A3 ist abgeschlossen, sobald das Merkblatt heruntergeladen und alle drei Zeilen ausgefüllt sind.</div>
+      <div class="choice-hint" id="choice-hint">A3 ist abgeschlossen, sobald das Merkblatt heruntergeladen und drei unterschiedliche Kürzel mit Begründung eingetragen sind.</div>
     </section>
 
     <section class="completion-card" id="completion-card">
       <h3>A3 abgeschlossen ✓</h3>
-      <p>Du hast dein Merkblatt gesichert und drei Tastenkürzel ausgewählt, die du wirklich einsetzen möchtest.</p>
+      <p>Du hast dein Merkblatt gesichert und drei Tastenkürzel selbst eingetragen, die du wirklich einsetzen möchtest.</p>
       <a href="A4.html" class="btn-next" id="next-a4">Weiter zu A4 ➔</a>
     </section>
   </main>
