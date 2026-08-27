@@ -1,0 +1,42 @@
+name: Fix A4 key row and refresh icon
+on:
+  push:
+    branches: [dev]
+    paths:
+      - '.github/workflows/fix-a4-keyrow-refresh-once.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 0
+      - name: Patch
+        run: python .github/scripts/fix_a4_keyrow_refresh.py
+      - name: Verify
+        run: |
+          node --check tk2/a4Scenes.js
+          node --check tk2/sceneKeycaps.js
+          grep -q "var CHORD_HOLD_MS=800;" tk2/sceneKeycaps.js
+          git diff --exit-code -- tk2/sceneKeycaps.js
+          python - <<'PY'
+          from pathlib import Path
+          s=Path('tk2/a4Scenes.js').read_text(encoding='utf-8')
+          assert "keyScale=cfg.keys.length>=3?.68:1" in s
+          assert "keyX=552-keyRowWidth*keyScale" in s
+          assert "scale('+keyScale+')" in s
+          assert 'class="refresh-icon"' in s
+          assert 'M14 -16 A21 21 0 1 0 20 7' in s
+          assert 'M20 7 L20 -3 M20 7 L10 5' in s
+          print('visual bugfix checks OK; 800ms key hold preserved')
+          PY
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tk2/a4Scenes.js
+          git commit -m "tk2: fix clipped shortcut row and reload icon"
+          git push origin dev
