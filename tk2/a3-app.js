@@ -6,13 +6,14 @@
   var SCHEMA_VERSION=2;
 
   function byId(id){return document.getElementById(id);}
-  function freshProgress(){return{schemaVersion:SCHEMA_VERSION,downloaded:false,choices:[{shortcut:'',reason:''},{shortcut:'',reason:''},{shortcut:'',reason:''}],completed:false,rewarded:false};}
+  function freshProgress(){return{schemaVersion:SCHEMA_VERSION,downloaded:false,onedriveStored:false,choices:[{shortcut:'',reason:''},{shortcut:'',reason:''},{shortcut:'',reason:''}],completed:false,rewarded:false};}
   function parseProgress(){
     var progress;
     try{progress=JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');}catch(e){progress={};}
     // Alte Pizza-Daten (first/second/q7) zählen bewusst nicht mehr als A3-Abschluss.
     if(!progress||progress.schemaVersion!==SCHEMA_VERSION)return freshProgress();
     if(!Array.isArray(progress.choices)||progress.choices.length!==3)progress.choices=freshProgress().choices;
+    if(typeof progress.onedriveStored!=='boolean')progress.onedriveStored=false;
     return progress;
   }
   function saveProgress(progress){
@@ -38,7 +39,7 @@
     var keys=choices.map(function(c){return duplicateKey(c.shortcut);});
     return new Set(keys).size===3;
   }
-  function isCompleted(progress){return progress.downloaded===true&&choicesComplete(progress);}
+  function isCompleted(progress){return progress.downloaded===true&&progress.onedriveStored===true&&choicesComplete(progress);}
 
   // q7 bleibt nur als technischer Kompatibilitätsmarker für die alte Root-Anzeige.
   // Ein historischer Pizza-q7 wird entfernt; 100 wird nur für die NEUE A3 vergeben.
@@ -51,13 +52,53 @@
     }catch(e){}
   }
 
+  function ensureOneDriveStep(progress){
+    if(byId('onedrive-step'))return;
+    var download=byId('theory-download');
+    if(!download)return;
+
+    var style=document.createElement('style');
+    style.id='a3-onedrive-style';
+    style.textContent=''
+      +'.onedrive-step{max-width:650px;margin:16px auto 0;padding:14px 16px;border-radius:14px;border:1px solid rgba(96,165,250,.28);background:rgba(37,99,235,.09);display:flex;gap:12px;align-items:flex-start;text-align:left;cursor:pointer}'
+      +'.onedrive-step input{width:20px;height:20px;margin:2px 0 0;accent-color:#6366f1;flex:0 0 auto}'
+      +'.onedrive-step strong{display:block;color:#dbeafe;font-size:.98rem}'
+      +'.onedrive-step small{display:block;margin-top:4px;color:#94a3b8;line-height:1.45;font-size:.86rem}'
+      +'.onedrive-step:has(input:checked){border-color:rgba(16,185,129,.42);background:rgba(16,185,129,.08)}'
+      +'.onedrive-step:has(input:disabled){opacity:.62;cursor:not-allowed}';
+    document.head.appendChild(style);
+
+    var step=document.createElement('label');
+    step.className='onedrive-step';
+    step.id='onedrive-step';
+    step.innerHTML='<input id="onedrive-confirm" type="checkbox"><span><strong>PDF in OneDrive abgelegt</strong><small>Erstelle in deinem OneDrive den Ordner „IB“ (falls er noch nicht existiert) und speichere die PDF dort.</small></span>';
+    download.insertAdjacentElement('afterend',step);
+
+    var checkbox=byId('onedrive-confirm');
+    checkbox.checked=progress.onedriveStored===true;
+    checkbox.disabled=progress.downloaded!==true;
+    checkbox.addEventListener('change',function(){
+      progress.onedriveStored=checkbox.checked;
+      evaluate(progress);
+    });
+  }
+
+  function syncOneDriveStep(progress){
+    var checkbox=byId('onedrive-confirm');
+    if(!checkbox)return;
+    checkbox.checked=progress.onedriveStored===true;
+    checkbox.disabled=progress.downloaded!==true;
+  }
+
   function renderCompleted(progress){
     var card=byId('completion-card'),hint=byId('choice-hint');
     if(card)card.classList.toggle('is-visible',progress.completed===true);
+    syncOneDriveStep(progress);
     if(hint){
-      if(progress.completed)hint.textContent='✓ Merkblatt gesichert und drei persönliche Kürzel selbst eingetragen.';
-      else if(!progress.downloaded)hint.textContent='Lade zuerst das Merkblatt herunter und trage danach drei unterschiedliche Kürzel mit Begründung ein.';
-      else hint.textContent='Merkblatt gesichert ✓ Schreibe drei unterschiedliche Kürzel selbst auf und begründe jedes kurz (mind. 5 Zeichen).';
+      if(progress.completed)hint.textContent='✓ Merkblatt im OneDrive-Ordner „IB“ gesichert und drei persönliche Kürzel selbst eingetragen.';
+      else if(!progress.downloaded)hint.textContent='Lade zuerst das Merkblatt herunter. Lege es danach im OneDrive-Ordner „IB“ ab und trage drei Kürzel ein.';
+      else if(!progress.onedriveStored)hint.textContent='PDF heruntergeladen ✓ Lege sie jetzt im OneDrive-Ordner „IB“ ab und bestätige die Checkbox.';
+      else hint.textContent='OneDrive erledigt ✓ Schreibe drei unterschiedliche Kürzel selbst auf und begründe jedes kurz (mind. 5 Zeichen).';
     }
   }
 
@@ -80,6 +121,7 @@
     var progress=parseProgress();
     // Beim ersten Öffnen wird jede alte Pizza-Struktur durch das neue Schema ersetzt.
     saveProgress(progress);
+    ensureOneDriveStep(progress);
 
     document.querySelectorAll('.shortcut-choice').forEach(function(input,index){
       input.value=(progress.choices[index]&&progress.choices[index].shortcut)||'';
