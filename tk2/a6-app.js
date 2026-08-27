@@ -9,7 +9,7 @@
   var META={
     A:{q:10,name:'A1',title:'Quest 10 – Wiederholung A1',desc:'Alle 14 allgemeinen Tastenkürzel aus A1.',theme:BLUE},
     B:{q:11,name:'A2',title:'Quest 11 – Wiederholung A2',desc:'Sonderzeichen mit AltGr aus A2. Das Zielzeichen bleibt immer sichtbar.',theme:AMBER},
-    C:{q:12,name:'A4 + A5',title:'Quest 12 – Wiederholung A4 + A5',desc:'Alle 19 Browser-, Programm- und Windows-Tastenkombinationen aus A4 und A5.',theme:CYAN},
+    C:{q:12,name:'A4 + A5',title:'Quest 12 – Wiederholung A4 + A5',desc:'Alle 20 Browser-, Programm- und Windows-Tastenkombinationen aus A4 und A5.',theme:CYAN},
     D:{q:13,name:'Gemischt',title:'Quest 13 – Alles gemischt',desc:'A1, A2, A4 und A5 in gemischten Alltagssituationen.',theme:GREEN}
   };
 
@@ -43,7 +43,6 @@
       {char:'°',text:'Gradzeichen',correct:'AltGr + 4',wrong:['AltGr + 3','Shift + ^']}
     ],
     C:[
-      {text:'Du möchtest Text in Word fett formatieren.',correct:'Ctrl + B',wrong:['Ctrl + F','Ctrl + N']},
       {text:'Du möchtest in Word ein neues Dokument erstellen.',correct:'Ctrl + N',wrong:['Ctrl + T','Ctrl + W']},
       {text:'Du willst im Browser einen neuen Tab öffnen.',correct:'Ctrl + T',wrong:['Ctrl + N','Ctrl + Shift + T']},
       {text:'Du willst den aktuellen Browser-Tab schliessen.',correct:'Ctrl + W',wrong:['Alt + Tab','Ctrl + T']},
@@ -61,7 +60,9 @@
       {text:'Du möchtest den Verlauf deiner kopierten Inhalte öffnen.',correct:'Win + V',wrong:['Ctrl + V','Win + C']},
       {text:'Du möchtest das aktuell geöffnete Fenster oder Programm schliessen.',correct:'Alt + F4',wrong:['Ctrl + W','Win + L']},
       {text:'Du möchtest das aktuelle Fenster auf der linken Bildschirmhälfte andocken.',correct:'Win + ←',wrong:['Win + →','Win + D']},
-      {text:'Du möchtest das aktuelle Fenster auf der rechten Bildschirmhälfte andocken.',correct:'Win + →',wrong:['Win + ←','Win + D']}
+      {text:'Du möchtest das aktuelle Fenster auf der rechten Bildschirmhälfte andocken.',correct:'Win + →',wrong:['Win + ←','Win + D']},
+      {text:'Du möchtest das aktuelle Fenster maximieren.',correct:'Win + ↑',wrong:['Win + ↓','Win + →']},
+      {text:'Du möchtest das aktuelle Fenster verkleinern oder minimieren.',correct:'Win + ↓',wrong:['Win + ↑','Win + D']}
     ],
     D:[
       {text:'Du hast einen Text kopiert und möchtest ihn einfügen.',correct:'Ctrl + V',wrong:['Ctrl + C','Ctrl + X']},
