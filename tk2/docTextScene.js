@@ -25,31 +25,6 @@
     var running = false;
     var cfg = MODES[mode] || MODES.copy;
 
-    function keyWidth(key){
-      return key === 'Shift' ? 78 : (key === 'Ctrl' ? 68 : 48);
-    }
-
-    function keyRowWidth(keys){
-      return keys.reduce(function(total,key){ return total + keyWidth(key); },0) + Math.max(0,keys.length-1)*26;
-    }
-
-    function keyMarkup(keys){
-      var x = 0;
-      return keys.map(function(key, index){
-        var w = keyWidth(key);
-        var base = 'translate('+x+' 0)';
-        var block = '<g class="tk2-key" data-key="'+key+'" data-base="'+base+'" transform="'+base+'">'+
-          '<rect width="'+w+'" height="42" rx="10" fill="#172033" stroke="#475569" stroke-width="1.5"/>'+
-          '<text x="'+(w/2)+'" y="27" text-anchor="middle" font-family="Arial,sans-serif" font-size="'+(key.length>4?12:14)+'" font-weight="800" fill="#dbeafe">'+key+'</text></g>';
-        x += w;
-        if(index < keys.length-1){
-          block += '<text x="'+(x+9)+'" y="27" font-family="Arial,sans-serif" font-size="16" font-weight="800" fill="#64748b">+</text>';
-          x += 26;
-        }
-        return block;
-      }).join('');
-    }
-
     var keyX = 425;
 
     container.innerHTML = ''+
@@ -104,7 +79,7 @@
         '<rect class="clip-rich-line" x="30" y="96" width="44" height="3" rx="1.5" fill="#f59e0b" opacity="0"/>'+
         '<text x="52" y="126" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" fill="#94a3b8">Zwischenablage</text>'+
       '</g>'+
-      '<g class="keys" transform="translate('+keyX+' 240)">'+keyMarkup(cfg.keys)+'</g>'+
+      '<g class="keys" transform="translate('+keyX+' 240)">'+window.tk2SceneKeycaps.markup(cfg.keys,'doc')+'</g>'+
       '<g class="flying" opacity="0"><rect x="56" y="174" width="148" height="31" rx="7" fill="#2563eb" opacity=".2"/><text x="64" y="195" font-family="Arial,sans-serif" font-size="17" font-weight="700" fill="#7dd3fc">wichtiger Text</text></g>'+
       '<g class="history-arrow" opacity="0" transform="translate(427 205)"><path d="M60 10C31 -5 8 6 9 31" fill="none" stroke="#10b981" stroke-width="5" stroke-linecap="round"/><path d="M2 22l7 11 10-9" fill="none" stroke="#10b981" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></g>'+
       '<g class="status-toast" opacity="0" transform="translate(382 20)"><rect width="190" height="30" rx="15" fill="#052e2b" stroke="#10b981"/><circle cx="18" cy="15" r="7" fill="#10b981"/><path d="M14 15l3 3 5-6" fill="none" stroke="#fff" stroke-width="1.8"/><text class="toast-text" x="32" y="19" font-family="Arial,sans-serif" font-size="11" font-weight="700" fill="#a7f3d0">Fertig</text></g>'+
