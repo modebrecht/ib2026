@@ -44,7 +44,7 @@ html[data-size="small"]{font-size:14px}html[data-size="normal"]{font-size:16px}h
     <nav class="nav" aria-label="Bereiche">
       <button class="nav-btn active" data-view="home"><span class="nav-ico">⌂</span>Start</button>
       <button class="nav-btn" data-view="learn"><span class="nav-ico">⌘</span>Lernen</button>
-      <button class="nav-btn" data-view="train"><span class="nav-ico">◎</span>Training</button>
+      <button class="nav-btn" data-view="train"><span class="nav-ico">◎</span>Challenge</button>
       <button class="nav-btn" data-view="memory"><span class="nav-ico">▦</span>Memory</button>
       <button class="nav-btn" data-view="favorites"><span class="nav-ico">★</span>Favoriten</button>
     </nav>
@@ -94,18 +94,26 @@ html[data-size="small"]{font-size:14px}html[data-size="normal"]{font-size:16px}h
 
       <section class="view" id="view-train">
         <div class="view-inner">
-          <div class="view-head"><div><span class="eyebrow">Abrufen statt nur lesen</span><h1>Training</h1><p>Lösung erst im Kopf suchen – dann prüfen.</p></div><span class="count-pill" id="roundPill">1 / 44</span></div>
+          <div class="view-head">
+            <div><span class="eyebrow">10 Fragen · aktives Abrufen</span><h1>Challenge</h1><p>Wähle aus vier Tastenkombinationen. Falsche Antworten kommen später nochmals.</p></div>
+            <span class="count-pill" id="roundPill">1 / 10</span>
+          </div>
           <div class="practice-layout">
-            <div class="practice-card">
+            <div class="practice-card" id="challengeCard">
               <span class="prompt-label" id="practiceLabel">Welche Tastenkombination passt?</span>
               <h2 id="practicePrompt">Kopieren</h2>
               <div class="quiz-options" id="quizOptions"></div>
               <div class="answer" id="practiceAnswer"></div>
-              <div class="practice-actions"><button class="solid-btn" id="revealBtn">Lösung zeigen</button><button class="soft-btn" id="nextBtn">Nächste Karte →</button></div>
+              <div class="practice-actions"><button class="solid-btn" id="challengeNext" hidden>Weiter →</button></div>
             </div>
             <aside class="side-card">
-              <div><h3>Trainingsmodus</h3><select class="mode-select" id="practiceMode"><option value="classic">Lernkarten</option><option value="quiz">4er-Quiz</option><option value="imposter">Fehler finden</option></select></div>
-              <div class="mini-stats"><div class="mini-stat"><span>Serie</span><strong id="streak">0</strong></div><div class="mini-stat"><span>Bestwert</span><strong id="best">0</strong></div></div>
+              <div><h3>Challenge</h3><p style="color:var(--muted);font-size:.86rem;line-height:1.45;margin-bottom:12px">10 zufällige Kürzel. Ziel: alle am Ende sicher erkennen.</p><button class="soft-btn" id="challengeRestart">Neue Challenge</button></div>
+              <div class="mini-stats">
+                <div class="mini-stat"><span>Punkte</span><strong id="challengeScore">0 / 1000</strong></div>
+                <div class="mini-stat"><span>Direkt richtig</span><strong id="challengeDirect">0 / 10</strong></div>
+                <div class="mini-stat"><span>Serie</span><strong id="streak">0</strong></div>
+                <div class="mini-stat"><span>Wiederholungen</span><strong id="challengeRetries">0</strong></div>
+              </div>
             </aside>
           </div>
         </div>
@@ -158,7 +166,7 @@ html[data-size="small"]{font-size:14px}html[data-size="normal"]{font-size:16px}h
     </main>
 
     <nav class="mobile-nav" aria-label="Mobile Navigation">
-      <button class="active" data-view="home"><i>⌂</i>Start</button><button data-view="learn"><i>⌘</i>Lernen</button><button data-view="train"><i>◎</i>Training</button><button data-view="memory"><i>▦</i>Memory</button><button data-view="favorites"><i>★</i>Favoriten</button>
+      <button class="active" data-view="home"><i>⌂</i>Start</button><button data-view="learn"><i>⌘</i>Lernen</button><button data-view="train"><i>◎</i>Challenge</button><button data-view="memory"><i>▦</i>Memory</button><button data-view="favorites"><i>★</i>Favoriten</button>
     </nav>
   </div>
 </div>
@@ -232,20 +240,21 @@ function keyText(s){return s.keys.join(' + ')}
 function keyMarkup(s){return s.keys.map((k,i)=>`<kbd>${escapeHtml(k)}</kbd>${i<s.keys.length-1?'<span class="plus">+</span>':''}`).join('')}
 function escapeHtml(v){return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function toast(text){const el=$('#toast');el.textContent=text;el.classList.add('show');clearTimeout(window.__toast);window.__toast=setTimeout(()=>el.classList.remove('show'),1500)}
-function showView(name){state.view=name;$$('.view').forEach(v=>v.classList.toggle('active',v.id===`view-${name}`));$$('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===name));const titles={home:'Shortcut Lab',learn:'Alle Tastenkürzel',train:'Training',memory:'Memory',favorites:'Favoriten'};$('#crumbTitle').textContent=titles[name];if(name==='learn')setTimeout(()=>$('#searchInput').focus({preventScroll:true}),0);if(name==='favorites')renderFavorites();if(name==='memory'&&!$('#memoryBoard').children.length)initMemory();}
+function showView(name){state.view=name;$$('.view').forEach(v=>v.classList.toggle('active',v.id===`view-${name}`));$$('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===name));const titles={home:'Shortcut Lab',learn:'Alle Tastenkürzel',train:'Challenge',memory:'Memory',favorites:'Favoriten'};$('#crumbTitle').textContent=titles[name];if(name==='learn')setTimeout(()=>$('#searchInput').focus({preventScroll:true}),0);if(name==='favorites')renderFavorites();if(name==='memory'&&!$('#memoryBoard').children.length)initMemory();}
 function renderHome(){const host=$('#homeCategories');host.innerHTML='';Object.entries(categories).forEach(([id,c])=>{const b=document.createElement('button');b.className='stat-card';b.innerHTML=`<strong>${c.count}</strong><span>${c.icon} ${c.label}</span>`;b.onclick=()=>{state.cat=id;renderLearn();showView('learn')};host.appendChild(b)})}
 function renderCategoryTabs(){const host=$('#categoryTabs');host.innerHTML='';[['all','Alle'],...Object.entries(categories).map(([id,c])=>[id,c.short])].forEach(([id,label])=>{const b=document.createElement('button');b.className='chip'+(state.cat===id?' active':'');b.textContent=label;b.onclick=()=>{state.cat=id;renderLearn()};host.appendChild(b)})}
 function renderLearn(){renderCategoryTabs();const grid=$('#learnGrid');grid.innerHTML='';const q=state.query.toLowerCase();const list=shortcuts.filter(s=>(state.cat==='all'||s.cat===state.cat)&&(!q||`${s.title} ${s.desc} ${keyText(s)}`.toLowerCase().includes(q)));list.forEach(s=>{const card=document.createElement('article');card.className='shortcut';const fav=state.favorites.has(s.id);card.innerHTML=`<div class="shortcut-top"><span class="tag">${escapeHtml(categories[s.cat].short)}</span><button class="star ${fav?'active':''}" data-fav="${s.id}" aria-label="Favorit">${fav?'★':'☆'}</button></div><h3>${escapeHtml(s.title)}</h3><div class="keys">${keyMarkup(s)}</div><p>${escapeHtml(s.desc)}</p><div class="card-foot"><button class="practice-link" data-practice="${s.id}">Jetzt üben →</button></div>`;grid.appendChild(card)});$('#learnCount').textContent=`${list.length} Kürzel`;$('#learnEmpty').style.display=list.length?'none':'block'}
 function updateFavoriteUI(){const count=state.favorites.size;$('#railProgress').textContent=`${count} / 44`;$('#railBar').style.width=`${count/44*100}%`;$('#favoriteCount').textContent=`${count} Favorit${count===1?'':'en'}`;$$('[data-fav]').forEach(b=>{const on=state.favorites.has(b.dataset.fav);b.classList.toggle('active',on);b.textContent=on?'★':'☆'});if(state.view==='favorites')renderFavorites()}
 function renderFavorites(){const grid=$('#favoriteGrid');grid.innerHTML='';const list=shortcuts.filter(s=>state.favorites.has(s.id));list.forEach(s=>{const card=document.createElement('article');card.className='favorite-card';card.innerHTML=`<span class="tag">${escapeHtml(categories[s.cat].short)}</span><h3>${escapeHtml(s.title)}</h3><div class="keys">${keyMarkup(s)}</div><p>${escapeHtml(s.desc)}</p><button class="remove-btn" data-remove="${s.id}">Aus Favoriten entfernen</button>`;grid.appendChild(card)});$('#favoriteEmpty').style.display=list.length?'none':'block';$('#favoriteCount').textContent=`${list.length} Favorit${list.length===1?'':'en'}`}
-function shufflePractice(firstId=null){state.practiceOrder=shortcuts.map(s=>s.id).sort(()=>Math.random()-.5);if(firstId){state.practiceOrder=state.practiceOrder.filter(id=>id!==firstId);state.practiceOrder.unshift(firstId)}state.practiceIndex=0}
-function practiceItem(){return shortcuts.find(s=>s.id===state.practiceOrder[state.practiceIndex])||shortcuts[0]}
-function distractors(item,n=3){return shortcuts.filter(s=>s.id!==item.id).sort(()=>Math.random()-.5).slice(0,n)}
-function renderPractice(){if(!state.practiceOrder.length)shufflePractice();const item=practiceItem(),mode=$('#practiceMode').value;$('#roundPill').textContent=`${state.practiceIndex+1} / 44`;$('#practicePrompt').textContent=mode==='imposter'?'Welche Paarung ist falsch?':item.title;$('#practiceLabel').textContent=mode==='imposter'?'Fehler finden':'Welche Tastenkombination passt?';$('#practiceAnswer').classList.remove('show');$('#practiceAnswer').innerHTML=`<div class="keys">${keyMarkup(item)}</div><p>${escapeHtml(item.desc)}</p>`;$('#quizOptions').innerHTML='';$('#revealBtn').style.display=mode==='classic'?'':'none';if(mode==='classic')return;
- if(mode==='quiz'){[item,...distractors(item)].sort(()=>Math.random()-.5).forEach(choice=>{const b=document.createElement('button');b.className='quiz-option';b.textContent=keyText(choice);b.onclick=()=>gradeQuiz(b,choice.id===item.id,item);$('#quizOptions').appendChild(b)})}
- else{const others=distractors(item,4),wrong=others[0],wrongKeys=others[1];const pairs=[item,...others.slice(2,4)].map(s=>({text:`${s.title}: ${keyText(s)}`,wrong:false}));pairs.push({text:`${wrong.title}: ${keyText(wrongKeys)}`,wrong:true});pairs.sort(()=>Math.random()-.5).forEach(p=>{const b=document.createElement('button');b.className='quiz-option';b.textContent=p.text;b.onclick=()=>gradeQuiz(b,p.wrong,item);$('#quizOptions').appendChild(b)})}}
-function gradeQuiz(btn,correct,item){$$('.quiz-option').forEach(b=>b.disabled=true);btn.classList.add(correct?'correct':'wrong');if(correct){state.streak++;state.best=Math.max(state.best,state.streak);localStorage.setItem(STORE.best,JSON.stringify(state.best));toast('Richtig ✓')}else{state.streak=0;toast('Nicht ganz')};$('#streak').textContent=state.streak;$('#best').textContent=state.best;$('#practiceAnswer').classList.add('show')}
-function nextPractice(){state.practiceIndex=(state.practiceIndex+1)%state.practiceOrder.length;renderPractice()}
+const challenge={queue:[],index:0,phase:'main',score:0,directCorrect:0,streak:0,bestStreak:0,retries:0,answered:false};
+function challengeDistractors(item,n=3){return shortcuts.filter(s=>s.id!==item.id).sort(()=>Math.random()-.5).slice(0,n)}
+function startChallenge(firstId=null){let ids=shortcuts.map(s=>s.id).sort(()=>Math.random()-.5);if(firstId&&ids.includes(firstId)){ids=ids.filter(id=>id!==firstId);ids.unshift(firstId)}challenge.queue=ids.slice(0,10).map(id=>({id,main:true}));Object.assign(challenge,{index:0,phase:'main',score:0,directCorrect:0,streak:0,bestStreak:0,retries:0,answered:false});renderChallengeHUD();renderChallenge()}
+function renderChallengeHUD(){$('#challengeScore').textContent=`${challenge.score} / 1000`;$('#challengeDirect').textContent=`${challenge.directCorrect} / 10`;$('#streak').textContent=challenge.streak;$('#challengeRetries').textContent=challenge.retries}
+function challengeItem(){const q=challenge.queue[challenge.index];return q?shortcuts.find(s=>s.id===q.id):null}
+function renderChallenge(){if(challenge.index>=challenge.queue.length){finishChallenge();return}challenge.answered=false;const q=challenge.queue[challenge.index],item=challengeItem();if(!item){challenge.index++;renderChallenge();return}const mainDone=challenge.queue.slice(0,challenge.index).filter(x=>x.main).length;$('#roundPill').textContent=q.main?`${Math.min(mainDone+1,10)} / 10`:'Wiederholung';$('#practiceLabel').textContent=q.main?'Welche Tastenkombination passt?':'Nochmals: Welche Kombination passt?';$('#practicePrompt').textContent=item.title;$('#practiceAnswer').classList.remove('show');$('#practiceAnswer').innerHTML='';$('#challengeNext').hidden=true;const host=$('#quizOptions');host.innerHTML='';[item,...challengeDistractors(item)].sort(()=>Math.random()-.5).forEach(choice=>{const b=document.createElement('button');b.className='quiz-option';b.textContent=keyText(choice);b.dataset.correct=choice.id===item.id?'1':'0';b.onclick=()=>gradeChallenge(b,choice.id===item.id,item,q);host.appendChild(b)})}
+function gradeChallenge(btn,correct,item,q){if(challenge.answered)return;challenge.answered=true;$$('.quiz-option').forEach(b=>b.disabled=true);btn.classList.add(correct?'correct':'wrong');if(!correct){const right=$('.quiz-option[data-correct="1"]');if(right)right.classList.add('correct')}if(correct){challenge.streak++;challenge.bestStreak=Math.max(challenge.bestStreak,challenge.streak);if(q.main){challenge.directCorrect++;challenge.score+=100}haptic([12,24,18]);toast('Richtig ✓')}else{challenge.streak=0;challenge.retries++;challenge.queue.push({id:item.id,main:false});haptic([24,34,24]);toast('Kommt später nochmals')}renderChallengeHUD();$('#practiceAnswer').innerHTML=`<div class="keys">${keyMarkup(item)}</div><p>${escapeHtml(item.desc)}</p>`;$('#practiceAnswer').classList.add('show');$('#challengeNext').hidden=false}
+function nextChallenge(){if(!challenge.answered)return;challenge.index++;renderChallenge()}
+function finishChallenge(){$('#roundPill').textContent='Geschafft ✓';$('#practiceLabel').textContent='Challenge abgeschlossen';$('#practicePrompt').textContent='10 / 10 gemeistert 🎯';$('#quizOptions').innerHTML='';$('#practiceAnswer').innerHTML=`<p><strong>${challenge.directCorrect} von 10</strong> direkt richtig · ${challenge.retries} Wiederholung${challenge.retries===1?'':'en'} · beste Serie ${challenge.bestStreak}.</p>`;$('#practiceAnswer').classList.add('show');$('#challengeNext').hidden=true;haptic([20,35,20,35,50])}
 const MEMORY_DIFFS={easy:{label:'Einfach',pairs:4,max:80,exp:.30},medium:{label:'Mittel',pairs:8,max:120,exp:.45},hard:{label:'Schwer',pairs:10,max:140,exp:.55},ultra:{label:'Ultra',pairs:12,max:160,exp:.65}};
 const memory={cards:[],first:null,lock:false,moves:0,hits:0,points:0,start:null,timer:null,diff:'easy',pairCount:4};
 function haptic(pattern){try{if(navigator.vibrate)navigator.vibrate(pattern)}catch(_){}}
@@ -268,14 +277,14 @@ function onMemoryFlip(e){if(memory.lock)return;const btn=e.currentTarget,idx=Num
 function showMemorySummary(){const elapsed=memory.start?performance.now()-memory.start:0,ratio=memory.moves/Math.max(1,memory.pairCount);let stars=1;if(ratio<=3)stars=2;if(ratio<=2&&elapsed<=180000)stars=3;const starStr='★'.repeat(stars)+'☆'.repeat(3-stars),current={points:memory.points,time:elapsed,moves:memory.moves,hits:memory.hits,date:new Date().toISOString()},old=read(memoryBestKey(),null),better=!old||current.points>old.points||(current.points===old.points&&current.time<old.time);if(better)localStorage.setItem(memoryBestKey(),JSON.stringify(current));updateMemoryBest();$('#memorySummary').textContent=`Modus: ${MEMORY_DIFFS[memory.diff].label} · Zeit: ${formatMemoryTime(elapsed)} · Züge: ${memory.moves} · Treffer: ${memory.hits} · Punkte: ${memory.points}${better?' · Neuer Rekord!':''}`;$('#memoryStars').textContent=starStr;$('#memoryModal').hidden=false;haptic([25,45,25,45,60])}
 function applyPrefs(){const theme=localStorage.getItem(STORE.theme)||'light',size=localStorage.getItem(STORE.size)||'normal';document.documentElement.dataset.theme=theme;document.documentElement.dataset.size=size;$$('[data-theme]').forEach(b=>b.classList.toggle('active',b.dataset.theme===theme));$$('[data-size]').forEach(b=>b.classList.toggle('active',b.dataset.size===size))}
 
-document.addEventListener('click',e=>{const view=e.target.closest('[data-view]');if(view){showView(view.dataset.view);return}const go=e.target.closest('[data-go]');if(go){showView(go.dataset.go);return}const fav=e.target.closest('[data-fav]');if(fav){const id=fav.dataset.fav;state.favorites.has(id)?state.favorites.delete(id):state.favorites.add(id);saveFavorites();toast(state.favorites.has(id)?'Favorit gespeichert':'Favorit entfernt');return}const remove=e.target.closest('[data-remove]');if(remove){state.favorites.delete(remove.dataset.remove);saveFavorites();return}const practice=e.target.closest('[data-practice]');if(practice){shufflePractice(practice.dataset.practice);renderPractice();showView('train');return}const theme=e.target.closest('[data-theme]');if(theme){localStorage.setItem(STORE.theme,theme.dataset.theme);applyPrefs();return}const size=e.target.closest('[data-size]');if(size){localStorage.setItem(STORE.size,size.dataset.size);applyPrefs();return}if(!e.target.closest('#settings')&&!e.target.closest('#settingsToggle'))$('#settings').hidden=true});
+document.addEventListener('click',e=>{const view=e.target.closest('[data-view]');if(view){showView(view.dataset.view);return}const go=e.target.closest('[data-go]');if(go){showView(go.dataset.go);return}const fav=e.target.closest('[data-fav]');if(fav){const id=fav.dataset.fav;state.favorites.has(id)?state.favorites.delete(id):state.favorites.add(id);saveFavorites();toast(state.favorites.has(id)?'Favorit gespeichert':'Favorit entfernt');return}const remove=e.target.closest('[data-remove]');if(remove){state.favorites.delete(remove.dataset.remove);saveFavorites();return}const practice=e.target.closest('[data-practice]');if(practice){startChallenge(practice.dataset.practice);showView('train');return}const theme=e.target.closest('[data-theme]');if(theme){localStorage.setItem(STORE.theme,theme.dataset.theme);applyPrefs();return}const size=e.target.closest('[data-size]');if(size){localStorage.setItem(STORE.size,size.dataset.size);applyPrefs();return}if(!e.target.closest('#settings')&&!e.target.closest('#settingsToggle'))$('#settings').hidden=true});
 $('#settingsToggle').onclick=()=>$('#settings').hidden=!$('#settings').hidden;
 $('#quickSearch').onclick=()=>{showView('learn');setTimeout(()=>$('#searchInput').focus(),0)};
 $('#searchInput').addEventListener('input',e=>{state.query=e.target.value.trim();renderLearn()});
-$('#revealBtn').onclick=()=>$('#practiceAnswer').classList.add('show');$('#nextBtn').onclick=nextPractice;$('#practiceMode').onchange=renderPractice;
+$('#challengeNext').onclick=nextChallenge;$('#challengeRestart').onclick=()=>startChallenge();
 $('#memoryRestart').onclick=initMemory;$('#memoryCategory').onchange=initMemory;$('#memoryAgain').onclick=initMemory;$$('[data-memory-diff]').forEach(b=>b.onclick=()=>setMemoryDifficulty(b.dataset.memoryDiff));window.addEventListener('resize',()=>{if(memory.cards.length)updateMemoryDimensions()});
 
-renderHome();renderLearn();fillMemoryCategories();shufflePractice();renderPractice();renderFavorites();updateFavoriteUI();$('#best').textContent=state.best;applyPrefs();
+renderHome();renderLearn();fillMemoryCategories();startChallenge();renderFavorites();updateFavoriteUI();$('#best').textContent=state.best;applyPrefs();
 </script>
 </body>
 </html>
