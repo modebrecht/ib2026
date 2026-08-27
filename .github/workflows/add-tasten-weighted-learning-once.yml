@@ -1,0 +1,41 @@
+name: Add tasten weighted learning
+on:
+  push:
+    branches: [dev]
+    paths:
+      - '.github/workflows/add-tasten-weighted-learning-once.yml'
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 0
+      - name: Apply weighted learning
+        run: python .github/scripts/add_tasten_weighted_learning.py
+      - name: Check JavaScript
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path('tk2/tasten.html').read_text()
+          scripts=re.findall(r'<script(?:\s[^>]*)?>(.*?)</script>',s,re.S)
+          Path('/tmp/tasten.js').write_text('\n'.join(scripts),encoding='utf-8')
+          PY
+          node --check /tmp/tasten.js
+      - name: Verify weighted learning
+        run: |
+          grep -q "learning:'ib-shortcut-learning-v1'" tk2/tasten.html
+          grep -q 'function weightedSample' tk2/tasten.html
+          grep -q 'pendingWrong?.5:0' tk2/tasten.html
+          grep -q 'weightedSample(pool' tk2/tasten.html
+          grep -q 'markLearningResult(item.id,false)' tk2/tasten.html
+          grep -q 'markLearningResult(row.item.id,true)' tk2/tasten.html
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tk2/tasten.html
+          git commit -m "tk2: weight practice toward weak shortcuts"
+          git push origin dev
