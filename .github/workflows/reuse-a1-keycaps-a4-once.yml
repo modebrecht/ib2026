@@ -1,0 +1,42 @@
+name: Reuse A1 keycaps in A4
+on:
+  push:
+    branches: [dev]
+    paths:
+      - '.github/workflows/reuse-a1-keycaps-a4-once.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 0
+      - name: Apply A1 reuse
+        run: python .github/scripts/reuse_a1_keycaps_a4.py
+      - name: Check JavaScript
+        run: |
+          node --check tk2/sceneKeycaps.js
+          node --check tk2/docTextScene.js
+          node --check tk2/utilityScenes-base.js
+          node --check tk2/utilityNavigationScenes.js
+          node --check tk2/a4Scenes.js
+          node --check tk2/a4-app.js
+      - name: Verify reuse
+        run: |
+          grep -q 'sceneKeycaps.js' tk2/A1.html
+          grep -q 'sceneKeycaps.js' tk2/A4.html
+          grep -q 'window.tk2SceneKeycaps.pressSequence' tk2/docTextScene.js
+          grep -q 'window.tk2SceneKeycaps.pressSequence' tk2/utilityScenes-base.js
+          grep -q 'window.tk2SceneKeycaps.down' tk2/a4Scenes.js
+          grep -q 'class="theory-finish"' tk2/A4.html
+          grep -q '^.theory-finish {' tk/shared.css
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tk2/A1.html tk2/A4.html tk2/docTextScene.js tk2/utilityScenes-base.js tk2/utilityNavigationScenes.js tk2/a4Scenes.js tk/shared.css
+          git commit -m "tk2: reuse A1 keycaps and finish component in A4"
+          git push origin dev
