@@ -100,18 +100,21 @@
     });
   }
 
-  function updateAnswerProgress(){var ss=Array.from(questionsContainer.querySelectorAll('select')),n=ss.filter(function(s){return s.value;}).length;answerProgress.style.width=(ss.length?n/ss.length*100:0)+'%';}
+  function updateAnswerProgress(){var cards=Array.from(questionsContainer.querySelectorAll('.question-card')),n=cards.filter(function(card){return Boolean(card.dataset.answer);}).length;answerProgress.style.width=(cards.length?n/cards.length*100:0)+'%';}
 
-  function showFiftyFifty(select,hint){
-    var row=select.parentNode,wrap=document.createElement('div'),note=document.createElement('div'),options=document.createElement('div');
-    wrap.className='fifty-wrap';note.className='fifty-note';note.textContent='💡 Eine falsche Antwort wurde entfernt.';options.className='fifty-options';
-    Array.from(select.options).filter(function(o){return o.value;}).forEach(function(o){
-      var b=document.createElement('button');
-      b.type='button';b.className='fifty-option'+(select.value===o.value?' selected':'');b.dataset.value=o.value;b.textContent=o.value;
-      b.addEventListener('click',function(){select.value=o.value;options.querySelectorAll('.fifty-option').forEach(function(btn){btn.classList.toggle('selected',btn===b);});select.dispatchEvent(new Event('change',{bubbles:true}));});
-      options.appendChild(b);
-    });
-    wrap.appendChild(note);wrap.appendChild(options);select.style.display='none';row.insertBefore(wrap,hint);
+  function useHint(card,hint,q){
+    if(hint.disabled||hint.dataset.used==='true')return;
+    var now=typeof getGlobalXP==='function'?getGlobalXP():0;
+    if(now<30){hint.disabled=true;return;}
+    var selected=card.dataset.answer||'';
+    var wrong=Array.from(card.querySelectorAll('.answer-option')).filter(function(b){return b.dataset.value!==q.correct&&b.dataset.value!==selected&&!b.classList.contains('removed');});
+    if(!wrong.length)wrong=Array.from(card.querySelectorAll('.answer-option')).filter(function(b){return b.dataset.value!==q.correct&&!b.classList.contains('removed');});
+    if(!wrong.length)return;
+    wrong[Math.floor(Math.random()*wrong.length)].classList.add('removed');
+    if(typeof addGlobalXP==='function')addGlobalXP(-30);
+    if(typeof playSound==='function')playSound('hint');
+    hint.dataset.used='true';hint.textContent='💡 Tipp genutzt (-30 XP)';hint.disabled=true;
+    var note=document.createElement('div');note.className='hint-note';note.textContent='Eine falsche Antwort wurde entfernt.';card.querySelector('.answer-row').appendChild(note);
   }
 
   function render(forceFresh){
@@ -122,35 +125,32 @@
 
     randomized.forEach(function(entry,visualIndex){
       var q=entry.q,sourceIndex=entry.sourceIndex;
-      var card=document.createElement('div'),title=document.createElement('div'),label=document.createElement('span'),text=document.createElement('span'),select=document.createElement('select'),empty=document.createElement('option'),hint=document.createElement('button'),row=document.createElement('div'),fb=document.createElement('div');
-      card.className='question-card';card.dataset.sourceIndex=String(sourceIndex);
+      var card=document.createElement('div'),title=document.createElement('div'),label=document.createElement('span'),text=document.createElement('span'),options=document.createElement('div'),hint=document.createElement('button'),row=document.createElement('div'),fb=document.createElement('div');
+      card.className='question-card';card.dataset.sourceIndex=String(sourceIndex);card.dataset.correct=q.correct;card.dataset.answer='';
       title.className='question-title';label.className='question-label';label.textContent='Frage '+(visualIndex+1);title.appendChild(label);
       if(q.char){var sym=document.createElement('kbd');sym.className='big-symbol-kbd';sym.textContent=q.char;title.appendChild(sym);}
       text.className='question-text';text.textContent=q.text;title.appendChild(text);
-      select.className='answer-select';select.dataset.correct=q.correct;select.dataset.sourceIndex=String(sourceIndex);
-      empty.value='';empty.textContent='Bitte wählen …';select.appendChild(empty);
-      shuffle([q.correct].concat(q.wrong)).forEach(function(v){var o=document.createElement('option');o.value=v;o.textContent=v;select.appendChild(o);});
-      if(!startFresh&&stored&&stored.answers&&stored.answers[sourceIndex])select.value=stored.answers[sourceIndex];
-      if(completed)select.disabled=true;
+      options.className='answer-options';
+      var storedAnswer=!startFresh&&stored&&stored.answers&&stored.answers[sourceIndex]?stored.answers[sourceIndex]:'';
+      shuffle([q.correct].concat(q.wrong)).forEach(function(v){
+        var b=document.createElement('button');b.type='button';b.className='answer-option';b.dataset.value=v;b.textContent=v;
+        if(storedAnswer===v){b.classList.add('selected');card.dataset.answer=v;}
+        if(completed)b.disabled=true;
+        b.addEventListener('click',function(){
+          if(completed)return;
+          card.dataset.answer=v;
+          options.querySelectorAll('.answer-option').forEach(function(btn){btn.classList.remove('selected','correct','wrong');});
+          b.classList.add('selected');fb.classList.remove('show');updateAnswerProgress();
+        });
+        options.appendChild(b);
+      });
       hint.type='button';hint.className='btn-hint';hint.dataset.used='false';
       var xp=typeof getGlobalXP==='function'?getGlobalXP():0;
       hint.textContent=completed?'💡 Tipp':xp<30?'💡 Tipp (-30 XP | Zu wenig XP)':'💡 Tipp (-30 XP)';
       hint.disabled=completed||xp<30;
-      hint.addEventListener('click',function(){
-        if(hint.disabled||hint.dataset.used==='true')return;
-        var now=typeof getGlobalXP==='function'?getGlobalXP():0;
-        if(now<30){hint.disabled=true;return;}
-        var wrong=Array.from(select.options).filter(function(o){return o.value&&o.value!==q.correct&&o.value!==select.value;});
-        if(!wrong.length)wrong=Array.from(select.options).filter(function(o){return o.value&&o.value!==q.correct;});
-        if(!wrong.length)return;
-        wrong[Math.floor(Math.random()*wrong.length)].remove();
-        if(typeof addGlobalXP==='function')addGlobalXP(-30);
-        if(typeof playSound==='function')playSound('hint');
-        hint.dataset.used='true';hint.textContent='💡 Tipp genutzt (-30 XP)';hint.disabled=true;showFiftyFifty(select,hint);
-      });
-      row.className='answer-row';row.appendChild(select);row.appendChild(hint);
+      hint.addEventListener('click',function(){useHint(card,hint,q);});
+      row.className='answer-row';row.appendChild(options);row.appendChild(hint);
       fb.className='q-feedback';
-      select.addEventListener('change',function(){select.classList.remove('correct','wrong');fb.classList.remove('show');updateAnswerProgress();});
       card.appendChild(title);card.appendChild(row);card.appendChild(fb);questionsContainer.appendChild(card);
     });
 
@@ -164,24 +164,24 @@
   }
 
   function evaluate(){
-    var ss=Array.from(questionsContainer.querySelectorAll('select')),chosen=Array(DATA[currentSet].length).fill(''),correct=0;
-    ss.forEach(function(sel){
-      var card=sel.closest('.question-card'),fb=card.querySelector('.q-feedback'),hint=card.querySelector('.btn-hint'),buttons=card.querySelectorAll('.fifty-option'),c=sel.dataset.correct,sourceIndex=Number(sel.dataset.sourceIndex);
-      chosen[sourceIndex]=sel.value||'';
-      sel.classList.remove('correct','wrong');buttons.forEach(function(b){b.disabled=true;b.classList.remove('correct','wrong');});
-      if(sel.value&&sel.value===c){
-        correct++;sel.classList.add('correct');buttons.forEach(function(b){if(b.dataset.value===c)b.classList.add('correct');});fb.innerHTML='<span style="color:var(--accent-green)">✅ Richtig</span>';
-      }else if(sel.value){
-        sel.classList.add('wrong');buttons.forEach(function(b){if(b.dataset.value===sel.value)b.classList.add('wrong');if(b.dataset.value===c)b.classList.add('correct');});fb.innerHTML='<span style="color:var(--accent-red)">❌ Falsch</span><span style="color:var(--text-muted)">Richtig wäre:</span>';var k=document.createElement('kbd');k.textContent=c;fb.appendChild(k);
+    var cards=Array.from(questionsContainer.querySelectorAll('.question-card')),chosen=Array(DATA[currentSet].length).fill(''),correct=0;
+    cards.forEach(function(card){
+      var fb=card.querySelector('.q-feedback'),hint=card.querySelector('.btn-hint'),buttons=Array.from(card.querySelectorAll('.answer-option')),c=card.dataset.correct,sourceIndex=Number(card.dataset.sourceIndex),answer=card.dataset.answer||'';
+      chosen[sourceIndex]=answer;
+      buttons.forEach(function(b){b.disabled=true;b.classList.remove('correct','wrong');});
+      if(answer&&answer===c){
+        correct++;buttons.forEach(function(b){if(b.dataset.value===c)b.classList.add('correct');});fb.innerHTML='<span style="color:var(--accent-green)">✅ Richtig</span>';
+      }else if(answer){
+        buttons.forEach(function(b){if(b.dataset.value===answer)b.classList.add('wrong');if(b.dataset.value===c){b.classList.remove('removed');b.classList.add('correct');}});fb.innerHTML='<span style="color:var(--accent-red)">❌ Falsch</span><span style="color:var(--text-muted)">Richtig wäre:</span>';var k=document.createElement('kbd');k.textContent=c;fb.appendChild(k);
       }else{
-        sel.classList.add('wrong');fb.innerHTML='<span style="color:var(--accent-amber)">⚠️ Keine Antwort</span><span style="color:var(--text-muted)">Wähle beim nächsten Versuch zuerst eine Antwort.</span>';
+        buttons.forEach(function(b){if(b.dataset.value===c){b.classList.remove('removed');b.classList.add('correct');}});fb.innerHTML='<span style="color:var(--accent-amber)">⚠️ Keine Antwort</span><span style="color:var(--text-muted)">Wähle beim nächsten Versuch zuerst eine Antwort.</span>';
       }
-      fb.classList.add('show');sel.disabled=true;hint.disabled=true;
+      fb.classList.add('show');hint.disabled=true;
     });
-    var pct=Math.round(correct/ss.length*100);saveProgress(currentSet,pct,chosen,correct);var qid='q'+META[currentSet].q;
+    var pct=Math.round(correct/cards.length*100);saveProgress(currentSet,pct,chosen,correct);var qid='q'+META[currentSet].q;
     if(typeof saveQuestScore==='function')saveQuestScore(qid,pct);
     var xp=typeof awardQuestImprovementXP==='function'?awardQuestImprovementXP(qid,correct,5):0;
-    scoreBox.textContent=correct+' / '+ss.length+' richtig ('+pct+' %)'+(xp?' · +'+xp+' XP':'');scoreBox.style.color=scoreColor(pct);attemptFinished=true;freshAttempt=false;checkBtn.textContent='↻ Neuer Versuch';renderSummary();updateCompletion();
+    scoreBox.textContent=correct+' / '+cards.length+' richtig ('+pct+' %)'+(xp?' · +'+xp+' XP':'');scoreBox.style.color=scoreColor(pct);attemptFinished=true;freshAttempt=false;checkBtn.textContent='↻ Neuer Versuch';renderSummary();updateCompletion();
   }
 
   function renderSummary(){var d=loadProgress();summaryRows.innerHTML='';SETS.forEach(function(key){var m=META[key],s=d[key],row=document.createElement('div'),q=document.createElement('div'),name=document.createElement('div'),vals=document.createElement('div');row.className='summary-row';q.className='summary-q';q.textContent='Q'+m.q;q.style.color=m.theme.accent;name.textContent=m.title.replace(/^Quest \d+ – /,'');vals.className='summary-vals';vals.textContent=s?s.first+' % → '+s.best+' %':'noch offen';vals.style.color=s?scoreColor(s.best):'var(--text-muted)';row.appendChild(q);row.appendChild(name);row.appendChild(vals);summaryRows.appendChild(row);});}
