@@ -428,7 +428,7 @@ function weightedSample(pool,count){
 function favoriteShareIds(){return shortcuts.filter(s=>state.favorites.has(s.id)).map(s=>s.id)}
 function encodeFavoriteIds(ids){return ids.map(id=>SHARE_CODES[id]).filter(Boolean).join('')}
 function decodeFavoriteCode(code){const seen=new Set();return [...String(code||'')].map(c=>SHARE_IDS[c]).filter(id=>id&&!seen.has(id)&&seen.add(id))}
-function favoriteShareUrl(ids=favoriteShareIds()){const u=new URL(location.href);u.search='';u.hash=`f=${encodeFavoriteIds(ids)}`;return u.toString()}
+function favoriteShareUrl(ids=favoriteShareIds()){return `https://ib2026.vercel.app/tk2/tasten.html#f=${encodeFavoriteIds(ids)}`}
 function updateFavoriteShareUI(){const ids=favoriteShareIds(),bar=$('#favoriteSharebar');if(!bar)return;bar.hidden=!ids.length}
 async function copyShareText(text){try{await navigator.clipboard.writeText(text);toast('Link kopiert ✓')}catch(_){const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();toast('Link kopiert ✓')}}
 function copyFavoriteShareLink(){const ids=favoriteShareIds();if(!ids.length)return;copyShareText(favoriteShareUrl(ids))}
