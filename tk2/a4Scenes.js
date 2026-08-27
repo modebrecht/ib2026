@@ -1,7 +1,7 @@
 (function(){
   'use strict';
 
-  var counter=0,LOOP_MS=4300,activeController=null;
+  var counter=0,LOOP_MS=4300;
   var CONFIG={
     bold:{keys:['Ctrl','B'],label:'Fett formatieren',family:'doc'},
     newDoc:{keys:['Ctrl','N'],label:'Neues Dokument',family:'doc'},
@@ -52,8 +52,8 @@
     function applyEnd(){transition(win,'none');if(isMax)transform(win,'translate(-61 -31) scale(1.5 1.42)');else{transform(win,'translate(126 186) scale(.20 .12)');opacity(win,.18);}opacity(direction,1);opacity(toast,1);}
     function showEndState(){reset();applyEnd();}
     function run(){if(reduceMotion){showEndState();return;}reset();running=true;later(350,function(){opacity(direction,1);pressKeys();});later(930,function(){transition(win,'transform 650ms cubic-bezier(.2,.8,.2,1),opacity 520ms ease');if(isMax)transform(win,'translate(-61 -31) scale(1.5 1.42)');else{transform(win,'translate(126 186) scale(.20 .12)');opacity(win,.18);}});later(1650,function(){opacity(toast,1);});later(3900,function(){running=false;if(active&&autoLoop)run();});}
-    function play(){active=true;if(activeController&&activeController!==controller)activeController.setActive(false);activeController=controller;run();}
-    function setActive(v){active=Boolean(v);if(!active){if(activeController===controller)activeController=null;clearTimers();running=false;return;}if(activeController&&activeController!==controller)activeController.setActive(false);activeController=controller;if(!running)run();}
+    function play(){active=true;run();}
+    function setActive(v){active=Boolean(v);if(!active){clearTimers();running=false;return;}if(!running)run();}
     controller={play:play,reset:reset,setActive:setActive};reset();if(active)setActive(true);return controller;
   }
 
@@ -122,8 +122,8 @@
       later(actionAt,applyEnd);
     }
     function run(){if(reduceMotion){showEndState();return;}reset();running=true;playMode();later(LOOP_MS,function(){running=false;if(active&&autoLoop)run();});}
-    function play(){active=true;if(activeController&&activeController!==controller)activeController.setActive(false);activeController=controller;run();}
-    function setActive(v){active=Boolean(v);if(!active){if(activeController===controller)activeController=null;clearTimers();running=false;return;}if(activeController&&activeController!==controller)activeController.setActive(false);activeController=controller;if(!running)run();}
+    function play(){active=true;run();}
+    function setActive(v){active=Boolean(v);if(!active){clearTimers();running=false;return;}if(!running)run();}
     controller={play:play,reset:reset,setActive:setActive};
     reset();if(active)setActive(true);return controller;
   }
