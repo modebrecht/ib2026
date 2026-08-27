@@ -57,7 +57,6 @@ p.write_text(s,encoding='utf-8')
 p=Path('tk2/altGrScene.js')
 s=p.read_text(encoding='utf-8')
 s=s.replace('  var CHORD_HOLD_MS=500;','  var CHORD_HOLD_MS=window.tk2SceneKeycaps?window.tk2SceneKeycaps.chordHoldMs:800;',1)
-assert 'chordHoldMs:800' not in s
 assert 'window.tk2SceneKeycaps?window.tk2SceneKeycaps.chordHoldMs:800' in s
 p.write_text(s,encoding='utf-8')
 
