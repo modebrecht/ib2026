@@ -10,7 +10,6 @@
   function parseProgress(){
     var progress;
     try{progress=JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');}catch(e){progress={};}
-    // Alte Pizza-Daten (first/second/q7) zählen bewusst nicht mehr als A3-Abschluss.
     if(!progress||progress.schemaVersion!==SCHEMA_VERSION)return freshProgress();
     if(!Array.isArray(progress.choices)||progress.choices.length!==3)progress.choices=freshProgress().choices;
     if(typeof progress.onedriveStored!=='boolean')progress.onedriveStored=false;
@@ -41,8 +40,6 @@
   }
   function isCompleted(progress){return progress.downloaded===true&&progress.onedriveStored===true&&choicesComplete(progress);}
 
-  // q7 bleibt nur als technischer Kompatibilitätsmarker für die alte Root-Anzeige.
-  // Ein historischer Pizza-q7 wird entfernt; 100 wird nur für die NEUE A3 vergeben.
   function syncCompatibilityScore(completed){
     try{
       var scores=JSON.parse(localStorage.getItem(QUEST_SCORES_KEY)||'{}');
@@ -52,42 +49,16 @@
     }catch(e){}
   }
 
-  function ensureOneDriveStep(progress){
-    if(byId('onedrive-step'))return;
-    var download=byId('theory-download');
-    if(!download)return;
-
-    var style=document.createElement('style');
-    style.id='a3-onedrive-style';
-    style.textContent=''
-      +'.onedrive-step{max-width:650px;margin:16px auto 0;padding:14px 16px;border-radius:14px;border:1px solid rgba(96,165,250,.28);background:rgba(37,99,235,.09);display:flex;gap:12px;align-items:flex-start;text-align:left;cursor:pointer}'
-      +'.onedrive-step input{width:20px;height:20px;margin:2px 0 0;accent-color:#6366f1;flex:0 0 auto}'
-      +'.onedrive-step strong{display:block;color:#dbeafe;font-size:.98rem}'
-      +'.onedrive-step small{display:block;margin-top:4px;color:#94a3b8;line-height:1.45;font-size:.86rem}'
-      +'.onedrive-step:has(input:checked){border-color:rgba(16,185,129,.42);background:rgba(16,185,129,.08)}'
-      +'.onedrive-step:has(input:disabled){opacity:.62;cursor:not-allowed}';
-    document.head.appendChild(style);
-
-    var step=document.createElement('label');
-    step.className='onedrive-step';
-    step.id='onedrive-step';
-    step.innerHTML='<input id="onedrive-confirm" type="checkbox"><span><strong>PDF in OneDrive abgelegt</strong><small>Erstelle in deinem OneDrive den Ordner „IB“ (falls er noch nicht existiert) und speichere die PDF dort.</small></span>';
-    download.insertAdjacentElement('afterend',step);
-
-    var checkbox=byId('onedrive-confirm');
-    checkbox.checked=progress.onedriveStored===true;
-    checkbox.disabled=progress.downloaded!==true;
-    checkbox.addEventListener('change',function(){
-      progress.onedriveStored=checkbox.checked;
-      evaluate(progress);
-    });
-  }
-
   function syncOneDriveStep(progress){
-    var checkbox=byId('onedrive-confirm');
+    var checkbox=byId('onedrive-confirm'),status=byId('onedrive-status');
     if(!checkbox)return;
     checkbox.checked=progress.onedriveStored===true;
     checkbox.disabled=progress.downloaded!==true;
+    if(status){
+      if(progress.onedriveStored)status.textContent='Gesichert ✓';
+      else if(progress.downloaded)status.textContent='Setze den Haken, sobald die PDF im Ordner „IB“ liegt.';
+      else status.textContent='Nach dem Download kannst du diesen Schritt bestätigen.';
+    }
   }
 
   function renderCompleted(progress){
@@ -95,10 +66,10 @@
     if(card)card.classList.toggle('is-visible',progress.completed===true);
     syncOneDriveStep(progress);
     if(hint){
-      if(progress.completed)hint.textContent='✓ Merkblatt im OneDrive-Ordner „IB“ gesichert und drei persönliche Kürzel selbst eingetragen.';
-      else if(!progress.downloaded)hint.textContent='Lade zuerst das Merkblatt herunter. Lege es danach im OneDrive-Ordner „IB“ ab und trage drei Kürzel ein.';
-      else if(!progress.onedriveStored)hint.textContent='PDF heruntergeladen ✓ Lege sie jetzt im OneDrive-Ordner „IB“ ab und bestätige die Checkbox.';
-      else hint.textContent='OneDrive erledigt ✓ Schreibe drei unterschiedliche Kürzel selbst auf und begründe jedes kurz (mind. 5 Zeichen).';
+      if(progress.completed)hint.textContent='✓ Drei persönliche Kürzel eingetragen und Merkblatt gesichert.';
+      else if(!choicesComplete(progress))hint.textContent='Trage drei unterschiedliche Kürzel ein und begründe jedes kurz.';
+      else if(!progress.downloaded)hint.textContent='Deine drei Kürzel sind vollständig ✓ Lade jetzt noch das Merkblatt herunter.';
+      else if(!progress.onedriveStored)hint.textContent='Deine drei Kürzel sind vollständig ✓ Bestätige unten noch die Ablage in OneDrive.';
     }
   }
 
@@ -119,9 +90,7 @@
 
   document.addEventListener('DOMContentLoaded',function(){
     var progress=parseProgress();
-    // Beim ersten Öffnen wird jede alte Pizza-Struktur durch das neue Schema ersetzt.
     saveProgress(progress);
-    ensureOneDriveStep(progress);
 
     document.querySelectorAll('.shortcut-choice').forEach(function(input,index){
       input.value=(progress.choices[index]&&progress.choices[index].shortcut)||'';
@@ -137,6 +106,12 @@
         progress.choices[index].reason=input.value;
         evaluate(progress);
       });
+    });
+
+    var checkbox=byId('onedrive-confirm');
+    if(checkbox)checkbox.addEventListener('change',function(){
+      progress.onedriveStored=checkbox.checked;
+      evaluate(progress);
     });
 
     var download=byId('theory-download');
