@@ -50,8 +50,8 @@
     function opacity(el,val){if(el)el.setAttribute('opacity',String(val));}
     function transform(el,val){if(el)el.setAttribute('transform',val);}
     function transition(el,val){if(el)el.style.transition=reduceMotion?'none':val;}
-    function keyDown(key){var base=key.getAttribute('data-base')||'';transition(key,'transform 150ms ease,filter 150ms ease');transform(key,base+' translate(0 4)');key.style.filter='drop-shadow(0 0 8px rgba(96,165,250,.8))';}
-    function keyUp(key){var base=key.getAttribute('data-base')||'';transition(key,'transform 140ms ease,filter 140ms ease');transform(key,base);key.style.filter='';}
+    function keyDown(key){window.tk2SceneKeycaps.down(key,transition,'utility');}
+    function keyUp(key){window.tk2SceneKeycaps.up(key);}
     function reset(){clearTimers();running=false;transition(win,'none');opacity(win,1);opacity(direction,0);opacity(toast,0);transform(win,isMax?'translate(0 0) scale(1)':'translate(-38 -20) scale(1.24 1.16)');keys.forEach(keyUp);}
     function applyEnd(){transition(win,'none');if(isMax)transform(win,'translate(-61 -31) scale(1.5 1.42)');else{transform(win,'translate(126 186) scale(.20 .12)');opacity(win,.18);}opacity(direction,1);opacity(toast,1);}
     function showEndState(){reset();applyEnd();}

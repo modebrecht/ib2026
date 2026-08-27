@@ -122,15 +122,7 @@
     function usesClipboard(){ return mode==='copy'||mode==='cut'||mode==='paste'||mode==='pastePlain'; }
 
     function pressKeys(){
-      $$('.tk2-key').forEach(function(key, i){
-        later(i*150, function(){
-          var base = key.getAttribute('data-base');
-          trans(key,'transform 160ms ease, filter 160ms ease');
-          key.setAttribute('transform', base + ' translate(0 4)');
-          key.style.filter='drop-shadow(0 0 8px rgba(56,189,248,.75))';
-          later(240,function(){ key.setAttribute('transform',base); key.style.filter=''; });
-        });
-      });
+      window.tk2SceneKeycaps.pressSequence($$('.tk2-key'),later,trans,'doc');
     }
 
     function reset(){
@@ -146,7 +138,7 @@
       opacity($('.status-toast'),0); opacity($('.saved-badge'),0); opacity($('.unsaved-dot'),1);
       opacity($('.history-arrow'),0); $('.history-arrow').setAttribute('transform','translate(427 205) scale(1 1)');
       opacity($('.history-chip'),0); opacity($('.history-text'),0);
-      $$('.tk2-key').forEach(function(k){k.style.transition='none';k.style.filter='';k.setAttribute('transform',k.getAttribute('data-base'));});
+      window.tk2SceneKeycaps.resetMany($$('.tk2-key'));
     }
 
     function showTransfer(){

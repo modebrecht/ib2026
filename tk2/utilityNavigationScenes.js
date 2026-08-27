@@ -81,20 +81,12 @@
     function opacity(el,val){if(el)el.setAttribute('opacity',String(val));}
 
     function pressKeys(){
-      $$('.tk2-u-key').forEach(function(k,i){
-        later(i*115,function(){
-          var base=k.getAttribute('data-base');
-          trans(k,'transform 100ms ease, filter 100ms ease');
-          k.setAttribute('transform',base+' translate(0 4)');
-          k.style.filter='drop-shadow(0 0 8px rgba(56,189,248,.75))';
-          later(170,function(){k.setAttribute('transform',base);k.style.filter='';});
-        });
-      });
+      window.tk2SceneKeycaps.pressSequence($$('.tk2-u-key'),later,trans,'utility');
     }
 
     function reset(){
       clearTimers();running=false;
-      $$('.tk2-u-key').forEach(function(k){k.style.transition='none';k.style.filter='';k.setAttribute('transform',k.getAttribute('data-base'));});
+      window.tk2SceneKeycaps.resetMany($$('.tk2-u-key'));
       trans($('.doc-strip'),'none');trans($('.scroll-thumb'),'none');trans($('.caret-start'),'none');trans($('.caret-end'),'none');
       $('.doc-strip').setAttribute('transform',startTransform);$('.scroll-thumb').setAttribute('y',startThumb);
       opacity($('.caret-start'),toTop?0:1);opacity($('.caret-end'),toTop?1:0);opacity($('.toast'),0);
