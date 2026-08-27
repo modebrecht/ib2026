@@ -148,14 +148,15 @@ test.describe('TK2 production smoke: A1-A6', () => {
     expectNoPageErrors(errors);
   });
 
-  test('A3: downloads real one-page DOCX, saves three shortcuts and persists Done', async ({ page }) => {
+  test('A3: downloads real theory PDF, saves three shortcuts and persists Done', async ({ page }) => {
     const errors = collectPageErrors(page);
     await openTk(page, '/tk2/A3.html');
 
     await expect(page).toHaveTitle(/A3: Tastenkürzel – Merkblatt/);
     await expect(page.locator('#completion-card')).toBeHidden();
+    await expect(page.locator('#theory-download')).toHaveAttribute('href', 'Tastenkombinationen_Theorie.pdf');
 
-    await downloadFrom(page, '#theory-download', 'docx', 'PK', 'Tastenkombinationen_A3.docx');
+    await downloadFrom(page, '#theory-download', 'pdf', '%PDF-', 'Tastenkombinationen_Theorie.pdf');
     let progress = await page.evaluate(() => JSON.parse(localStorage.getItem('tk_a3_progress_v1') || '{}'));
     expect(progress.schemaVersion).toBe(2);
     expect(progress.downloaded).toBe(true);
