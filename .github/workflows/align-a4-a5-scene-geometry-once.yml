@@ -22,11 +22,11 @@ jobs:
           from pathlib import Path
           s=Path('tk2/a4Scenes.js').read_text(encoding='utf-8')
           a5=Path('tk2/A5.html').read_text(encoding='utf-8')
-          assert 'viewBox=\\"0 0 680 320\\"' not in s
-          assert s.count('viewBox=\\"0 0 560 320\\"') >= 2
+          assert 'viewBox="0 0 680 320"' not in s
+          assert s.count('viewBox="0 0 560 320"') >= 2
           assert 'keyX=Math.max(404,540-window.tk2SceneKeycaps.rowWidth(cfg.keys,keyProfile))' in s
-          assert 'transform=\\"translate(404 225)\\"' in s
-          assert 'transform=\\"translate(392 20)\\"' in s
+          assert 'transform="translate(404 225)"' in s
+          assert 'transform="translate(392 20)"' in s
           assert '<script src="a4Scenes.js"></script>' in a5
           print('A4/A5 geometry checks OK')
           PY
