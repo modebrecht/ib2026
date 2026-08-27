@@ -1,0 +1,39 @@
+name: Weight tasten Memory
+on:
+  push:
+    branches: [dev]
+    paths:
+      - '.github/workflows/weight-tasten-memory-once.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 0
+      - name: Apply Memory weighting
+        run: python .github/scripts/weight_tasten_memory.py
+      - name: Check JavaScript
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path('tk2/tasten.html').read_text()
+          scripts=re.findall(r'<script(?:\s[^>]*)?>(.*?)</script>',s,re.S)
+          Path('/tmp/tasten.js').write_text('\n'.join(scripts),encoding='utf-8')
+          PY
+          node --check /tmp/tasten.js
+      - name: Verify Memory weighting
+        run: |
+          grep -q 'const selected=weightedSample(pool,pairs)' tk2/tasten.html
+          grep -q 'selected.forEach(s=>{markSeen(s.id);' tk2/tasten.html
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tk2/tasten.html
+          git commit -m "tk2: weight memory toward weak shortcuts"
+          git push origin dev
