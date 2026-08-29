@@ -1,0 +1,51 @@
+name: Sync HW Fleissnote wording
+
+on:
+  push:
+    branches: [dev]
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    if: github.event.head_commit.message != 'Sync HW Fleissnote with TK2'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: dev
+      - name: Update HW Fleissnote copy
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          old = '''                <div><strong>1 P</strong> pro abgegebener Aufgabe</div>
+                <div><strong>+ bis 1 P</strong> für Vollständigkeit / Qualität der Bearbeitung</div>
+                <div style="margin-top: 6px;"><strong>Unbegrenzt viele Versuche:</strong> Du darfst Aufgaben verbessern und erneut abgeben.</div>
+                <div><strong>Nur das beste Resultat pro Aufgabe zählt</strong> für die Fleissnote.</div>
+                <div style="margin-top: 6px; color: var(--muted);">Maximal 2 P pro Aufgabe · bei A1–A14 maximal 28 P.</div>'''
+          new = '''                <div><strong>1 P</strong> = Abgabe / Nachweis im OneDrive-Ordner <strong>IB</strong></div>
+                <div><strong>+ bis 1 P</strong> für Vollständigkeit / Qualität der Bearbeitung</div>
+                <div>Bei Prozentresultaten: <strong>bestes Resultat ÷ 100</strong> (z. B. 80 % = +0.80 P · 100 % = +1.00 P).</div>
+                <div>Ohne Prozentwert gilt: <strong>vollständig erledigt = +1 P</strong>.</div>
+                <div style="margin-top: 6px;"><strong>Unbegrenzt viele Versuche:</strong> Du darfst Aufgaben verbessern und erneut abgeben.</div>
+                <div><strong>Nur das beste Resultat pro Aufgabe zählt</strong> für die Fleissnote.</div>
+                <div style="margin-top: 6px; color: var(--muted);">Maximal 2 P pro A-Aufgabe · A1–A14 = maximal 28 P.</div>'''
+          old2 = '''          <span>Lade die <strong>PDFs in deinen OneDrive-Ordner hoch</strong> und teile ihn mit deiner Informatiklehrperson</span>'''
+          new2 = '''          <span>Lege die <strong>Datei oder den Nachweis im OneDrive-Ordner „IB“</strong> ab. Erstelle den Ordner falls nötig und teile ihn <strong>einmal</strong> mit deiner Informatiklehrperson.</span>'''
+          if old not in s:
+              raise SystemExit('Fleissnote block not found')
+          if old2 not in s:
+              raise SystemExit('OneDrive copy not found')
+          s = s.replace(old, new, 1).replace(old2, new2, 1)
+          p.write_text(s, encoding='utf-8')
+          PY
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Sync HW Fleissnote with TK2"
+          git push origin dev
