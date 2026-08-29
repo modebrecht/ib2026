@@ -1,4 +1,4 @@
-name: HW Fleissnote two lines once
+name: HW Fleissnote wording once
 
 on:
   push:
@@ -19,14 +19,14 @@ jobs:
           ref: dev
           fetch-depth: 1
 
-      - name: Split max points copy into two lines
+      - name: Refine max points wording
         run: |
           python3 <<'PY'
           from pathlib import Path
           p = Path('index.html')
           text = p.read_text(encoding='utf-8')
-          old = '<div style="margin-top: 6px; color: var(--muted);">Maximal 2 P pro A-Aufgabe · A1–A14 = maximal 28 P.</div>'
-          new = '<div style="margin-top: 6px; color: var(--muted);">Maximal 2 P pro Aufgabe</div>\n                <div style="color: var(--muted);">A1–A14 = maximal 28 P</div>'
+          old = '<div>Maximal 2 P pro A-Aufgabe</div>'
+          new = '<div>Maximal 2 P pro Aufgabe</div>'
           count = text.count(old)
           if count != 1:
               raise SystemExit(f'Expected exactly one match, found {count}')
@@ -38,5 +38,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add index.html
-          git commit -m "Refine HW Fleissnote max points copy"
+          git commit -m "Refine HW Fleissnote wording"
           git push origin dev
