@@ -39,8 +39,8 @@ jobs:
           npm install --no-save @playwright/test
           npx playwright install --with-deps chromium
 
-      - name: Run A1-A14 production smoke
-        run: npx playwright test e2e/hw-a1-a14.spec.js --browser=chromium --workers=1 --reporter=line,html
+      - name: Run A1-A14 production smoke + score history + persistence contract
+        run: npx playwright test e2e/hw-a1-a14.spec.js e2e/hw-score-history-fast.spec.js e2e/hw-persistence-contract.spec.js --browser=chromium --workers=1 --reporter=line,html
 
       - name: Upload failure evidence
         if: failure()
