@@ -172,6 +172,40 @@ body:has(#sceneShell) #sceneShell .text-center > p:last-of-type {
   transition: color .2s ease;
 }
 
+.dark #shop .device-card.correct[data-id="campus14"] .spec-item:nth-child(6) .spec-label,
+.dark #shop .device-card.correct[data-id="campus14"] .spec-item:nth-child(7) .spec-label,
+.dark #shop .device-card.correct[data-id="gametower"] .spec-item:nth-child(2) .spec-label,
+.dark #shop .device-card.correct[data-id="gametower"] .spec-item:nth-child(3) .spec-label,
+.dark #shop .device-card.correct[data-id="gametower"] .spec-item:nth-child(4) .spec-label,
+.dark #shop .device-card.correct[data-id="creator16"] .spec-item:nth-child(2) .spec-label,
+.dark #shop .device-card.correct[data-id="creator16"] .spec-item:nth-child(3) .spec-label,
+.dark #shop .device-card.correct[data-id="creator16"] .spec-item:nth-child(4) .spec-label,
+.dark #shop .device-card.correct[data-id="creator16"] .spec-item:nth-child(5) .spec-label,
+.dark #shop .device-card.correct[data-id="flexpen"] .spec-item:nth-child(5) .spec-label,
+.dark #shop .device-card.correct[data-id="flexpen"] .spec-item:nth-child(6) .spec-label,
+.dark #shop .device-card.correct[data-id="flexpen"] .spec-item:nth-child(7) .spec-label,
+.dark #shop .device-card.correct[data-id="feather13"] .spec-item:nth-child(6) .spec-label,
+.dark #shop .device-card.correct[data-id="feather13"] .spec-item:nth-child(7) .spec-label {
+  color: #86efac;
+}
+
+.dark #shop .device-card.correct[data-id="campus14"] .spec-item:nth-child(6) .spec-value,
+.dark #shop .device-card.correct[data-id="campus14"] .spec-item:nth-child(7) .spec-value,
+.dark #shop .device-card.correct[data-id="gametower"] .spec-item:nth-child(2) .spec-value,
+.dark #shop .device-card.correct[data-id="gametower"] .spec-item:nth-child(3) .spec-value,
+.dark #shop .device-card.correct[data-id="gametower"] .spec-item:nth-child(4) .spec-value,
+.dark #shop .device-card.correct[data-id="creator16"] .spec-item:nth-child(2) .spec-value,
+.dark #shop .device-card.correct[data-id="creator16"] .spec-item:nth-child(3) .spec-value,
+.dark #shop .device-card.correct[data-id="creator16"] .spec-item:nth-child(4) .spec-value,
+.dark #shop .device-card.correct[data-id="creator16"] .spec-item:nth-child(5) .spec-value,
+.dark #shop .device-card.correct[data-id="flexpen"] .spec-item:nth-child(5) .spec-value,
+.dark #shop .device-card.correct[data-id="flexpen"] .spec-item:nth-child(6) .spec-value,
+.dark #shop .device-card.correct[data-id="flexpen"] .spec-item:nth-child(7) .spec-value,
+.dark #shop .device-card.correct[data-id="feather13"] .spec-item:nth-child(6) .spec-value,
+.dark #shop .device-card.correct[data-id="feather13"] .spec-item:nth-child(7) .spec-value {
+  color: #bbf7d0;
+}
+
 @keyframes a11ReasonGlow {
   0%, 100% { transform: scale(1); box-shadow: inset 0 0 0 1px #86efac, 0 0 0 0 rgba(34, 197, 94, 0); }
   45% { transform: scale(1.025); box-shadow: inset 0 0 0 1px #4ade80, 0 0 0 5px rgba(34, 197, 94, .14); }
