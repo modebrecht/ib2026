@@ -7,6 +7,7 @@ on:
       - dev
     paths:
       - 'hw/create_p1_docx.py'
+      - 'hw/add_p1_bonus.py'
       - '.github/workflows/build-p1-docx.yml'
 
 permissions:
@@ -28,7 +29,9 @@ jobs:
         run: pip install python-docx
 
       - name: Build DOCX
-        run: python hw/create_p1_docx.py
+        run: |
+          python hw/create_p1_docx.py
+          python hw/add_p1_bonus.py
 
       - name: Commit generated DOCX
         run: |
