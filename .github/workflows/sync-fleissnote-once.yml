@@ -1,10 +1,49 @@
-name: Sync HW Fleissnote once (disabled)
+name: Declare HW Fleissnote rules once
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - dev
+    paths:
+      - '.github/workflows/sync-fleissnote-once.yml'
+
+permissions:
+  contents: write
 
 jobs:
-  disabled:
+  sync:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Fleissnote sync already completed."
+      - uses: actions/checkout@v4
+      - name: Add Fleissnote rules
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('index.html')
+          s = path.read_text(encoding='utf-8')
+
+          marker = '''          <div class="kachel-body">\n            <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 14px; width: 100%;">'''
+          start = s.find('id="fleissnoteKachel"')
+          if start < 0:
+              raise SystemExit('Fleissnote section not found')
+          pos = s.find(marker, start)
+          if pos < 0:
+              raise SystemExit('Fleissnote body marker not found')
+
+          rules = '''\n\n              <div style="padding: 14px; background: var(--blue-soft); border: 1px solid rgba(37,99,235,.22); border-radius: 10px; color: var(--text); font-size: calc(13px * var(--font-scale)); line-height: 1.45;">\n                <div style="font-weight: 800; color: var(--blue); margin-bottom: 8px;">So funktioniert die Fleissnote</div>\n                <div><strong>1 P</strong> pro abgegebener Aufgabe</div>\n                <div><strong>+ bis 1 P</strong> für Vollständigkeit / Qualität der Bearbeitung</div>\n                <div style="margin-top: 6px;"><strong>Unbegrenzt viele Versuche:</strong> Du darfst Aufgaben verbessern und erneut abgeben.</div>\n                <div><strong>Nur das beste Resultat pro Aufgabe zählt</strong> für die Fleissnote.</div>\n                <div style="margin-top: 6px; color: var(--muted);">Maximal 2 P pro Aufgabe · bei A1–A14 maximal 28 P.</div>\n              </div>'''
+
+          if 'So funktioniert die Fleissnote' not in s[start:]:
+              insert_at = pos + len(marker)
+              s = s[:insert_at] + rules + s[insert_at:]
+
+          path.write_text(s, encoding='utf-8')
+          PY
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git diff --cached --quiet && exit 0
+          git commit -m "Declare Fleissnote scoring rules"
+          git push
