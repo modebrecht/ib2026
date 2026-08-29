@@ -1,4 +1,4 @@
-name: Harden HW score history
+name: Verify non-destructive HW resets
 
 on:
   push:
@@ -10,68 +10,25 @@ permissions:
   contents: write
 
 jobs:
-  harden-and-verify:
+  verify-reset-storage:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
     steps:
       - name: Checkout dev
         uses: actions/checkout@v4
         with:
           ref: dev
 
-      - name: Consolidate and harden score history
+      - name: Add reset-storage regression
         run: |
           node <<'NODE'
-          const fs = require('fs');
-
-          // A11 scoring belongs in the shared score layer only. Remove the superseded
-          // A11-specific layer from the generic PDF entry point.
-          const pdfPath = 'hw/assets/js/pdf-engine.js';
-          let pdf = fs.readFileSync(pdfPath, 'utf8');
-          const oldA11Marker = '\n\n/* A11: first-attempt assessment layer.';
-          if (pdf.includes(oldA11Marker)) {
-            pdf = pdf.split(oldA11Marker)[0].trimEnd() + '\n';
-            fs.writeFileSync(pdfPath, pdf);
-          }
-
-          const scorePath = 'hw/assets/js/score-history.js';
-          let score = fs.readFileSync(scorePath, 'utf8');
-
-          score = score.replace(
-            "function n(v) { var x = Number(v); return Number.isFinite(x) ? x : null; }",
-            "function n(v) { if (v === null || v === undefined || v === '') return null; var x = Number(v); return Number.isFinite(x) ? x : null; }"
-          );
-
-          const a11StartOld = `    var score = 0;\n    var work = null;\n    try { work = JSON.parse(localStorage.getItem(workKey()) || 'null'); } catch (_) {}\n    if (work && work.active) score = Number(work.score) || 0;\n    else if (!loadHistory('', CASES.length).attempts && index >= CASES.length) { index = 0; done = []; }`;
-          const a11StartNew = `    var score = 0;\n    var work = null;\n    try { work = JSON.parse(localStorage.getItem(workKey()) || 'null'); } catch (_) {}\n    if (work) score = Math.max(0, Math.min(CASES.length, Number(work.score) || 0));\n    var history = loadHistory('', CASES.length);\n    var resumeCompleted = false;\n    var showSavedResult = false;\n    if (work && work.active) {\n      if (Array.isArray(work.done)) done = work.done.filter(function(id){return CASES.some(function(c){return c.id===id})});\n      var beforeResume = index;\n      while (index < CASES.length && done.includes(CASES[index].id)) index++;\n      if (index >= CASES.length && done.length >= CASES.length) resumeCompleted = true;\n      else if (index !== beforeResume) { render(); save(); }\n    } else if (work && work.active === false && history.attempts && index >= CASES.length) {\n      showSavedResult = true;\n    } else if (!history.attempts && index >= CASES.length) {\n      index = 0; done = []; score = 0;\n    }`;
-          if (!score.includes(a11StartOld)) throw new Error('A11 start block not found');
-          score = score.replace(a11StartOld, a11StartNew);
-
-          const finishBlock = `    finish = function () {\n      index = CASES.length;\n      var h = record(score, CASES.length, 3, '');\n      saveWork(false);\n      $('playArea').classList.add('hidden'); $('result').classList.remove('hidden');\n      $('customer').classList.add('leave'); $('speech').classList.remove('open');\n      var result = $('result');\n      var title = result.querySelector('h2'); if (title) title.textContent = score >= 3 ? 'Quest bestanden.' : 'Noch nicht bestanden.';\n      var desc = result.querySelector('p'); if (desc) desc.textContent = score >= 3 ? 'Du hast Kundenbedürfnisse und technische Daten sinnvoll verknüpft.' : 'Nutze die hervorgehobenen technischen Angaben und starte eine neue Runde.';\n      var big = result.querySelector('.text-5xl'); if (big) big.textContent = score + ' / 5';\n      var small = big && big.nextElementSibling; if (small) small.textContent = 'im ersten Klick richtig · Best ' + h.bestScore + ' / 5';\n      updateProgress(); renderPanel('', CASES.length, false); save();\n    };`;
-          const finishNew = `    function showA11Result(h) {\n      $('playArea').classList.add('hidden'); $('result').classList.remove('hidden');\n      $('customer').classList.add('leave'); $('speech').classList.remove('open');\n      var result = $('result');\n      var title = result.querySelector('h2'); if (title) title.textContent = score >= 3 ? 'Quest bestanden.' : 'Noch nicht bestanden.';\n      var desc = result.querySelector('p'); if (desc) desc.textContent = score >= 3 ? 'Du hast Kundenbedürfnisse und technische Daten sinnvoll verknüpft.' : 'Nutze die hervorgehobenen technischen Angaben und starte eine neue Runde.';\n      var big = result.querySelector('.text-5xl'); if (big) big.textContent = score + ' / 5';\n      var small = big && big.nextElementSibling; if (small) small.textContent = 'im ersten Klick richtig · Best ' + (h.bestScore == null ? '–' : h.bestScore) + ' / 5';\n      updateProgress(); renderPanel('', CASES.length, false);\n    }\n\n    finish = function () {\n      index = CASES.length;\n      var h = record(score, CASES.length, 3, '');\n      saveWork(false);\n      showA11Result(h);\n      save();\n    };`;
-          if (!score.includes(finishBlock)) throw new Error('A11 finish block not found');
-          score = score.replace(finishBlock, finishNew);
-
-          const a11EndOld = `    if (!work || !work.active) { score = 0; }\n    renderPanel('', CASES.length, false); updateProgress();`;
-          const a11EndNew = `    if (resumeCompleted) { finish(); return; }\n    if (showSavedResult) { showA11Result(history); return; }\n    if (!work) score = 0;\n    renderPanel('', CASES.length, false); updateProgress();`;
-          if (!score.includes(a11EndOld)) throw new Error('A11 end block not found');
-          score = score.replace(a11EndOld, a11EndNew);
-          fs.writeFileSync(scorePath, score);
-
-          // Add regression coverage for null display + reload integrity.
-          const testPath = 'e2e/hw-score-history-fast.spec.js';
-          let test = fs.readFileSync(testPath, 'utf8');
-          test = test.replace(
-            "expect(await a4Round(page,2)).toBe(14);await page.evaluate(()=>{document.getElementById('modal').classList.add('hidden');startQuiz()});",
-            "expect(await a4Round(page,2)).toBe(14);expect((await hist(page,16)).secondScore).toBeNull();await page.evaluate(()=>{document.getElementById('modal').classList.add('hidden');startQuiz()});"
-          );
-          const extra = `\n\ntest('A11 reload cannot award the same first attempt twice',async({page})=>{\n  await open(page,'A11');\n  await page.locator('#dialogueNext').click({force:true});\n  const firstCorrect=await page.evaluate(()=>CASES[index].correct);\n  await page.locator(\`.device-card[data-id="\${firstCorrect}"]\`).click();\n  expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('hw_score_work_A11')).score)).toBe(1);\n  await page.reload({waitUntil:'domcontentloaded'});\n  await page.waitForFunction(()=>window.__scoreHistoryPage==='A11');\n  expect(await page.evaluate(()=>index)).toBe(1);\n  expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('hw_score_work_A11')).score)).toBe(1);\n  for(let i=1;i<5;i++){\n    await page.locator('#dialogueNext').click({force:true});\n    const correct=await page.evaluate(()=>CASES[index].correct);\n    await page.locator(\`.device-card[data-id="\${correct}"]\`).click();\n    await page.locator('#nextBtn').click();\n    await page.waitForFunction(prev=>index>prev||!document.getElementById('result')?.classList.contains('hidden'),i,{timeout:3000});\n  }\n  await page.locator('#result').waitFor({state:'visible'});\n  let h=await hist(page,5);expect(h.firstScore).toBe(5);expect(h.attempts).toBe(1);\n  await page.reload({waitUntil:'domcontentloaded'});\n  await page.waitForFunction(()=>window.__scoreHistoryPage==='A11');\n  await page.locator('#result').waitFor({state:'visible'});\n  await expect(page.locator('#result .text-5xl')).toHaveText('5 / 5');\n  h=await hist(page,5);expect(h.firstScore).toBe(5);expect(h.attempts).toBe(1);\n});\n\ntest('A12 reload preserves a locked first selection',async({page})=>{\n  await open(page,'A12');\n  const first=await page.evaluate(()=>({id:C[0].id,category:C[0].category}));\n  const wrong=other(first.category,['av','data','network','power']);\n  const sel=page.locator(\`#choice_\${first.id}\`);\n  await sel.selectOption(wrong);await expect(sel).toBeDisabled();\n  await page.reload({waitUntil:'domcontentloaded'});\n  await page.waitForFunction(()=>window.__scoreHistoryPage==='A12');\n  const reloaded=page.locator(\`#choice_\${first.id}\`);\n  await expect(reloaded).toBeDisabled();await expect(reloaded).toHaveValue(wrong);\n  expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('hw_score_work_A12')).answeredIds.length)).toBe(1);\n  const cs=await page.evaluate(()=>C.slice(1).map(x=>({id:x.id,category:x.category})));\n  for(const x of cs){await page.locator(\`#choice_\${x.id}\`).selectOption(x.category);}\n  await page.locator('#result').waitFor({state:'visible'});\n  const h=await hist(page,12);expect(h.firstScore).toBe(11);expect(h.attempts).toBe(1);\n});\n`;
-          if (!test.includes("A11 reload cannot award the same first attempt twice")) test += extra;
-          fs.writeFileSync(testPath, test);
+          const fs=require('fs');
+          const p='e2e/hw-score-history-fast.spec.js';
+          let s=fs.readFileSync(p,'utf8');
+          const test=`\n\ntest('reset buttons never delete localStorage keys',async({page})=>{\n  for(const code of ['A1','A4','A8','A9','A10','A11','A12','A14']){\n    await open(page,code);\n    await page.evaluate(()=>{\n      window.__storageDeletes=[];\n      window.__storageClears=0;\n      const proto=Storage.prototype;\n      if(!proto.__scoreAuditRemove){\n        proto.__scoreAuditRemove=proto.removeItem;\n        proto.__scoreAuditClear=proto.clear;\n      }\n      proto.removeItem=function(key){window.__storageDeletes.push(String(key));};\n      proto.clear=function(){window.__storageClears++;};\n    });\n    const reset=page.locator('button[title="Zurücksetzen"]').first();\n    await expect(reset).toBeVisible();\n    page.once('dialog',d=>d.accept());\n    await reset.click();\n    await page.waitForTimeout(80);\n    const audit=await page.evaluate(()=>({deletes:window.__storageDeletes.slice(),clears:window.__storageClears}));\n    expect(audit.deletes,code+' removeItem calls').toEqual([]);\n    expect(audit.clears,code+' clear calls').toBe(0);\n  }\n});\n`;
+          if(!s.includes("reset buttons never delete localStorage keys"))s+=test;
+          fs.writeFileSync(p,s);
           NODE
-
-          node --check hw/assets/js/pdf-engine.js
-          node --check hw/assets/js/score-history.js
           node --check e2e/hw-score-history-fast.spec.js
 
       - name: Set up Node.js
@@ -90,16 +47,16 @@ jobs:
           python3 -m http.server 4173 >/tmp/ib2026-http.log 2>&1 &
           sleep 1
 
-      - name: Run complete HW and score smoke
+      - name: Run score regression suite
         env:
           BASE_URL: http://127.0.0.1:4173
-        run: npx playwright test e2e/hw-a1-a14.spec.js e2e/hw-score-history-fast.spec.js --browser=chromium --workers=1 --reporter=line
+        run: npx playwright test e2e/hw-score-history-fast.spec.js --browser=chromium --workers=1 --reporter=line
 
-      - name: Commit verified hardening
+      - name: Commit verified regression
         if: success()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add hw/assets/js/pdf-engine.js hw/assets/js/score-history.js e2e/hw-score-history-fast.spec.js
-          git commit -m "Harden HW score history reload behavior"
+          git add e2e/hw-score-history-fast.spec.js
+          git commit -m "Test non-destructive HW reset behavior"
           git push origin dev
