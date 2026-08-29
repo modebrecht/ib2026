@@ -1,35 +1,18 @@
-name: Verify non-destructive HW resets
+name: HW Score Regression Audit
 
 on:
-  push:
-    branches: [dev]
-    paths:
-      - .github/workflows/harden-score-history.yml
+  workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  verify-reset-storage:
+  score-regression:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Checkout dev
+      - name: Checkout
         uses: actions/checkout@v4
-        with:
-          ref: dev
-
-      - name: Add reset-storage regression
-        run: |
-          node <<'NODE'
-          const fs=require('fs');
-          const p='e2e/hw-score-history-fast.spec.js';
-          let s=fs.readFileSync(p,'utf8');
-          const test=`\n\ntest('reset buttons never delete localStorage keys',async({page})=>{\n  for(const code of ['A1','A4','A8','A9','A10','A11','A12','A14']){\n    await open(page,code);\n    await page.evaluate(()=>{\n      window.__storageDeletes=[];\n      window.__storageClears=0;\n      const proto=Storage.prototype;\n      if(!proto.__scoreAuditRemove){\n        proto.__scoreAuditRemove=proto.removeItem;\n        proto.__scoreAuditClear=proto.clear;\n      }\n      proto.removeItem=function(key){window.__storageDeletes.push(String(key));};\n      proto.clear=function(){window.__storageClears++;};\n    });\n    const reset=page.locator('button[title="Zurücksetzen"]').first();\n    await expect(reset).toBeVisible();\n    page.once('dialog',d=>d.accept());\n    await reset.click();\n    await page.waitForTimeout(80);\n    const audit=await page.evaluate(()=>({deletes:window.__storageDeletes.slice(),clears:window.__storageClears}));\n    expect(audit.deletes,code+' removeItem calls').toEqual([]);\n    expect(audit.clears,code+' clear calls').toBe(0);\n  }\n});\n`;
-          if(!s.includes("reset buttons never delete localStorage keys"))s+=test;
-          fs.writeFileSync(p,s);
-          NODE
-          node --check e2e/hw-score-history-fast.spec.js
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -51,12 +34,3 @@ jobs:
         env:
           BASE_URL: http://127.0.0.1:4173
         run: npx playwright test e2e/hw-score-history-fast.spec.js --browser=chromium --workers=1 --reporter=line
-
-      - name: Commit verified regression
-        if: success()
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add e2e/hw-score-history-fast.spec.js
-          git commit -m "Test non-destructive HW reset behavior"
-          git push origin dev
