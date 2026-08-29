@@ -12,7 +12,7 @@ permissions:
 jobs:
   apply-and-verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 18
     steps:
       - name: Checkout dev
         uses: actions/checkout@v4
@@ -33,16 +33,17 @@ jobs:
 
           const workflowPath = '.github/workflows/e2e-smoke-hw.yml';
           let workflow = fs.readFileSync(workflowPath, 'utf8');
-          const oldCmd = 'npx playwright test e2e/hw-a1-a14.spec.js --browser=chromium --workers=1 --reporter=line,html';
-          const newCmd = 'npx playwright test e2e/hw-a1-a14.spec.js e2e/hw-score-history.spec.js --browser=chromium --workers=1 --reporter=line,html';
-          if (workflow.includes(oldCmd)) workflow = workflow.replace(oldCmd, newCmd);
+          workflow = workflow.replace(
+            /npx playwright test e2e\/hw-a1-a14\.spec\.js(?: e2e\/hw-score-history(?:-fast)?\.spec\.js)? --browser=chromium --workers=1 --reporter=line,html/,
+            'npx playwright test e2e/hw-a1-a14.spec.js e2e/hw-score-history-fast.spec.js --browser=chromium --workers=1 --reporter=line,html'
+          );
           fs.writeFileSync(workflowPath, workflow);
           NODE
 
       - name: Syntax checks
         run: |
           node --check hw/assets/js/score-history.js
-          node --check e2e/hw-score-history.spec.js
+          node --check e2e/hw-score-history-fast.spec.js
           node --check e2e/hw-a1-a14.spec.js
 
       - name: Set up Node.js
@@ -62,10 +63,10 @@ jobs:
           echo $! >/tmp/ib2026-http.pid
           sleep 1
 
-      - name: Run complete A1-A14 smoke plus score-history E2E
+      - name: Run focused score-history E2E
         env:
           BASE_URL: http://127.0.0.1:4173
-        run: npx playwright test e2e/hw-a1-a14.spec.js e2e/hw-score-history.spec.js --browser=chromium --workers=1 --reporter=line
+        run: npx playwright test e2e/hw-score-history-fast.spec.js --browser=chromium --workers=1 --reporter=line
 
       - name: Commit verified integration and remove one-time workflow
         if: success()
