@@ -4,17 +4,6 @@
   if (!/\/tk2\/A7\.html$/i.test(location.pathname)) return;
 
   var TRAINING_KEY = 'tk_a7_training_v1';
-  var LABELS = {
-    all: 'Alle Kategorien',
-    general: 'Allgemein',
-    programs: 'Word / Programme',
-    browser: 'Browser & Tabs',
-    windows: 'Windows & Fenster',
-    altgr: 'Sonderzeichen mit AltGr',
-    favorites: 'Favoriten'
-  };
-  var ORDER = ['all', 'general', 'programs', 'browser', 'windows', 'altgr', 'favorites'];
-  var painting = false;
 
   function readTraining(){
     try {
@@ -86,103 +75,42 @@
     };
   }
 
-  function rowData(data){
-    var modes = ['challenge', 'hunt', 'memory'];
-    var ids = new Set();
-    modes.forEach(function(mode){
-      Object.keys((data.modes && data.modes[mode]) || {}).forEach(function(id){ ids.add(id); });
-    });
-
-    var ordered = ORDER.filter(function(id){ return ids.has(id); });
-    Array.from(ids).forEach(function(id){ if (ordered.indexOf(id) === -1) ordered.push(id); });
-
-    return ordered.map(function(id){
-      var challenge = runsInBucket(data.modes && data.modes.challenge && data.modes.challenge[id]);
-      var hunt = runsInBucket(data.modes && data.modes.hunt && data.modes.hunt[id]);
-      var memory = runsInBucket(data.modes && data.modes.memory && data.modes.memory[id]);
-      return {
-        id: id,
-        label: LABELS[id] || id,
-        challenge: challenge,
-        hunt: hunt,
-        memory: memory,
-        total: challenge + hunt + memory
-      };
-    }).filter(function(row){ return row.total > 0; });
-  }
-
-  function escapeHtml(value){
-    return String(value).replace(/[&<>"']/g, function(c){
-      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
-    });
-  }
-
-  function missingStations(s){
-    return [s.challenge ? '' : 'Challenge', s.hunt ? '' : 'Fehlerjagd', s.memory ? '' : 'Memory'].filter(Boolean);
-  }
-
-  function renderEvidenceClear(){
-    var view = document.getElementById('view-evidence');
-    if (!view || painting) return;
-    painting = true;
-
-    try {
-      var data = readTraining();
-      var s = summary(data);
-      var rows = rowData(data);
-      var head = view.querySelector('.view-head');
-      var title = head && head.querySelector('h1');
-      var desc = head && head.querySelector('p');
-      var status = document.getElementById('evidenceStatus');
-      var grid = view.querySelector('.evidence-summary-grid');
-      var note = view.querySelector('.evidence-note');
-      var host = document.getElementById('evidenceRows');
-      var button = document.getElementById('downloadEvidencePdf');
-      var hint = document.getElementById('evidenceHint');
-
-      if (title) title.textContent = 'Trainingsnachweis';
-      if (desc) desc.textContent = 'Hier siehst du, welche Stationen du wie oft vollständig abgeschlossen hast.';
-      if (status) status.textContent = s.ready ? 'PDF bereit ✓' : s.completed + ' / 3 Stationen';
-
-      if (grid) {
-        grid.innerHTML =
-          '<div class="evidence-summary"><span>Challenge</span><strong>' + s.challenge + '× gespielt</strong></div>' +
-          '<div class="evidence-summary"><span>Fehlerjagd</span><strong>' + s.hunt + '× gespielt</strong></div>' +
-          '<div class="evidence-summary"><span>Memory</span><strong>' + s.memory + '× gespielt</strong></div>' +
-          '<div class="evidence-summary"><span>Gesamt</span><strong>' + s.total + ' Runden</strong></div>';
-      }
-
-      if (note) {
-        note.innerHTML = '<strong>PDF-Freigabe:</strong> Spiele Challenge, Fehlerjagd und Memory jeweils mindestens einmal vollständig. Danach kannst du den Trainingsnachweis herunterladen.';
-      }
-
-      if (host) {
-        host.innerHTML = rows.length ? rows.map(function(row){
-          return '<div class="evidence-row">' +
-            '<div class="set-name">' + escapeHtml(row.label) + '</div>' +
-            '<div class="evidence-cell"><span>Challenge</span><strong>' + row.challenge + '×</strong></div>' +
-            '<div class="evidence-cell"><span>Fehlerjagd</span><strong>' + row.hunt + '×</strong></div>' +
-            '<div class="evidence-cell"><span>Memory</span><strong>' + row.memory + '×</strong></div>' +
-            '<div class="evidence-cell"><span>Gesamt</span><strong>' + row.total + '×</strong></div>' +
-          '</div>';
-        }).join('') : '<div class="evidence-empty">Noch keine Runde abgeschlossen. Starte eine Challenge, Fehlerjagd oder ein Memory.</div>';
-      }
-
-      if (button) button.disabled = !s.ready;
-      if (hint) {
-        var missing = missingStations(s);
-        hint.textContent = missing.length ? 'Noch offen: ' + missing.join(', ') + '.' : 'PDF freigeschaltet · ' + s.total + ' Runden gespielt.';
-      }
-    } finally {
-      painting = false;
+  function showToast(text){
+    if (typeof window.toast === 'function') {
+      window.toast(text);
+      return;
     }
+    var el = document.getElementById('toast');
+    if (el) {
+      el.textContent = text;
+      el.classList.add('show');
+      clearTimeout(window.__a7PdfToast);
+      window.__a7PdfToast = setTimeout(function(){ el.classList.remove('show'); }, 1800);
+      return;
+    }
+    alert(text);
+  }
+
+  function renderHeaderPdfState(){
+    var s = summary(readTraining());
+    var button = document.getElementById('downloadEvidencePdf');
+    var status = document.getElementById('evidenceStatus');
+    var hint = document.getElementById('evidenceHint');
+
+    if (button) {
+      button.disabled = false;
+      button.setAttribute('aria-label', 'Trainingsnachweis als PDF herunterladen');
+      button.title = s.ready ? 'Trainingsnachweis als PDF herunterladen' : 'PDF-Freigabe anzeigen';
+    }
+    if (status) status.textContent = s.ready ? 'PDF bereit ✓' : s.completed + ' / 3 Stationen';
+    if (hint) hint.textContent = s.ready ? 'PDF freigeschaltet.' : 'Schliesse zuerst alle 3 Trainings einmal vollständig ab.';
   }
 
   function downloadClearPdf(){
     var data = readTraining();
     var s = summary(data);
     if (!s.ready) {
-      alert('Schliesse zuerst Challenge, Fehlerjagd und Memory jeweils mindestens einmal vollständig ab.');
+      showToast('PDF noch gesperrt – schliesse zuerst alle 3 Trainings einmal vollständig ab.');
       return;
     }
 
@@ -314,25 +242,32 @@
   }
 
   function install(){
-    var view = document.getElementById('view-evidence');
-    if (!view) return;
+    var placeholder = document.querySelector('.header-nav [data-view="evidence"]');
+    var button = document.getElementById('downloadEvidencePdf');
+    if (!placeholder || !button) return;
 
-    try { window.renderEvidence = renderEvidenceClear; } catch (e) {}
+    button.disabled = false;
+    button.className = placeholder.className;
+    button.dataset.view = 'evidence';
+    button.innerHTML = '<span class="header-nav-ico">▤</span><span>PDF</span>';
+    button.title = 'Trainingsnachweis als PDF herunterladen';
+    placeholder.replaceWith(button);
+
+    button.onclick = function(event){
+      event.preventDefault();
+      event.stopPropagation();
+      downloadClearPdf();
+      renderHeaderPdfState();
+    };
+
+    try { window.renderEvidence = renderHeaderPdfState; } catch (e) {}
     try { window.downloadTrainingPdf = downloadClearPdf; } catch (e) {}
 
-    var button = document.getElementById('downloadEvidencePdf');
-    if (button) button.onclick = downloadClearPdf;
+    renderHeaderPdfState();
 
-    renderEvidenceClear();
-
-    var observer = new MutationObserver(function(){
-      if (painting) return;
-      var text = view.textContent || '';
-      if (text.indexOf('Zielgenauigkeit') !== -1 || text.indexOf('Abgeschlossene Runden') !== -1) {
-        queueMicrotask(renderEvidenceClear);
-      }
+    window.addEventListener('storage', function(event){
+      if (event.key === TRAINING_KEY) renderHeaderPdfState();
     });
-    observer.observe(view, {subtree:true, childList:true, characterData:true});
   }
 
   window.addEventListener('load', install, {once:true});
