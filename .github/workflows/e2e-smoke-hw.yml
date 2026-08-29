@@ -1,10 +1,6 @@
 name: E2E Smoke HW A1-A14
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - .github/workflows/e2e-smoke-hw.yml
   workflow_dispatch:
     inputs:
       base_url:
@@ -26,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      BASE_URL: ${{ inputs.base_url || 'https://ib2026.vercel.app' }}
+      BASE_URL: ${{ inputs.base_url }}
 
     steps:
       - name: Checkout
