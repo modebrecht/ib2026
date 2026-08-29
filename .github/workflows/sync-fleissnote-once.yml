@@ -1,86 +1,10 @@
-name: Sync HW Fleissnote once
+name: Sync HW Fleissnote once (disabled)
 
-# one-time sync trigger v2
 on:
-  push:
-    branches:
-      - dev
-    paths:
-      - '.github/workflows/sync-fleissnote-once.yml'
-
-permissions:
-  contents: write
+  workflow_dispatch:
 
 jobs:
-  sync:
+  disabled:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Sync Fleissnote
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-
-          path = Path('index.html')
-          s = path.read_text(encoding='utf-8')
-
-          replacements = {
-              '>A6.PDF</strong>': '>A6.DOCX</strong>',
-              'Mainboard-Anschlüsse vollständig bearbeitet</span>': 'Mainboard-Anschlüsse im DOCX vollständig bearbeiten und Abschluss manuell bestätigen</span>',
-              '>A7.PDF</strong>': '>A7</strong>',
-              '7/7 Troubleshooter-Fälle, jeweils mindestens Bronze</span>': '7 Troubleshooter-Fälle bearbeiten und Abschluss manuell bestätigen</span>',
-          }
-          for old, new in replacements.items():
-              if old in s:
-                  s = s.replace(old, new, 1)
-              elif new not in s:
-                  raise SystemExit(f'Expected Fleissnote text not found: {old}')
-
-          if '>A10.PDF</strong>' not in s:
-              anchor = 'Mindestens 8/12 Alltagsszenarien richtig</span>'
-              pos = s.find(anchor)
-              if pos < 0:
-                  raise SystemExit('A9 Fleissnote anchor not found')
-              close = s.find('</div>', pos)
-              if close < 0:
-                  raise SystemExit('A9 Fleissnote closing div not found')
-              close += len('</div>')
-
-              extra = '''
-
-                <div style="display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 14px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 1px 2px rgba(0,0,0,.03); flex-wrap: wrap;">
-                  <strong style="color: var(--blue); flex: 0 0 105px; font-weight: 800;">A10.PDF</strong>
-                  <span style="color: var(--text); flex: 1 1 180px; line-height: 1.35;">Mindestens 7/10 RAM-, HDD- und SSD-Szenarien richtig</span>
-                </div>
-
-                <div style="display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 14px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 1px 2px rgba(0,0,0,.03); flex-wrap: wrap;">
-                  <strong style="color: var(--blue); flex: 0 0 105px; font-weight: 800;">A11.PDF</strong>
-                  <span style="color: var(--text); flex: 1 1 180px; line-height: 1.35;">Alle 5 Kaufberatungen im Tech Shop bearbeitet</span>
-                </div>
-
-                <div style="display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 14px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 1px 2px rgba(0,0,0,.03); flex-wrap: wrap;">
-                  <strong style="color: var(--blue); flex: 0 0 105px; font-weight: 800;">A12.PDF</strong>
-                  <span style="color: var(--text); flex: 1 1 180px; line-height: 1.35;">12/12 Schnittstellen richtig sortiert</span>
-                </div>
-
-                <div style="display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 14px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 1px 2px rgba(0,0,0,.03); flex-wrap: wrap;">
-                  <strong style="color: var(--blue); flex: 0 0 105px; font-weight: 800;">A13.PDF</strong>
-                  <span style="color: var(--text); flex: 1 1 180px; line-height: 1.35;">Green-IT-Aufträge vollständig bearbeitet</span>
-                </div>
-
-                <div style="display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 14px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 1px 2px rgba(0,0,0,.03); flex-wrap: wrap;">
-                  <strong style="color: var(--blue); flex: 0 0 105px; font-weight: 800;">A14.PDF</strong>
-                  <span style="color: var(--text); flex: 1 1 180px; line-height: 1.35;">Mindestens 10/14 Green-IT-Szenarien richtig</span>
-                </div>'''
-              s = s[:close] + extra + s[close:]
-
-          path.write_text(s, encoding='utf-8')
-          PY
-      - name: Commit
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add index.html
-          git diff --cached --quiet && exit 0
-          git commit -m "Sync HW Fleissnote A1-A14"
-          git push
+      - run: echo "Fleissnote sync already completed."
