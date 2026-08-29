@@ -1,5 +1,6 @@
 name: Sync HW Fleissnote once
 
+# one-time sync trigger
 on:
   push:
     branches:
