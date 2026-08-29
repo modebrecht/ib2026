@@ -2,7 +2,8 @@ name: Compact Fleissnote copy once
 
 on:
   push:
-    branches: [dev]
+    branches:
+      - dev
     paths:
       - '.github/workflows/compact-fleissnote-once.yml'
 
@@ -19,54 +20,10 @@ jobs:
           ref: dev
           fetch-depth: 1
 
-      - name: Compact HW and TK2 Fleissnote copy
-        run: |
-          python3 <<'PY'
-          from pathlib import Path
+      - name: Compact Fleissnote copy
+        run: python3 scripts/compact_fleissnote_once.py
 
-          hw = Path('index.html')
-          text = hw.read_text(encoding='utf-8')
-          old = '''              <div style="padding: 14px; background: var(--blue-soft); border: 1px solid rgba(37,99,235,.22); border-radius: 10px; color: var(--text); font-size: calc(13px * var(--font-scale)); line-height: 1.45;">
-                <div style="font-weight: 800; color: var(--blue); margin-bottom: 8px;">So funktioniert die Fleissnote</div>
-                <div><strong>1 P</strong> = Abgabe / Nachweis im OneDrive-Ordner <strong>IB</strong></div>
-                <div><strong>+ bis 1 P</strong> für Vollständigkeit / Qualität der Bearbeitung</div>
-                <div>Bei Prozentresultaten: <strong>bestes Resultat ÷ 100</strong> (z. B. 80 % = +0.80 P · 100 % = +1.00 P).</div>
-                <div>Ohne Prozentwert gilt: <strong>vollständig erledigt = +1 P</strong>.</div>
-                <div style="margin-top: 6px;"><strong>Unbegrenzt viele Versuche:</strong> Du darfst Aufgaben verbessern und erneut abgeben.</div>
-                <div><strong>Nur das beste Resultat pro Aufgabe zählt</strong> für die Fleissnote.</div>
-                <div style="margin-top: 6px; color: var(--muted);">Maximal 2 P pro A-Aufgabe · A1–A14 = maximal 28 P.</div>
-              </div>'''
-          new = '''              <div style="padding: 14px; background: var(--blue-soft); border: 1px solid rgba(37,99,235,.22); border-radius: 10px; color: var(--text); font-size: calc(13px * var(--font-scale)); line-height: 1.45;">
-                <div style="font-weight: 800; color: var(--blue); margin-bottom: 8px;">So funktioniert die Fleissnote</div>
-                <div><strong>1 P</strong> = Abgabe / Nachweis im OneDrive-Ordner <strong>IB</strong></div>
-                <div>Bei <strong>100 % Genauigkeit</strong> gibt es einen vollen Zusatzpunkt. Sonst wird der Zusatzpunkt anteilig berechnet.</div>
-                <div>Verbessern erlaubt – <strong>nur das beste Resultat zählt.</strong></div>
-                <div style="margin-top: 6px; color: var(--muted);">Maximal 2 P pro A-Aufgabe · A1–A14 = maximal 28 P.</div>
-              </div>'''
-          count = text.count(old)
-          if count != 1:
-              raise SystemExit(f'HW Fleissnote block expected once, found {count}')
-          hw.write_text(text.replace(old, new), encoding='utf-8')
-
-          tk = Path('tk2/index.html')
-          text = tk.read_text(encoding='utf-8')
-          old = '''  <section class="fleiss-card" aria-label="Fleissnote">
-    <div class="fleiss-card-head"><div><span class="fleiss-card-badge">Fleissnote</span><h2>Jede Quest zählt gleich viel</h2></div></div>
-    <p>Für die Fleissnote zählt <strong>jede Quest einzeln</strong>. Die Abgabe zählt, sobald die zugehörige Datei oder der Nachweis in deinem OneDrive-Ordner <strong>IB</strong> liegt. Teile diesen Ordner einmal mit deiner Informatiklehrperson. Du darfst Quests unbegrenzt oft verbessern und erneut abgeben; <strong>nur dein bestes Resultat pro Quest zählt.</strong></p>
-    <div class="fleiss-points"><span>Jede Quest = max. 2 Punkte</span><span>1 P = Abgabe im OneDrive-Ordner IB</span><span>+ bis 1 P = Vollständigkeit / Qualität</span><span>100 % = +1.00 P · 80 % = +0.80 P</span><span>Zusatzpunkt = bestes Resultat ÷ 100</span><span>Unbegrenzt viele Versuche</span><span>Q1–Q14 = max. 28 Punkte</span></div>
-  </section>'''
-          new = '''  <section class="fleiss-card" aria-label="Fleissnote">
-    <div class="fleiss-card-head"><div><span class="fleiss-card-badge">Fleissnote</span><h2>Jede Quest zählt gleich viel</h2></div></div>
-    <p><strong>1 P</strong> = Abgabe / Nachweis im OneDrive-Ordner <strong>IB</strong> (einmal mit der Lehrperson teilen). Bei <strong>100 % Genauigkeit</strong> gibt es einen vollen Zusatzpunkt. Sonst wird der Zusatzpunkt anteilig berechnet.</p>
-    <div class="fleiss-points"><span>Verbessern erlaubt – bestes Resultat zählt</span><span>Max. 2 P pro Quest · Q1–Q14 = max. 28 P</span></div>
-  </section>'''
-          count = text.count(old)
-          if count != 1:
-              raise SystemExit(f'TK2 Fleissnote block expected once, found {count}')
-          tk.write_text(text.replace(old, new), encoding='utf-8')
-          PY
-
-      - name: Commit copy update
+      - name: Commit changes
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
