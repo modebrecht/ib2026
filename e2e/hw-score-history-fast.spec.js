@@ -85,3 +85,29 @@ test('A12 reload preserves a locked first selection',async({page})=>{
   await page.locator('#result').waitFor({state:'visible'});
   const h=await hist(page,12);expect(h.firstScore).toBe(11);expect(h.attempts).toBe(1);
 });
+
+
+test('reset buttons never delete localStorage keys',async({page})=>{
+  for(const code of ['A1','A4','A8','A9','A10','A11','A12','A14']){
+    await open(page,code);
+    await page.evaluate(()=>{
+      window.__storageDeletes=[];
+      window.__storageClears=0;
+      const proto=Storage.prototype;
+      if(!proto.__scoreAuditRemove){
+        proto.__scoreAuditRemove=proto.removeItem;
+        proto.__scoreAuditClear=proto.clear;
+      }
+      proto.removeItem=function(key){window.__storageDeletes.push(String(key));};
+      proto.clear=function(){window.__storageClears++;};
+    });
+    const reset=page.locator('button[title="Zurücksetzen"]').first();
+    await expect(reset).toBeVisible();
+    page.once('dialog',d=>d.accept());
+    await reset.click();
+    await page.waitForTimeout(80);
+    const audit=await page.evaluate(()=>({deletes:window.__storageDeletes.slice(),clears:window.__storageClears}));
+    expect(audit.deletes,code+' removeItem calls').toEqual([]);
+    expect(audit.clears,code+' clear calls').toBe(0);
+  }
+});
