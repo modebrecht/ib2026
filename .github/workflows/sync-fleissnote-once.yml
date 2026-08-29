@@ -1,41 +1,10 @@
-name: Enable TK attempt history once
+name: TK attempt history helper (disabled)
 
 on:
-  push:
-    branches:
-      - dev
-    paths:
-      - '.github/workflows/sync-fleissnote-once.yml'
-
-permissions:
-  contents: write
+  workflow_dispatch:
 
 jobs:
-  patch:
+  disabled:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Load attempt history on A1 and A2
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-
-          needle = '  <script src="../tk/xp.js"></script>'
-          replacement = needle + '\n  <script src="quest-attempts.js"></script>'
-          for name in ('A1.html', 'A2.html'):
-              path = Path('tk2') / name
-              text = path.read_text(encoding='utf-8')
-              if 'src="quest-attempts.js"' not in text:
-                  if needle not in text:
-                      raise SystemExit(f'{name}: xp.js script marker not found')
-                  text = text.replace(needle, replacement, 1)
-                  path.write_text(text, encoding='utf-8')
-          PY
-      - name: Commit
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add tk2/A1.html tk2/A2.html
-          git diff --cached --quiet && exit 0
-          git commit -m "Enable TK attempt history on A1 and A2"
-          git push
+      - run: echo "TK attempt history patch completed."
