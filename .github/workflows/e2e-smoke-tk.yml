@@ -18,9 +18,9 @@ concurrency:
 
 jobs:
   smoke:
-    name: Chromium smoke TK A1-A7 + Gesamt-PDF
+    name: Chromium smoke TK A1-A7 + history + persistence + Gesamt-PDF
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     env:
       BASE_URL: ${{ inputs.base_url }}
 
@@ -39,8 +39,8 @@ jobs:
           npm install --no-save @playwright/test
           npx playwright install --with-deps chromium
 
-      - name: Run TK A1-A7 production smoke
-        run: npx playwright test e2e/tk-a1-a7.spec.js --browser=chromium --workers=1 --reporter=line,html
+      - name: Run TK A1-A7 production smoke + score history + persistence contract
+        run: npx playwright test e2e/tk-a1-a7.spec.js e2e/tk-score-history-fast.spec.js e2e/tk-persistence-contract.spec.js --browser=chromium --workers=1 --reporter=line,html
 
       - name: Generate Gesamt-PDF via "Zwischenstand erzeugen"
         run: |

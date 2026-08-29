@@ -1,4 +1,4 @@
-name: Fleissnote sync helper (disabled)
+name: TK attempt history helper (disabled)
 
 on:
   workflow_dispatch:
@@ -7,4 +7,4 @@ jobs:
   disabled:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Fleissnote sync completed."
+      - run: echo "TK attempt history patch completed."
