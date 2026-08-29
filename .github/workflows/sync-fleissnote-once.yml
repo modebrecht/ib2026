@@ -1,48 +1,10 @@
-name: Sync TK2 Fleissnote rules once
+name: Fleissnote sync helper (disabled)
 
 on:
-  push:
-    branches:
-      - dev
-    paths:
-      - '.github/workflows/sync-fleissnote-once.yml'
-
-permissions:
-  contents: write
+  workflow_dispatch:
 
 jobs:
-  sync:
+  disabled:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Sync TK2 Fleissnote rules
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-
-          path = Path('tk2/index.html')
-          s = path.read_text(encoding='utf-8')
-
-          old_p = '''    <p>Du darfst so oft üben, wie du möchtest. Für die Fleissnote zählt dein bester erreichter Stand. Lege deine Abgaben im Ordner <strong>IB</strong> in OneDrive ab und teile den Ordner mit deiner Informatiklehrperson.</p>'''
-          new_p = '''    <p>Du darfst Aufgaben unbegrenzt oft verbessern und erneut abgeben. <strong>Nur das beste Resultat pro Aufgabe zählt</strong> für die Fleissnote. Lege deine Abgaben im Ordner <strong>IB</strong> in OneDrive ab und teile den Ordner mit deiner Informatiklehrperson.</p>'''
-
-          old_points = '''    <div class="fleiss-points"><span>Abgabe = 1 Punkt</span><span>Weiterüben bis 100 % = bis +1 Punkt</span><span>Bester Stand zählt</span></div>'''
-          new_points = '''    <div class="fleiss-points"><span>Abgabe = 1 Punkt</span><span>+ bis 1 Punkt für Vollständigkeit / Qualität</span><span>Nur bestes Resultat pro Aufgabe zählt</span><span>Unbegrenzt viele Versuche</span><span>Maximal 14 Punkte</span></div>'''
-
-          if old_p not in s:
-              raise SystemExit('TK2 Fleissnote paragraph not found')
-          if old_points not in s:
-              raise SystemExit('TK2 Fleissnote point row not found')
-
-          s = s.replace(old_p, new_p, 1)
-          s = s.replace(old_points, new_points, 1)
-          path.write_text(s, encoding='utf-8')
-          PY
-      - name: Commit
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add tk2/index.html
-          git diff --cached --quiet && exit 0
-          git commit -m "Sync TK2 Fleissnote rules"
-          git push
+      - run: echo "Fleissnote sync completed."
