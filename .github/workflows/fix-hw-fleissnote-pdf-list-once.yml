@@ -1,0 +1,56 @@
+name: Fix HW Fleissnote PDF list once
+
+on:
+  push:
+    branches: [dev]
+    paths:
+      - '.github/workflows/fix-hw-fleissnote-pdf-list-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 1
+
+      - name: Fix Fleissnote PDF labels only
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          text = p.read_text(encoding='utf-8')
+
+          replacements = [
+              ('<div><strong>1 Punkt</strong> = PDF im OneDrive-Ordner <strong>IB</strong> · Dateiname immer <strong>A1.PDF, A2.PDF, …</strong></div>',
+               '<div><strong>1 Punkt</strong> = PDF im OneDrive-Ordner <strong>IB</strong></div>'),
+              ('<strong style="color: var(--blue); flex: 0 0 105px; font-weight: 800;">A6.DOCX</strong>',
+               '<strong style="color: var(--blue); flex: 0 0 105px; font-weight: 800;">A6.PDF</strong>'),
+              ('Mainboard-Anschlüsse im DOCX vollständig bearbeiten und Abschluss manuell bestätigen',
+               'Mainboard-Anschlüsse vollständig bearbeiten und Abschluss manuell bestätigen'),
+              ('<strong style="color: var(--blue); flex: 0 0 105px; font-weight: 800;">A7</strong>',
+               '<strong style="color: var(--blue); flex: 0 0 105px; font-weight: 800;">A7.PDF</strong>'),
+              ('<span>Lege deine PDF im OneDrive-Ordner <strong>„IB“</strong> ab. Benenne sie immer nach der Aufgabe: <strong>A1.PDF, A2.PDF, … A14.PDF</strong>. Erstelle den Ordner falls nötig und teile ihn <strong>einmal</strong> mit deiner Informatiklehrperson.</span>',
+               '<span>Lege deine PDF im OneDrive-Ordner <strong>„IB“</strong> ab. Erstelle den Ordner falls nötig und teile ihn <strong>einmal</strong> mit deiner Informatiklehrperson.</span>'),
+          ]
+
+          for old, new in replacements:
+              count = text.count(old)
+              if count != 1:
+                  raise SystemExit(f'Expected exactly one match for {old[:80]!r}, found {count}')
+              text = text.replace(old, new, 1)
+
+          p.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Commit fix
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Fix HW Fleissnote PDF labels"
+          git push origin dev
