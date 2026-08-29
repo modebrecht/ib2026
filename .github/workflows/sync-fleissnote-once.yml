@@ -1,10 +1,44 @@
-name: Fleissnote sync helper (disabled)
+name: Enable TK attempt history once
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - dev
+    paths:
+      - '.github/workflows/sync-fleissnote-once.yml'
+
+permissions:
+  contents: write
 
 jobs:
-  disabled:
+  patch:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Fleissnote sync completed."
+      - uses: actions/checkout@v4
+      - name: Load attempt history on A1 and A2
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          needle = '  <script src="../tk/xp.js"></script>'
+          replacement = needle + '\n  <script src="quest-attempts.js"></script>'
+          for name in ('A1.html', 'A2.html'):
+              path = Path('tk2') / name
+              text = path.read_text(encoding='utf-8')
+              if 'src="quest-attempts.js"' not in text:
+                  if needle not in text:
+                      raise SystemExit(f'{name}: xp.js script marker not found')
+                  text = text.replace(needle, replacement, 1)
+                  path.write_text(text, encoding='utf-8')
+
+          helper = Path('.github/workflows/sync-fleissnote-once.yml')
+          helper.write_text('''name: TK attempt history helper (disabled)\n\non:\n  workflow_dispatch:\n\njobs:\n  disabled:\n    runs-on: ubuntu-latest\n    steps:\n      - run: echo "TK attempt history patch completed."\n''', encoding='utf-8')
+          PY
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tk2/A1.html tk2/A2.html .github/workflows/sync-fleissnote-once.yml
+          git diff --cached --quiet && exit 0
+          git commit -m "Enable TK attempt history on A1 and A2"
+          git push
