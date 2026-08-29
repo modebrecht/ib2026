@@ -30,15 +30,12 @@ jobs:
                       raise SystemExit(f'{name}: xp.js script marker not found')
                   text = text.replace(needle, replacement, 1)
                   path.write_text(text, encoding='utf-8')
-
-          helper = Path('.github/workflows/sync-fleissnote-once.yml')
-          helper.write_text('''name: TK attempt history helper (disabled)\n\non:\n  workflow_dispatch:\n\njobs:\n  disabled:\n    runs-on: ubuntu-latest\n    steps:\n      - run: echo "TK attempt history patch completed."\n''', encoding='utf-8')
           PY
       - name: Commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add tk2/A1.html tk2/A2.html .github/workflows/sync-fleissnote-once.yml
+          git add tk2/A1.html tk2/A2.html
           git diff --cached --quiet && exit 0
           git commit -m "Enable TK attempt history on A1 and A2"
           git push
