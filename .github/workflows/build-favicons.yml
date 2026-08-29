@@ -1,0 +1,62 @@
+name: Build section favicons
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'create_favicon.py'
+      - '.github/workflows/build-favicons.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Pillow
+        run: pip install pillow
+
+      - name: Generate favicons
+        run: python create_favicon.py
+
+      - name: Link section favicons in HTML
+        shell: python
+        run: |
+          from pathlib import Path
+
+          for folder in (Path('hw'), Path('tk2')):
+              for path in sorted(folder.glob('*.html')):
+                  text = path.read_text(encoding='utf-8')
+                  head_end = text.lower().find('</head>')
+                  head = text[:head_end] if head_end != -1 else text
+                  if 'rel="icon"' in head or "rel='icon'" in head:
+                      continue
+                  marker = '<head>'
+                  replacement = '<head>\n  <link rel="icon" type="image/x-icon" href="favicon.ico">\n  <link rel="icon" type="image/png" href="favicon.png">'
+                  if marker in text:
+                      text = text.replace(marker, replacement, 1)
+                      path.write_text(text, encoding='utf-8')
+                      print(f'Linked favicon: {path}')
+
+      - name: Commit generated favicons
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add hw/favicon.png hw/favicon.ico tk2/favicon.png tk2/favicon.ico hw/*.html tk2/*.html
+          if git diff --cached --quiet; then
+            echo "No favicon changes"
+            exit 0
+          fi
+          git commit -m "feat: add HW and TK favicons"
+          git push
