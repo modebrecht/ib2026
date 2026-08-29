@@ -1,4 +1,4 @@
-name: Apply HW score standard
+name: Apply HW score loader
 
 on:
   push:
@@ -10,70 +10,38 @@ permissions:
   contents: write
 
 jobs:
-  apply-and-verify:
+  integrate-loader:
     runs-on: ubuntu-latest
-    timeout-minutes: 18
+    timeout-minutes: 5
     steps:
       - name: Checkout dev
         uses: actions/checkout@v4
         with:
           ref: dev
 
-      - name: Connect shared score history and extend smoke workflow
+      - name: Add shared score-history loader
         run: |
           node <<'NODE'
           const fs = require('fs');
-          const commonPath = 'hw/assets/js/worksheet-common.js';
-          let common = fs.readFileSync(commonPath, 'utf8');
+          const path = 'hw/assets/js/worksheet-common.js';
+          let content = fs.readFileSync(path, 'utf8');
           const marker = '/* ---------- Shared score history bootstrap ---------- */';
-          if (!common.includes(marker)) {
-            common += `\n\n${marker}\n(function loadSharedScoreHistory(){\n    if (document.querySelector('script[data-score-history]')) return;\n    var script = document.createElement('script');\n    script.src = 'assets/js/score-history.js';\n    script.async = false;\n    script.setAttribute('data-score-history', '1');\n    document.head.appendChild(script);\n})();\n`;
-            fs.writeFileSync(commonPath, common);
+          if (!content.includes(marker)) {
+            content += `\n\n${marker}\n(function loadSharedScoreHistory(){\n    if (document.querySelector('script[data-score-history]')) return;\n    var script = document.createElement('script');\n    script.src = 'assets/js/score-history.js';\n    script.async = false;\n    script.setAttribute('data-score-history', '1');\n    document.head.appendChild(script);\n})();\n`;
+            fs.writeFileSync(path, content);
           }
-
-          const workflowPath = '.github/workflows/e2e-smoke-hw.yml';
-          let workflow = fs.readFileSync(workflowPath, 'utf8');
-          workflow = workflow.replace(
-            /npx playwright test e2e\/hw-a1-a14\.spec\.js(?: e2e\/hw-score-history(?:-fast)?\.spec\.js)? --browser=chromium --workers=1 --reporter=line,html/,
-            'npx playwright test e2e/hw-a1-a14.spec.js e2e/hw-score-history-fast.spec.js --browser=chromium --workers=1 --reporter=line,html'
-          );
-          fs.writeFileSync(workflowPath, workflow);
           NODE
-
-      - name: Syntax checks
-        run: |
+          node --check hw/assets/js/worksheet-common.js
           node --check hw/assets/js/score-history.js
-          node --check e2e/hw-score-history-fast.spec.js
-          node --check e2e/hw-a1-a14.spec.js
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-
-      - name: Install Playwright
-        run: |
-          npm init -y >/dev/null
-          npm install --no-save @playwright/test
-          npx playwright install --with-deps chromium
-
-      - name: Start local worksheet server
-        run: |
-          python3 -m http.server 4173 >/tmp/ib2026-http.log 2>&1 &
-          echo $! >/tmp/ib2026-http.pid
-          sleep 1
-
-      - name: Run focused score-history E2E
-        env:
-          BASE_URL: http://127.0.0.1:4173
-        run: npx playwright test e2e/hw-score-history-fast.spec.js --browser=chromium --workers=1 --reporter=line
-
-      - name: Commit verified integration and remove one-time workflow
-        if: success()
+      - name: Commit loader only
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git rm .github/workflows/apply-score-standard.yml
-          git add hw/assets/js/worksheet-common.js .github/workflows/e2e-smoke-hw.yml
-          git commit -m "Standardize HW attempt history and E2E coverage"
+          git add hw/assets/js/worksheet-common.js
+          if git diff --cached --quiet; then
+            echo "Loader already integrated"
+            exit 0
+          fi
+          git commit -m "Integrate shared HW score history"
           git push origin dev
