@@ -17,7 +17,7 @@
   var HIST_PREFIX = 'hw_score_history_';
   var WORK_PREFIX = 'hw_score_work_';
 
-  function n(v) { var x = Number(v); return Number.isFinite(x) ? x : null; }
+  function n(v) { if (v === null || v === undefined || v === '') return null; var x = Number(v); return Number.isFinite(x) ? x : null; }
   function historyKey(suffix) { return HIST_PREFIX + code + (suffix ? '_' + suffix : ''); }
   function workKey() { return WORK_PREFIX + code; }
   function emptyHistory(total) {
@@ -262,8 +262,21 @@
     var score = 0;
     var work = null;
     try { work = JSON.parse(localStorage.getItem(workKey()) || 'null'); } catch (_) {}
-    if (work && work.active) score = Number(work.score) || 0;
-    else if (!loadHistory('', CASES.length).attempts && index >= CASES.length) { index = 0; done = []; }
+    if (work) score = Math.max(0, Math.min(CASES.length, Number(work.score) || 0));
+    var history = loadHistory('', CASES.length);
+    var resumeCompleted = false;
+    var showSavedResult = false;
+    if (work && work.active) {
+      if (Array.isArray(work.done)) done = work.done.filter(function(id){return CASES.some(function(c){return c.id===id})});
+      var beforeResume = index;
+      while (index < CASES.length && done.includes(CASES[index].id)) index++;
+      if (index >= CASES.length && done.length >= CASES.length) resumeCompleted = true;
+      else if (index !== beforeResume) { render(); save(); }
+    } else if (work && work.active === false && history.attempts && index >= CASES.length) {
+      showSavedResult = true;
+    } else if (!history.attempts && index >= CASES.length) {
+      index = 0; done = []; score = 0;
+    }
 
     function saveWork(active) {
       localStorage.setItem(workKey(), JSON.stringify({version:1,active:active !== false,index:index,score:score,done:done.slice()}));
@@ -313,18 +326,23 @@
       b.title = unlocked ? 'PDF frei · Best ' + h.bestScore + '/5' : 'PDF ab 3/5';
     };
 
-    finish = function () {
-      index = CASES.length;
-      var h = record(score, CASES.length, 3, '');
-      saveWork(false);
+    function showA11Result(h) {
       $('playArea').classList.add('hidden'); $('result').classList.remove('hidden');
       $('customer').classList.add('leave'); $('speech').classList.remove('open');
       var result = $('result');
       var title = result.querySelector('h2'); if (title) title.textContent = score >= 3 ? 'Quest bestanden.' : 'Noch nicht bestanden.';
       var desc = result.querySelector('p'); if (desc) desc.textContent = score >= 3 ? 'Du hast Kundenbedürfnisse und technische Daten sinnvoll verknüpft.' : 'Nutze die hervorgehobenen technischen Angaben und starte eine neue Runde.';
       var big = result.querySelector('.text-5xl'); if (big) big.textContent = score + ' / 5';
-      var small = big && big.nextElementSibling; if (small) small.textContent = 'im ersten Klick richtig · Best ' + h.bestScore + ' / 5';
-      updateProgress(); renderPanel('', CASES.length, false); save();
+      var small = big && big.nextElementSibling; if (small) small.textContent = 'im ersten Klick richtig · Best ' + (h.bestScore == null ? '–' : h.bestScore) + ' / 5';
+      updateProgress(); renderPanel('', CASES.length, false);
+    }
+
+    finish = function () {
+      index = CASES.length;
+      var h = record(score, CASES.length, 3, '');
+      saveWork(false);
+      showA11Result(h);
+      save();
     };
 
     startOver = function () {
@@ -340,7 +358,9 @@
       if (h.bestScore === null || h.bestScore < 3) return alert('PDF ab mindestens 3 von 5 richtigen Empfehlungen.');
       downloadTextWorksheetPDF({title:'A11 · Kaufberatung im Tech Shop',filenamePrefix:'A11_Kaufberatung',sections:CASES.map(function(c){return {heading:({school:'Schule & Mobilität',gaming:'Gaming & Aufrüstbarkeit',creator:'Videoschnitt & Kreativarbeit',pen:'2-in-1 & Stift',schoolfinal:'Finale · Schulnotebooks'})[c.id]||c.id,fields:[{label:'Empfehlung',value:c.options.find(function(o){return o.id===c.correct}).name},{label:'Warum?',value:c.why}]};})});
     };
-    if (!work || !work.active) { score = 0; }
+    if (resumeCompleted) { finish(); return; }
+    if (showSavedResult) { showA11Result(history); return; }
+    if (!work) score = 0;
     renderPanel('', CASES.length, false); updateProgress();
   }
 

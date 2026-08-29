@@ -26,7 +26,7 @@ test.setTimeout(60000);
 
 test('A1 attempt history survives reset and enters PDF',async({page})=>{await open(page,'A1');await page.locator('.diff-btn[data-diff="einfach"]').click();await memory(page);const one=await hist(page,null,'einfach');await page.locator('#again').click();await memory(page);const two=await hist(page,null,'einfach');await page.locator('#again').click();await memory(page);const three=await hist(page,null,'einfach');expect(one.firstScore).not.toBeNull();expect(two.secondScore).not.toBeNull();expect(three.attempts).toBe(3);expect(three.bestScore).toBeGreaterThanOrEqual(three.firstScore);expect(three.bestScore).toBeGreaterThanOrEqual(three.secondScore);await page.locator('#change').click();await page.locator('.diff-btn[data-diff="mittel"]').click();await memory(page);await page.locator('#change').click();await page.locator('.diff-btn[data-diff="schwer"]').click();await memory(page);const before=await hist(page,null,'einfach');await accept(page,()=>confirmReset());expect(await hist(page,null,'einfach')).toEqual(before);await pdf(page,'#hdrPdfBtn');});
 
-test('A4 14/16 -> 15/16 -> 16/16',async({page})=>{await open(page,'A4');await page.evaluate(()=>switchMode('quiz'));expect(await a4Round(page,2)).toBe(14);await page.evaluate(()=>{document.getElementById('modal').classList.add('hidden');startQuiz()});expect(await a4Round(page,1)).toBe(15);await page.evaluate(()=>{document.getElementById('modal').classList.add('hidden');startQuiz()});expect(await a4Round(page,0)).toBe(16);await checkHist(page,16,14,15,16);const before=await hist(page,16);await accept(page,()=>confirmReset());expect(await hist(page,16)).toEqual(before);await pdf(page,'#hdrPdfBtn');});
+test('A4 14/16 -> 15/16 -> 16/16',async({page})=>{await open(page,'A4');await page.evaluate(()=>switchMode('quiz'));expect(await a4Round(page,2)).toBe(14);expect((await hist(page,16)).secondScore).toBeNull();await page.evaluate(()=>{document.getElementById('modal').classList.add('hidden');startQuiz()});expect(await a4Round(page,1)).toBe(15);await page.evaluate(()=>{document.getElementById('modal').classList.add('hidden');startQuiz()});expect(await a4Round(page,0)).toBe(16);await checkHist(page,16,14,15,16);const before=await hist(page,16);await accept(page,()=>confirmReset());expect(await hist(page,16)).toEqual(before);await pdf(page,'#hdrPdfBtn');});
 
 test('A8 12/15 -> 14/15 -> 15/15',async({page})=>{await open(page,'A8');expect(await catRound(page,'a8',3)).toBe(12);await page.evaluate(()=>startFullRound());expect(await catRound(page,'a8',1)).toBe(14);await page.evaluate(()=>startFullRound());expect(await catRound(page,'a8',0)).toBe(15);await checkHist(page,15,12,14,15);const before=await hist(page,15);await accept(page,()=>resetA8());expect(await hist(page,15)).toEqual(before);await pdf(page,'#pdf');});
 
@@ -41,3 +41,47 @@ test('A12 first selection: 10/12 -> 11/12 -> 12/12',async({page})=>{await open(p
 test('A14 11/14 -> 13/14 -> 14/14',async({page})=>{await open(page,'A14');expect(await catRound(page,'a14',3)).toBe(11);await page.evaluate(()=>startRound());expect(await catRound(page,'a14',1)).toBe(13);await page.evaluate(()=>startRound());expect(await catRound(page,'a14',0)).toBe(14);await checkHist(page,14,11,13,14);const before=await hist(page,14);await accept(page,()=>resetA14());expect(await hist(page,14)).toEqual(before);await pdf(page,'#pdf');});
 
 test('A2/A3/A5/A13 expose no reset button',async({page})=>{for(const c of ['A2','A3','A5','A13']){await open(page,c);const n=await page.locator('button').evaluateAll(bs=>bs.filter(b=>{const t=`${b.title||''} ${b.getAttribute('onclick')||''} ${b.textContent||''}`.toLowerCase();return t.includes('zurücksetzen')||t.includes('confirmreset')||/reset[a-z0-9_]*\(/.test(t)}).length);expect(n).toBe(0);}});
+
+
+test('A11 reload cannot award the same first attempt twice',async({page})=>{
+  await open(page,'A11');
+  await page.locator('#dialogueNext').click({force:true});
+  const firstCorrect=await page.evaluate(()=>CASES[index].correct);
+  await page.locator(`.device-card[data-id="${firstCorrect}"]`).click();
+  expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('hw_score_work_A11')).score)).toBe(1);
+  await page.reload({waitUntil:'domcontentloaded'});
+  await page.waitForFunction(()=>window.__scoreHistoryPage==='A11');
+  expect(await page.evaluate(()=>index)).toBe(1);
+  expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('hw_score_work_A11')).score)).toBe(1);
+  for(let i=1;i<5;i++){
+    await page.locator('#dialogueNext').click({force:true});
+    const correct=await page.evaluate(()=>CASES[index].correct);
+    await page.locator(`.device-card[data-id="${correct}"]`).click();
+    await page.locator('#nextBtn').click();
+    await page.waitForFunction(prev=>index>prev||!document.getElementById('result')?.classList.contains('hidden'),i,{timeout:3000});
+  }
+  await page.locator('#result').waitFor({state:'visible'});
+  let h=await hist(page,5);expect(h.firstScore).toBe(5);expect(h.attempts).toBe(1);
+  await page.reload({waitUntil:'domcontentloaded'});
+  await page.waitForFunction(()=>window.__scoreHistoryPage==='A11');
+  await page.locator('#result').waitFor({state:'visible'});
+  await expect(page.locator('#result .text-5xl')).toHaveText('5 / 5');
+  h=await hist(page,5);expect(h.firstScore).toBe(5);expect(h.attempts).toBe(1);
+});
+
+test('A12 reload preserves a locked first selection',async({page})=>{
+  await open(page,'A12');
+  const first=await page.evaluate(()=>({id:C[0].id,category:C[0].category}));
+  const wrong=other(first.category,['av','data','network','power']);
+  const sel=page.locator(`#choice_${first.id}`);
+  await sel.selectOption(wrong);await expect(sel).toBeDisabled();
+  await page.reload({waitUntil:'domcontentloaded'});
+  await page.waitForFunction(()=>window.__scoreHistoryPage==='A12');
+  const reloaded=page.locator(`#choice_${first.id}`);
+  await expect(reloaded).toBeDisabled();await expect(reloaded).toHaveValue(wrong);
+  expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('hw_score_work_A12')).answeredIds.length)).toBe(1);
+  const cs=await page.evaluate(()=>C.slice(1).map(x=>({id:x.id,category:x.category})));
+  for(const x of cs){await page.locator(`#choice_${x.id}`).selectOption(x.category);}
+  await page.locator('#result').waitFor({state:'visible'});
+  const h=await hist(page,12);expect(h.firstScore).toBe(11);expect(h.attempts).toBe(1);
+});
