@@ -495,16 +495,19 @@ test.describe('HW production smoke: A1-A14', () => {
     expectNoPageErrors(errors);
   });
 
-  test('Root: exposes A1-A14 and only manualDoneA6 completes A6', async ({ page }) => {
+  test('Root: exposes A1-A14 + P1 and only manualDoneA6 completes A6', async ({ page }) => {
     const errors = collectPageErrors(page);
     await seedStudent(page);
 
     await expect(page).toHaveTitle(/Informatische Bildung/);
-    await expect(page.locator('#hwKachel .hw-task-list .task-card')).toHaveCount(14);
+    await expect(page.locator('#hwKachel .hw-task-list .task-card')).toHaveCount(15);
     for (let n = 1; n <= 14; n += 1) {
       await expect(page.locator(`#title-A${n}`)).toBeAttached();
       await expect(page.locator(`a[href="hw/A${n}.html"]`)).toBeAttached();
     }
+
+    await expect(page.locator('#title-P1')).toBeAttached();
+    await expect(page.locator('a[href="hw/P1.docx"]')).toBeAttached();
 
     const a6Card = page.locator('#title-A6').locator('xpath=ancestor::div[contains(@class,"task-card")][1]');
     await page.evaluate(() => {
