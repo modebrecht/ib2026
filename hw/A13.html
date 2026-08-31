@@ -136,6 +136,7 @@ const procure=[
 {id:'cheap',text:'Immer das billigste Modell nehmen, auch bei kurzer Lebensdauer.',good:false},
 {id:'replace',text:'Geräte vorsorglich nach zwei Jahren ersetzen.',good:false}
 ];
+for(let i=procure.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[procure[i],procure[j]]=[procure[j],procure[i]]}
 const $=id=>document.getElementById(id);
 const RESP_GOOD=['manufacturer','supplier','buyers','policy'];
 
