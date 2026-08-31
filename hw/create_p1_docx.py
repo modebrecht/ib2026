@@ -203,7 +203,7 @@ add_task_heading(4,'Anschlüsse',6)
 add_instruction('Wähle den passendsten Anschluss aus der Auswahl und schreibe ihn hin. Jeder Anschluss wird genau einmal verwendet.')
 p=doc.add_paragraph(); p.paragraph_format.space_after=Pt(5)
 r=p.add_run('Auswahl: HDMI · RJ45/Ethernet · 3,5-mm-Klinke · USB-C · VGA · M.2'); r.bold=True; r.font.size=Pt(9)
-ports=['Moderner Monitor oder Fernseher mit Bild und Ton','Netzwerkkabel zum Router','Kopfhörer mit klassischem Audiostecker','Modernes Smartphone mit USB-C-Anschluss zum Laden und zur Datenübertragung','Älterer Monitor mit analogem Bildsignal','Interne SSD direkt auf dem Mainboard']
+ports=['Moderner Monitor oder Fernseher mit Bild und Ton','Netzwerkkabel zum Router','Kopfhörer mit klassischem Audiostecker','Modernes Smartphone mit einem kleinen, beidseitig einsteckbaren Anschluss zum Laden und zur Datenübertragung','Älterer Monitor mit analogem Bildsignal','Interne SSD direkt auf dem Mainboard']
 t=doc.add_table(rows=0, cols=2); t.alignment=WD_TABLE_ALIGNMENT.CENTER; t.autofit=False; t.columns[0].width=Cm(14.2); t.columns[1].width=Cm(3.6)
 for idx,text in enumerate(ports,1):
     cells=t.add_row().cells
