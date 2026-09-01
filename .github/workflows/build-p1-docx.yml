@@ -7,7 +7,9 @@ on:
       - dev
     paths:
       - 'hw/create_p1_docx.py'
+      - 'hw/apply_p1_didactic_fixes.py'
       - 'hw/add_p1_bonus.py'
+      - 'hw/compact_p1_docx.py'
       - 'hw/fix_p1_docx_layout.py'
       - 'hw/validate_p1_docx.py'
       - 'hw/sync_p1_index.py'
@@ -31,13 +33,22 @@ jobs:
       - name: Install dependency
         run: pip install python-docx
 
-      - name: Build, harden and validate DOCX
+      - name: Build, compact and validate DOCX
         run: |
           python hw/create_p1_docx.py
+          python hw/apply_p1_didactic_fixes.py
           python hw/add_p1_bonus.py
+          python hw/compact_p1_docx.py
           python hw/fix_p1_docx_layout.py
           python hw/validate_p1_docx.py
           python hw/sync_p1_index.py
+
+      - name: Upload DOCX for visual QA
+        uses: actions/upload-artifact@v4
+        with:
+          name: p1-docx
+          path: hw/P1.docx
+          if-no-files-found: error
 
       - name: Commit generated files
         run: |
