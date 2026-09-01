@@ -129,10 +129,10 @@ for row in [
 ('2. Alles formatieren','Jan möchte den gesamten Text seines Dokuments markieren, um die Schriftart für alles gleichzeitig zu ändern.',['Ctrl + A','Ctrl + F','Ctrl + C']),
 ('3. Begriff finden','Amir hat ein sechsseitiges Dokument geöffnet. Er sucht darin nach dem Begriff „Datenschutz“.',['Ctrl + F','Ctrl + H','Ctrl + L']),
 ('4. Direkt ans Ende','Sophie arbeitet an einem sehr langen Bericht. Sie befindet sich weit oben und möchte direkt ganz ans Ende des Dokuments springen.',['Ctrl + End','Ctrl + Home','Ctrl + ↓']),
-('5. Ohne fremde Formatierung','Tim kopiert Text von einer Webseite nach Word. Die fremde Schriftart und Formatierung soll möglichst nicht übernommen werden.',['Ctrl + Shift + V','Ctrl + V','Ctrl + Shift + C']),
+('5. Ohne fremde Formatierung','Tim kopiert Text von einer Webseite in ein Dokument. Die fremde Schriftart und Formatierung soll möglichst nicht übernommen werden.',['Ctrl + Shift + V','Ctrl + V','Ctrl + Shift + C']),
 ('6. Doch wiederherstellen','Luca hat einen Schritt rückgängig gemacht und merkt, dass er ihn doch behalten wollte.',['Ctrl + Y','Ctrl + Z','Ctrl + S'])]: scenario(*row)
 
-heading(3,'Sonderzeichen mit AltGr',8,True); instruction('Ergänze jeweils die zweite Taste auf einer Schweizer Tastatur.')
+heading(3,'Sonderzeichen mit AltGr',8,True); instruction('Ergänze jeweils die zweite Taste auf einer Schweizer Tastatur. Das Zielzeichen bleibt sichtbar; geprüft wird nur die zweite Taste zu AltGr.')
 t=doc.add_table(rows=0,cols=2); t.alignment=WD_TABLE_ALIGNMENT.CENTER; widths(t,[7.6,9.6])
 for i,char in enumerate(['@','#','€','|','\\','[','{','°'],1):
     cells=t.add_row().cells
@@ -153,13 +153,13 @@ for i,text in enumerate(['Desktop anzeigen','Datei-Explorer öffnen','Einen Bild
     for c in cells: margins(c,75,90,75,90); borders(c,bottom={'val':'single','sz':'4','color':BORDER}); cant_split(t.rows[-1])
     cells[0].paragraphs[0].add_run(f'{i}. {text}').font.size=Pt(9.1); cells[1].paragraphs[0].add_run('________________').font.size=Pt(9.1)
 
-heading(6,'In eigenen Sätzen',6); instruction('Erkläre jeweils in einem eigenen Satz, was die Tastenkombination bewirkt. Je 1 Punkt.')
-t=doc.add_table(rows=0,cols=2); t.alignment=WD_TABLE_ALIGNMENT.CENTER; widths(t,[3.3,13.9])
-for i,key in enumerate(['Ctrl + H','Ctrl + P','Ctrl + O','Win + ←','Win + ↑','Win + ↓'],1):
+heading(6,'Kurz erklären',6); instruction('Beschreibe kurz die Wirkung. Stichwort oder Satz genügt; bewertet wird der Inhalt. Je 1 Punkt.')
+t=doc.add_table(rows=0,cols=2); t.alignment=WD_TABLE_ALIGNMENT.CENTER; widths(t,[5.6,11.6])
+for i,key in enumerate(['Ctrl + H in Word','Ctrl + P','Ctrl + O','Win + ←','Win + ↑','Win + ↓ (Fenster maximiert)'],1):
     cells=t.add_row().cells
     for c in cells: margins(c,105,90,105,90); borders(c,bottom={'val':'single','sz':'4','color':BORDER}); cant_split(t.rows[-1])
-    r=cells[0].paragraphs[0].add_run(f'{i}. {key}'); r.bold=True; r.font.size=Pt(9.2); r.font.color.rgb=RGBColor.from_string(ACCENT)
-    cells[1].paragraphs[0].add_run('________________________________________________________________').font.size=Pt(8.8)
+    r=cells[0].paragraphs[0].add_run(f'{i}. {key}'); r.bold=True; r.font.size=Pt(9.0); r.font.color.rgb=RGBColor.from_string(ACCENT)
+    cells[1].paragraphs[0].add_run('________________________________________________________').font.size=Pt(8.8)
 
 heading(7,'Nicht verwechseln',4); instruction('Erkläre jeweils kurz den Unterschied. Pro Teilaufgabe sind 2 Punkte möglich.')
 p=doc.add_paragraph(style='Heading 2'); p.add_run('A) Ctrl + Tab und Alt + Tab'); keep_next(p)
@@ -169,20 +169,20 @@ p=doc.add_paragraph('Du arbeitest in einem Browser mit mehreren Tabs. Was schlie
 
 heading(8,'Transfer',4,True); instruction('Nenne jeweils die sinnvollste Tastenkombination und begründe kurz.')
 for title,text in [
-('A) Präsentation vorbereiten - 2 P','Nina bereitet eine Präsentation vor. Im Browser recherchiert sie Informationen und in PowerPoint erstellt sie gleichzeitig ihre Folien. Sie möchte möglichst schnell zwischen Browser und PowerPoint wechseln, ohne die Maus zu verwenden.'),
+('A) Zwei Programme nebeneinander - 2 P','Du arbeitest mit Browser und PowerPoint. Das aktive Browserfenster soll ohne Maus die rechte Bildschirmhälfte einnehmen, damit PowerPoint daneben sichtbar bleiben kann.'),
 ('B) Arbeitsplatz verlassen - 2 P','David arbeitet im Schulzimmer an mehreren geöffneten Dokumenten. Er geht für zwei Minuten aus dem Raum. Die Programme sollen geöffnet bleiben, aber niemand soll seinen Computer benutzen können.')]:
     p=doc.add_paragraph(style='Heading 2'); p.add_run(title); keep_next(p); p=doc.add_paragraph(text); p.runs[0].font.size=Pt(9.3)
     p=doc.add_paragraph('Tastenkombination: ____________________'); p.runs[0].font.size=Pt(9.3)
     p=doc.add_paragraph('Begründung:'); p.runs[0].bold=True; p.runs[0].font.size=Pt(9.3); rules(doc,2)
 
 p=doc.add_paragraph(style='Heading 1'); p.paragraph_format.space_before=Pt(12); p.add_run('Bonus - max. +2 P')
-p=doc.add_paragraph('Zwei freiwillige Transferfragen. Jede richtige Lösung gibt +1 Bonuspunkt.'); p.runs[0].font.size=Pt(9.5); p.runs[0].font.color.rgb=RGBColor.from_string(MUTED)
-p=doc.add_paragraph(style='Heading 2'); p.add_run('Bonus 1 - Rettung nach Fehlklick (+1 P)')
-p=doc.add_paragraph('Lena recherchiert für eine Arbeit und schliesst versehentlich einen wichtigen Browser-Tab. Welche Tastenkombination bringt den zuletzt geschlossenen Tab zurück?'); p.runs[0].font.size=Pt(9.3); rules(doc,1)
-p=doc.add_paragraph(style='Heading 2'); p.add_run('Bonus 2 - Wo war der Anfang? (+1 P)')
-p=doc.add_paragraph('Marco arbeitet an einem sehr langen Dokument und befindet sich fast ganz am Ende. Er möchte sofort wieder ganz an den Anfang springen. Welche Tastenkombination verwendet er?'); p.runs[0].font.size=Pt(9.3); rules(doc,1)
+p=doc.add_paragraph('Die Bonusfragen verbinden ähnliche Tastenkombinationen und verlangen genaues Unterscheiden.'); p.runs[0].font.size=Pt(9.3); p.runs[0].font.color.rgb=RGBColor.from_string(MUTED)
+p=doc.add_paragraph(style='Heading 2'); p.add_run('Bonus 1 - Im Browser bleiben (+1 P)')
+p=doc.add_paragraph('Du hast mehrere Browser-Tabs geöffnet und gleichzeitig Word. Du möchtest zum vorherigen Browser-Tab wechseln, ohne zu Word zu wechseln. Welche Tastenkombination verwendest du?'); p.runs[0].font.size=Pt(9.1); rules(doc,1)
+p=doc.add_paragraph(style='Heading 2'); p.add_run('Bonus 2 - Fenster neu anordnen (+1 P)')
+p=doc.add_paragraph('Ein Fenster ist maximiert. Du möchtest es zuerst wieder auf normale Grösse bringen und danach links am Bildschirm andocken. Nenne die zwei Tastenkombinationen in der richtigen Reihenfolge.'); p.runs[0].font.size=Pt(9.1); rules(doc,1)
 p=doc.add_paragraph('Bonuspunkte zählen zusätzlich zu den 41 regulären Punkten. Maximalnote: 6.0.'); p.runs[0].font.size=Pt(8.2); p.runs[0].font.color.rgb=RGBColor.from_string(MUTED)
-p=doc.add_paragraph(); p.paragraph_format.space_before=Pt(10); p.alignment=WD_ALIGN_PARAGRAPH.CENTER; r=p.add_run('Viel Erfolg!'); r.bold=True; r.font.size=Pt(11); r.font.color.rgb=RGBColor.from_string(ACCENT)
+p=doc.add_paragraph(); p.paragraph_format.space_before=Pt(8); p.alignment=WD_ALIGN_PARAGRAPH.CENTER; r=p.add_run('Viel Erfolg!'); r.bold=True; r.font.size=Pt(11); r.font.color.rgb=RGBColor.from_string(ACCENT)
 
 doc.core_properties.title='P1 - Übungstest Tastenkombinationen'; doc.core_properties.subject='Tastenkombinationen A1-A7'; doc.core_properties.author=''; doc.core_properties.keywords='Tastenkombinationen, Übungstest, Informatik'
 OUT.parent.mkdir(parents=True,exist_ok=True); doc.save(OUT); print(OUT)
