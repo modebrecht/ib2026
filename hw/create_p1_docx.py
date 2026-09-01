@@ -42,7 +42,7 @@ def set_cell_margins(cell, top=100, start=100, bottom=100, end=100):
     if tcMar is None:
         tcMar = OxmlElement('w:tcMar')
         tcPr.append(tcMar)
-    for m, v in [('top',top),('start',start),('bottom',bottom),('end',end)]:
+    for m, v in [('top',top),('left',start),('bottom',bottom),('right',end)]:
         node = tcMar.find(qn(f'w:{m}'))
         if node is None:
             node = OxmlElement(f'w:{m}')
@@ -268,6 +268,5 @@ doc.core_properties.title='P1 – Übungstest Hardware'
 doc.core_properties.subject='Hardware A1–A14'
 doc.core_properties.author=''
 doc.core_properties.keywords='Hardware, Übungstest, Informatik'
-
 doc.save(OUT)
 print(OUT)
