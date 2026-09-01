@@ -20,16 +20,11 @@ def iter_paragraphs(container):
 
 
 def all_paragraphs(doc):
-    seen = set()
-
-    def emit(container):
-        for paragraph in iter_paragraphs(container):
-            key = id(paragraph._p)
-            if key not in seen:
-                seen.add(key)
-                yield paragraph
-
-    yield from emit(doc)
+    # Do not deduplicate using Python object ids: python-docx creates temporary
+    # wrapper objects and their ids can be reused while traversing, which can
+    # accidentally skip unrelated paragraphs. Processing a repeated header or
+    # cell twice is harmless; skipping visible text is not.
+    yield from iter_paragraphs(doc)
     for section in doc.sections:
         for container in (
             section.header,
@@ -39,7 +34,7 @@ def all_paragraphs(doc):
             section.first_page_footer,
             section.even_page_footer,
         ):
-            yield from emit(container)
+            yield from iter_paragraphs(container)
 
 
 def iter_cells(container):
@@ -51,16 +46,9 @@ def iter_cells(container):
 
 
 def all_cells(doc):
-    seen = set()
-
-    def emit(container):
-        for cell in iter_cells(container):
-            key = id(cell._tc)
-            if key not in seen:
-                seen.add(key)
-                yield cell
-
-    yield from emit(doc)
+    # Duplicate processing is safe and avoids the same temporary-wrapper id
+    # reuse problem as paragraph traversal.
+    yield from iter_cells(doc)
     for section in doc.sections:
         for container in (
             section.header,
@@ -70,7 +58,7 @@ def all_cells(doc):
             section.first_page_footer,
             section.even_page_footer,
         ):
-            yield from emit(container)
+            yield from iter_cells(container)
 
 
 def normalize_cell_padding(cell, fallback=90):
