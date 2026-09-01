@@ -8,6 +8,7 @@ on:
     paths:
       - 'tk2/P1.md'
       - 'tk2/create_p1_docx.py'
+      - 'tk2/compact_p1_layout.py'
       - '.github/workflows/build-tk2-p1-docx.yml'
 
 permissions:
@@ -29,7 +30,9 @@ jobs:
         run: pip install python-docx
 
       - name: Build TK2 P1 DOCX
-        run: python tk2/create_p1_docx.py
+        run: |
+          python tk2/create_p1_docx.py
+          python tk2/compact_p1_layout.py
 
       - name: Commit generated DOCX
         run: |
