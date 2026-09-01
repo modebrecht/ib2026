@@ -15,6 +15,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: p1-docx-dev-build
+  cancel-in-progress: false
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -46,4 +50,5 @@ jobs:
             exit 0
           fi
           git commit -m "Build TK2 P1 DOCX"
-          git push
+          git pull --rebase origin dev
+          git push origin HEAD:dev
