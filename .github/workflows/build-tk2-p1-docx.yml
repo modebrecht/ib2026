@@ -40,6 +40,13 @@ jobs:
           python tk2/compact_p1_layout.py
           python scripts/enforce_p1_docx_readability.py tk2/P1.docx
 
+      - name: Upload DOCX for visual QA
+        uses: actions/upload-artifact@v4
+        with:
+          name: tk2-p1-docx
+          path: tk2/P1.docx
+          if-no-files-found: error
+
       - name: Commit generated DOCX
         run: |
           git config user.name "github-actions[bot]"
