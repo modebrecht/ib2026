@@ -53,6 +53,48 @@ def set_table_widths(table, widths_cm):
                 set_cell_width(cell, widths_cm[i])
 
 
+def normalize_cell_margins(cell, fallback_horizontal=100):
+    """Materialize physical left/right cell padding for Word/LibreOffice.
+
+    The base generator historically wrote logical start/end margins. Some
+    renderers ignore those on table cells, which makes left-aligned text sit
+    directly on the cell edge. Preserve the intended values by copying
+    start/end to left/right; cells without explicit horizontal margins get a
+    small, consistent fallback inset.
+    """
+    tc_pr = cell._tc.get_or_add_tcPr()
+    tc_mar = tc_pr.find(qn('w:tcMar'))
+    if tc_mar is None:
+        tc_mar = OxmlElement('w:tcMar')
+        tc_pr.append(tc_mar)
+
+    for logical_name, physical_name in [('start', 'left'), ('end', 'right')]:
+        logical = tc_mar.find(qn(f'w:{logical_name}'))
+        physical = tc_mar.find(qn(f'w:{physical_name}'))
+        if physical is None:
+            physical = OxmlElement(f'w:{physical_name}')
+            tc_mar.append(physical)
+
+        width = None
+        if logical is not None:
+            width = logical.get(qn('w:w'))
+        if not width:
+            width = physical.get(qn('w:w'))
+        if not width:
+            width = str(fallback_horizontal)
+
+        physical.set(qn('w:w'), width)
+        physical.set(qn('w:type'), 'dxa')
+
+
+def normalize_table_cell_margins(table):
+    for row in table.rows:
+        for cell in row.cells:
+            normalize_cell_margins(cell)
+            for nested_table in cell.tables:
+                normalize_table_cell_margins(nested_table)
+
+
 def set_paragraph_bottom_border(paragraph, color='94A3B8', size='6'):
     p_pr = paragraph._p.get_or_add_pPr()
     p_bdr = p_pr.find(qn('w:pBdr'))
@@ -113,6 +155,7 @@ doc = Document(PATH)
 
 for table in doc.tables:
     set_table_widths(table, table_width_profile(table))
+    normalize_table_cell_margins(table)
 
 # Any paragraph that consists only of underscore placeholders becomes a real
 # blank writable line. Students can click and type immediately; there is no
