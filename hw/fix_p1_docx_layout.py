@@ -135,6 +135,13 @@ for paragraph in list(doc.paragraphs):
     if not paragraph.text.strip() and not paragraph._p.xpath('.//w:drawing'):
         paragraph._element.getparent().remove(paragraph._element)
 
+# Task 5 should never be stranded at the bottom of the previous page. Start
+# the complete RAM/HDD/SSD section on a fresh page while leaving the rest of
+# the compact reflow untouched.
+storage_heading = next((p for p in doc.paragraphs if p.text.strip().startswith('5. RAM, HDD oder SSD?')), None)
+if storage_heading is not None:
+    storage_heading.paragraph_format.page_break_before = True
+
 green_heading = next((p for p in doc.paragraphs if p.text.strip().startswith('8. Green IT')), None)
 if green_heading is not None:
     green_heading.paragraph_format.page_break_before = False
