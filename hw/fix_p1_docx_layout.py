@@ -3,7 +3,6 @@ import re
 
 from docx import Document
 from docx.shared import Cm, Pt
-from docx.enum.text import WD_TAB_ALIGNMENT, WD_TAB_LEADER
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 
@@ -70,20 +69,12 @@ def set_paragraph_bottom_border(paragraph, color='94A3B8', size='6'):
     bottom.set(qn('w:color'), color)
 
 
-def replace_body_rule(paragraph):
+def make_blank_writable_line(paragraph, in_cell=False):
     paragraph.clear()
-    paragraph.paragraph_format.tab_stops.clear_all()
-    paragraph.paragraph_format.tab_stops.add_tab_stop(
-        Cm(SAFE_WIDTH_CM), WD_TAB_ALIGNMENT.RIGHT, WD_TAB_LEADER.LINES
-    )
-    paragraph.add_run('\t')
-
-
-def replace_cell_rule(paragraph):
-    paragraph.clear()
-    run = paragraph.add_run('\u00A0')
-    run.font.size = Pt(8)
-    set_paragraph_bottom_border(paragraph)
+    paragraph.paragraph_format.space_before = Pt(1)
+    paragraph.paragraph_format.space_after = Pt(4 if not in_cell else 1)
+    paragraph.paragraph_format.line_spacing = 1.0
+    set_paragraph_bottom_border(paragraph, color='CBD5E1' if in_cell else '94A3B8', size='5')
 
 
 def walk_paragraphs(container, in_cell=False):
@@ -112,7 +103,6 @@ def table_width_profile(table):
             return [13.6, 3.6]
         return [8.6, 8.6]
 
-    # Future-proof fallback: split the safe width equally instead of allowing Word autofit.
     return [SAFE_WIDTH_CM / columns] * columns
 
 
@@ -124,25 +114,39 @@ doc = Document(PATH)
 for table in doc.tables:
     set_table_widths(table, table_width_profile(table))
 
+# Any paragraph that consists only of underscore placeholders becomes a real
+# blank writable line. Students can click and type immediately; there is no
+# placeholder text to select/delete first. This includes name fields, EVA
+# answer cells, port answers and open-response lines.
 for paragraph, in_cell in walk_paragraphs(doc):
-    if re.search(r'_{40,}', paragraph.text):
-        replace_body_rule(paragraph)
-    elif in_cell and re.search(r'_{13,}', paragraph.text):
-        replace_cell_rule(paragraph)
+    text = paragraph.text.strip()
+    if re.fullmatch(r'_{4,}', text):
+        make_blank_writable_line(paragraph, in_cell=in_cell)
 
-# A literal page-break paragraph can become a blank page if earlier content reflows.
-# Put the break on the Green IT heading instead, which is stable across Word/LibreOffice.
+# Remove all literal page breaks introduced by the base generator. Do not
+# force Green IT onto a new page: letting Word reflow naturally keeps the last
+# pages compact and avoids nearly empty pages after small content changes.
+for paragraph in list(doc.paragraphs):
+    page_breaks = paragraph._p.xpath('.//w:br[@w:type="page"]')
+    if not page_breaks:
+        continue
+    for br in page_breaks:
+        br.getparent().remove(br)
+    if not paragraph.text.strip() and not paragraph._p.xpath('.//w:drawing'):
+        paragraph._element.getparent().remove(paragraph._element)
+
 green_heading = next((p for p in doc.paragraphs if p.text.strip().startswith('8. Green IT')), None)
 if green_heading is not None:
-    for paragraph in list(doc.paragraphs):
-        page_breaks = paragraph._p.xpath('.//w:br[@w:type="page"]')
-        if not page_breaks:
-            continue
-        for br in page_breaks:
-            br.getparent().remove(br)
-        if not paragraph.text.strip() and not paragraph._p.xpath('.//w:drawing'):
-            paragraph._element.getparent().remove(paragraph._element)
-    green_heading.paragraph_format.page_break_before = True
+    green_heading.paragraph_format.page_break_before = False
+
+# Slightly tighten task spacing without changing the visual hierarchy.
+for paragraph in doc.paragraphs:
+    if paragraph.style and paragraph.style.name == 'Heading 1':
+        paragraph.paragraph_format.space_before = Pt(7)
+        paragraph.paragraph_format.space_after = Pt(4)
+    elif paragraph.style and paragraph.style.name == 'Heading 2':
+        paragraph.paragraph_format.space_before = Pt(4)
+        paragraph.paragraph_format.space_after = Pt(2)
 
 doc.save(PATH)
 print(PATH)
