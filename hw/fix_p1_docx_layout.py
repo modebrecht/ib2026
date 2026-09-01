@@ -54,14 +54,7 @@ def set_table_widths(table, widths_cm):
 
 
 def normalize_cell_margins(cell, fallback_horizontal=100):
-    """Materialize physical left/right cell padding for Word/LibreOffice.
-
-    The base generator historically wrote logical start/end margins. Some
-    renderers ignore those on table cells, which makes left-aligned text sit
-    directly on the cell edge. Preserve the intended values by copying
-    start/end to left/right; cells without explicit horizontal margins get a
-    small, consistent fallback inset.
-    """
+    """Materialize physical left/right cell padding for Word/LibreOffice."""
     tc_pr = cell._tc.get_or_add_tcPr()
     tc_mar = tc_pr.find(qn('w:tcMar'))
     if tc_mar is None:
@@ -93,6 +86,32 @@ def normalize_table_cell_margins(table):
             normalize_cell_margins(cell)
             for nested_table in cell.tables:
                 normalize_table_cell_margins(nested_table)
+
+
+def set_cell_vertical_margins(cell, top=35, bottom=35):
+    tc_pr = cell._tc.get_or_add_tcPr()
+    tc_mar = tc_pr.find(qn('w:tcMar'))
+    if tc_mar is None:
+        tc_mar = OxmlElement('w:tcMar')
+        tc_pr.append(tc_mar)
+    for name, value in [('top', top), ('bottom', bottom)]:
+        node = tc_mar.find(qn(f'w:{name}'))
+        if node is None:
+            node = OxmlElement(f'w:{name}')
+            tc_mar.append(node)
+        node.set(qn('w:w'), str(value))
+        node.set(qn('w:type'), 'dxa')
+
+
+def compact_short_answer_table(table):
+    """Save vertical space without reducing the 10 pt readability floor."""
+    for row in table.rows:
+        for cell in row.cells:
+            set_cell_vertical_margins(cell, top=35, bottom=35)
+            for paragraph in cell.paragraphs:
+                paragraph.paragraph_format.space_before = Pt(0)
+                paragraph.paragraph_format.space_after = Pt(0)
+                paragraph.paragraph_format.line_spacing = 1.0
 
 
 def set_paragraph_bottom_border(paragraph, color='94A3B8', size='6'):
@@ -154,21 +173,26 @@ if not PATH.exists():
 doc = Document(PATH)
 
 for table in doc.tables:
+    table_text = ' | '.join(cell.text for row in table.rows for cell in row.cells)
     set_table_widths(table, table_width_profile(table))
     normalize_table_cell_margins(table)
+    # With the mandatory 10 pt text size, the six short rows in EVA and
+    # Anschlüsse otherwise push the final Anschluss onto an almost empty page.
+    # Tighten only cell breathing room; never reduce font size.
+    if ('Situation' in table_text and 'Antwort (E / V / A)' in table_text) or \
+       ('Moderner Monitor oder Fernseher' in table_text and 'Interne SSD direkt auf dem Mainboard' in table_text):
+        compact_short_answer_table(table)
 
 # Any paragraph that consists only of underscore placeholders becomes a real
 # blank writable line. Students can click and type immediately; there is no
-# placeholder text to select/delete first. This includes name fields, EVA
-# answer cells, port answers and open-response lines.
+# placeholder text to select/delete first.
 for paragraph, in_cell in walk_paragraphs(doc):
     text = paragraph.text.strip()
     if re.fullmatch(r'_{4,}', text):
         make_blank_writable_line(paragraph, in_cell=in_cell)
 
-# Remove all literal page breaks introduced by the base generator. Do not
-# force Green IT onto a new page: letting Word reflow naturally keeps the last
-# pages compact and avoids nearly empty pages after small content changes.
+# Remove literal page breaks introduced by the base generator so the document
+# can reflow compactly.
 for paragraph in list(doc.paragraphs):
     page_breaks = paragraph._p.xpath('.//w:br[@w:type="page"]')
     if not page_breaks:
@@ -178,9 +202,9 @@ for paragraph in list(doc.paragraphs):
     if not paragraph.text.strip() and not paragraph._p.xpath('.//w:drawing'):
         paragraph._element.getparent().remove(paragraph._element)
 
-# Task 5 should never be stranded at the bottom of the previous page. Start
-# the complete RAM/HDD/SSD section on a fresh page while leaving the rest of
-# the compact reflow untouched.
+# Task 5 should begin on a fresh page after all six Anschluss rows. The compact
+# table spacing above ensures Task 4 still completes on the previous page even
+# with the mandatory 10 pt font floor.
 storage_heading = next((p for p in doc.paragraphs if p.text.strip().startswith('5. RAM, HDD oder SSD?')), None)
 if storage_heading is not None:
     storage_heading.paragraph_format.page_break_before = True
