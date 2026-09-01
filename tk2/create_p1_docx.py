@@ -3,6 +3,8 @@ from docx import Document
 from docx.shared import Cm, Pt, RGBColor
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.enum.table import WD_TABLE_ALIGNMENT, WD_CELL_VERTICAL_ALIGNMENT
+from docx.enum.section import WD_SECTION
+from docx.enum.text import WD_BREAK
 from docx.enum.table import WD_ROW_HEIGHT_RULE
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
@@ -97,10 +99,12 @@ styles['Heading 2'].font.size=Pt(10.5); styles['Heading 2'].font.bold=True; styl
 
 p=sec.footer.paragraphs[0]; p.text='P1 · Übungstest Tastenkombinationen · '; p.runs[0].font.name='Arial'; p.runs[0].font.size=Pt(8); p.runs[0].font.color.rgb=RGBColor.from_string(MUTED); page_field(p)
 
+# Header band
 band=doc.add_table(rows=1,cols=1); band.alignment=WD_TABLE_ALIGNMENT.CENTER; widths(band,[17.2]); c=band.cell(0,0); shade(c,DARK); margins(c,150,200,145,200)
 p=c.paragraphs[0]; r=p.add_run('P1  |  ÜBUNGSTEST TASTENKOMBINATIONEN'); r.bold=True; r.font.size=Pt(18); r.font.color.rgb=RGBColor(255,255,255); r.font.name='Arial'
 p=c.add_paragraph(); p.paragraph_format.space_before=Pt(1); p.paragraph_format.space_after=Pt(0); r=p.add_run('Tastenkombinationen A1-A7  ·  ca. 35-40 Minuten  ·  ohne Kursseiten oder Merkblatt'); r.font.size=Pt(8.8); r.font.color.rgb=RGBColor(203,213,225); r.font.name='Arial'
 
+# Student metadata: actual empty cells, no underscores to delete
 meta=doc.add_table(rows=2,cols=3); meta.alignment=WD_TABLE_ALIGNMENT.CENTER; widths(meta,[8.0,4.0,5.2])
 for i,label in enumerate(['VORNAME / NAME','KLASSE','DATUM']):
     c=meta.cell(0,i); margins(c,45,70,15,70); p=c.paragraphs[0]; p.paragraph_format.space_after=Pt(0); r=p.add_run(label); r.font.size=Pt(7.3); r.bold=True; r.font.color.rgb=RGBColor.from_string(MUTED)
@@ -141,6 +145,7 @@ def scenario(title,text,opts):
     for opt in opts:
         p=doc.add_paragraph(); p.paragraph_format.left_indent=Cm(.15); p.paragraph_format.space_after=Pt(.7); p.add_run('☐  '+opt).font.size=Pt(8.8)
 
+# PAGE 1
 heading(1,'Was macht dieses Tastenkürzel?',4); instruction('Kreuze jeweils die richtige Aussage an. Genau eine Aussage ist korrekt.')
 for title,opts in [
 ('Ctrl + C',['Kopiert markierte Inhalte.','Fügt kopierte Inhalte ein.','Schliesst die aktuelle Anwendung.']),
@@ -148,6 +153,7 @@ for title,opts in [
 ('Ctrl + X',['Schneidet markierte Inhalte aus.','Sucht nach einem Begriff.','Öffnet eine Datei.']),
 ('Ctrl + Z',['Macht den letzten Schritt rückgängig.','Markiert alles.','Druckt das Dokument.'])]: mc(title,opts)
 
+# PAGE 2
 heading(2,'Tastenkombinationen im Alltag',6); instruction('Wähle jeweils die sinnvollste Tastenkombination.')
 for row in [
 ('1. Dokument sichern','Elena arbeitet seit längerer Zeit an einem wichtigen Dokument. Bevor sie weiterarbeitet, möchte sie den aktuellen Stand speichern.',['Ctrl + S','Ctrl + P','Ctrl + O']),
@@ -157,6 +163,7 @@ for row in [
 ('5. Ohne fremde Formatierung','Tim kopiert Text von einer Webseite in ein Dokument. Die fremde Schriftart und Formatierung soll möglichst nicht übernommen werden.',['Ctrl + Shift + V','Ctrl + V','Ctrl + Shift + C']),
 ('6. Doch wiederherstellen','Luca hat einen Schritt rückgängig gemacht und merkt, dass er ihn doch behalten wollte.',['Ctrl + Y','Ctrl + Z','Ctrl + S'])]: scenario(*row)
 
+# PAGE 3
 heading(3,'Sonderzeichen mit AltGr',8); instruction('Ergänze jeweils die zweite Taste auf einer Schweizer Tastatur. Das Zielzeichen bleibt sichtbar; geprüft wird nur die zweite Taste zu AltGr.')
 t=doc.add_table(rows=0,cols=2); t.alignment=WD_TABLE_ALIGNMENT.CENTER; widths(t,[6.2,11.0])
 for i,char in enumerate(['@','#','€','|','\\','[','{','°'],1):
@@ -173,6 +180,7 @@ for row in [
 ('3. Webseite neu laden','Du möchtest die aktuelle Webseite neu laden.',['F5','Ctrl + F','Win + D']),
 ('4. Adresse markieren','Du möchtest sofort die gesamte Adresse im Browser markieren.',['Ctrl + L','Ctrl + F','Ctrl + T'])]: scenario(*row)
 
+# PAGE 4 - intentionally compact: sections 5-8 + bonus share one page
 heading(5,'Windows & Arbeitsalltag',5,True); instruction('Schreibe die passende Tastenkombination direkt ins leere Feld.')
 for i,text in enumerate(['Desktop anzeigen','Datei-Explorer öffnen','Einen Bildschirmausschnitt aufnehmen','Task-Manager direkt öffnen','Verlauf der Zwischenablage öffnen'],1):
     labeled_answer_row(doc,f'{i}. {text}',width_label=11.7,height=.53)
@@ -197,19 +205,23 @@ for title,text in [
     labeled_answer_row(doc,'Begründung',width_label=4.2,height=.55)
 
 p=doc.add_paragraph(style='Heading 1'); p.paragraph_format.space_before=Pt(4); p.paragraph_format.space_after=Pt(1); p.add_run('Bonus - max. +2 P')
-p=doc.add_paragraph('Genau unterscheiden: je +1 P.'); p.paragraph_format.space_after=Pt(1); p.runs[0].font.size=Pt(8.4); p.runs[0].font.color.rgb=RGBColor.from_string(MUTED)
-bonus=doc.add_table(rows=1,cols=2); bonus.alignment=WD_TABLE_ALIGNMENT.CENTER; widths(bonus,[8.5,8.7])
+p=doc.add_paragraph('Genau unterscheiden: je +1 P.'); p.paragraph_format.space_after=Pt(2); p.runs[0].font.size=Pt(8.4); p.runs[0].font.color.rgb=RGBColor.from_string(MUTED)
+bonus=doc.add_table(rows=0,cols=2); bonus.alignment=WD_TABLE_ALIGNMENT.CENTER; widths(bonus,[12.5,4.7])
 items=[
-('Bonus 1 · Im Browser bleiben (+1 P)','Zum vorherigen Browser-Tab wechseln, ohne zu Word zu wechseln:'),
-('Bonus 2 · Fenster neu anordnen (+1 P)','Maximiertes Fenster zuerst normal gross machen, danach links andocken. Zwei Kürzel in Reihenfolge:')]
-for i,(title,text) in enumerate(items):
-    c=bonus.cell(0,i); shade(c,'F8FAFC'); margins(c,70,90,70,90)
-    edge={'val':'single','sz':'5','color':BORDER}; borders(c,top=edge,bottom=edge,left=edge,right=edge)
-    p=c.paragraphs[0]; p.paragraph_format.space_after=Pt(1); r=p.add_run(title); r.bold=True; r.font.size=Pt(8.5); r.font.color.rgb=RGBColor.from_string(ACCENT)
-    p=c.add_paragraph(text); p.paragraph_format.space_after=Pt(2); p.runs[0].font.size=Pt(7.9)
-    p=c.add_paragraph(''); p.paragraph_format.space_after=Pt(0)
-    pPr=p._p.get_or_add_pPr(); pbdr=OxmlElement('w:pBdr'); bottom=OxmlElement('w:bottom'); bottom.set(qn('w:val'),'single'); bottom.set(qn('w:sz'),'5'); bottom.set(qn('w:color'),BORDER); pbdr.append(bottom); pPr.append(pbdr)
-bonus.rows[0].height=Cm(1.6); bonus.rows[0].height_rule=WD_ROW_HEIGHT_RULE.AT_LEAST
+('Bonus 1 · Im Browser bleiben (+1 P)','Zum vorherigen Browser-Tab wechseln, ohne zu Word zu wechseln.'),
+('Bonus 2 · Fenster neu anordnen (+1 P)','Maximiertes Fenster zuerst normal gross machen, danach links andocken. Zwei Kürzel in Reihenfolge.')]
+for title,text in items:
+    cells=bonus.add_row().cells
+    left,right=cells
+    margins(left,70,90,70,90); margins(right,55,75,55,75)
+    edge={'val':'single','sz':'5','color':BORDER}
+    borders(left,top=edge,bottom=edge,left=edge,right=edge); borders(right,top=edge,bottom=edge,left=edge,right=edge)
+    p=left.paragraphs[0]; p.paragraph_format.space_after=Pt(1); r=p.add_run(title); r.bold=True; r.font.size=Pt(8.5); r.font.color.rgb=RGBColor.from_string(ACCENT)
+    p=left.add_paragraph(text); p.paragraph_format.space_after=Pt(0); p.runs[0].font.size=Pt(7.9)
+    shade(right,'F8FAFC')
+    p=right.paragraphs[0]; p.paragraph_format.space_after=Pt(0); r=p.add_run('Antwort'); r.bold=True; r.font.size=Pt(7.4); r.font.color.rgb=RGBColor.from_string(MUTED)
+    p=right.add_paragraph(''); p.paragraph_format.space_after=Pt(0)
+    bonus.rows[-1].height=Cm(1.08); bonus.rows[-1].height_rule=WD_ROW_HEIGHT_RULE.AT_LEAST
 p=doc.add_paragraph('Bonuspunkte zusätzlich zu 41 P · Maximalnote 6.0'); p.paragraph_format.space_before=Pt(1); p.paragraph_format.space_after=Pt(0); p.alignment=WD_ALIGN_PARAGRAPH.CENTER; p.runs[0].font.size=Pt(7.3); p.runs[0].font.color.rgb=RGBColor.from_string(MUTED)
 
 doc.core_properties.title='P1 - Übungstest Tastenkombinationen'; doc.core_properties.subject='Tastenkombinationen A1-A7'; doc.core_properties.author=''; doc.core_properties.keywords='Tastenkombinationen, Übungstest, Informatik'
