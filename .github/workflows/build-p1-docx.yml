@@ -13,6 +13,7 @@ on:
       - 'hw/fix_p1_docx_layout.py'
       - 'hw/validate_p1_docx.py'
       - 'hw/sync_p1_index.py'
+      - 'scripts/enforce_p1_docx_readability.py'
       - '.github/workflows/build-p1-docx.yml'
 
 permissions:
@@ -40,6 +41,7 @@ jobs:
           python hw/add_p1_bonus.py
           python hw/compact_p1_docx.py
           python hw/fix_p1_docx_layout.py
+          python scripts/enforce_p1_docx_readability.py hw/P1.docx
           python hw/validate_p1_docx.py
           python hw/sync_p1_index.py
 
