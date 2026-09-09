@@ -48,7 +48,7 @@ jobs:
 
           # TK2 A8 review build: inject the pinned Shortcut Quest 2026 runtime
           # into DEV only so classroom review stays deterministic.
-          SHORTCUT_QUEST_SHA="e39b9b813297d832f488d3303b11b4f996d191a5"
+          SHORTCUT_QUEST_SHA="336c56ad2f084b4a96d906b0cf20fb8fa3e5cd1a"
           rm -rf /tmp/shortcut-quest-a8
           git init -q /tmp/shortcut-quest-a8
           git -C /tmp/shortcut-quest-a8 remote add origin https://github.com/modebrecht/shortcut-quest.git
