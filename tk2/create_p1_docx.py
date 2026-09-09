@@ -186,7 +186,7 @@ for i,text in enumerate(['Desktop anzeigen','Datei-Explorer öffnen','Einen Bild
     labeled_answer_row(doc,f'{i}. {text}',width_label=11.7,height=.53)
 
 heading(6,'Kurz erklären',6); instruction('Beschreibe kurz die Wirkung. Stichwort oder Satz genügt; bewertet wird der Inhalt. Je 1 Punkt.')
-for i,key in enumerate(['Ctrl + H in Word','Ctrl + P','Ctrl + O','Win + ←','Win + ↑','Win + ↓ (Fenster maximiert)'],1):
+for i,key in enumerate(['Ctrl + H in Word','Ctrl + P','Ctrl + O','Win + ←','Win + ↑','Win + ↓ bei maximiertem Fenster'],1):
     labeled_answer_row(doc,f'{i}. {key}',width_label=5.2,height=.53)
 
 heading(7,'Nicht verwechseln',4); instruction('Erkläre jeweils kurz den Unterschied. Pro Teilaufgabe sind 2 Punkte möglich.')
