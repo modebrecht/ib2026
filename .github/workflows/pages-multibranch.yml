@@ -46,10 +46,9 @@ jobs:
           git archive refs/remotes/origin/dev | tar -x -C _site/dev
           git archive refs/remotes/origin/render | tar -x -C _site/render
 
-          # TK2 A8 review build: inject the QA-approved Shortcut Quest 2026
-          # runtime into DEV only. Keep the source commit pinned so the course
-          # preview cannot change underneath a classroom review.
-          SHORTCUT_QUEST_SHA="d093b4148b8fc3d918e2a799af246d567a6ed3aa"
+          # TK2 A8 review build: inject the pinned Shortcut Quest 2026 runtime
+          # into DEV only so classroom review stays deterministic.
+          SHORTCUT_QUEST_SHA="e39b9b813297d832f488d3303b11b4f996d191a5"
           rm -rf /tmp/shortcut-quest-a8
           git init -q /tmp/shortcut-quest-a8
           git -C /tmp/shortcut-quest-a8 remote add origin https://github.com/modebrecht/shortcut-quest.git
@@ -62,6 +61,8 @@ jobs:
           cp /tmp/shortcut-quest-a8/2026/modern-ui.css _site/dev/tk2/A8/
           cp /tmp/shortcut-quest-a8/2026/modern-exercises.css _site/dev/tk2/A8/
           cp /tmp/shortcut-quest-a8/2026/modern-game.css _site/dev/tk2/A8/
+          cp /tmp/shortcut-quest-a8/2026/modern-battle.css _site/dev/tk2/A8/
+          cp /tmp/shortcut-quest-a8/2026/modern-report.css _site/dev/tk2/A8/
           cp /tmp/shortcut-quest-a8/2026/apexcharts.min.js _site/dev/tk2/A8/
           cp /tmp/shortcut-quest-a8/2026/favicon.svg _site/dev/tk2/A8/
           cp -R /tmp/shortcut-quest-a8/2026/assets _site/dev/tk2/A8/
