@@ -133,6 +133,11 @@ test('A7 full student journey: 10 challenge + 10 hunt + complete memory + reload
   await expect(page.locator('#memoryModal')).toBeVisible({ timeout: 5_000 });
   await expect(page.locator('#memorySummary')).toContainText('Treffer: 4');
 
+  // The current product modal only offers "Nochmal". It closes the modal by starting a fresh board;
+  // the completed training record must remain intact so the learner can then open the evidence view.
+  await page.locator('#memoryAgain').click();
+  await expect(page.locator('#memoryModal')).toBeHidden();
+
   training = await page.evaluate(() => JSON.parse(localStorage.getItem('tk_a7_training_v1') || '{}'));
   expect(training.modes.memory.all.completedRuns).toBe(1);
   expect(training.modes.memory.all.pairs).toBe(4);
