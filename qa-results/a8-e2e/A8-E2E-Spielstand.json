@@ -1,0 +1,5335 @@
+{
+  "coins": 3390,
+  "atk": 1,
+  "def": 0,
+  "hp": 0,
+  "critDamagePercent": 0,
+  "items": [],
+  "skills": [],
+  "equipment": {
+    "gloves": null,
+    "helm": null,
+    "necklace": null,
+    "boots": null,
+    "weapon": null,
+    "offhand": null,
+    "ring_left": null,
+    "ring_right": null
+  },
+  "sectionClears": {
+    "1": 1,
+    "2": 1,
+    "3": 1,
+    "4": 1,
+    "5": 1,
+    "6": 1,
+    "7": 1,
+    "8": 1,
+    "9": 1,
+    "10": 1,
+    "11": 1,
+    "12": 1,
+    "13": 1,
+    "14": 1,
+    "15": 1,
+    "16": 1,
+    "17": 1,
+    "18": 1,
+    "19": 1,
+    "20": 1,
+    "21": 1,
+    "22": 1,
+    "23": 1,
+    "24": 1,
+    "25": 1,
+    "26": 1,
+    "27": 1,
+    "28": 1,
+    "29": 1,
+    "30": 1
+  },
+  "sectionResets": {},
+  "sectionSubmissions": {
+    "1": 1,
+    "2": 1,
+    "3": 1,
+    "4": 1,
+    "5": 1,
+    "6": 1,
+    "7": 1,
+    "8": 1,
+    "9": 1,
+    "10": 1,
+    "11": 1,
+    "12": 1,
+    "13": 1,
+    "14": 1,
+    "15": 1,
+    "16": 1,
+    "17": 1,
+    "18": 1,
+    "19": 1,
+    "20": 1,
+    "21": 1,
+    "22": 2,
+    "23": 1,
+    "24": 1,
+    "25": 1,
+    "26": 1,
+    "27": 1,
+    "28": 1,
+    "29": 2,
+    "30": 1
+  },
+  "replayCycle": 1,
+  "sectionReports": {
+    "1": {
+      "checks": 1,
+      "successes": 1,
+      "bestScore": 100,
+      "lastScore": 100,
+      "lastRunAt": 1789121335265,
+      "promptStats": {
+        "Ctrl+Z": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121335263
+            }
+          ]
+        },
+        "Ctrl+Shift+V": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121335263
+            }
+          ]
+        },
+        "Ctrl+F": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121335263
+            }
+          ]
+        },
+        "Ctrl+H": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121335263
+            }
+          ]
+        },
+        "Ctrl+Home": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121335263
+            }
+          ]
+        },
+        "Ctrl+S": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121335263
+            }
+          ]
+        }
+      }
+    },
+    "2": {
+      "checks": 0,
+      "successes": 0,
+      "bestScore": 0,
+      "lastScore": 0,
+      "lastRunAt": 0,
+      "promptStats": {
+        "Alles markieren (Ctrl+A)": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121335661
+            }
+          ]
+        },
+        "Text kopieren (Ctrl+C)": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121336428
+            }
+          ]
+        },
+        "Text ausschneiden (Ctrl+X)": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121337195
+            }
+          ]
+        },
+        "Wiederherstellen / erneut ausführen (Ctrl+Y)": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121337961
+            }
+          ]
+        },
+        "Text einfügen (Ctrl+V)": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121338727
+            }
+          ]
+        },
+        "Zum Dokumentende (Ctrl+End)": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121339477
+            }
+          ]
+        }
+      }
+    },
+    "3": {
+      "checks": 2,
+      "successes": 1,
+      "bestScore": 100,
+      "lastScore": 100,
+      "lastRunAt": 1789121340832,
+      "promptStats": {
+        "Neues Dokument": {
+          "attempts": 2,
+          "misses": 1,
+          "history": [
+            {
+              "attempt": 1,
+              "success": false,
+              "timestamp": 1789121340478
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121340829
+            }
+          ]
+        },
+        "Neuer Browser-Tab": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121340478
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121340829
+            }
+          ]
+        },
+        "Aktuellen Tab schliessen": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121340478
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121340829
+            }
+          ]
+        },
+        "Geschlossenen Tab zurückholen": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121340478
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121340829
+            }
+          ]
+        },
+        "Webseite aktualisieren": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121340478
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121340829
+            }
+          ]
+        },
+        "Adressleiste markieren": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121340478
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121340829
+            }
+          ]
+        },
+        "Zum nächsten Browser-Tab": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121340478
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121340829
+            }
+          ]
+        },
+        "Zum vorherigen Browser-Tab": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121340478
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121340829
+            }
+          ]
+        }
+      }
+    },
+    "4": {
+      "checks": 1,
+      "successes": 1,
+      "bestScore": 100,
+      "lastScore": 100,
+      "lastRunAt": 1789121341296,
+      "promptStats": {
+        "PC sperren": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121341295
+            }
+          ]
+        },
+        "Desktop anzeigen": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121341295
+            }
+          ]
+        },
+        "Explorer öffnen": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121341295
+            }
+          ]
+        },
+        "Screenshot-Ausschnitt": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121341295
+            }
+          ]
+        },
+        "Programme wechseln": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121341295
+            }
+          ]
+        },
+        "Task-Manager direkt öffnen": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121341295
+            }
+          ]
+        },
+        "Zwischenablage-Verlauf": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121341295
+            }
+          ]
+        },
+        "Aktives Fenster schliessen": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121341295
+            }
+          ]
+        }
+      }
+    },
+    "5": {
+      "checks": 2,
+      "successes": 1,
+      "bestScore": 100,
+      "lastScore": 100,
+      "lastRunAt": 1789121342196,
+      "promptStats": {
+        "@": {
+          "attempts": 2,
+          "misses": 1,
+          "history": [
+            {
+              "attempt": 1,
+              "success": false,
+              "timestamp": 1789121341811
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121342195
+            }
+          ]
+        },
+        "#": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121341811
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121342195
+            }
+          ]
+        },
+        "€": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121341812
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121342195
+            }
+          ]
+        },
+        "°": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121341812
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121342195
+            }
+          ]
+        },
+        "|": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121341812
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121342195
+            }
+          ]
+        },
+        "\\": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121341812
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121342195
+            }
+          ]
+        },
+        "[": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121341812
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121342195
+            }
+          ]
+        },
+        "]": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121341812
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121342195
+            }
+          ]
+        },
+        "{": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121341812
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121342195
+            }
+          ]
+        },
+        "}": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121341812
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121342195
+            }
+          ]
+        }
+      }
+    },
+    "6": {
+      "checks": 1,
+      "successes": 1,
+      "bestScore": 100,
+      "lastScore": 100,
+      "lastRunAt": 1789121342708,
+      "promptStats": {
+        "Suchen": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121342706
+            }
+          ]
+        },
+        "Kopieren": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121342706
+            }
+          ]
+        },
+        "Wiederherstellen": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121342706
+            }
+          ]
+        },
+        "Speichern": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121342706
+            }
+          ]
+        },
+        "Rückgängig": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121342706
+            }
+          ]
+        },
+        "Ausschneiden": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121342706
+            }
+          ]
+        },
+        "Alles markieren": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121342706
+            }
+          ]
+        },
+        "Einfügen": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121342706
+            }
+          ]
+        }
+      }
+    },
+    "7": {
+      "checks": 1,
+      "successes": 1,
+      "bestScore": 100,
+      "lastScore": 100,
+      "lastRunAt": 1789121343146,
+      "promptStats": {
+        "Suchen & Ersetzen": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121343144
+            }
+          ]
+        },
+        "Zum Ende": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121343144
+            }
+          ]
+        },
+        "Zum Anfang": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121343144
+            }
+          ]
+        },
+        "Ohne Formatierung einfügen": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121343144
+            }
+          ]
+        },
+        "Datei öffnen": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121343144
+            }
+          ]
+        },
+        "Druckdialog": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121343144
+            }
+          ]
+        }
+      }
+    },
+    "8": {
+      "checks": 1,
+      "successes": 1,
+      "bestScore": 100,
+      "lastScore": 100,
+      "lastRunAt": 1789121343596,
+      "promptStats": {
+        "Adressleiste": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121343594
+            }
+          ]
+        },
+        "Vorheriger Tab": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121343594
+            }
+          ]
+        },
+        "Aktualisieren": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121343594
+            }
+          ]
+        },
+        "Neues Browserfenster": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121343594
+            }
+          ]
+        },
+        "Tab wiederherstellen": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121343594
+            }
+          ]
+        },
+        "Tab schliessen": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121343594
+            }
+          ]
+        },
+        "Neuer Tab": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121343594
+            }
+          ]
+        },
+        "Nächster Tab": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121343594
+            }
+          ]
+        }
+      }
+    },
+    "9": {
+      "checks": 2,
+      "successes": 1,
+      "bestScore": 100,
+      "lastScore": 100,
+      "lastRunAt": 1789121344529,
+      "promptStats": {
+        "Maximieren": {
+          "attempts": 2,
+          "misses": 1,
+          "history": [
+            {
+              "attempt": 1,
+              "success": false,
+              "timestamp": 1789121344128
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121344527
+            }
+          ]
+        },
+        "Screenshot": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121344128
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121344527
+            }
+          ]
+        },
+        "Programme wechseln": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121344128
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121344527
+            }
+          ]
+        },
+        "Rechts andocken": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121344128
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121344527
+            }
+          ]
+        },
+        "Zwischenablage-Verlauf": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121344128
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121344527
+            }
+          ]
+        },
+        "Verkleinern / minimieren": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121344128
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121344527
+            }
+          ]
+        },
+        "Desktop anzeigen": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121344128
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121344527
+            }
+          ]
+        },
+        "Explorer": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121344128
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121344527
+            }
+          ]
+        },
+        "Links andocken": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121344128
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121344527
+            }
+          ]
+        },
+        "PC sperren": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121344128
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121344527
+            }
+          ]
+        },
+        "Task-Manager": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121344128
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121344527
+            }
+          ]
+        },
+        "Fenster schliessen": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121344128
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121344527
+            }
+          ]
+        }
+      }
+    },
+    "10": {
+      "checks": 1,
+      "successes": 1,
+      "bestScore": 100,
+      "lastScore": 100,
+      "lastRunAt": 1789121345046,
+      "promptStats": {
+        "Ctrl+Shift+V": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121345045
+            }
+          ]
+        },
+        "Ctrl+Shift+T": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121345045
+            }
+          ]
+        },
+        "Win+Shift+S": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121345045
+            }
+          ]
+        },
+        "Ctrl+Shift+Esc": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121345045
+            }
+          ]
+        },
+        "Alt+Tab": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121345045
+            }
+          ]
+        },
+        "Alt+F4": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121345045
+            }
+          ]
+        }
+      }
+    },
+    "11": {
+      "checks": 1,
+      "successes": 1,
+      "bestScore": 100,
+      "lastScore": 100,
+      "lastRunAt": 1789121345429,
+      "promptStats": {
+        "Ctrl+T+Ctrl+L+Ctrl+F+Ctrl+W": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121345427
+            }
+          ]
+        },
+        "Ctrl+Shift+T+F5": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121345427
+            }
+          ]
+        }
+      }
+    },
+    "12": {
+      "checks": 1,
+      "successes": 1,
+      "bestScore": 100,
+      "lastScore": 100,
+      "lastRunAt": 1789121345879,
+      "promptStats": {
+        "Ctrl+O+Ctrl+A+Ctrl+C+Ctrl+N+Ctrl+Shift+V+Ctrl+S": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121345877
+            }
+          ]
+        },
+        "Ctrl+F+Ctrl+H+Ctrl+S+Ctrl+P": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121345877
+            }
+          ]
+        }
+      }
+    },
+    "13": {
+      "checks": 1,
+      "successes": 1,
+      "bestScore": 100,
+      "lastScore": 100,
+      "lastRunAt": 1789121346280,
+      "promptStats": {
+        "Ctrl+Home+Ctrl+F+Ctrl+H+Ctrl+End+Ctrl+S": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121346278
+            }
+          ]
+        }
+      }
+    },
+    "14": {
+      "checks": 1,
+      "successes": 1,
+      "bestScore": 100,
+      "lastScore": 100,
+      "lastRunAt": 1789121346679,
+      "promptStats": {
+        "Win+E+Win+→+Alt+Tab+Win+←+Win+Shift+S+Win+L": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121346677
+            }
+          ]
+        }
+      }
+    },
+    "15": {
+      "checks": 2,
+      "successes": 1,
+      "bestScore": 100,
+      "lastScore": 100,
+      "lastRunAt": 1789121347478,
+      "promptStats": {
+        "Ctrl+O": {
+          "attempts": 4,
+          "misses": 1,
+          "history": [
+            {
+              "attempt": 1,
+              "success": false,
+              "timestamp": 1789121347154
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121347154
+            },
+            {
+              "attempt": 3,
+              "success": true,
+              "timestamp": 1789121347476
+            },
+            {
+              "attempt": 4,
+              "success": true,
+              "timestamp": 1789121347476
+            }
+          ]
+        },
+        "Ctrl+H": {
+          "attempts": 4,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121347155
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121347155
+            },
+            {
+              "attempt": 3,
+              "success": true,
+              "timestamp": 1789121347476
+            },
+            {
+              "attempt": 4,
+              "success": true,
+              "timestamp": 1789121347476
+            }
+          ]
+        },
+        "Ctrl+Z": {
+          "attempts": 4,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121347155
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121347155
+            },
+            {
+              "attempt": 3,
+              "success": true,
+              "timestamp": 1789121347476
+            },
+            {
+              "attempt": 4,
+              "success": true,
+              "timestamp": 1789121347476
+            }
+          ]
+        },
+        "Ctrl+S": {
+          "attempts": 4,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121347155
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121347155
+            },
+            {
+              "attempt": 3,
+              "success": true,
+              "timestamp": 1789121347476
+            },
+            {
+              "attempt": 4,
+              "success": true,
+              "timestamp": 1789121347476
+            }
+          ]
+        }
+      }
+    },
+    "16": {
+      "checks": 1,
+      "successes": 1,
+      "bestScore": 100,
+      "lastScore": 100,
+      "lastRunAt": 1789121348065,
+      "promptStats": {
+        "Ctrl+Shift+Esc": {
+          "attempts": 3,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121348063
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121348063
+            },
+            {
+              "attempt": 3,
+              "success": true,
+              "timestamp": 1789121348063
+            }
+          ]
+        },
+        "Alt+Tab": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121348063
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121348063
+            }
+          ]
+        },
+        "Alt+F4": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121348063
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121348063
+            }
+          ]
+        },
+        "Win+E": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121348063
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121348064
+            }
+          ]
+        },
+        "Win+L": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121348064
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121348064
+            }
+          ]
+        }
+      }
+    },
+    "17": {
+      "checks": 1,
+      "successes": 1,
+      "bestScore": 100,
+      "lastScore": 100,
+      "lastRunAt": 1789121348464,
+      "promptStats": {
+        "Einfügen ohne Formatierung": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121348460
+            }
+          ]
+        },
+        "Geschlossenen Tab zurückholen": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121348460
+            }
+          ]
+        },
+        "Task-Manager": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121348460
+            }
+          ]
+        },
+        "Zum Dokumentende": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121348460
+            }
+          ]
+        },
+        "Fenster maximieren": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121348460
+            }
+          ]
+        }
+      }
+    },
+    "18": {
+      "checks": 1,
+      "successes": 1,
+      "bestScore": 100,
+      "lastScore": 100,
+      "lastRunAt": 1789121348896,
+      "promptStats": {
+        "Tab schliessen": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121348894
+            }
+          ]
+        },
+        "Fenster schliessen": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121348894
+            }
+          ]
+        },
+        "Nächster Browser-Tab": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121348894
+            }
+          ]
+        },
+        "Programme wechseln": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121348894
+            }
+          ]
+        },
+        "Zwischenablage-Verlauf": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121348894
+            }
+          ]
+        }
+      }
+    },
+    "19": {
+      "checks": 1,
+      "successes": 1,
+      "bestScore": 100,
+      "lastScore": 100,
+      "lastRunAt": 1789121349397,
+      "promptStats": {
+        "Nächster Browser-Tab": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121349394
+            }
+          ]
+        },
+        "Verkleinern / minimieren": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121349394
+            }
+          ]
+        },
+        "Programm wechseln": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121349394
+            }
+          ]
+        },
+        "Vorheriger Browser-Tab": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121349394
+            }
+          ]
+        },
+        "Fenster links": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121349394
+            }
+          ]
+        },
+        "Dokumentende": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121349394
+            }
+          ]
+        },
+        "Maximieren": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121349394
+            }
+          ]
+        },
+        "Fenster rechts": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121349394
+            }
+          ]
+        },
+        "Dokumentanfang": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121349394
+            }
+          ]
+        }
+      }
+    },
+    "20": {
+      "checks": 1,
+      "successes": 1,
+      "bestScore": 100,
+      "lastScore": 100,
+      "lastRunAt": 1789121349830,
+      "promptStats": {
+        "PC sperren": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121349828
+            }
+          ]
+        },
+        "Desktop anzeigen": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121349828
+            }
+          ]
+        },
+        "Explorer öffnen": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121349828
+            }
+          ]
+        },
+        "Screenshot-Ausschnitt": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121349828
+            }
+          ]
+        },
+        "Task-Manager öffnen": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121349828
+            }
+          ]
+        },
+        "Zwischenablage-Verlauf": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121349828
+            }
+          ]
+        }
+      }
+    },
+    "21": {
+      "checks": 1,
+      "successes": 1,
+      "bestScore": 100,
+      "lastScore": 100,
+      "lastRunAt": 1789121350279,
+      "promptStats": {
+        "@": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121350277
+            }
+          ]
+        },
+        "€": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121350277
+            }
+          ]
+        },
+        "|": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121350277
+            }
+          ]
+        },
+        "\\": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121350277
+            }
+          ]
+        },
+        "[": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121350277
+            }
+          ]
+        },
+        "]": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121350277
+            }
+          ]
+        },
+        "{": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121350277
+            }
+          ]
+        },
+        "}": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121350277
+            }
+          ]
+        }
+      }
+    },
+    "22": {
+      "checks": 0,
+      "successes": 0,
+      "bestScore": 0,
+      "lastScore": 0,
+      "lastRunAt": 0,
+      "promptStats": {
+        "Suchen (Ctrl+F)": {
+          "attempts": 1,
+          "misses": 1,
+          "history": [
+            {
+              "attempt": 1,
+              "success": false,
+              "timestamp": 1789121350678
+            }
+          ]
+        },
+        "Speichern (Ctrl+S)": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121351443
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121359926
+            }
+          ]
+        },
+        "Suchen & Ersetzen (Ctrl+H)": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121352210
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121363759
+            }
+          ]
+        },
+        "Ohne Formatierung (Ctrl+Shift+V)": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121352977
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121361459
+            }
+          ]
+        },
+        "Wiederherstellen (Ctrl+Y)": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121353743
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121362993
+            }
+          ]
+        },
+        "Öffnen (Ctrl+O)": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121354510
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121359160
+            }
+          ]
+        },
+        "Alles markieren (Ctrl+A)": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121355277
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121365292
+            }
+          ]
+        },
+        "Ausschneiden (Ctrl+X)": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121356043
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121360692
+            }
+          ]
+        },
+        "Kopieren (Ctrl+C)": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121356810
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121362226
+            }
+          ]
+        },
+        "Einfügen (Ctrl+V)": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121357577
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121358393
+            }
+          ]
+        },
+        "Rückgängig (Ctrl+Z)": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121364526
+            }
+          ]
+        }
+      }
+    },
+    "23": {
+      "checks": 0,
+      "successes": 0,
+      "bestScore": 0,
+      "lastScore": 0,
+      "lastRunAt": 0,
+      "promptStats": {
+        "Tab schliessen (Ctrl+W)": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121366192
+            }
+          ]
+        },
+        "Nächster Tab (Ctrl+Tab)": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121366959
+            }
+          ]
+        },
+        "Tab zurückholen (Ctrl+Shift+T)": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121367726
+            }
+          ]
+        },
+        "Adressleiste (Ctrl+L)": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121368493
+            }
+          ]
+        },
+        "Neuer Tab (Ctrl+T)": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121369259
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121372326
+            }
+          ]
+        },
+        "Aktualisieren (F5)": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121370026
+            }
+          ]
+        },
+        "Vorheriger Tab (Ctrl+Shift+Tab)": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121370793
+            }
+          ]
+        },
+        "Neues Browserfenster (Ctrl+N)": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121371559
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121373092
+            }
+          ]
+        }
+      }
+    },
+    "24": {
+      "checks": 0,
+      "successes": 0,
+      "bestScore": 0,
+      "lastScore": 0,
+      "lastRunAt": 0,
+      "promptStats": {
+        "Minimieren (Win+↓)": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121373993
+            }
+          ]
+        },
+        "Task-Manager (Ctrl+Shift+Esc)": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121374759
+            }
+          ]
+        },
+        "Explorer (Win+E)": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121375526
+            }
+          ]
+        },
+        "Screenshot (Win+Shift+S)": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121376293
+            }
+          ]
+        },
+        "Programme wechseln (Alt+Tab)": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121377059
+            }
+          ]
+        },
+        "PC sperren (Win+L)": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121377825
+            }
+          ]
+        },
+        "Fenster schliessen (Alt+F4)": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121378597
+            }
+          ]
+        },
+        "Links andocken (Win+←)": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121379359
+            }
+          ]
+        },
+        "Maximieren (Win+↑)": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121380125
+            }
+          ]
+        },
+        "Desktop (Win+D)": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121380892
+            }
+          ]
+        }
+      }
+    },
+    "25": {
+      "checks": 2,
+      "successes": 1,
+      "bestScore": 100,
+      "lastScore": 100,
+      "lastRunAt": 1789121382277,
+      "promptStats": {
+        "Nur aktuellen Browser-Tab schliessen": {
+          "attempts": 2,
+          "misses": 1,
+          "history": [
+            {
+              "attempt": 1,
+              "success": false,
+              "timestamp": 1789121381876
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121382276
+            }
+          ]
+        },
+        "Aktives Programmfenster schliessen": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121381877
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121382276
+            }
+          ]
+        },
+        "Browser-Adressleiste": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121381877
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121382276
+            }
+          ]
+        },
+        "PC sperren": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121381877
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121382276
+            }
+          ]
+        },
+        "Einfügen": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121381877
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121382276
+            }
+          ]
+        },
+        "Zwischenablage-Verlauf": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121381877
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121382276
+            }
+          ]
+        },
+        "Nächster Browser-Tab": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121381877
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121382276
+            }
+          ]
+        },
+        "Zwischen Programmen wechseln": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121381877
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121382276
+            }
+          ]
+        }
+      }
+    },
+    "26": {
+      "checks": 1,
+      "successes": 1,
+      "bestScore": 100,
+      "lastScore": 100,
+      "lastRunAt": 1789121382877,
+      "promptStats": {
+        "Ctrl+Shift+V": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121382876
+            }
+          ]
+        },
+        "Ctrl+Shift+T": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121382876
+            }
+          ]
+        },
+        "Ctrl+Shift+Tab": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121382876
+            }
+          ]
+        },
+        "Win+Shift+S": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121382876
+            }
+          ]
+        },
+        "Ctrl+Shift+Esc": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121382876
+            }
+          ]
+        },
+        "Alt+Tab": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121382876
+            }
+          ]
+        },
+        "Alt+F4": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121382876
+            }
+          ]
+        }
+      }
+    },
+    "27": {
+      "checks": 1,
+      "successes": 1,
+      "bestScore": 100,
+      "lastScore": 100,
+      "lastRunAt": 1789121383427,
+      "promptStats": {
+        "Ctrl+T+Ctrl+L+Ctrl+F+Ctrl+W": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121383426
+            }
+          ]
+        },
+        "Ctrl+O+Ctrl+A+Ctrl+C+Ctrl+Shift+V+Ctrl+S": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121383426
+            }
+          ]
+        },
+        "Win+E+Win+→+Alt+Tab+Win+←+Win+Shift+S+Win+L": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121383426
+            }
+          ]
+        }
+      }
+    },
+    "28": {
+      "checks": 1,
+      "successes": 1,
+      "bestScore": 100,
+      "lastScore": 100,
+      "lastRunAt": 1789121384167,
+      "promptStats": {
+        "Ctrl+O": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121384166
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121384166
+            }
+          ]
+        },
+        "Ctrl+F": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121384166
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121384166
+            }
+          ]
+        },
+        "Alt+Tab": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121384166
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121384166
+            }
+          ]
+        },
+        "Ctrl+T": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121384166
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121384166
+            }
+          ]
+        },
+        "Ctrl+L": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121384166
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121384166
+            }
+          ]
+        },
+        "Win+Shift+S": {
+          "attempts": 3,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121384166
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121384166
+            },
+            {
+              "attempt": 3,
+              "success": true,
+              "timestamp": 1789121384166
+            }
+          ]
+        },
+        "Ctrl+S": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121384166
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121384166
+            }
+          ]
+        },
+        "Win+L": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121384166
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121384166
+            }
+          ]
+        }
+      }
+    },
+    "29": {
+      "checks": 0,
+      "successes": 0,
+      "bestScore": 0,
+      "lastScore": 0,
+      "lastRunAt": 0,
+      "promptStats": {
+        "Vorheriger Tab (Ctrl+Shift+Tab)": {
+          "attempts": 2,
+          "misses": 1,
+          "history": [
+            {
+              "attempt": 1,
+              "success": false,
+              "timestamp": 1789121384563
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121403791
+            }
+          ]
+        },
+        "Maximieren (Win+↑)": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121385325
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121402258
+            }
+          ]
+        },
+        "Kopieren (Ctrl+C)": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121386092
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121399958
+            }
+          ]
+        },
+        "Links andocken (Win+←)": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121386859
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121403025
+            }
+          ]
+        },
+        "Desktop (Win+D)": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121387643
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121396125
+            }
+          ]
+        },
+        "Aktualisieren (F5)": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121388408
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121397659
+            }
+          ]
+        },
+        "Zwischenablage-Verlauf (Win+V)": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121389175
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121405324
+            }
+          ]
+        },
+        "Dokumentende (Ctrl+End)": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121389942
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121401492
+            }
+          ]
+        },
+        "Tab zurückholen (Ctrl+Shift+T)": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121390709
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121404558
+            }
+          ]
+        },
+        "Neuer Tab (Ctrl+T)": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121391475
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121400725
+            }
+          ]
+        },
+        "Suchen & Ersetzen (Ctrl+H)": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121392242
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121395358
+            }
+          ]
+        },
+        "Fenster schliessen (Alt+F4)": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121393009
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121398425
+            }
+          ]
+        },
+        "Task-Manager (Ctrl+Shift+Esc)": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121393775
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121396891
+            }
+          ]
+        },
+        "Ohne Formatierung (Ctrl+Shift+V)": {
+          "attempts": 2,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121394541
+            },
+            {
+              "attempt": 2,
+              "success": true,
+              "timestamp": 1789121399191
+            }
+          ]
+        }
+      }
+    },
+    "30": {
+      "checks": 1,
+      "successes": 1,
+      "bestScore": 100,
+      "lastScore": 100,
+      "lastRunAt": 1789121406359,
+      "promptStats": {
+        "Einfügen ohne Formatierung": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121406358
+            }
+          ]
+        },
+        "Suchen & Ersetzen": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121406359
+            }
+          ]
+        },
+        "Zum Dokumentende": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121406359
+            }
+          ]
+        },
+        "Geschlossenen Tab zurückholen": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121406359
+            }
+          ]
+        },
+        "Vorheriger Browser-Tab": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121406359
+            }
+          ]
+        },
+        "Webseite aktualisieren": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121406359
+            }
+          ]
+        },
+        "Task-Manager öffnen": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121406359
+            }
+          ]
+        },
+        "Zwischenablage-Verlauf": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121406359
+            }
+          ]
+        },
+        "Screenshot-Ausschnitt": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121406359
+            }
+          ]
+        },
+        "Aktives Fenster schliessen": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121406359
+            }
+          ]
+        },
+        "Backslash auf CH-Tastatur": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121406359
+            }
+          ]
+        },
+        "Geschweifte Klammer auf": {
+          "attempts": 1,
+          "misses": 0,
+          "history": [
+            {
+              "attempt": 1,
+              "success": true,
+              "timestamp": 1789121406359
+            }
+          ]
+        }
+      }
+    }
+  },
+  "comboStats": {
+    "combo:ctrl+z": {
+      "key": "combo:ctrl+z",
+      "label": "Ctrl+Z",
+      "shortcut": "Ctrl+Z",
+      "attempts": 7,
+      "misses": 0,
+      "history": [
+        {
+          "attempt": 1,
+          "success": true,
+          "sectionId": "1",
+          "timestamp": 1789121335263
+        },
+        {
+          "attempt": 2,
+          "success": true,
+          "sectionId": "6",
+          "timestamp": 1789121342706
+        },
+        {
+          "attempt": 3,
+          "success": true,
+          "sectionId": "15",
+          "timestamp": 1789121347155
+        },
+        {
+          "attempt": 4,
+          "success": true,
+          "sectionId": "15",
+          "timestamp": 1789121347155
+        },
+        {
+          "attempt": 5,
+          "success": true,
+          "sectionId": "15",
+          "timestamp": 1789121347476
+        },
+        {
+          "attempt": 6,
+          "success": true,
+          "sectionId": "15",
+          "timestamp": 1789121347476
+        },
+        {
+          "attempt": 7,
+          "success": true,
+          "sectionId": "22",
+          "timestamp": 1789121364526
+        }
+      ],
+      "sections": [
+        "Abschnitt 1 Mission – Abgabe in 60 Sekunden",
+        "Abschnitt 6 Drag & Drop – Grundlagen",
+        "Abschnitt 15 Szenario – Schulauftrag",
+        "Abschnitt 22 Fast-Paced Basics"
+      ]
+    },
+    "combo:ctrl+shift+v": {
+      "key": "combo:ctrl+shift+v",
+      "label": "Ctrl+Shift+V",
+      "shortcut": "Ctrl+Shift+V",
+      "attempts": 10,
+      "misses": 0,
+      "history": [
+        {
+          "attempt": 1,
+          "success": true,
+          "sectionId": "1",
+          "timestamp": 1789121335263
+        },
+        {
+          "attempt": 2,
+          "success": true,
+          "sectionId": "7",
+          "timestamp": 1789121343144
+        },
+        {
+          "attempt": 3,
+          "success": true,
+          "sectionId": "10",
+          "timestamp": 1789121345045
+        },
+        {
+          "attempt": 4,
+          "success": true,
+          "sectionId": "17",
+          "timestamp": 1789121348460
+        },
+        {
+          "attempt": 5,
+          "success": true,
+          "sectionId": "22",
+          "timestamp": 1789121352977
+        },
+        {
+          "attempt": 6,
+          "success": true,
+          "sectionId": "22",
+          "timestamp": 1789121361459
+        },
+        {
+          "attempt": 7,
+          "success": true,
+          "sectionId": "26",
+          "timestamp": 1789121382876
+        },
+        {
+          "attempt": 8,
+          "success": true,
+          "sectionId": "29",
+          "timestamp": 1789121394541
+        },
+        {
+          "attempt": 9,
+          "success": true,
+          "sectionId": "29",
+          "timestamp": 1789121399191
+        },
+        {
+          "attempt": 10,
+          "success": true,
+          "sectionId": "30",
+          "timestamp": 1789121406358
+        }
+      ],
+      "sections": [
+        "Abschnitt 1 Mission – Abgabe in 60 Sekunden",
+        "Abschnitt 7 Drag & Drop – Spezial",
+        "Abschnitt 10 Combo Builder – Mixed",
+        "Abschnitt 17 Shortcut Shuffle I",
+        "Abschnitt 22 Fast-Paced Basics",
+        "Abschnitt 26 Advanced Combo Builder",
+        "Abschnitt 29 Mastery Sprint",
+        "Abschnitt 30 Final Mastery"
+      ]
+    },
+    "combo:ctrl+f": {
+      "key": "combo:ctrl+f",
+      "label": "Ctrl+F",
+      "shortcut": "Ctrl+F",
+      "attempts": 5,
+      "misses": 1,
+      "history": [
+        {
+          "attempt": 1,
+          "success": true,
+          "sectionId": "1",
+          "timestamp": 1789121335263
+        },
+        {
+          "attempt": 2,
+          "success": true,
+          "sectionId": "6",
+          "timestamp": 1789121342706
+        },
+        {
+          "attempt": 3,
+          "success": false,
+          "sectionId": "22",
+          "timestamp": 1789121350678
+        },
+        {
+          "attempt": 4,
+          "success": true,
+          "sectionId": "28",
+          "timestamp": 1789121384166
+        },
+        {
+          "attempt": 5,
+          "success": true,
+          "sectionId": "28",
+          "timestamp": 1789121384166
+        }
+      ],
+      "sections": [
+        "Abschnitt 1 Mission – Abgabe in 60 Sekunden",
+        "Abschnitt 6 Drag & Drop – Grundlagen",
+        "Abschnitt 22 Fast-Paced Basics",
+        "Abschnitt 28 Real-World Gauntlet"
+      ]
+    },
+    "combo:ctrl+h": {
+      "key": "combo:ctrl+h",
+      "label": "Ctrl+H",
+      "shortcut": "Ctrl+H",
+      "attempts": 11,
+      "misses": 0,
+      "history": [
+        {
+          "attempt": 1,
+          "success": true,
+          "sectionId": "1",
+          "timestamp": 1789121335263
+        },
+        {
+          "attempt": 2,
+          "success": true,
+          "sectionId": "7",
+          "timestamp": 1789121343144
+        },
+        {
+          "attempt": 3,
+          "success": true,
+          "sectionId": "15",
+          "timestamp": 1789121347155
+        },
+        {
+          "attempt": 4,
+          "success": true,
+          "sectionId": "15",
+          "timestamp": 1789121347155
+        },
+        {
+          "attempt": 5,
+          "success": true,
+          "sectionId": "15",
+          "timestamp": 1789121347476
+        },
+        {
+          "attempt": 6,
+          "success": true,
+          "sectionId": "15",
+          "timestamp": 1789121347476
+        },
+        {
+          "attempt": 7,
+          "success": true,
+          "sectionId": "22",
+          "timestamp": 1789121352210
+        },
+        {
+          "attempt": 8,
+          "success": true,
+          "sectionId": "22",
+          "timestamp": 1789121363759
+        },
+        {
+          "attempt": 9,
+          "success": true,
+          "sectionId": "29",
+          "timestamp": 1789121392242
+        },
+        {
+          "attempt": 10,
+          "success": true,
+          "sectionId": "29",
+          "timestamp": 1789121395358
+        },
+        {
+          "attempt": 11,
+          "success": true,
+          "sectionId": "30",
+          "timestamp": 1789121406359
+        }
+      ],
+      "sections": [
+        "Abschnitt 1 Mission – Abgabe in 60 Sekunden",
+        "Abschnitt 7 Drag & Drop – Spezial",
+        "Abschnitt 15 Szenario – Schulauftrag",
+        "Abschnitt 22 Fast-Paced Basics",
+        "Abschnitt 29 Mastery Sprint",
+        "Abschnitt 30 Final Mastery"
+      ]
+    },
+    "combo:ctrl+home": {
+      "key": "combo:ctrl+home",
+      "label": "Ctrl+Home",
+      "shortcut": "Ctrl+Home",
+      "attempts": 3,
+      "misses": 0,
+      "history": [
+        {
+          "attempt": 1,
+          "success": true,
+          "sectionId": "1",
+          "timestamp": 1789121335263
+        },
+        {
+          "attempt": 2,
+          "success": true,
+          "sectionId": "7",
+          "timestamp": 1789121343144
+        },
+        {
+          "attempt": 3,
+          "success": true,
+          "sectionId": "19",
+          "timestamp": 1789121349394
+        }
+      ],
+      "sections": [
+        "Abschnitt 1 Mission – Abgabe in 60 Sekunden",
+        "Abschnitt 7 Drag & Drop – Spezial",
+        "Abschnitt 19 Navigation Puzzle"
+      ]
+    },
+    "combo:ctrl+s": {
+      "key": "combo:ctrl+s",
+      "label": "Ctrl+S",
+      "shortcut": "Ctrl+S",
+      "attempts": 10,
+      "misses": 0,
+      "history": [
+        {
+          "attempt": 1,
+          "success": true,
+          "sectionId": "1",
+          "timestamp": 1789121335263
+        },
+        {
+          "attempt": 2,
+          "success": true,
+          "sectionId": "6",
+          "timestamp": 1789121342706
+        },
+        {
+          "attempt": 3,
+          "success": true,
+          "sectionId": "15",
+          "timestamp": 1789121347155
+        },
+        {
+          "attempt": 4,
+          "success": true,
+          "sectionId": "15",
+          "timestamp": 1789121347155
+        },
+        {
+          "attempt": 5,
+          "success": true,
+          "sectionId": "15",
+          "timestamp": 1789121347476
+        },
+        {
+          "attempt": 6,
+          "success": true,
+          "sectionId": "15",
+          "timestamp": 1789121347476
+        },
+        {
+          "attempt": 7,
+          "success": true,
+          "sectionId": "22",
+          "timestamp": 1789121351443
+        },
+        {
+          "attempt": 8,
+          "success": true,
+          "sectionId": "22",
+          "timestamp": 1789121359926
+        },
+        {
+          "attempt": 9,
+          "success": true,
+          "sectionId": "28",
+          "timestamp": 1789121384166
+        },
+        {
+          "attempt": 10,
+          "success": true,
+          "sectionId": "28",
+          "timestamp": 1789121384166
+        }
+      ],
+      "sections": [
+        "Abschnitt 1 Mission – Abgabe in 60 Sekunden",
+        "Abschnitt 6 Drag & Drop – Grundlagen",
+        "Abschnitt 15 Szenario – Schulauftrag",
+        "Abschnitt 22 Fast-Paced Basics",
+        "Abschnitt 28 Real-World Gauntlet"
+      ]
+    },
+    "combo:ctrl+a": {
+      "key": "combo:ctrl+a",
+      "label": "Alles markieren",
+      "shortcut": "Ctrl+A",
+      "attempts": 4,
+      "misses": 0,
+      "history": [
+        {
+          "attempt": 1,
+          "success": true,
+          "sectionId": "2",
+          "timestamp": 1789121335661
+        },
+        {
+          "attempt": 2,
+          "success": true,
+          "sectionId": "6",
+          "timestamp": 1789121342706
+        },
+        {
+          "attempt": 3,
+          "success": true,
+          "sectionId": "22",
+          "timestamp": 1789121355277
+        },
+        {
+          "attempt": 4,
+          "success": true,
+          "sectionId": "22",
+          "timestamp": 1789121365292
+        }
+      ],
+      "sections": [
+        "Abschnitt 2 Reflex-Runde",
+        "Abschnitt 6 Drag & Drop – Grundlagen",
+        "Abschnitt 22 Fast-Paced Basics"
+      ]
+    },
+    "combo:ctrl+c": {
+      "key": "combo:ctrl+c",
+      "label": "Kopieren",
+      "shortcut": "Ctrl+C",
+      "attempts": 6,
+      "misses": 0,
+      "history": [
+        {
+          "attempt": 1,
+          "success": true,
+          "sectionId": "2",
+          "timestamp": 1789121336428
+        },
+        {
+          "attempt": 2,
+          "success": true,
+          "sectionId": "6",
+          "timestamp": 1789121342706
+        },
+        {
+          "attempt": 3,
+          "success": true,
+          "sectionId": "22",
+          "timestamp": 1789121356810
+        },
+        {
+          "attempt": 4,
+          "success": true,
+          "sectionId": "22",
+          "timestamp": 1789121362226
+        },
+        {
+          "attempt": 5,
+          "success": true,
+          "sectionId": "29",
+          "timestamp": 1789121386092
+        },
+        {
+          "attempt": 6,
+          "success": true,
+          "sectionId": "29",
+          "timestamp": 1789121399958
+        }
+      ],
+      "sections": [
+        "Abschnitt 2 Reflex-Runde",
+        "Abschnitt 6 Drag & Drop – Grundlagen",
+        "Abschnitt 22 Fast-Paced Basics",
+        "Abschnitt 29 Mastery Sprint"
+      ]
+    },
+    "combo:ctrl+x": {
+      "key": "combo:ctrl+x",
+      "label": "Ausschneiden",
+      "shortcut": "Ctrl+X",
+      "attempts": 4,
+      "misses": 0,
+      "history": [
+        {
+          "attempt": 1,
+          "success": true,
+          "sectionId": "2",
+          "timestamp": 1789121337195
+        },
+        {
+          "attempt": 2,
+          "success": true,
+          "sectionId": "6",
+          "timestamp": 1789121342706
+        },
+        {
+          "attempt": 3,
+          "success": true,
+          "sectionId": "22",
+          "timestamp": 1789121356043
+        },
+        {
+          "attempt": 4,
+          "success": true,
+          "sectionId": "22",
+          "timestamp": 1789121360692
+        }
+      ],
+      "sections": [
+        "Abschnitt 2 Reflex-Runde",
+        "Abschnitt 6 Drag & Drop – Grundlagen",
+        "Abschnitt 22 Fast-Paced Basics"
+      ]
+    },
+    "combo:ctrl+y": {
+      "key": "combo:ctrl+y",
+      "label": "Wiederherstellen",
+      "shortcut": "Ctrl+Y",
+      "attempts": 4,
+      "misses": 0,
+      "history": [
+        {
+          "attempt": 1,
+          "success": true,
+          "sectionId": "2",
+          "timestamp": 1789121337961
+        },
+        {
+          "attempt": 2,
+          "success": true,
+          "sectionId": "6",
+          "timestamp": 1789121342706
+        },
+        {
+          "attempt": 3,
+          "success": true,
+          "sectionId": "22",
+          "timestamp": 1789121353743
+        },
+        {
+          "attempt": 4,
+          "success": true,
+          "sectionId": "22",
+          "timestamp": 1789121362993
+        }
+      ],
+      "sections": [
+        "Abschnitt 2 Reflex-Runde",
+        "Abschnitt 6 Drag & Drop – Grundlagen",
+        "Abschnitt 22 Fast-Paced Basics"
+      ]
+    },
+    "combo:ctrl+v": {
+      "key": "combo:ctrl+v",
+      "label": "Einfügen",
+      "shortcut": "Ctrl+V",
+      "attempts": 6,
+      "misses": 0,
+      "history": [
+        {
+          "attempt": 1,
+          "success": true,
+          "sectionId": "2",
+          "timestamp": 1789121338727
+        },
+        {
+          "attempt": 2,
+          "success": true,
+          "sectionId": "6",
+          "timestamp": 1789121342706
+        },
+        {
+          "attempt": 3,
+          "success": true,
+          "sectionId": "22",
+          "timestamp": 1789121357577
+        },
+        {
+          "attempt": 4,
+          "success": true,
+          "sectionId": "22",
+          "timestamp": 1789121358393
+        },
+        {
+          "attempt": 5,
+          "success": true,
+          "sectionId": "25",
+          "timestamp": 1789121381877
+        },
+        {
+          "attempt": 6,
+          "success": true,
+          "sectionId": "25",
+          "timestamp": 1789121382276
+        }
+      ],
+      "sections": [
+        "Abschnitt 2 Reflex-Runde",
+        "Abschnitt 6 Drag & Drop – Grundlagen",
+        "Abschnitt 22 Fast-Paced Basics",
+        "Abschnitt 25 Verwechslungsgefahr"
+      ]
+    },
+    "combo:ctrl+end": {
+      "key": "combo:ctrl+end",
+      "label": "Zum Ende",
+      "shortcut": "Ctrl+End",
+      "attempts": 7,
+      "misses": 0,
+      "history": [
+        {
+          "attempt": 1,
+          "success": true,
+          "sectionId": "2",
+          "timestamp": 1789121339477
+        },
+        {
+          "attempt": 2,
+          "success": true,
+          "sectionId": "7",
+          "timestamp": 1789121343144
+        },
+        {
+          "attempt": 3,
+          "success": true,
+          "sectionId": "17",
+          "timestamp": 1789121348460
+        },
+        {
+          "attempt": 4,
+          "success": true,
+          "sectionId": "19",
+          "timestamp": 1789121349394
+        },
+        {
+          "attempt": 5,
+          "success": true,
+          "sectionId": "29",
+          "timestamp": 1789121389942
+        },
+        {
+          "attempt": 6,
+          "success": true,
+          "sectionId": "29",
+          "timestamp": 1789121401492
+        },
+        {
+          "attempt": 7,
+          "success": true,
+          "sectionId": "30",
+          "timestamp": 1789121406359
+        }
+      ],
+      "sections": [
+        "Abschnitt 2 Reflex-Runde",
+        "Abschnitt 7 Drag & Drop – Spezial",
+        "Abschnitt 17 Shortcut Shuffle I",
+        "Abschnitt 19 Navigation Puzzle",
+        "Abschnitt 29 Mastery Sprint",
+        "Abschnitt 30 Final Mastery"
+      ]
+    },
+    "combo:ctrl+n": {
+      "key": "combo:ctrl+n",
+      "label": "Neues Dokument",
+      "shortcut": "Ctrl+N",
+      "attempts": 5,
+      "misses": 1,
+      "history": [
+        {
+          "attempt": 1,
+          "success": false,
+          "sectionId": "3",
+          "timestamp": 1789121340478
+        },
+        {
+          "attempt": 2,
+          "success": true,
+          "sectionId": "3",
+          "timestamp": 1789121340829
+        },
+        {
+          "attempt": 3,
+          "success": true,
+          "sectionId": "8",
+          "timestamp": 1789121343594
+        },
+        {
+          "attempt": 4,
+          "success": true,
+          "sectionId": "23",
+          "timestamp": 1789121371559
+        },
+        {
+          "attempt": 5,
+          "success": true,
+          "sectionId": "23",
+          "timestamp": 1789121373092
+        }
+      ],
+      "sections": [
+        "Abschnitt 3 Programme & Browser",
+        "Abschnitt 8 Drag & Drop – Browser",
+        "Abschnitt 23 Fast-Paced Browser"
+      ]
+    },
+    "combo:ctrl+t": {
+      "key": "combo:ctrl+t",
+      "label": "Ctrl+T",
+      "shortcut": "Ctrl+T",
+      "attempts": 9,
+      "misses": 0,
+      "history": [
+        {
+          "attempt": 1,
+          "success": true,
+          "sectionId": "3",
+          "timestamp": 1789121340478
+        },
+        {
+          "attempt": 2,
+          "success": true,
+          "sectionId": "3",
+          "timestamp": 1789121340829
+        },
+        {
+          "attempt": 3,
+          "success": true,
+          "sectionId": "8",
+          "timestamp": 1789121343594
+        },
+        {
+          "attempt": 4,
+          "success": true,
+          "sectionId": "23",
+          "timestamp": 1789121369259
+        },
+        {
+          "attempt": 5,
+          "success": true,
+          "sectionId": "23",
+          "timestamp": 1789121372326
+        },
+        {
+          "attempt": 6,
+          "success": true,
+          "sectionId": "28",
+          "timestamp": 1789121384166
+        },
+        {
+          "attempt": 7,
+          "success": true,
+          "sectionId": "28",
+          "timestamp": 1789121384166
+        },
+        {
+          "attempt": 8,
+          "success": true,
+          "sectionId": "29",
+          "timestamp": 1789121391475
+        },
+        {
+          "attempt": 9,
+          "success": true,
+          "sectionId": "29",
+          "timestamp": 1789121400725
+        }
+      ],
+      "sections": [
+        "Abschnitt 3 Programme & Browser",
+        "Abschnitt 8 Drag & Drop – Browser",
+        "Abschnitt 23 Fast-Paced Browser",
+        "Abschnitt 28 Real-World Gauntlet",
+        "Abschnitt 29 Mastery Sprint"
+      ]
+    },
+    "combo:ctrl+w": {
+      "key": "combo:ctrl+w",
+      "label": "Tab schliessen",
+      "shortcut": "Ctrl+W",
+      "attempts": 7,
+      "misses": 1,
+      "history": [
+        {
+          "attempt": 1,
+          "success": true,
+          "sectionId": "3",
+          "timestamp": 1789121340478
+        },
+        {
+          "attempt": 2,
+          "success": true,
+          "sectionId": "3",
+          "timestamp": 1789121340829
+        },
+        {
+          "attempt": 3,
+          "success": true,
+          "sectionId": "8",
+          "timestamp": 1789121343594
+        },
+        {
+          "attempt": 4,
+          "success": true,
+          "sectionId": "18",
+          "timestamp": 1789121348894
+        },
+        {
+          "attempt": 5,
+          "success": true,
+          "sectionId": "23",
+          "timestamp": 1789121366192
+        },
+        {
+          "attempt": 6,
+          "success": false,
+          "sectionId": "25",
+          "timestamp": 1789121381876
+        },
+        {
+          "attempt": 7,
+          "success": true,
+          "sectionId": "25",
+          "timestamp": 1789121382276
+        }
+      ],
+      "sections": [
+        "Abschnitt 3 Programme & Browser",
+        "Abschnitt 8 Drag & Drop – Browser",
+        "Abschnitt 18 Shortcut Shuffle II",
+        "Abschnitt 23 Fast-Paced Browser",
+        "Abschnitt 25 Verwechslungsgefahr"
+      ]
+    },
+    "combo:ctrl+shift+t": {
+      "key": "combo:ctrl+shift+t",
+      "label": "Ctrl+Shift+T",
+      "shortcut": "Ctrl+Shift+T",
+      "attempts": 10,
+      "misses": 0,
+      "history": [
+        {
+          "attempt": 1,
+          "success": true,
+          "sectionId": "3",
+          "timestamp": 1789121340478
+        },
+        {
+          "attempt": 2,
+          "success": true,
+          "sectionId": "3",
+          "timestamp": 1789121340829
+        },
+        {
+          "attempt": 3,
+          "success": true,
+          "sectionId": "8",
+          "timestamp": 1789121343594
+        },
+        {
+          "attempt": 4,
+          "success": true,
+          "sectionId": "10",
+          "timestamp": 1789121345045
+        },
+        {
+          "attempt": 5,
+          "success": true,
+          "sectionId": "17",
+          "timestamp": 1789121348460
+        },
+        {
+          "attempt": 6,
+          "success": true,
+          "sectionId": "23",
+          "timestamp": 1789121367726
+        },
+        {
+          "attempt": 7,
+          "success": true,
+          "sectionId": "26",
+          "timestamp": 1789121382876
+        },
+        {
+          "attempt": 8,
+          "success": true,
+          "sectionId": "29",
+          "timestamp": 1789121390709
+        },
+        {
+          "attempt": 9,
+          "success": true,
+          "sectionId": "29",
+          "timestamp": 1789121404558
+        },
+        {
+          "attempt": 10,
+          "success": true,
+          "sectionId": "30",
+          "timestamp": 1789121406359
+        }
+      ],
+      "sections": [
+        "Abschnitt 3 Programme & Browser",
+        "Abschnitt 8 Drag & Drop – Browser",
+        "Abschnitt 10 Combo Builder – Mixed",
+        "Abschnitt 17 Shortcut Shuffle I",
+        "Abschnitt 23 Fast-Paced Browser",
+        "Abschnitt 26 Advanced Combo Builder",
+        "Abschnitt 29 Mastery Sprint",
+        "Abschnitt 30 Final Mastery"
+      ]
+    },
+    "combo:f5": {
+      "key": "combo:f5",
+      "label": "Aktualisieren",
+      "shortcut": "F5",
+      "attempts": 7,
+      "misses": 0,
+      "history": [
+        {
+          "attempt": 1,
+          "success": true,
+          "sectionId": "3",
+          "timestamp": 1789121340478
+        },
+        {
+          "attempt": 2,
+          "success": true,
+          "sectionId": "3",
+          "timestamp": 1789121340829
+        },
+        {
+          "attempt": 3,
+          "success": true,
+          "sectionId": "8",
+          "timestamp": 1789121343594
+        },
+        {
+          "attempt": 4,
+          "success": true,
+          "sectionId": "23",
+          "timestamp": 1789121370026
+        },
+        {
+          "attempt": 5,
+          "success": true,
+          "sectionId": "29",
+          "timestamp": 1789121388408
+        },
+        {
+          "attempt": 6,
+          "success": true,
+          "sectionId": "29",
+          "timestamp": 1789121397659
+        },
+        {
+          "attempt": 7,
+          "success": true,
+          "sectionId": "30",
+          "timestamp": 1789121406359
+        }
+      ],
+      "sections": [
+        "Abschnitt 3 Programme & Browser",
+        "Abschnitt 8 Drag & Drop – Browser",
+        "Abschnitt 23 Fast-Paced Browser",
+        "Abschnitt 29 Mastery Sprint",
+        "Abschnitt 30 Final Mastery"
+      ]
+    },
+    "combo:ctrl+l": {
+      "key": "combo:ctrl+l",
+      "label": "Ctrl+L",
+      "shortcut": "Ctrl+L",
+      "attempts": 8,
+      "misses": 0,
+      "history": [
+        {
+          "attempt": 1,
+          "success": true,
+          "sectionId": "3",
+          "timestamp": 1789121340478
+        },
+        {
+          "attempt": 2,
+          "success": true,
+          "sectionId": "3",
+          "timestamp": 1789121340829
+        },
+        {
+          "attempt": 3,
+          "success": true,
+          "sectionId": "8",
+          "timestamp": 1789121343594
+        },
+        {
+          "attempt": 4,
+          "success": true,
+          "sectionId": "23",
+          "timestamp": 1789121368493
+        },
+        {
+          "attempt": 5,
+          "success": true,
+          "sectionId": "25",
+          "timestamp": 1789121381877
+        },
+        {
+          "attempt": 6,
+          "success": true,
+          "sectionId": "25",
+          "timestamp": 1789121382276
+        },
+        {
+          "attempt": 7,
+          "success": true,
+          "sectionId": "28",
+          "timestamp": 1789121384166
+        },
+        {
+          "attempt": 8,
+          "success": true,
+          "sectionId": "28",
+          "timestamp": 1789121384166
+        }
+      ],
+      "sections": [
+        "Abschnitt 3 Programme & Browser",
+        "Abschnitt 8 Drag & Drop – Browser",
+        "Abschnitt 23 Fast-Paced Browser",
+        "Abschnitt 25 Verwechslungsgefahr",
+        "Abschnitt 28 Real-World Gauntlet"
+      ]
+    },
+    "combo:ctrl+tab": {
+      "key": "combo:ctrl+tab",
+      "label": "Nächster Tab",
+      "shortcut": "Ctrl+Tab",
+      "attempts": 8,
+      "misses": 0,
+      "history": [
+        {
+          "attempt": 1,
+          "success": true,
+          "sectionId": "3",
+          "timestamp": 1789121340478
+        },
+        {
+          "attempt": 2,
+          "success": true,
+          "sectionId": "3",
+          "timestamp": 1789121340829
+        },
+        {
+          "attempt": 3,
+          "success": true,
+          "sectionId": "8",
+          "timestamp": 1789121343594
+        },
+        {
+          "attempt": 4,
+          "success": true,
+          "sectionId": "18",
+          "timestamp": 1789121348894
+        },
+        {
+          "attempt": 5,
+          "success": true,
+          "sectionId": "19",
+          "timestamp": 1789121349394
+        },
+        {
+          "attempt": 6,
+          "success": true,
+          "sectionId": "23",
+          "timestamp": 1789121366959
+        },
+        {
+          "attempt": 7,
+          "success": true,
+          "sectionId": "25",
+          "timestamp": 1789121381877
+        },
+        {
+          "attempt": 8,
+          "success": true,
+          "sectionId": "25",
+          "timestamp": 1789121382276
+        }
+      ],
+      "sections": [
+        "Abschnitt 3 Programme & Browser",
+        "Abschnitt 8 Drag & Drop – Browser",
+        "Abschnitt 18 Shortcut Shuffle II",
+        "Abschnitt 19 Navigation Puzzle",
+        "Abschnitt 23 Fast-Paced Browser",
+        "Abschnitt 25 Verwechslungsgefahr"
+      ]
+    },
+    "combo:ctrl+shift+tab": {
+      "key": "combo:ctrl+shift+tab",
+      "label": "Vorheriger Tab",
+      "shortcut": "Ctrl+Shift+Tab",
+      "attempts": 9,
+      "misses": 1,
+      "history": [
+        {
+          "attempt": 1,
+          "success": true,
+          "sectionId": "3",
+          "timestamp": 1789121340478
+        },
+        {
+          "attempt": 2,
+          "success": true,
+          "sectionId": "3",
+          "timestamp": 1789121340829
+        },
+        {
+          "attempt": 3,
+          "success": true,
+          "sectionId": "8",
+          "timestamp": 1789121343594
+        },
+        {
+          "attempt": 4,
+          "success": true,
+          "sectionId": "19",
+          "timestamp": 1789121349394
+        },
+        {
+          "attempt": 5,
+          "success": true,
+          "sectionId": "23",
+          "timestamp": 1789121370793
+        },
+        {
+          "attempt": 6,
+          "success": true,
+          "sectionId": "26",
+          "timestamp": 1789121382876
+        },
+        {
+          "attempt": 7,
+          "success": false,
+          "sectionId": "29",
+          "timestamp": 1789121384563
+        },
+        {
+          "attempt": 8,
+          "success": true,
+          "sectionId": "29",
+          "timestamp": 1789121403791
+        },
+        {
+          "attempt": 9,
+          "success": true,
+          "sectionId": "30",
+          "timestamp": 1789121406359
+        }
+      ],
+      "sections": [
+        "Abschnitt 3 Programme & Browser",
+        "Abschnitt 8 Drag & Drop – Browser",
+        "Abschnitt 19 Navigation Puzzle",
+        "Abschnitt 23 Fast-Paced Browser",
+        "Abschnitt 26 Advanced Combo Builder",
+        "Abschnitt 29 Mastery Sprint",
+        "Abschnitt 30 Final Mastery"
+      ]
+    },
+    "combo:win+l": {
+      "key": "combo:win+l",
+      "label": "Win+L",
+      "shortcut": "Win+L",
+      "attempts": 11,
+      "misses": 0,
+      "history": [
+        {
+          "attempt": 1,
+          "success": true,
+          "sectionId": "4",
+          "timestamp": 1789121341295
+        },
+        {
+          "attempt": 2,
+          "success": true,
+          "sectionId": "9",
+          "timestamp": 1789121344128
+        },
+        {
+          "attempt": 3,
+          "success": true,
+          "sectionId": "9",
+          "timestamp": 1789121344527
+        },
+        {
+          "attempt": 4,
+          "success": true,
+          "sectionId": "16",
+          "timestamp": 1789121348064
+        },
+        {
+          "attempt": 5,
+          "success": true,
+          "sectionId": "16",
+          "timestamp": 1789121348064
+        },
+        {
+          "attempt": 6,
+          "success": true,
+          "sectionId": "20",
+          "timestamp": 1789121349828
+        },
+        {
+          "attempt": 7,
+          "success": true,
+          "sectionId": "24",
+          "timestamp": 1789121377825
+        },
+        {
+          "attempt": 8,
+          "success": true,
+          "sectionId": "25",
+          "timestamp": 1789121381877
+        },
+        {
+          "attempt": 9,
+          "success": true,
+          "sectionId": "25",
+          "timestamp": 1789121382276
+        },
+        {
+          "attempt": 10,
+          "success": true,
+          "sectionId": "28",
+          "timestamp": 1789121384166
+        },
+        {
+          "attempt": 11,
+          "success": true,
+          "sectionId": "28",
+          "timestamp": 1789121384166
+        }
+      ],
+      "sections": [
+        "Abschnitt 4 Windows & Arbeitsalltag",
+        "Abschnitt 9 Drag & Drop – Windows",
+        "Abschnitt 16 Szenario – System unter Druck",
+        "Abschnitt 20 System Quick Access",
+        "Abschnitt 24 Fast-Paced Windows",
+        "Abschnitt 25 Verwechslungsgefahr",
+        "Abschnitt 28 Real-World Gauntlet"
+      ]
+    },
+    "combo:win+d": {
+      "key": "combo:win+d",
+      "label": "Desktop (Win+D)",
+      "shortcut": "Win+D",
+      "attempts": 7,
+      "misses": 0,
+      "history": [
+        {
+          "attempt": 1,
+          "success": true,
+          "sectionId": "4",
+          "timestamp": 1789121341295
+        },
+        {
+          "attempt": 2,
+          "success": true,
+          "sectionId": "9",
+          "timestamp": 1789121344128
+        },
+        {
+          "attempt": 3,
+          "success": true,
+          "sectionId": "9",
+          "timestamp": 1789121344527
+        },
+        {
+          "attempt": 4,
+          "success": true,
+          "sectionId": "20",
+          "timestamp": 1789121349828
+        },
+        {
+          "attempt": 5,
+          "success": true,
+          "sectionId": "24",
+          "timestamp": 1789121380892
+        },
+        {
+          "attempt": 6,
+          "success": true,
+          "sectionId": "29",
+          "timestamp": 1789121387643
+        },
+        {
+          "attempt": 7,
+          "success": true,
+          "sectionId": "29",
+          "timestamp": 1789121396125
+        }
+      ],
+      "sections": [
+        "Abschnitt 4 Windows & Arbeitsalltag",
+        "Abschnitt 9 Drag & Drop – Windows",
+        "Abschnitt 20 System Quick Access",
+        "Abschnitt 24 Fast-Paced Windows",
+        "Abschnitt 29 Mastery Sprint"
+      ]
+    },
+    "combo:win+e": {
+      "key": "combo:win+e",
+      "label": "Win+E",
+      "shortcut": "Win+E",
+      "attempts": 7,
+      "misses": 0,
+      "history": [
+        {
+          "attempt": 1,
+          "success": true,
+          "sectionId": "4",
+          "timestamp": 1789121341295
+        },
+        {
+          "attempt": 2,
+          "success": true,
+          "sectionId": "9",
+          "timestamp": 1789121344128
+        },
+        {
+          "attempt": 3,
+          "success": true,
+          "sectionId": "9",
+          "timestamp": 1789121344527
+        },
+        {
+          "attempt": 4,
+          "success": true,
+          "sectionId": "16",
+          "timestamp": 1789121348063
+        },
+        {
+          "attempt": 5,
+          "success": true,
+          "sectionId": "16",
+          "timestamp": 1789121348064
+        },
+        {
+          "attempt": 6,
+          "success": true,
+          "sectionId": "20",
+          "timestamp": 1789121349828
+        },
+        {
+          "attempt": 7,
+          "success": true,
+          "sectionId": "24",
+          "timestamp": 1789121375526
+        }
+      ],
+      "sections": [
+        "Abschnitt 4 Windows & Arbeitsalltag",
+        "Abschnitt 9 Drag & Drop – Windows",
+        "Abschnitt 16 Szenario – System unter Druck",
+        "Abschnitt 20 System Quick Access",
+        "Abschnitt 24 Fast-Paced Windows"
+      ]
+    },
+    "combo:win+shift+s": {
+      "key": "combo:win+shift+s",
+      "label": "Screenshot",
+      "shortcut": "Win+Shift+S",
+      "attempts": 11,
+      "misses": 0,
+      "history": [
+        {
+          "attempt": 1,
+          "success": true,
+          "sectionId": "4",
+          "timestamp": 1789121341295
+        },
+        {
+          "attempt": 2,
+          "success": true,
+          "sectionId": "9",
+          "timestamp": 1789121344128
+        },
+        {
+          "attempt": 3,
+          "success": true,
+          "sectionId": "9",
+          "timestamp": 1789121344527
+        },
+        {
+          "attempt": 4,
+          "success": true,
+          "sectionId": "10",
+          "timestamp": 1789121345045
+        },
+        {
+          "attempt": 5,
+          "success": true,
+          "sectionId": "20",
+          "timestamp": 1789121349828
+        },
+        {
+          "attempt": 6,
+          "success": true,
+          "sectionId": "24",
+          "timestamp": 1789121376293
+        },
+        {
+          "attempt": 7,
+          "success": true,
+          "sectionId": "26",
+          "timestamp": 1789121382876
+        },
+        {
+          "attempt": 8,
+          "success": true,
+          "sectionId": "28",
+          "timestamp": 1789121384166
+        },
+        {
+          "attempt": 9,
+          "success": true,
+          "sectionId": "28",
+          "timestamp": 1789121384166
+        },
+        {
+          "attempt": 10,
+          "success": true,
+          "sectionId": "28",
+          "timestamp": 1789121384166
+        },
+        {
+          "attempt": 11,
+          "success": true,
+          "sectionId": "30",
+          "timestamp": 1789121406359
+        }
+      ],
+      "sections": [
+        "Abschnitt 4 Windows & Arbeitsalltag",
+        "Abschnitt 9 Drag & Drop – Windows",
+        "Abschnitt 10 Combo Builder – Mixed",
+        "Abschnitt 20 System Quick Access",
+        "Abschnitt 24 Fast-Paced Windows",
+        "Abschnitt 26 Advanced Combo Builder",
+        "Abschnitt 28 Real-World Gauntlet",
+        "Abschnitt 30 Final Mastery"
+      ]
+    },
+    "combo:alt+tab": {
+      "key": "combo:alt+tab",
+      "label": "Alt+Tab",
+      "shortcut": "Alt+Tab",
+      "attempts": 14,
+      "misses": 0,
+      "history": [
+        {
+          "attempt": 1,
+          "success": true,
+          "sectionId": "4",
+          "timestamp": 1789121341295
+        },
+        {
+          "attempt": 2,
+          "success": true,
+          "sectionId": "9",
+          "timestamp": 1789121344128
+        },
+        {
+          "attempt": 3,
+          "success": true,
+          "sectionId": "9",
+          "timestamp": 1789121344527
+        },
+        {
+          "attempt": 4,
+          "success": true,
+          "sectionId": "10",
+          "timestamp": 1789121345045
+        },
+        {
+          "attempt": 5,
+          "success": true,
+          "sectionId": "16",
+          "timestamp": 1789121348063
+        },
+        {
+          "attempt": 6,
+          "success": true,
+          "sectionId": "16",
+          "timestamp": 1789121348063
+        },
+        {
+          "attempt": 7,
+          "success": true,
+          "sectionId": "18",
+          "timestamp": 1789121348894
+        },
+        {
+          "attempt": 8,
+          "success": true,
+          "sectionId": "19",
+          "timestamp": 1789121349394
+        },
+        {
+          "attempt": 9,
+          "success": true,
+          "sectionId": "24",
+          "timestamp": 1789121377059
+        },
+        {
+          "attempt": 10,
+          "success": true,
+          "sectionId": "25",
+          "timestamp": 1789121381877
+        },
+        {
+          "attempt": 11,
+          "success": true,
+          "sectionId": "25",
+          "timestamp": 1789121382276
+        },
+        {
+          "attempt": 12,
+          "success": true,
+          "sectionId": "26",
+          "timestamp": 1789121382876
+        },
+        {
+          "attempt": 13,
+          "success": true,
+          "sectionId": "28",
+          "timestamp": 1789121384166
+        },
+        {
+          "attempt": 14,
+          "success": true,
+          "sectionId": "28",
+          "timestamp": 1789121384166
+        }
+      ],
+      "sections": [
+        "Abschnitt 4 Windows & Arbeitsalltag",
+        "Abschnitt 9 Drag & Drop – Windows",
+        "Abschnitt 10 Combo Builder – Mixed",
+        "Abschnitt 16 Szenario – System unter Druck",
+        "Abschnitt 18 Shortcut Shuffle II",
+        "Abschnitt 19 Navigation Puzzle",
+        "Abschnitt 24 Fast-Paced Windows",
+        "Abschnitt 25 Verwechslungsgefahr",
+        "Abschnitt 26 Advanced Combo Builder",
+        "Abschnitt 28 Real-World Gauntlet"
+      ]
+    },
+    "combo:ctrl+shift+esc": {
+      "key": "combo:ctrl+shift+esc",
+      "label": "Task-Manager",
+      "shortcut": "Ctrl+Shift+Esc",
+      "attempts": 14,
+      "misses": 0,
+      "history": [
+        {
+          "attempt": 1,
+          "success": true,
+          "sectionId": "4",
+          "timestamp": 1789121341295
+        },
+        {
+          "attempt": 2,
+          "success": true,
+          "sectionId": "9",
+          "timestamp": 1789121344128
+        },
+        {
+          "attempt": 3,
+          "success": true,
+          "sectionId": "9",
+          "timestamp": 1789121344527
+        },
+        {
+          "attempt": 4,
+          "success": true,
+          "sectionId": "10",
+          "timestamp": 1789121345045
+        },
+        {
+          "attempt": 5,
+          "success": true,
+          "sectionId": "16",
+          "timestamp": 1789121348063
+        },
+        {
+          "attempt": 6,
+          "success": true,
+          "sectionId": "16",
+          "timestamp": 1789121348063
+        },
+        {
+          "attempt": 7,
+          "success": true,
+          "sectionId": "16",
+          "timestamp": 1789121348063
+        },
+        {
+          "attempt": 8,
+          "success": true,
+          "sectionId": "17",
+          "timestamp": 1789121348460
+        },
+        {
+          "attempt": 9,
+          "success": true,
+          "sectionId": "20",
+          "timestamp": 1789121349828
+        },
+        {
+          "attempt": 10,
+          "success": true,
+          "sectionId": "24",
+          "timestamp": 1789121374759
+        },
+        {
+          "attempt": 11,
+          "success": true,
+          "sectionId": "26",
+          "timestamp": 1789121382876
+        },
+        {
+          "attempt": 12,
+          "success": true,
+          "sectionId": "29",
+          "timestamp": 1789121393775
+        },
+        {
+          "attempt": 13,
+          "success": true,
+          "sectionId": "29",
+          "timestamp": 1789121396891
+        },
+        {
+          "attempt": 14,
+          "success": true,
+          "sectionId": "30",
+          "timestamp": 1789121406359
+        }
+      ],
+      "sections": [
+        "Abschnitt 4 Windows & Arbeitsalltag",
+        "Abschnitt 9 Drag & Drop – Windows",
+        "Abschnitt 10 Combo Builder – Mixed",
+        "Abschnitt 16 Szenario – System unter Druck",
+        "Abschnitt 17 Shortcut Shuffle I",
+        "Abschnitt 20 System Quick Access",
+        "Abschnitt 24 Fast-Paced Windows",
+        "Abschnitt 26 Advanced Combo Builder",
+        "Abschnitt 29 Mastery Sprint",
+        "Abschnitt 30 Final Mastery"
+      ]
+    },
+    "combo:win+v": {
+      "key": "combo:win+v",
+      "label": "Zwischenablage-Verlauf",
+      "shortcut": "Win+V",
+      "attempts": 10,
+      "misses": 0,
+      "history": [
+        {
+          "attempt": 1,
+          "success": true,
+          "sectionId": "4",
+          "timestamp": 1789121341295
+        },
+        {
+          "attempt": 2,
+          "success": true,
+          "sectionId": "9",
+          "timestamp": 1789121344128
+        },
+        {
+          "attempt": 3,
+          "success": true,
+          "sectionId": "9",
+          "timestamp": 1789121344527
+        },
+        {
+          "attempt": 4,
+          "success": true,
+          "sectionId": "18",
+          "timestamp": 1789121348894
+        },
+        {
+          "attempt": 5,
+          "success": true,
+          "sectionId": "20",
+          "timestamp": 1789121349828
+        },
+        {
+          "attempt": 6,
+          "success": true,
+          "sectionId": "25",
+          "timestamp": 1789121381877
+        },
+        {
+          "attempt": 7,
+          "success": true,
+          "sectionId": "25",
+          "timestamp": 1789121382276
+        },
+        {
+          "attempt": 8,
+          "success": true,
+          "sectionId": "29",
+          "timestamp": 1789121389175
+        },
+        {
+          "attempt": 9,
+          "success": true,
+          "sectionId": "29",
+          "timestamp": 1789121405324
+        },
+        {
+          "attempt": 10,
+          "success": true,
+          "sectionId": "30",
+          "timestamp": 1789121406359
+        }
+      ],
+      "sections": [
+        "Abschnitt 4 Windows & Arbeitsalltag",
+        "Abschnitt 9 Drag & Drop – Windows",
+        "Abschnitt 18 Shortcut Shuffle II",
+        "Abschnitt 20 System Quick Access",
+        "Abschnitt 25 Verwechslungsgefahr",
+        "Abschnitt 29 Mastery Sprint",
+        "Abschnitt 30 Final Mastery"
+      ]
+    },
+    "combo:alt+f4": {
+      "key": "combo:alt+f4",
+      "label": "Alt+F4",
+      "shortcut": "Alt+F4",
+      "attempts": 14,
+      "misses": 0,
+      "history": [
+        {
+          "attempt": 1,
+          "success": true,
+          "sectionId": "4",
+          "timestamp": 1789121341295
+        },
+        {
+          "attempt": 2,
+          "success": true,
+          "sectionId": "9",
+          "timestamp": 1789121344128
+        },
+        {
+          "attempt": 3,
+          "success": true,
+          "sectionId": "9",
+          "timestamp": 1789121344527
+        },
+        {
+          "attempt": 4,
+          "success": true,
+          "sectionId": "10",
+          "timestamp": 1789121345045
+        },
+        {
+          "attempt": 5,
+          "success": true,
+          "sectionId": "16",
+          "timestamp": 1789121348063
+        },
+        {
+          "attempt": 6,
+          "success": true,
+          "sectionId": "16",
+          "timestamp": 1789121348063
+        },
+        {
+          "attempt": 7,
+          "success": true,
+          "sectionId": "18",
+          "timestamp": 1789121348894
+        },
+        {
+          "attempt": 8,
+          "success": true,
+          "sectionId": "24",
+          "timestamp": 1789121378597
+        },
+        {
+          "attempt": 9,
+          "success": true,
+          "sectionId": "25",
+          "timestamp": 1789121381877
+        },
+        {
+          "attempt": 10,
+          "success": true,
+          "sectionId": "25",
+          "timestamp": 1789121382276
+        },
+        {
+          "attempt": 11,
+          "success": true,
+          "sectionId": "26",
+          "timestamp": 1789121382876
+        },
+        {
+          "attempt": 12,
+          "success": true,
+          "sectionId": "29",
+          "timestamp": 1789121393009
+        },
+        {
+          "attempt": 13,
+          "success": true,
+          "sectionId": "29",
+          "timestamp": 1789121398425
+        },
+        {
+          "attempt": 14,
+          "success": true,
+          "sectionId": "30",
+          "timestamp": 1789121406359
+        }
+      ],
+      "sections": [
+        "Abschnitt 4 Windows & Arbeitsalltag",
+        "Abschnitt 9 Drag & Drop – Windows",
+        "Abschnitt 10 Combo Builder – Mixed",
+        "Abschnitt 16 Szenario – System unter Druck",
+        "Abschnitt 18 Shortcut Shuffle II",
+        "Abschnitt 24 Fast-Paced Windows",
+        "Abschnitt 25 Verwechslungsgefahr",
+        "Abschnitt 26 Advanced Combo Builder",
+        "Abschnitt 29 Mastery Sprint",
+        "Abschnitt 30 Final Mastery"
+      ]
+    },
+    "combo:ctrl+o": {
+      "key": "combo:ctrl+o",
+      "label": "Ctrl+O",
+      "shortcut": "Ctrl+O",
+      "attempts": 9,
+      "misses": 1,
+      "history": [
+        {
+          "attempt": 1,
+          "success": true,
+          "sectionId": "7",
+          "timestamp": 1789121343144
+        },
+        {
+          "attempt": 2,
+          "success": false,
+          "sectionId": "15",
+          "timestamp": 1789121347154
+        },
+        {
+          "attempt": 3,
+          "success": true,
+          "sectionId": "15",
+          "timestamp": 1789121347154
+        },
+        {
+          "attempt": 4,
+          "success": true,
+          "sectionId": "15",
+          "timestamp": 1789121347476
+        },
+        {
+          "attempt": 5,
+          "success": true,
+          "sectionId": "15",
+          "timestamp": 1789121347476
+        },
+        {
+          "attempt": 6,
+          "success": true,
+          "sectionId": "22",
+          "timestamp": 1789121354510
+        },
+        {
+          "attempt": 7,
+          "success": true,
+          "sectionId": "22",
+          "timestamp": 1789121359160
+        },
+        {
+          "attempt": 8,
+          "success": true,
+          "sectionId": "28",
+          "timestamp": 1789121384166
+        },
+        {
+          "attempt": 9,
+          "success": true,
+          "sectionId": "28",
+          "timestamp": 1789121384166
+        }
+      ],
+      "sections": [
+        "Abschnitt 7 Drag & Drop – Spezial",
+        "Abschnitt 15 Szenario – Schulauftrag",
+        "Abschnitt 22 Fast-Paced Basics",
+        "Abschnitt 28 Real-World Gauntlet"
+      ]
+    },
+    "combo:ctrl+p": {
+      "key": "combo:ctrl+p",
+      "label": "Druckdialog",
+      "shortcut": "Ctrl+P",
+      "attempts": 1,
+      "misses": 0,
+      "history": [
+        {
+          "attempt": 1,
+          "success": true,
+          "sectionId": "7",
+          "timestamp": 1789121343144
+        }
+      ],
+      "sections": [
+        "Abschnitt 7 Drag & Drop – Spezial"
+      ]
+    },
+    "combo:win+": {
+      "key": "combo:win+",
+      "label": "Maximieren",
+      "shortcut": "Win+↑",
+      "attempts": 20,
+      "misses": 1,
+      "history": [
+        {
+          "attempt": 1,
+          "success": false,
+          "sectionId": "9",
+          "timestamp": 1789121344128
+        },
+        {
+          "attempt": 2,
+          "success": true,
+          "sectionId": "9",
+          "timestamp": 1789121344128
+        },
+        {
+          "attempt": 3,
+          "success": true,
+          "sectionId": "9",
+          "timestamp": 1789121344128
+        },
+        {
+          "attempt": 4,
+          "success": true,
+          "sectionId": "9",
+          "timestamp": 1789121344128
+        },
+        {
+          "attempt": 5,
+          "success": true,
+          "sectionId": "9",
+          "timestamp": 1789121344527
+        },
+        {
+          "attempt": 6,
+          "success": true,
+          "sectionId": "9",
+          "timestamp": 1789121344527
+        },
+        {
+          "attempt": 7,
+          "success": true,
+          "sectionId": "9",
+          "timestamp": 1789121344527
+        },
+        {
+          "attempt": 8,
+          "success": true,
+          "sectionId": "9",
+          "timestamp": 1789121344527
+        },
+        {
+          "attempt": 9,
+          "success": true,
+          "sectionId": "17",
+          "timestamp": 1789121348460
+        },
+        {
+          "attempt": 10,
+          "success": true,
+          "sectionId": "19",
+          "timestamp": 1789121349394
+        },
+        {
+          "attempt": 11,
+          "success": true,
+          "sectionId": "19",
+          "timestamp": 1789121349394
+        },
+        {
+          "attempt": 12,
+          "success": true,
+          "sectionId": "19",
+          "timestamp": 1789121349394
+        },
+        {
+          "attempt": 13,
+          "success": true,
+          "sectionId": "19",
+          "timestamp": 1789121349394
+        },
+        {
+          "attempt": 14,
+          "success": true,
+          "sectionId": "24",
+          "timestamp": 1789121373993
+        },
+        {
+          "attempt": 15,
+          "success": true,
+          "sectionId": "24",
+          "timestamp": 1789121379359
+        },
+        {
+          "attempt": 16,
+          "success": true,
+          "sectionId": "24",
+          "timestamp": 1789121380125
+        },
+        {
+          "attempt": 17,
+          "success": true,
+          "sectionId": "29",
+          "timestamp": 1789121385325
+        },
+        {
+          "attempt": 18,
+          "success": true,
+          "sectionId": "29",
+          "timestamp": 1789121386859
+        },
+        {
+          "attempt": 19,
+          "success": true,
+          "sectionId": "29",
+          "timestamp": 1789121402258
+        },
+        {
+          "attempt": 20,
+          "success": true,
+          "sectionId": "29",
+          "timestamp": 1789121403025
+        }
+      ],
+      "sections": [
+        "Abschnitt 9 Drag & Drop – Windows",
+        "Abschnitt 17 Shortcut Shuffle I",
+        "Abschnitt 19 Navigation Puzzle",
+        "Abschnitt 24 Fast-Paced Windows",
+        "Abschnitt 29 Mastery Sprint"
+      ]
+    },
+    "combo:ctrl+t+ctrl+l+ctrl+f+ctrl+w": {
+      "key": "combo:ctrl+t+ctrl+l+ctrl+f+ctrl+w",
+      "label": "Ctrl+T+Ctrl+L+Ctrl+F+Ctrl+W",
+      "shortcut": "",
+      "attempts": 2,
+      "misses": 0,
+      "history": [
+        {
+          "attempt": 1,
+          "success": true,
+          "sectionId": "11",
+          "timestamp": 1789121345427
+        },
+        {
+          "attempt": 2,
+          "success": true,
+          "sectionId": "27",
+          "timestamp": 1789121383426
+        }
+      ],
+      "sections": [
+        "Abschnitt 11 Workflow Chain – Browser-Recherche",
+        "Abschnitt 27 Workflow Chain Gauntlet"
+      ]
+    },
+    "combo:ctrl+shift+t+f5": {
+      "key": "combo:ctrl+shift+t+f5",
+      "label": "Ctrl+Shift+T+F5",
+      "shortcut": "",
+      "attempts": 1,
+      "misses": 0,
+      "history": [
+        {
+          "attempt": 1,
+          "success": true,
+          "sectionId": "11",
+          "timestamp": 1789121345427
+        }
+      ],
+      "sections": [
+        "Abschnitt 11 Workflow Chain – Browser-Recherche"
+      ]
+    },
+    "combo:ctrl+o+ctrl+a+ctrl+c+ctrl+n+ctrl+shift+v+ctrl+s": {
+      "key": "combo:ctrl+o+ctrl+a+ctrl+c+ctrl+n+ctrl+shift+v+ctrl+s",
+      "label": "Ctrl+O+Ctrl+A+Ctrl+C+Ctrl+N+Ctrl+Shift+V+Ctrl+S",
+      "shortcut": "",
+      "attempts": 1,
+      "misses": 0,
+      "history": [
+        {
+          "attempt": 1,
+          "success": true,
+          "sectionId": "12",
+          "timestamp": 1789121345877
+        }
+      ],
+      "sections": [
+        "Abschnitt 12 Workflow Chain – Dokument"
+      ]
+    },
+    "combo:ctrl+f+ctrl+h+ctrl+s+ctrl+p": {
+      "key": "combo:ctrl+f+ctrl+h+ctrl+s+ctrl+p",
+      "label": "Ctrl+F+Ctrl+H+Ctrl+S+Ctrl+P",
+      "shortcut": "",
+      "attempts": 1,
+      "misses": 0,
+      "history": [
+        {
+          "attempt": 1,
+          "success": true,
+          "sectionId": "12",
+          "timestamp": 1789121345877
+        }
+      ],
+      "sections": [
+        "Abschnitt 12 Workflow Chain – Dokument"
+      ]
+    },
+    "combo:ctrl+home+ctrl+f+ctrl+h+ctrl+end+ctrl+s": {
+      "key": "combo:ctrl+home+ctrl+f+ctrl+h+ctrl+end+ctrl+s",
+      "label": "Ctrl+Home+Ctrl+F+Ctrl+H+Ctrl+End+Ctrl+S",
+      "shortcut": "",
+      "attempts": 1,
+      "misses": 0,
+      "history": [
+        {
+          "attempt": 1,
+          "success": true,
+          "sectionId": "13",
+          "timestamp": 1789121346278
+        }
+      ],
+      "sections": [
+        "Abschnitt 13 Workflow Chain – Langes Dokument"
+      ]
+    },
+    "combo:win+e+win+ +alt+tab+win+ +win+shift+s+win+l": {
+      "key": "combo:win+e+win+ +alt+tab+win+ +win+shift+s+win+l",
+      "label": "Win+E+Win+→+Alt+Tab+Win+←+Win+Shift+S+Win+L",
+      "shortcut": "",
+      "attempts": 2,
+      "misses": 0,
+      "history": [
+        {
+          "attempt": 1,
+          "success": true,
+          "sectionId": "14",
+          "timestamp": 1789121346677
+        },
+        {
+          "attempt": 2,
+          "success": true,
+          "sectionId": "27",
+          "timestamp": 1789121383426
+        }
+      ],
+      "sections": [
+        "Abschnitt 14 Workflow Chain – Windows Workspace",
+        "Abschnitt 27 Workflow Chain Gauntlet"
+      ]
+    },
+    "combo:ctrl+o+ctrl+a+ctrl+c+ctrl+shift+v+ctrl+s": {
+      "key": "combo:ctrl+o+ctrl+a+ctrl+c+ctrl+shift+v+ctrl+s",
+      "label": "Ctrl+O+Ctrl+A+Ctrl+C+Ctrl+Shift+V+Ctrl+S",
+      "shortcut": "",
+      "attempts": 1,
+      "misses": 0,
+      "history": [
+        {
+          "attempt": 1,
+          "success": true,
+          "sectionId": "27",
+          "timestamp": 1789121383426
+        }
+      ],
+      "sections": [
+        "Abschnitt 27 Workflow Chain Gauntlet"
+      ]
+    },
+    "combo:altgr+": {
+      "key": "combo:altgr+",
+      "label": "Backslash auf CH-Tastatur",
+      "shortcut": "AltGr+<",
+      "attempts": 1,
+      "misses": 0,
+      "history": [
+        {
+          "attempt": 1,
+          "success": true,
+          "sectionId": "30",
+          "timestamp": 1789121406359
+        }
+      ],
+      "sections": [
+        "Abschnitt 30 Final Mastery"
+      ]
+    },
+    "combo:altgr+a": {
+      "key": "combo:altgr+a",
+      "label": "Geschweifte Klammer auf",
+      "shortcut": "AltGr+ä",
+      "attempts": 1,
+      "misses": 0,
+      "history": [
+        {
+          "attempt": 1,
+          "success": true,
+          "sectionId": "30",
+          "timestamp": 1789121406359
+        }
+      ],
+      "sections": [
+        "Abschnitt 30 Final Mastery"
+      ]
+    }
+  },
+  "sectionsUnlocked": 30,
+  "gachaPreference": "weapon",
+  "battleUnlocked": 1,
+  "battleClears": {},
+  "lastShopPurchase": null,
+  "edition": "tk2-2026",
+  "coinInfo": {
+    "itemCount": 0,
+    "itemCopies": 0,
+    "skillCount": 0,
+    "skillCopies": 0,
+    "itemsValueCoins": 0,
+    "skillsValueCoins": 0,
+    "totalValueCoins": 0
+  }
+}
