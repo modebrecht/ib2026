@@ -89,7 +89,7 @@ jobs:
           scripts = [
               '<script src="premium-motion.js"></script>',
               '<script src="battle-motion.js"></script>',
-              '<script src="arena-dev-fix.js"></script>',
+              '<script src="arena-dev-fix.js?v=4863e334"></script>',
               '<script src="pdf-report.js"></script>',
           ]
           if '</body>' not in html:
@@ -112,7 +112,7 @@ jobs:
           grep -Fq "doc.save('A8-' + safeFileName(student) + '.pdf');" _site/dev/tk2/A8/pdf-report.js
           grep -Fq '<script src="premium-motion.js"></script>' _site/dev/tk2/A8/index.html
           grep -Fq '<script src="battle-motion.js"></script>' _site/dev/tk2/A8/index.html
-          grep -Fq '<script src="arena-dev-fix.js"></script>' _site/dev/tk2/A8/index.html
+          grep -Fq '<script src="arena-dev-fix.js?v=4863e334"></script>' _site/dev/tk2/A8/index.html
           grep -Fq '<script src="pdf-report.js"></script>' _site/dev/tk2/A8/index.html
 
           # Serve files exactly as committed; do not run Jekyll processing.
