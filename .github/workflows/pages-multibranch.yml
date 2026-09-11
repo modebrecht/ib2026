@@ -72,6 +72,16 @@ jobs:
           cp _site/dev/tk2/a8-pdf-report.js _site/dev/tk2/A8/pdf-report.js
           python3 - <<'PY'
           from pathlib import Path
+
+          # Classroom filename: A8-VORNAME.pdf
+          pdf_path = Path('_site/dev/tk2/A8/pdf-report.js')
+          pdf_js = pdf_path.read_text(encoding='utf-8')
+          old_name = "doc.save('A8_Shortcut_Quest_Lernnachweis_' + safeFileName(student) + '.pdf');"
+          new_name = "doc.save('A8-' + safeFileName(student) + '.pdf');"
+          if old_name not in pdf_js:
+              raise SystemExit('A8 PDF filename marker not found')
+          pdf_path.write_text(pdf_js.replace(old_name, new_name, 1), encoding='utf-8')
+
           path = Path('_site/dev/tk2/A8/index.html')
           html = path.read_text(encoding='utf-8')
           script = '<script src="pdf-report.js"></script>'
@@ -85,6 +95,7 @@ jobs:
           # Fail the build early if the review overlay is malformed or missing.
           node --check _site/dev/tk2/A8/pdf-report.js
           test -s _site/dev/tk2/A8/pdf-report.js
+          grep -Fq "doc.save('A8-' + safeFileName(student) + '.pdf');" _site/dev/tk2/A8/pdf-report.js
           grep -Fq '<script src="pdf-report.js"></script>' _site/dev/tk2/A8/index.html
 
           # Serve files exactly as committed; do not run Jekyll processing.
