@@ -421,15 +421,8 @@
         doc.text(String(item.id), px + 6.75, py + 8.0, { align: 'center' });
         doc.setFont('helvetica', 'bold'); doc.setFontSize(6.3); setColor(C.ink);
         doc.text(item.completed ? item.accuracy + '%' : '-', px + cellW - 3, py + 7.5, { align: 'right' });
-        doc.setFont('helvetica', 'normal'); doc.setFontSize(5.3); setColor(C.muted);
-        doc.text(ellipsize(item.title, cellW - 6, 5.3), px + 3, py + 14.2);
-        if (item.misses > 0) {
-          doc.setFont('helvetica', 'bold'); doc.setFontSize(5.7); setColor(accent);
-          doc.text(item.misses + ' Fehler', px + 3, py + cellH - 3.2);
-        } else {
-          doc.setFont('helvetica', 'normal'); doc.setFontSize(5.5); setColor(C.muted);
-          doc.text(item.completed ? 'fehlerfrei' : 'offen', px + 3, py + cellH - 3.2);
-        }
+        doc.setFont('helvetica', item.misses > 0 ? 'bold' : 'normal'); doc.setFontSize(5.1); setColor(item.misses > 0 ? accent : C.muted);
+        doc.text(ellipsize(item.title, cellW - 6, 5.1, item.misses > 0 ? 'bold' : 'normal'), px + 3, py + 14.2);
       });
     }
 
@@ -500,16 +493,16 @@
     doc.text('Nur Kombinationen mit echten Fehlversuchen. Die Abschnittsnummern zeigen, wo derselbe Shortcut im Kurs erneut vorkommt.', M, 41.5);
     drawProblemComboChart(data.problemCombos, M, 47, W - 2 * M, 102);
 
-    sectionHeading('Kompakte Diagnose', M, 160, C.blue);
-    var comboRows = data.problemCombos.slice(0, 8).map(function (item) {
+    sectionHeading('Priorität', M, 153, C.blue);
+    var comboRows = data.problemCombos.slice(0, 4).map(function (item) {
       return [item.shortcut || item.label, item.accuracy + '%', String(item.misses), comboSectionText(item)];
     });
     if (comboRows.length) {
-      drawSimpleTable(comboRows, M, 166, [72, 24, 24, 153], ['Kombination', 'Treffer', 'Fehler', 'Kommt vor in Abschnitten'], 8);
+      drawSimpleTable(comboRows, M, 157, [72, 24, 24, 153], ['Kombination', 'Treffer', 'Fehler', 'Kommt vor in Abschnitten'], 4);
     } else {
-      roundedPanel(M, 166, W - 2 * M, 20, C.greenSoft, C.line);
+      roundedPanel(M, 157, W - 2 * M, 20, C.greenSoft, C.line);
       doc.setFont('helvetica', 'bold'); doc.setFontSize(8.5); setColor(C.green);
-      doc.text('Keine Kombination braucht aktuell gezielte Nacharbeit.', M + 6, 178);
+      doc.text('Keine Kombination braucht aktuell gezielte Nacharbeit.', M + 6, 169);
     }
 
     newPage('Abschnitte & Lernfortschritt', 'WO TRATEN FEHLER AUF? | WAS HAT SICH VERBESSERT?');
