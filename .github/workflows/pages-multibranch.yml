@@ -48,7 +48,7 @@ jobs:
 
           # TK2 A8 review build: inject the pinned Shortcut Quest 2026 runtime
           # into DEV only so classroom review stays deterministic.
-          SHORTCUT_QUEST_SHA="50685be283011ac9f275aeb06a9302d51bb7b1cc"
+          SHORTCUT_QUEST_SHA="8ac8fd14eec822e659702dce4730cf06ec48bfa3"
           rm -rf /tmp/shortcut-quest-a8
           git init -q /tmp/shortcut-quest-a8
           git -C /tmp/shortcut-quest-a8 remote add origin https://github.com/modebrecht/shortcut-quest.git
@@ -66,6 +66,7 @@ jobs:
           cp /tmp/shortcut-quest-a8/2026/apexcharts.min.js _site/dev/tk2/A8/
           cp /tmp/shortcut-quest-a8/2026/favicon.svg _site/dev/tk2/A8/
           cp /tmp/shortcut-quest-a8/2026/premium-motion.js _site/dev/tk2/A8/
+          cp /tmp/shortcut-quest-a8/2026/battle-motion.js _site/dev/tk2/A8/
           cp -R /tmp/shortcut-quest-a8/2026/assets _site/dev/tk2/A8/
 
           # IB2026-only A8 diagnostic PDF overlay.
@@ -86,6 +87,7 @@ jobs:
           html = path.read_text(encoding='utf-8')
           scripts = [
               '<script src="premium-motion.js"></script>',
+              '<script src="battle-motion.js"></script>',
               '<script src="pdf-report.js"></script>',
           ]
           if '</body>' not in html:
@@ -98,11 +100,14 @@ jobs:
 
           # Fail the build early if review scripts are malformed or missing.
           node --check _site/dev/tk2/A8/premium-motion.js
+          node --check _site/dev/tk2/A8/battle-motion.js
           node --check _site/dev/tk2/A8/pdf-report.js
           test -s _site/dev/tk2/A8/premium-motion.js
+          test -s _site/dev/tk2/A8/battle-motion.js
           test -s _site/dev/tk2/A8/pdf-report.js
           grep -Fq "doc.save('A8-' + safeFileName(student) + '.pdf');" _site/dev/tk2/A8/pdf-report.js
           grep -Fq '<script src="premium-motion.js"></script>' _site/dev/tk2/A8/index.html
+          grep -Fq '<script src="battle-motion.js"></script>' _site/dev/tk2/A8/index.html
           grep -Fq '<script src="pdf-report.js"></script>' _site/dev/tk2/A8/index.html
 
           # Serve files exactly as committed; do not run Jekyll processing.
