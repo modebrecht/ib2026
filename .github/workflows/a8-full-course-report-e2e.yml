@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   full-course-report:
@@ -18,6 +18,8 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-node@v4
         with:
@@ -42,3 +44,17 @@ jobs:
           path: qa-artifacts/
           if-no-files-found: error
           retention-days: 3
+
+      - name: Publish individual test files on QA branch
+        if: success()
+        run: |
+          rm -rf qa-results/a8-e2e
+          mkdir -p qa-results/a8-e2e
+          cp qa-artifacts/A8-E2E-Test.pdf qa-results/a8-e2e/
+          cp qa-artifacts/A8-E2E-Spielstand.json qa-results/a8-e2e/
+          cp qa-artifacts/A8-E2E-Summary.json qa-results/a8-e2e/
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add qa-results/a8-e2e
+          git commit -m "test: publish A8 E2E report artifacts"
+          git push origin HEAD:qa/a8-full-course-report-20260911
