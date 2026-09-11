@@ -53,7 +53,7 @@
     try {
       if (typeof state !== 'undefined' && state && typeof state === 'object') return state;
     } catch (error) {
-      // Fall through to storage. Top-level lexical bindings can differ between builds.
+      // Top-level lexical bindings can differ between builds.
     }
     var keys = ['shortcutRitter_2026_v1', 'shortcutRitter_v1'];
     for (var i = 0; i < keys.length; i += 1) {
@@ -74,19 +74,30 @@
       var id = String(section && section.id != null ? section.id : '');
       if (!id) return;
       var title = safeText(section.title || section.tabLabel || ('Abschnitt ' + id));
-      title = title.replace(/^\d+\.\s*/, '');
-      map[id] = title || ('Abschnitt ' + id);
+      map[id] = title.replace(/^\d+\.\s*/, '') || ('Abschnitt ' + id);
     });
     return map;
   }
 
   function clamp(value, min, max) {
-    return Math.max(min, Math.min(max, Number(value) || 0));
+    var number = Number(value);
+    if (!Number.isFinite(number)) number = 0;
+    return Math.max(min, Math.min(max, number));
   }
 
   function percent(correct, total) {
-    if (!total) return 0;
-    return Math.round((correct / total) * 100);
+    return total ? Math.round((correct / total) * 100) : 0;
+  }
+
+  function uniqueNumbers(values) {
+    var seen = {};
+    return values.map(function (value) { return Number(value); })
+      .filter(function (value) {
+        if (!Number.isFinite(value) || value < 1 || value > 30 || seen[value]) return false;
+        seen[value] = true;
+        return true;
+      })
+      .sort(function (a, b) { return a - b; });
   }
 
   function buildReportData(gameState) {
@@ -101,15 +112,27 @@
       var promptStats = report.promptStats || {};
       var attempts = 0;
       var misses = 0;
+      var firstTotal = 0;
+      var firstCorrect = 0;
+
       Object.keys(promptStats).forEach(function (key) {
         var entry = promptStats[key] || {};
         attempts += Number(entry.attempts) || 0;
         misses += Number(entry.misses) || 0;
+        if (Array.isArray(entry.history) && entry.history.length) {
+          firstTotal += 1;
+          if (entry.history[0] && entry.history[0].success) firstCorrect += 1;
+        }
       });
+
       var completed = Number(sectionClears[id]) > 0 || Number(report.successes) > 0;
-      var best = clamp(report.bestScore, 0, 100);
-      var last = clamp(report.lastScore, 0, 100);
-      var accuracy = attempts ? percent(attempts - misses, attempts) : (completed ? (best || 100) : 0);
+      var accuracy = attempts ? percent(attempts - misses, attempts) : (completed ? 100 : 0);
+      var firstAccuracy = firstTotal ? percent(firstCorrect, firstTotal) : accuracy;
+      var rawBest = Number(report.bestScore);
+      var best = Number.isFinite(rawBest) && rawBest > 0 ? clamp(rawBest, 0, 100) : (completed ? Math.max(accuracy, firstAccuracy) : 0);
+      var rawLast = Number(report.lastScore);
+      var last = Number.isFinite(rawLast) && rawLast > 0 ? clamp(rawLast, 0, 100) : (completed ? best : 0);
+
       sections.push({
         id: i,
         title: titles[id] || ('Abschnitt ' + id),
@@ -119,6 +142,7 @@
         attempts: attempts,
         misses: misses,
         accuracy: clamp(accuracy, 0, 100),
+        firstAccuracy: clamp(firstAccuracy, 0, 100),
         best: best,
         last: last,
         clears: Number(sectionClears[id]) || 0
@@ -129,18 +153,29 @@
       var entry = gameState.comboStats[key] || {};
       var attempts = Number(entry.attempts) || 0;
       var misses = Number(entry.misses) || 0;
-      var shortcut = safeText(entry.shortcut || '');
-      var label = safeText(entry.label || shortcut || key.replace(/^combo:/, ''));
-      if (shortcut && label.toLowerCase().indexOf(shortcut.toLowerCase()) === -1) label += ' (' + shortcut + ')';
+      var shortcut = safeText(entry.shortcut || key.replace(/^combo:/, ''));
+      var taskLabel = safeText(entry.label || shortcut || key.replace(/^combo:/, ''));
+      var history = Array.isArray(entry.history) ? entry.history.slice() : [];
+      var sectionIds = uniqueNumbers(history.map(function (item) { return item && item.sectionId; }));
+      if (!sectionIds.length && Array.isArray(entry.sections)) {
+        sectionIds = uniqueNumbers(entry.sections.map(function (text) {
+          var match = String(text || '').match(/Abschnitt\s+(\d+)/i);
+          return match ? match[1] : null;
+        }));
+      }
+      var display = shortcut || taskLabel;
+      if (taskLabel && shortcut && taskLabel.toLowerCase() !== shortcut.toLowerCase()) display = shortcut + ' - ' + taskLabel;
       return {
         key: key,
-        label: label,
+        label: display,
         shortcut: shortcut,
+        taskLabel: taskLabel,
         attempts: attempts,
         misses: misses,
         accuracy: attempts ? percent(attempts - misses, attempts) : 0,
-        history: Array.isArray(entry.history) ? entry.history.slice() : [],
-        sections: Array.isArray(entry.sections) ? entry.sections.slice() : []
+        history: history,
+        sectionIds: sectionIds,
+        sectionNames: sectionIds.map(function (sectionId) { return titles[String(sectionId)] || ('Abschnitt ' + sectionId); })
       };
     }).filter(function (item) { return item.attempts > 0; });
 
@@ -150,19 +185,13 @@
     var overallAccuracy = totalAttempts ? percent(totalAttempts - totalMisses, totalAttempts) : 0;
 
     var focusSections = sections.filter(function (item) { return item.misses > 0; }).sort(function (a, b) {
-      return b.misses - a.misses || a.accuracy - b.accuracy || a.id - b.id;
-    });
-    var practicedSections = sections.slice().sort(function (a, b) {
-      return b.attempts - a.attempts || b.checks - a.checks || a.id - b.id;
+      return b.misses - a.misses || a.firstAccuracy - b.firstAccuracy || a.id - b.id;
     });
     var problemCombos = combos.filter(function (item) { return item.misses > 0; }).sort(function (a, b) {
-      return b.misses - a.misses || a.accuracy - b.accuracy || b.attempts - a.attempts;
+      return b.misses - a.misses || a.accuracy - b.accuracy || b.attempts - a.attempts || a.shortcut.localeCompare(b.shortcut);
     });
     var strongCombos = combos.filter(function (item) { return item.misses === 0 && item.attempts >= 2; }).sort(function (a, b) {
-      return b.attempts - a.attempts || a.label.localeCompare(b.label);
-    });
-    var comboAccuracy = combos.slice().sort(function (a, b) {
-      return a.accuracy - b.accuracy || b.misses - a.misses || b.attempts - a.attempts;
+      return b.attempts - a.attempts || a.shortcut.localeCompare(b.shortcut);
     });
 
     return {
@@ -173,10 +202,8 @@
       totalMisses: totalMisses,
       overallAccuracy: overallAccuracy,
       focusSections: focusSections,
-      practicedSections: practicedSections,
       problemCombos: problemCombos,
-      strongCombos: strongCombos,
-      comboAccuracy: comboAccuracy
+      strongCombos: strongCombos
     };
   }
 
@@ -295,7 +322,7 @@
         doc.setFontSize(8.1); setColor(C.ink);
         doc.text(ellipsize(row.id + '. ' + row.title, w - 42, 8.1, 'bold'), x + 12, y + i * rowH + 5.4);
         doc.setFont('helvetica', 'normal'); doc.setFontSize(6.7); setColor(C.muted);
-        doc.text(row.accuracy + '% Treffer | ' + row.attempts + ' Versuche', x + 12, y + i * rowH + 9.1);
+        doc.text(row.accuracy + '% Treffer | erster Kontakt ' + row.firstAccuracy + '%', x + 12, y + i * rowH + 9.1);
         doc.setFont('helvetica', 'bold'); doc.setFontSize(7.4); setColor(C.red);
         doc.text(row.misses + ' Fehler', x + w - 4, y + i * rowH + 6.8, { align: 'right' });
       }
@@ -320,8 +347,7 @@
         lineColor(C.line); doc.line(x, ry + rowH, x + totalW, ry + rowH);
         cx = x;
         for (var c = 0; c < widths.length; c += 1) {
-          doc.setFont('helvetica', c === 0 ? 'bold' : 'normal'); doc.setFontSize(6.6);
-          setColor(c === widths.length - 1 && String(rows[r][c]).indexOf('Fehler') !== -1 ? C.red : C.ink);
+          doc.setFont('helvetica', c === 0 ? 'bold' : 'normal'); doc.setFontSize(6.6); setColor(C.ink);
           doc.text(ellipsize(rows[r][c], widths[c] - 3, 6.6, c === 0 ? 'bold' : 'normal'), cx + 2, ry + 5.1);
           cx += widths[c];
         }
@@ -330,118 +356,110 @@
       return h;
     }
 
-    function drawSectionMatrix(items, x, y, w, h, mode) {
-      var colGap = 6;
-      var colW = (w - colGap) / 2;
-      var rowsPerCol = 15;
-      var rowH = h / rowsPerCol;
-      for (var i = 0; i < Math.min(items.length, 30); i += 1) {
-        var col = i >= rowsPerCol ? 1 : 0;
-        var idx = i % rowsPerCol;
-        var px = x + col * (colW + colGap);
-        var py = y + idx * rowH;
-        var item = items[i];
-        var value = mode === 'best' ? item.best : mode === 'last' ? item.last : item.accuracy;
-        var barX = px + 49;
-        var barW = colW - 56;
-        doc.setFont('helvetica', 'normal'); doc.setFontSize(5.9); setColor(C.muted);
-        doc.text(ellipsize(item.id + '. ' + item.title, 44, 5.9), px, py + 4.2);
-        setColor(C.line, true); doc.roundedRect(barX, py + 1.2, barW, 4.3, 1.2, 1.2, 'F');
-        var fill = item.misses > 0 && mode === 'accuracy' ? C.red : value >= 80 ? C.green : value >= 60 ? C.gold : C.red;
-        setColor(fill, true); doc.roundedRect(barX, py + 1.2, Math.max(0.8, barW * value / 100), 4.3, 1.2, 1.2, 'F');
-        doc.setFont('helvetica', 'bold'); doc.setFontSize(5.9); setColor(C.ink);
-        doc.text(Math.round(value) + '%', px + colW, py + 4.3, { align: 'right' });
+    function comboSectionText(item) {
+      return item.sectionIds.length ? item.sectionIds.join(', ') : '-';
+    }
+
+    function drawProblemComboChart(items, x, y, w, h) {
+      var chosen = items.slice(0, 10);
+      if (!chosen.length) {
+        roundedPanel(x, y, w, 28, C.greenSoft, C.line);
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(9); setColor(C.green);
+        doc.text('Keine Kombination mit Fehlversuchen.', x + 6, y + 12);
+        doc.setFont('helvetica', 'normal'); doc.setFontSize(7); setColor(C.muted);
+        doc.text('Der Lernnachweis zeigt hier nur Kombinationen, bei denen tatsächlich Fehler vorkamen.', x + 6, y + 20);
+        return;
       }
-    }
-
-    function drawPerformanceMatrix(items, x, y, w, h) {
-      var colGap = 6;
-      var colW = (w - colGap) / 2;
-      var rowsPerCol = 15;
-      var rowH = h / rowsPerCol;
-      for (var i = 0; i < Math.min(items.length, 30); i += 1) {
-        var col = i >= rowsPerCol ? 1 : 0;
-        var idx = i % rowsPerCol;
-        var px = x + col * (colW + colGap);
-        var py = y + idx * rowH;
-        var item = items[i];
-        var barX = px + 49;
-        var barW = colW - 56;
-        doc.setFont('helvetica', 'normal'); doc.setFontSize(5.9); setColor(C.muted);
-        doc.text(ellipsize(item.id + '. ' + item.title, 44, 5.9), px, py + 4.2);
-        setColor(C.line, true); doc.roundedRect(barX, py + 1.0, barW, 2.0, 0.8, 0.8, 'F');
-        setColor(C.blue, true); doc.roundedRect(barX, py + 1.0, Math.max(0.7, barW * item.best / 100), 2.0, 0.8, 0.8, 'F');
-        setColor(C.line, true); doc.roundedRect(barX, py + 3.7, barW, 2.0, 0.8, 0.8, 'F');
-        setColor(item.last + 5 < item.best ? C.gold : C.green, true);
-        doc.roundedRect(barX, py + 3.7, Math.max(0.7, barW * item.last / 100), 2.0, 0.8, 0.8, 'F');
-        doc.setFont('helvetica', 'bold'); doc.setFontSize(5.5); setColor(C.ink);
-        doc.text(item.best + '/' + item.last, px + colW, py + 4.7, { align: 'right' });
-      }
-    }
-
-    function drawHorizontalBars(items, x, y, w, h, valueKey, options) {
-      options = options || {};
-      var count = Math.max(1, Math.min(items.length, options.maxRows || 10));
-      var rowH = h / count;
-      var labelW = options.labelWidth || 54;
-      var barX = x + labelW;
-      var barW = w - labelW - 12;
-      var values = items.slice(0, count).map(function (item) { return Number(item[valueKey]) || 0; });
-      var maxValue = options.maxValue || Math.max.apply(null, values.concat([1]));
-      for (var i = 0; i < count; i += 1) {
-        var item = items[i];
-        if (!item) continue;
-        var value = Number(item[valueKey]) || 0;
-        var py = y + i * rowH;
-        doc.setFont('helvetica', 'normal'); doc.setFontSize(options.fontSize || 6.4); setColor(C.muted);
-        doc.text(ellipsize(options.labelFn ? options.labelFn(item) : item.label, labelW - 3, options.fontSize || 6.4), x, py + rowH * 0.62);
-        setColor(C.line, true); doc.roundedRect(barX, py + rowH * 0.25, barW, Math.max(2.2, rowH * 0.42), 1, 1, 'F');
-        var tone = options.colorFn ? options.colorFn(item) : C.blue;
-        setColor(tone, true);
-        var width = maxValue ? barW * value / maxValue : 0;
-        if (value > 0) doc.roundedRect(barX, py + rowH * 0.25, Math.max(0.8, width), Math.max(2.2, rowH * 0.42), 1, 1, 'F');
-        doc.setFont('helvetica', 'bold'); doc.setFontSize(options.fontSize || 6.4); setColor(C.ink);
-        doc.text(options.valueFn ? options.valueFn(item) : String(value), x + w, py + rowH * 0.62, { align: 'right' });
-      }
-    }
-
-    function drawComboAccuracy(items, x, y, w, h) {
-      var chosen = items.slice(0, 12);
-      if (!chosen.length) return;
-      drawHorizontalBars(chosen, x, y, w, h, 'accuracy', {
-        maxRows: 12, maxValue: 100, labelWidth: 66,
-        labelFn: function (item) { return item.label; },
-        valueFn: function (item) { return item.accuracy + '%'; },
-        colorFn: function (item) { return item.misses ? (item.accuracy >= 80 ? C.gold : C.red) : C.green; },
-        fontSize: 6.1
-      });
-    }
-
-    function drawAttemptHistory(items, x, y, w, h) {
-      var chosen = items.filter(function (item) { return item.history && item.history.length; }).slice(0, 8);
-      if (!chosen.length) return;
-      var labelW = 68;
       var rowH = h / chosen.length;
-      var dotArea = w - labelW - 5;
+      var labelW = 72;
+      var sectionsW = 73;
+      var barX = x + labelW;
+      var barW = w - labelW - sectionsW - 17;
       chosen.forEach(function (item, index) {
         var py = y + index * rowH;
-        doc.setFont('helvetica', 'normal'); doc.setFontSize(6.3); setColor(C.muted);
-        doc.text(ellipsize(item.label, labelW - 4, 6.3), x, py + rowH * 0.58);
-        var history = item.history.slice(-14);
-        var gap = Math.min(8, dotArea / Math.max(14, history.length));
-        history.forEach(function (attempt, idx) {
-          var cx = x + labelW + idx * gap + 2.5;
-          var cy = py + rowH * 0.48;
-          setColor(attempt && attempt.success ? C.green : C.red, true);
-          doc.circle(cx, cy, 1.6, 'F');
-        });
-        lineColor(C.line); doc.line(x + labelW, py + rowH - 1, x + w, py + rowH - 1);
+        if (index % 2 === 0) {
+          setColor(C.panel, true);
+          doc.roundedRect(x, py, w, rowH - 1, 1.5, 1.5, 'F');
+        }
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(7.2); setColor(C.ink);
+        doc.text(ellipsize(item.label, labelW - 4, 7.2, 'bold'), x + 2, py + 5.1);
+        doc.setFont('helvetica', 'normal'); doc.setFontSize(6.0); setColor(C.muted);
+        doc.text(item.attempts + ' Versuche | ' + item.misses + ' Fehler', x + 2, py + 9.1);
+
+        setColor(C.redSoft, true);
+        doc.roundedRect(barX, py + 3.0, barW, 5.2, 1.4, 1.4, 'F');
+        setColor(item.accuracy >= 90 ? C.green : item.accuracy >= 75 ? C.gold : C.red, true);
+        if (item.accuracy > 0) doc.roundedRect(barX, py + 3.0, Math.max(1, barW * item.accuracy / 100), 5.2, 1.4, 1.4, 'F');
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(6.7); setColor(C.ink);
+        doc.text(item.accuracy + '%', barX + barW + 3, py + 6.9);
+
+        var sx = x + w - sectionsW;
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(6.1); setColor(C.muted);
+        doc.text('Abschnitte', sx, py + 4.6);
+        doc.setFont('helvetica', 'normal'); doc.setFontSize(6.8); setColor(C.ink);
+        doc.text(ellipsize(comboSectionText(item), sectionsW - 2, 6.8), sx, py + 9.0);
       });
     }
 
-    function sectionDetailRows(items) {
-      return items.map(function (item) {
-        return [item.id + '. ' + item.title, item.completed ? 'Ja' : '-', String(item.attempts), item.misses ? item.misses + ' Fehler' : '0', item.accuracy + '%', item.best + '%'];
+    function drawSectionOverview(items, x, y, w, h) {
+      var cols = 10;
+      var rows = 3;
+      var gap = 3;
+      var cellW = (w - gap * (cols - 1)) / cols;
+      var cellH = (h - gap * (rows - 1)) / rows;
+      items.slice(0, 30).forEach(function (item, index) {
+        var col = index % cols;
+        var row = Math.floor(index / cols);
+        var px = x + col * (cellW + gap);
+        var py = y + row * (cellH + gap);
+        var fill = !item.completed ? C.panel : item.misses > 1 ? C.redSoft : item.misses === 1 ? C.goldSoft : C.greenSoft;
+        var accent = !item.completed ? C.muted : item.misses > 1 ? C.red : item.misses === 1 ? C.gold : C.green;
+        roundedPanel(px, py, cellW, cellH, fill, C.line);
+        setColor(accent, true);
+        doc.roundedRect(px + 3, py + 3, 7.5, 7.5, 1.5, 1.5, 'F');
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(6.8); setColor(C.white);
+        doc.text(String(item.id), px + 6.75, py + 8.0, { align: 'center' });
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(6.3); setColor(C.ink);
+        doc.text(item.completed ? item.accuracy + '%' : '-', px + cellW - 3, py + 7.5, { align: 'right' });
+        doc.setFont('helvetica', 'normal'); doc.setFontSize(5.3); setColor(C.muted);
+        doc.text(ellipsize(item.title, cellW - 6, 5.3), px + 3, py + 14.2);
+        if (item.misses > 0) {
+          doc.setFont('helvetica', 'bold'); doc.setFontSize(5.7); setColor(accent);
+          doc.text(item.misses + ' Fehler', px + 3, py + cellH - 3.2);
+        } else {
+          doc.setFont('helvetica', 'normal'); doc.setFontSize(5.5); setColor(C.muted);
+          doc.text(item.completed ? 'fehlerfrei' : 'offen', px + 3, py + cellH - 3.2);
+        }
+      });
+    }
+
+    function drawImprovementChart(items, x, y, w, h) {
+      var chosen = items.slice(0, 8);
+      if (!chosen.length) {
+        roundedPanel(x, y, w, 24, C.greenSoft, C.line);
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(8.5); setColor(C.green);
+        doc.text('Keine Fehler-Abschnitte - kein Verbesserungsverlauf nötig.', x + 5, y + 14);
+        return;
+      }
+      var rowH = h / chosen.length;
+      var labelW = 67;
+      var barX = x + labelW;
+      var barW = w - labelW - 16;
+      chosen.forEach(function (item, index) {
+        var py = y + index * rowH;
+        doc.setFont('helvetica', 'normal'); doc.setFontSize(6.2); setColor(C.muted);
+        doc.text(ellipsize(item.id + '. ' + item.title, labelW - 4, 6.2), x, py + 5.0);
+
+        setColor(C.line, true); doc.roundedRect(barX, py + 2.0, barW, 2.4, 0.9, 0.9, 'F');
+        setColor(item.firstAccuracy >= 80 ? C.gold : C.red, true);
+        if (item.firstAccuracy > 0) doc.roundedRect(barX, py + 2.0, Math.max(0.8, barW * item.firstAccuracy / 100), 2.4, 0.9, 0.9, 'F');
+
+        setColor(C.line, true); doc.roundedRect(barX, py + 5.4, barW, 2.4, 0.9, 0.9, 'F');
+        setColor(C.green, true);
+        if (item.best > 0) doc.roundedRect(barX, py + 5.4, Math.max(0.8, barW * item.best / 100), 2.4, 0.9, 0.9, 'F');
+
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(5.9); setColor(C.ink);
+        doc.text(item.firstAccuracy + ' > ' + item.best + '%', x + w, py + 6.0, { align: 'right' });
       });
     }
 
@@ -468,89 +486,54 @@
       doc.text('Noch zu wenig Daten für eine Stärkenliste.', 156, 111);
     }
 
-    sectionHeading('Lehrpersonen-Fazit', M, 181, C.gold);
+    sectionHeading('FAZIT', M, 181, C.gold);
     roundedPanel(M, 186, W - 2 * M, 10, C.goldSoft, C.line);
     doc.setFont('helvetica', 'normal'); doc.setFontSize(7.4); setColor(C.ink);
     var summary = data.totalMisses
-      ? 'Fokus zuerst auf ' + data.focusSections.slice(0, 3).map(function (item) { return item.id + '. ' + item.title; }).join(' | ') + '. Fehler bleiben sichtbar, auch wenn ein späterer Versuch 100% erreicht.'
+      ? 'Fokus auf ' + data.problemCombos.slice(0, 3).map(function (item) { return item.shortcut || item.label; }).join(' | ') + '. Seite 2 zeigt, in welchen Abschnitten diese Kombinationen erneut geübt werden können.'
       : 'Aktuell sind keine Fehlversuche registriert. Für eine belastbare Diagnose sind weitere Wiederholungen sinnvoll.';
     doc.text(ellipsize(summary, W - 2 * M - 10, 7.4), M + 5, 192.3);
 
-    newPage('Alle 30 Abschnitte', 'DETAILANSICHT | ABSCHLUSS, FEHLER, TREFFERQUOTE');
-    sectionHeading('Abschnitte 1-15', M, 35, C.blue);
-    sectionHeading('Abschnitte 16-30', 151, 35, C.blue);
-    var detailRows = sectionDetailRows(data.sections);
-    drawSimpleTable(detailRows.slice(0, 15), M, 41, [55, 13, 16, 18, 18, 18], ['Abschnitt', 'OK', 'Vers.', 'Fehler', 'Quote', 'Best'], 15);
-    drawSimpleTable(detailRows.slice(15), 151, 41, [55, 13, 16, 18, 18, 18], ['Abschnitt', 'OK', 'Vers.', 'Fehler', 'Quote', 'Best'], 15);
+    newPage('Kombinationen - Übungsbedarf', 'WAS NOCH ÜBEN | WO KOMMT ES VOR?');
+    sectionHeading('Kombinationen mit Fehlversuchen', M, 35, C.red);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(7.0); setColor(C.muted);
+    doc.text('Nur Kombinationen mit echten Fehlversuchen. Die Abschnittsnummern zeigen, wo derselbe Shortcut im Kurs erneut vorkommt.', M, 41.5);
+    drawProblemComboChart(data.problemCombos, M, 47, W - 2 * M, 102);
 
-    newPage('Kombinationen - Fehler & Trefferquote', 'DIAGNOSE | WORST FIRST');
-    sectionHeading('Trefferquote pro Kombination', M, 35, C.gold);
-    sectionHeading('Fehlversuche je Kombination', 151, 35, C.red);
-    var comboWorst = data.comboAccuracy.filter(function (item) { return item.misses > 0; });
-    if (comboWorst.length < 12) {
-      data.comboAccuracy.forEach(function (item) { if (comboWorst.length < 12 && comboWorst.indexOf(item) === -1) comboWorst.push(item); });
-    }
-    drawComboAccuracy(comboWorst, M, 42, 132, 92);
-    drawHorizontalBars(data.problemCombos.slice(0, 12), 151, 42, 133, 92, 'misses', {
-      maxRows: 12, labelWidth: 72,
-      labelFn: function (item) { return item.label; },
-      valueFn: function (item) { return item.misses + '/' + item.attempts; },
-      colorFn: function () { return C.red; }, fontSize: 6.0
+    sectionHeading('Kompakte Diagnose', M, 160, C.blue);
+    var comboRows = data.problemCombos.slice(0, 8).map(function (item) {
+      return [item.shortcut || item.label, item.accuracy + '%', String(item.misses), comboSectionText(item)];
     });
-    sectionHeading('Fehlerdetails', M, 146, C.red);
-    var problemRows = data.problemCombos.slice(0, 8).map(function (item) { return [item.label, String(item.attempts), String(item.misses), item.accuracy + '%']; });
-    if (problemRows.length) drawSimpleTable(problemRows, M, 152, [78, 18, 18, 18], ['Kombination', 'Vers.', 'Fehler', 'Quote'], 8);
-    else {
-      roundedPanel(M, 152, 132, 18, C.greenSoft, C.line);
+    if (comboRows.length) {
+      drawSimpleTable(comboRows, M, 166, [72, 24, 24, 153], ['Kombination', 'Treffer', 'Fehler', 'Kommt vor in Abschnitten'], 8);
+    } else {
+      roundedPanel(M, 166, W - 2 * M, 20, C.greenSoft, C.line);
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(8.5); setColor(C.green);
+      doc.text('Keine Kombination braucht aktuell gezielte Nacharbeit.', M + 6, 178);
+    }
+
+    newPage('Abschnitte & Lernfortschritt', 'WO TRATEN FEHLER AUF? | WAS HAT SICH VERBESSERT?');
+    sectionHeading('30 Abschnitte auf einen Blick', M, 35, C.blue);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(6.8); setColor(C.muted);
+    doc.text('Grün = fehlerfrei | Gold = 1 Fehler | Rot = mehrere Fehler | Zahl rechts = aktuelle Trefferquote', M, 41.5);
+    drawSectionOverview(data.sections, M, 47, W - 2 * M, 61);
+
+    sectionHeading('Verbesserung in Fehler-Abschnitten', M, 122, C.gold);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(6.7); setColor(C.muted);
+    doc.text('Obere Linie = erster Kontakt | untere Linie = bestes Ergebnis. Gezeigt werden nur Abschnitte mit Fehlversuchen.', M, 128.3);
+    drawImprovementChart(data.focusSections, M, 133, 166, 52);
+
+    sectionHeading('Fehler-Abschnitte', 187, 122, C.red);
+    var focusRows = data.focusSections.slice(0, 7).map(function (item) {
+      return [item.id + '. ' + item.title, item.firstAccuracy + '%', item.best + '%', String(item.misses)];
+    });
+    if (focusRows.length) {
+      drawSimpleTable(focusRows, 187, 133, [48, 16, 16, 17], ['Abschnitt', 'Start', 'Best', 'Fehler'], 7);
+    } else {
+      roundedPanel(187, 133, 97, 22, C.greenSoft, C.line);
       doc.setFont('helvetica', 'bold'); doc.setFontSize(8); setColor(C.green);
-      doc.text('Keine Fehlversuche in Kombinationen.', M + 5, 163);
+      doc.text('Keine Fehler-Abschnitte.', 193, 146);
     }
-    sectionHeading('Interpretation', 151, 146, C.blue);
-    roundedPanel(151, 152, 133, 36, C.blueSoft, C.line);
-    doc.setFont('helvetica', 'normal'); doc.setFontSize(7.2); setColor(C.ink);
-    var interp = data.problemCombos.length
-      ? 'Die rote Liste zeigt nicht nur das Endergebnis, sondern echte Fehlversuche aus früheren Durchläufen. So bleibt sichtbar, welche Shortcuts erst nach Wiederholung sicher wurden.'
-      : 'Alle protokollierten Kombinationen sind aktuell fehlerfrei. Bei wenigen Versuchen ist das noch keine sichere Mastery-Aussage.';
-    doc.text(doc.splitTextToSize(interp, 122), 157, 161);
-
-    newPage('Versuchshistorie & Übungsintensität', 'ENTWICKLUNG | WIEDERHOLUNGEN');
-    sectionHeading('Versuchshistorie pro Kombination', M, 35, C.blue);
-    var historyItems = data.problemCombos.concat(data.strongCombos).filter(function (item, idx, arr) { return arr.indexOf(item) === idx; });
-    drawAttemptHistory(historyItems, M, 43, 132, 78);
-    doc.setFont('helvetica', 'normal'); doc.setFontSize(6.6); setColor(C.muted);
-    doc.text('Punkt = ein Versuch | grün = richtig | rot = falsch | gezeigt werden die letzten 14 Versuche.', M, 128);
-    sectionHeading('Meist geübte Abschnitte', 151, 35, C.blue);
-    drawHorizontalBars(data.practicedSections.slice(0, 10), 151, 43, 133, 78, 'attempts', {
-      maxRows: 10, labelWidth: 69,
-      labelFn: function (item) { return item.id + '. ' + item.title; },
-      valueFn: function (item) { return String(item.attempts); },
-      colorFn: function (item) { return item.misses ? C.gold : C.blue; }, fontSize: 6.1
-    });
-    sectionHeading('Was bedeutet das?', M, 147, C.gold);
-    roundedPanel(M, 153, W - 2 * M, 35, C.goldSoft, C.line);
-    doc.setFont('helvetica', 'normal'); doc.setFontSize(7.2); setColor(C.ink);
-    doc.text(doc.splitTextToSize('Viele Versuche sind nicht automatisch schlecht: Sie zeigen Übungsintensität. Entscheidend ist die Kombination aus Wiederholungen, Fehlversuchen und späterer Trefferquote. Ein Abschnitt mit mehreren Versuchen und steigender Sicherheit kann didaktisch wertvoller sein als ein einmalig perfekter Treffer.', W - 2 * M - 12), M + 6, 163);
-
-    newPage('Trefferquote je Abschnitt', 'ALLE 30 ABSCHNITTE | FEHLER BLEIBEN SICHTBAR');
-    sectionHeading('Trefferquote', M, 35, C.green);
-    drawSectionMatrix(data.sections, M, 43, W - 2 * M, 137, 'accuracy');
-    roundedPanel(M, 184, W - 2 * M, 9, C.panel, C.line);
-    doc.setFont('helvetica', 'normal'); doc.setFontSize(6.7); setColor(C.muted);
-    doc.text('Rot/Gold markiert Abschnitte mit Fehlversuchen oder tieferer Quote. 100% kann trotzdem einen früheren Fehler enthalten; dafür siehe Fehler-Spalte auf Seite 2.', M + 5, 189.8);
-
-    newPage('Top-Ergebnisse je Abschnitt', 'BESTES ERGEBNIS | ALLE 30 ABSCHNITTE');
-    sectionHeading('Bestes Ergebnis', M, 35, C.green);
-    drawSectionMatrix(data.sections, M, 43, W - 2 * M, 137, 'best');
-    roundedPanel(M, 184, W - 2 * M, 9, C.greenSoft, C.line);
-    doc.setFont('helvetica', 'normal'); doc.setFontSize(6.7); setColor(C.muted);
-    doc.text('Diese Seite zeigt das beste erreichte Ergebnis. Für Diagnose immer zusammen mit Trefferquote und Fehlversuchen lesen.', M + 5, 189.8);
-
-    newPage('Performance pro Abschnitt', 'BESTES / LETZTES ERGEBNIS');
-    sectionHeading('Bestwert (blau) vs. letzter Lauf (grün/gold)', M, 35, C.blue);
-    drawPerformanceMatrix(data.sections, M, 43, W - 2 * M, 137);
-    roundedPanel(M, 184, W - 2 * M, 9, C.blueSoft, C.line);
-    doc.setFont('helvetica', 'normal'); doc.setFontSize(6.7); setColor(C.muted);
-    doc.text('Zahlen rechts: Bestwert / letzter Lauf. Gold zeigt einen letzten Lauf, der klar unter dem persönlichen Bestwert liegt.', M + 5, 189.8);
 
     footer();
     doc.save('A8_Shortcut_Quest_Lernnachweis_' + safeFileName(student) + '.pdf');
@@ -573,7 +556,7 @@
       var data = buildReportData(gameState);
       if (!data.sections.length) throw new Error('Keine Reportdaten gefunden.');
       drawPdf(student, data);
-      console.info('A8 PDF erstellt: kompakter 7-Seiten-Lernnachweis mit nativen Statistik-Grafiken.');
+      console.info('A8 PDF erstellt: 3-seitiger Lernnachweis mit Fokus auf Fazit, Übungs-Kombinationen und Lernfortschritt.');
     } catch (error) {
       console.error('A8 PDF export failed', error);
       window.alert('Das A8-PDF konnte nicht erzeugt werden. Bitte aktualisiere zuerst den Lern-Report und versuche es erneut.');
@@ -595,7 +578,7 @@
     button.type = 'button';
     button.className = 'report-action ghost';
     button.textContent = 'PDF Lernnachweis';
-    button.title = 'Kompakter Lernnachweis mit Statistiken, Fehlern und Entwicklung';
+    button.title = '3-seitiger Lernnachweis mit Fazit, Übungsbedarf und Lernfortschritt';
     button.addEventListener('click', function () { generatePdf(button); });
     actions.insertBefore(button, actions.firstChild);
   }
