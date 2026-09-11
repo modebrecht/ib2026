@@ -1,0 +1,44 @@
+name: A8 Full Course Report E2E
+
+on:
+  push:
+    branches:
+      - qa/a8-full-course-report-20260911
+    paths:
+      - 'qa/a8-full-course-report-e2e.mjs'
+      - '.github/workflows/a8-full-course-report-e2e.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  full-course-report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install Playwright Chromium
+        run: |
+          npm install --no-save playwright
+          npx playwright install chromium
+
+      - name: Run 30-section E2E and export report files
+        env:
+          A8_URL: https://modebrecht.github.io/ib2026/dev/tk2/A8/
+          A8_OUT_DIR: qa-artifacts
+        run: node qa/a8-full-course-report-e2e.mjs
+
+      - name: Upload A8 E2E exports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a8-full-course-report-e2e
+          path: qa-artifacts/
+          if-no-files-found: error
+          retention-days: 3
