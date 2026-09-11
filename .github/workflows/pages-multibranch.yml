@@ -82,6 +82,11 @@ jobs:
               path.write_text(html, encoding='utf-8')
           PY
 
+          # Fail the build early if the review overlay is malformed or missing.
+          node --check _site/dev/tk2/A8/pdf-report.js
+          test -s _site/dev/tk2/A8/pdf-report.js
+          grep -Fq '<script src="pdf-report.js"></script>' _site/dev/tk2/A8/index.html
+
           # Serve files exactly as committed; do not run Jekyll processing.
           touch _site/.nojekyll
 
