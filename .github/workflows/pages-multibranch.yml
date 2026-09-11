@@ -67,6 +67,21 @@ jobs:
           cp /tmp/shortcut-quest-a8/2026/favicon.svg _site/dev/tk2/A8/
           cp -R /tmp/shortcut-quest-a8/2026/assets _site/dev/tk2/A8/
 
+          # IB2026-only A8 diagnostic PDF overlay. Keep the standalone
+          # Shortcut Quest source pinned and untouched while A8 is reviewed.
+          cp _site/dev/tk2/a8-pdf-report.js _site/dev/tk2/A8/pdf-report.js
+          python3 - <<'PY'
+          from pathlib import Path
+          path = Path('_site/dev/tk2/A8/index.html')
+          html = path.read_text(encoding='utf-8')
+          script = '<script src="pdf-report.js"></script>'
+          if script not in html:
+              if '</body>' not in html:
+                  raise SystemExit('A8 index.html has no </body> marker for PDF overlay injection')
+              html = html.replace('</body>', script + '\n</body>', 1)
+              path.write_text(html, encoding='utf-8')
+          PY
+
           # Serve files exactly as committed; do not run Jekyll processing.
           touch _site/.nojekyll
 
