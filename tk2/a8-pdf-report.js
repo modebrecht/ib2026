@@ -5,19 +5,28 @@
   var BUTTON_ID = 'a8PdfReportBtn';
   var EXPORTING = false;
 
-  function sleep(ms) {
-    return new Promise(function (resolve) { setTimeout(resolve, ms); });
-  }
-
-  function cleanText(value) {
+  function safeText(value) {
     return String(value == null ? '' : value)
-      .replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}]/gu, '')
+      .normalize('NFKC')
+      .replace(/[\u200D\uFE0E\uFE0F]/g, '')
+      .replace(/[\u{1F000}-\u{1FAFF}\u{2300}-\u{27BF}]/gu, '')
+      .replace(/[\u0000-\u001F\u007F]/g, ' ')
+      .replace(/[–—−]/g, '-')
+      .replace(/[“”„]/g, '"')
+      .replace(/[‘’]/g, "'")
+      .replace(/…/g, '...')
+      .replace(/€/g, 'Euro')
+      .replace(/°/g, 'Grad')
+      .replace(/←/g, 'Left')
+      .replace(/→/g, 'Right')
+      .replace(/↑/g, 'Up')
+      .replace(/↓/g, 'Down')
       .replace(/\s+/g, ' ')
       .trim();
   }
 
   function safeFileName(value) {
-    return cleanText(value || 'Schueler')
+    return safeText(value || 'Schueler')
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '')
       .replace(/[^a-zA-Z0-9_-]+/g, '_')
@@ -40,367 +49,508 @@
     return window.__a8PdfJsPdfLoading;
   }
 
-  async function waitForCharts() {
-    var started = Date.now();
-    while (Date.now() - started < 1800) {
-      var expected = (typeof activeReportCharts !== 'undefined' && activeReportCharts) ? activeReportCharts.length : 0;
-      var actual = document.querySelectorAll('#reportContent .apexcharts-svg').length;
-      if (!expected || actual >= expected) break;
-      await sleep(60);
+  function readGameState() {
+    try {
+      if (typeof state !== 'undefined' && state && typeof state === 'object') return state;
+    } catch (error) {
+      // Fall through to storage. Top-level lexical bindings can differ between builds.
     }
-    await sleep(90);
+    var keys = ['shortcutRitter_2026_v1', 'shortcutRitter_v1'];
+    for (var i = 0; i < keys.length; i += 1) {
+      try {
+        var raw = localStorage.getItem(keys[i]);
+        if (raw) return JSON.parse(raw);
+      } catch (error) {
+        console.warn('A8 PDF: Spielstand konnte nicht gelesen werden', error);
+      }
+    }
+    return null;
   }
 
-  function collectCurrentTab(tabId, label) {
-    var root = document.getElementById('reportContent');
-    var snapshot = {
-      id: tabId,
-      label: label,
-      blocks: [],
-      charts: []
-    };
-    if (!root) return snapshot;
-
-    Array.prototype.forEach.call(root.children, function (node) {
-      if (!(node instanceof HTMLElement)) return;
-
-      if (node.classList.contains('report-chart-grid') || node.classList.contains('report-chart-column')) {
-        Array.prototype.forEach.call(node.querySelectorAll('.chart-card'), function (card) {
-          snapshot.charts.push(card);
-        });
-        return;
-      }
-
-      if (node.classList.contains('chart-card')) {
-        snapshot.charts.push(node);
-        return;
-      }
-
-      if (node.classList.contains('report-block')) {
-        snapshot.blocks.push(node);
-        return;
-      }
-
-      var text = cleanText(node.textContent);
-      if (text) snapshot.blocks.push(node);
+  function sectionTitleMap() {
+    var map = {};
+    var blueprints = Array.isArray(window.LEARN_SECTION_BLUEPRINTS) ? window.LEARN_SECTION_BLUEPRINTS : [];
+    blueprints.forEach(function (section) {
+      var id = String(section && section.id != null ? section.id : '');
+      if (!id) return;
+      var title = safeText(section.title || section.tabLabel || ('Abschnitt ' + id));
+      title = title.replace(/^\d+\.\s*/, '');
+      map[id] = title || ('Abschnitt ' + id);
     });
-
-    return snapshot;
+    return map;
   }
 
-  async function captureAllReportTabs() {
-    if (typeof renderReport !== 'function') throw new Error('A8-Reportfunktion ist nicht verfügbar.');
-    var tabButtons = Array.prototype.slice.call(document.querySelectorAll('.report-tab[data-report-tab]'));
-    var tabs = tabButtons.map(function (button) {
-      return {
-        id: button.getAttribute('data-report-tab'),
-        label: cleanText(button.textContent) || button.getAttribute('data-report-tab')
-      };
-    }).filter(function (tab) { return tab.id; });
-
-    if (!tabs.length) {
-      tabs = [
-        { id: 'overview', label: 'Überblick' },
-        { id: 'combos', label: 'Kombinationen' },
-        { id: 'sections', label: 'Abschnitte' }
-      ];
-    }
-
-    var originalTab = (typeof activeReportTab !== 'undefined' && activeReportTab) ? activeReportTab : 'overview';
-    var snapshots = [];
-
-    for (var i = 0; i < tabs.length; i += 1) {
-      activeReportTab = tabs[i].id;
-      renderReport();
-      await waitForCharts();
-
-      var snapshot = collectCurrentTab(tabs[i].id, tabs[i].label);
-      var chartCards = snapshot.charts.slice();
-      var chartInstances = (typeof activeReportCharts !== 'undefined' && activeReportCharts)
-        ? activeReportCharts.slice()
-        : [];
-      snapshot.chartImages = [];
-
-      for (var c = 0; c < chartCards.length; c += 1) {
-        var card = chartCards[c];
-        var instance = chartInstances[c];
-        if (!instance || typeof instance.dataURI !== 'function') continue;
-        try {
-          var image = await instance.dataURI({ scale: 2 });
-          snapshot.chartImages.push({
-            title: cleanText((card.querySelector('h3') || {}).textContent) || ('Grafik ' + (c + 1)),
-            imgURI: image && image.imgURI ? image.imgURI : null,
-            width: Math.max(1, card.clientWidth || 900),
-            height: Math.max(1, card.clientHeight || 420)
-          });
-        } catch (error) {
-          console.warn('A8 PDF: Grafik konnte nicht exportiert werden', error);
-        }
-      }
-
-      snapshots.push(snapshot);
-    }
-
-    activeReportTab = originalTab;
-    renderReport();
-    await waitForCharts();
-    return snapshots;
+  function clamp(value, min, max) {
+    return Math.max(min, Math.min(max, Number(value) || 0));
   }
 
-  function nodeSnapshot(node) {
-    var data = {
-      title: '',
-      highlights: [],
-      paragraphs: [],
-      lists: [],
-      tables: []
-    };
-    if (!(node instanceof HTMLElement)) return data;
+  function percent(correct, total) {
+    if (!total) return 0;
+    return Math.round((correct / total) * 100);
+  }
 
-    var heading = node.querySelector('h3, h2, h4');
-    if (heading) data.title = cleanText(heading.textContent);
+  function buildReportData(gameState) {
+    var titles = sectionTitleMap();
+    var sectionReports = gameState.sectionReports || {};
+    var sectionClears = gameState.sectionClears || {};
+    var sections = [];
 
-    Array.prototype.forEach.call(node.querySelectorAll('.highlight-card'), function (card) {
-      var label = card.querySelector('.highlight-label');
-      var value = card.querySelector('.highlight-value');
-      var text = cleanText(card.textContent);
-      data.highlights.push({
-        label: cleanText(label ? label.textContent : ''),
-        value: cleanText(value ? value.textContent : text)
+    for (var i = 1; i <= 30; i += 1) {
+      var id = String(i);
+      var report = sectionReports[id] || {};
+      var promptStats = report.promptStats || {};
+      var attempts = 0;
+      var misses = 0;
+      Object.keys(promptStats).forEach(function (key) {
+        var entry = promptStats[key] || {};
+        attempts += Number(entry.attempts) || 0;
+        misses += Number(entry.misses) || 0;
       });
-    });
-
-    Array.prototype.forEach.call(node.querySelectorAll('p'), function (p) {
-      var text = cleanText(p.textContent);
-      if (text && text !== data.title) data.paragraphs.push(text);
-    });
-
-    Array.prototype.forEach.call(node.querySelectorAll('ul.report-insights, ol.report-insights'), function (list) {
-      var rows = Array.prototype.map.call(list.querySelectorAll('li'), function (li) {
-        return cleanText(li.textContent);
-      }).filter(Boolean);
-      if (rows.length) data.lists.push(rows);
-    });
-
-    Array.prototype.forEach.call(node.querySelectorAll('table'), function (table) {
-      var rows = Array.prototype.map.call(table.querySelectorAll('tr'), function (tr) {
-        return Array.prototype.map.call(tr.querySelectorAll('th,td'), function (cell) {
-          return cleanText(cell.textContent);
-        });
-      }).filter(function (row) { return row.some(Boolean); });
-      if (rows.length) data.tables.push(rows);
-    });
-
-    if (!data.title && !data.highlights.length && !data.paragraphs.length && !data.lists.length && !data.tables.length) {
-      var fallback = cleanText(node.textContent);
-      if (fallback) data.paragraphs.push(fallback);
+      var completed = Number(sectionClears[id]) > 0 || Number(report.successes) > 0;
+      var best = clamp(report.bestScore, 0, 100);
+      var last = clamp(report.lastScore, 0, 100);
+      var accuracy = attempts ? percent(attempts - misses, attempts) : (completed ? (best || 100) : 0);
+      sections.push({
+        id: i,
+        title: titles[id] || ('Abschnitt ' + id),
+        checks: Number(report.checks) || 0,
+        successes: Number(report.successes) || 0,
+        completed: completed,
+        attempts: attempts,
+        misses: misses,
+        accuracy: clamp(accuracy, 0, 100),
+        best: best,
+        last: last,
+        clears: Number(sectionClears[id]) || 0
+      });
     }
-    return data;
+
+    var combos = Object.keys(gameState.comboStats || {}).map(function (key) {
+      var entry = gameState.comboStats[key] || {};
+      var attempts = Number(entry.attempts) || 0;
+      var misses = Number(entry.misses) || 0;
+      var shortcut = safeText(entry.shortcut || '');
+      var label = safeText(entry.label || shortcut || key.replace(/^combo:/, ''));
+      if (shortcut && label.toLowerCase().indexOf(shortcut.toLowerCase()) === -1) label += ' (' + shortcut + ')';
+      return {
+        key: key,
+        label: label,
+        shortcut: shortcut,
+        attempts: attempts,
+        misses: misses,
+        accuracy: attempts ? percent(attempts - misses, attempts) : 0,
+        history: Array.isArray(entry.history) ? entry.history.slice() : [],
+        sections: Array.isArray(entry.sections) ? entry.sections.slice() : []
+      };
+    }).filter(function (item) { return item.attempts > 0; });
+
+    var completedCount = sections.filter(function (item) { return item.completed; }).length;
+    var totalAttempts = sections.reduce(function (sum, item) { return sum + item.attempts; }, 0);
+    var totalMisses = sections.reduce(function (sum, item) { return sum + item.misses; }, 0);
+    var overallAccuracy = totalAttempts ? percent(totalAttempts - totalMisses, totalAttempts) : 0;
+
+    var focusSections = sections.filter(function (item) { return item.misses > 0; }).sort(function (a, b) {
+      return b.misses - a.misses || a.accuracy - b.accuracy || a.id - b.id;
+    });
+    var practicedSections = sections.slice().sort(function (a, b) {
+      return b.attempts - a.attempts || b.checks - a.checks || a.id - b.id;
+    });
+    var problemCombos = combos.filter(function (item) { return item.misses > 0; }).sort(function (a, b) {
+      return b.misses - a.misses || a.accuracy - b.accuracy || b.attempts - a.attempts;
+    });
+    var strongCombos = combos.filter(function (item) { return item.misses === 0 && item.attempts >= 2; }).sort(function (a, b) {
+      return b.attempts - a.attempts || a.label.localeCompare(b.label);
+    });
+    var comboAccuracy = combos.slice().sort(function (a, b) {
+      return a.accuracy - b.accuracy || b.misses - a.misses || b.attempts - a.attempts;
+    });
+
+    return {
+      sections: sections,
+      combos: combos,
+      completedCount: completedCount,
+      totalAttempts: totalAttempts,
+      totalMisses: totalMisses,
+      overallAccuracy: overallAccuracy,
+      focusSections: focusSections,
+      practicedSections: practicedSections,
+      problemCombos: problemCombos,
+      strongCombos: strongCombos,
+      comboAccuracy: comboAccuracy
+    };
   }
 
-  function drawPdf(student, snapshots) {
+  function drawPdf(student, data) {
     var jsPDF = window.jspdf.jsPDF;
     var doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4', compress: true });
     var W = 297;
     var H = 210;
-    var M = 14;
-    var CONTENT_W = W - M * 2;
-    var y = 16;
+    var M = 12;
     var pageNo = 1;
+    var C = {
+      ink: [20, 31, 48], muted: [92, 108, 128], navy: [15, 23, 42],
+      blue: [59, 130, 246], blueSoft: [235, 244, 255], gold: [245, 158, 11], goldSoft: [255, 247, 225],
+      green: [34, 197, 94], greenSoft: [236, 253, 245], red: [239, 68, 68], redSoft: [254, 242, 242],
+      line: [222, 228, 236], panel: [248, 250, 252], white: [255, 255, 255]
+    };
 
-    function pageHeader(title, subtitle) {
-      doc.setFillColor(15, 23, 42);
-      doc.rect(0, 0, W, 28, 'F');
-      doc.setTextColor(186, 230, 253);
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(8.5);
-      doc.text('INFORMATIK B25 · TK2 · A8 SHORTCUT QUEST', M, 9);
-      doc.setTextColor(255, 255, 255);
-      doc.setFontSize(16);
-      doc.text(cleanText(title), M, 19);
-      if (subtitle) {
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(8.5);
-        doc.setTextColor(203, 213, 225);
-        doc.text(cleanText(subtitle), W - M, 18, { align: 'right' });
-      }
-      y = 36;
+    function setColor(rgb, fill) {
+      if (fill) doc.setFillColor(rgb[0], rgb[1], rgb[2]);
+      else doc.setTextColor(rgb[0], rgb[1], rgb[2]);
     }
+    function lineColor(rgb) { doc.setDrawColor(rgb[0], rgb[1], rgb[2]); }
 
     function footer() {
-      doc.setDrawColor(226, 232, 240);
+      lineColor(C.line);
       doc.line(M, H - 10, W - M, H - 10);
       doc.setFont('helvetica', 'normal');
-      doc.setFontSize(7.5);
-      doc.setTextColor(100, 116, 139);
-      doc.text('A8 Lernnachweis · automatisch aus dem gespeicherten Shortcut-Quest-Fortschritt', M, H - 5.5);
-      doc.text('Seite ' + pageNo, W - M, H - 5.5, { align: 'right' });
+      doc.setFontSize(7.2);
+      setColor(C.muted);
+      doc.text('A8 Shortcut Quest | Lernnachweis', M, H - 5.5);
+      doc.text(student + ' | Seite ' + pageNo, W - M, H - 5.5, { align: 'right' });
     }
 
-    function newPage(title, subtitle) {
+    function header(title, kicker) {
+      setColor(C.navy, true);
+      doc.rect(0, 0, W, 24, 'F');
+      setColor(C.gold, true);
+      doc.rect(0, 0, 4, 24, 'F');
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(7.2);
+      doc.setTextColor(191, 219, 254);
+      doc.text(safeText(kicker || 'INFORMATIK B25 | TK2 | A8'), M, 7.5);
+      doc.setFontSize(15.5);
+      setColor(C.white);
+      doc.text(safeText(title), M, 17.2);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(7.6);
+      doc.setTextColor(203, 213, 225);
+      doc.text(student, W - M, 17.2, { align: 'right' });
+    }
+
+    function newPage(title, kicker) {
       footer();
       doc.addPage('a4', 'landscape');
       pageNo += 1;
-      pageHeader(title, subtitle);
+      header(title, kicker);
     }
 
-    function ensure(height, title, subtitle) {
-      if (y + height > H - 15) newPage(title || 'A8 Lernnachweis', subtitle || student);
+    function roundedPanel(x, y, w, h, fill, border) {
+      setColor(fill || C.panel, true);
+      if (border) {
+        lineColor(border);
+        doc.roundedRect(x, y, w, h, 2.5, 2.5, 'FD');
+      } else doc.roundedRect(x, y, w, h, 2.5, 2.5, 'F');
     }
 
-    function heading(text, level) {
-      if (!text) return;
-      ensure(level === 1 ? 12 : 9);
+    function ellipsize(text, maxWidth, fontSize, fontStyle) {
+      text = safeText(text);
+      doc.setFont('helvetica', fontStyle || 'normal');
+      doc.setFontSize(fontSize || 8);
+      if (doc.getTextWidth(text) <= maxWidth) return text;
+      var suffix = '...';
+      while (text.length && doc.getTextWidth(text + suffix) > maxWidth) text = text.slice(0, -1);
+      return text + suffix;
+    }
+
+    function sectionHeading(text, x, y, accent) {
+      setColor(accent || C.blue, true);
+      doc.roundedRect(x, y - 4.2, 3, 7.2, 1.2, 1.2, 'F');
       doc.setFont('helvetica', 'bold');
-      doc.setTextColor(15, 23, 42);
-      doc.setFontSize(level === 1 ? 13 : 10.5);
-      doc.text(cleanText(text), M, y);
-      y += level === 1 ? 8 : 6.5;
+      doc.setFontSize(10.5);
+      setColor(C.ink);
+      doc.text(safeText(text), x + 6, y);
     }
 
-    function paragraph(text) {
-      text = cleanText(text);
-      if (!text) return;
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(8.5);
-      doc.setTextColor(71, 85, 105);
-      var lines = doc.splitTextToSize(text, CONTENT_W);
-      ensure(lines.length * 4 + 3);
-      doc.text(lines, M, y);
-      y += lines.length * 4 + 3;
-    }
-
-    function keyValueRows(items) {
-      if (!items || !items.length) return;
-      var colW = (CONTENT_W - 6) / 2;
-      for (var i = 0; i < items.length; i += 2) {
-        ensure(13);
-        for (var j = 0; j < 2; j += 1) {
-          var item = items[i + j];
-          if (!item) continue;
-          var x = M + j * (colW + 6);
-          doc.setFillColor(241, 245, 249);
-          doc.roundedRect(x, y - 4.5, colW, 11, 2, 2, 'F');
-          doc.setFont('helvetica', 'bold');
-          doc.setFontSize(7.5);
-          doc.setTextColor(100, 116, 139);
-          doc.text(cleanText(item.label || 'Wert'), x + 3, y);
-          doc.setFontSize(10);
-          doc.setTextColor(15, 23, 42);
-          doc.text(doc.splitTextToSize(cleanText(item.value), colW - 6), x + 3, y + 4.5);
-        }
-        y += 14;
+    function metricCard(x, y, w, h, label, value, tone, detail) {
+      var palette = tone === 'red' ? [C.redSoft, C.red] : tone === 'green' ? [C.greenSoft, C.green] : tone === 'gold' ? [C.goldSoft, C.gold] : [C.blueSoft, C.blue];
+      roundedPanel(x, y, w, h, palette[0], C.line);
+      setColor(palette[1], true);
+      doc.roundedRect(x + 4, y + 4, 3, h - 8, 1.2, 1.2, 'F');
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(16); setColor(C.ink);
+      doc.text(String(value), x + 11, y + 13);
+      doc.setFontSize(7.6); setColor(C.muted); doc.text(safeText(label), x + 11, y + 20);
+      if (detail) {
+        doc.setFont('helvetica', 'normal'); doc.setFontSize(6.7);
+        doc.text(ellipsize(detail, w - 15, 6.7), x + 11, y + 26);
       }
     }
 
-    function bulletList(rows) {
-      rows.forEach(function (text) {
-        text = cleanText(text);
-        if (!text) return;
-        var lines = doc.splitTextToSize(text, CONTENT_W - 6);
-        ensure(lines.length * 4 + 2);
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(8.3);
-        doc.setTextColor(51, 65, 85);
-        doc.text('•', M + 1, y);
-        doc.text(lines, M + 5, y);
-        y += lines.length * 4 + 2;
-      });
-      y += 1;
+    function drawFocusRows(rows, x, y, w, maxRows) {
+      var count = Math.min(rows.length, maxRows || 6);
+      if (!count) {
+        roundedPanel(x, y, w, 18, C.greenSoft, C.line);
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(8.5); setColor(C.green);
+        doc.text('Keine Fehlerschwerpunkte registriert.', x + 5, y + 11);
+        return 18;
+      }
+      var rowH = 12;
+      for (var i = 0; i < count; i += 1) {
+        var row = rows[i];
+        roundedPanel(x, y + i * rowH, w, rowH - 1.4, i % 2 ? C.white : C.panel, C.line);
+        setColor(C.red, true);
+        doc.roundedRect(x + 3.5, y + i * rowH + 3, 5.5, 5.5, 1.3, 1.3, 'F');
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(7); setColor(C.white);
+        doc.text(String(row.misses), x + 6.25, y + i * rowH + 6.9, { align: 'center' });
+        doc.setFontSize(8.1); setColor(C.ink);
+        doc.text(ellipsize(row.id + '. ' + row.title, w - 42, 8.1, 'bold'), x + 12, y + i * rowH + 5.4);
+        doc.setFont('helvetica', 'normal'); doc.setFontSize(6.7); setColor(C.muted);
+        doc.text(row.accuracy + '% Treffer | ' + row.attempts + ' Versuche', x + 12, y + i * rowH + 9.1);
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(7.4); setColor(C.red);
+        doc.text(row.misses + ' Fehler', x + w - 4, y + i * rowH + 6.8, { align: 'right' });
+      }
+      return count * rowH;
     }
 
-    function table(rows, sectionTitle) {
-      if (!rows || !rows.length) return;
-      var maxCols = rows.reduce(function (max, row) { return Math.max(max, row.length); }, 1);
-      var colW = CONTENT_W / maxCols;
-      var header = rows[0];
-      var body = rows.slice(1);
+    function drawSimpleTable(rows, x, y, widths, headers, maxRows) {
+      var rowH = 8.2;
+      var h = rowH * (Math.min(rows.length, maxRows || rows.length) + 1);
+      var totalW = widths.reduce(function (sum, value) { return sum + value; }, 0);
+      setColor(C.navy, true); doc.roundedRect(x, y, totalW, rowH, 1.5, 1.5, 'F');
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(6.8); setColor(C.white);
+      var cx = x;
+      headers.forEach(function (headerText, index) {
+        doc.text(ellipsize(headerText, widths[index] - 3, 6.8, 'bold'), cx + 2, y + 5.2);
+        cx += widths[index];
+      });
+      var count = Math.min(rows.length, maxRows || rows.length);
+      for (var r = 0; r < count; r += 1) {
+        var ry = y + rowH * (r + 1);
+        setColor(r % 2 ? C.white : C.panel, true); doc.rect(x, ry, totalW, rowH, 'F');
+        lineColor(C.line); doc.line(x, ry + rowH, x + totalW, ry + rowH);
+        cx = x;
+        for (var c = 0; c < widths.length; c += 1) {
+          doc.setFont('helvetica', c === 0 ? 'bold' : 'normal'); doc.setFontSize(6.6);
+          setColor(c === widths.length - 1 && String(rows[r][c]).indexOf('Fehler') !== -1 ? C.red : C.ink);
+          doc.text(ellipsize(rows[r][c], widths[c] - 3, 6.6, c === 0 ? 'bold' : 'normal'), cx + 2, ry + 5.1);
+          cx += widths[c];
+        }
+      }
+      lineColor(C.line); doc.roundedRect(x, y, totalW, h, 1.5, 1.5, 'S');
+      return h;
+    }
 
-      function drawRow(row, isHeader) {
-        var wrapped = row.map(function (cell) {
-          return doc.splitTextToSize(cleanText(cell), Math.max(16, colW - 4));
+    function drawSectionMatrix(items, x, y, w, h, mode) {
+      var colGap = 6;
+      var colW = (w - colGap) / 2;
+      var rowsPerCol = 15;
+      var rowH = h / rowsPerCol;
+      for (var i = 0; i < Math.min(items.length, 30); i += 1) {
+        var col = i >= rowsPerCol ? 1 : 0;
+        var idx = i % rowsPerCol;
+        var px = x + col * (colW + colGap);
+        var py = y + idx * rowH;
+        var item = items[i];
+        var value = mode === 'best' ? item.best : mode === 'last' ? item.last : item.accuracy;
+        var barX = px + 49;
+        var barW = colW - 56;
+        doc.setFont('helvetica', 'normal'); doc.setFontSize(5.9); setColor(C.muted);
+        doc.text(ellipsize(item.id + '. ' + item.title, 44, 5.9), px, py + 4.2);
+        setColor(C.line, true); doc.roundedRect(barX, py + 1.2, barW, 4.3, 1.2, 1.2, 'F');
+        var fill = item.misses > 0 && mode === 'accuracy' ? C.red : value >= 80 ? C.green : value >= 60 ? C.gold : C.red;
+        setColor(fill, true); doc.roundedRect(barX, py + 1.2, Math.max(0.8, barW * value / 100), 4.3, 1.2, 1.2, 'F');
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(5.9); setColor(C.ink);
+        doc.text(Math.round(value) + '%', px + colW, py + 4.3, { align: 'right' });
+      }
+    }
+
+    function drawPerformanceMatrix(items, x, y, w, h) {
+      var colGap = 6;
+      var colW = (w - colGap) / 2;
+      var rowsPerCol = 15;
+      var rowH = h / rowsPerCol;
+      for (var i = 0; i < Math.min(items.length, 30); i += 1) {
+        var col = i >= rowsPerCol ? 1 : 0;
+        var idx = i % rowsPerCol;
+        var px = x + col * (colW + colGap);
+        var py = y + idx * rowH;
+        var item = items[i];
+        var barX = px + 49;
+        var barW = colW - 56;
+        doc.setFont('helvetica', 'normal'); doc.setFontSize(5.9); setColor(C.muted);
+        doc.text(ellipsize(item.id + '. ' + item.title, 44, 5.9), px, py + 4.2);
+        setColor(C.line, true); doc.roundedRect(barX, py + 1.0, barW, 2.0, 0.8, 0.8, 'F');
+        setColor(C.blue, true); doc.roundedRect(barX, py + 1.0, Math.max(0.7, barW * item.best / 100), 2.0, 0.8, 0.8, 'F');
+        setColor(C.line, true); doc.roundedRect(barX, py + 3.7, barW, 2.0, 0.8, 0.8, 'F');
+        setColor(item.last + 5 < item.best ? C.gold : C.green, true);
+        doc.roundedRect(barX, py + 3.7, Math.max(0.7, barW * item.last / 100), 2.0, 0.8, 0.8, 'F');
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(5.5); setColor(C.ink);
+        doc.text(item.best + '/' + item.last, px + colW, py + 4.7, { align: 'right' });
+      }
+    }
+
+    function drawHorizontalBars(items, x, y, w, h, valueKey, options) {
+      options = options || {};
+      var count = Math.max(1, Math.min(items.length, options.maxRows || 10));
+      var rowH = h / count;
+      var labelW = options.labelWidth || 54;
+      var barX = x + labelW;
+      var barW = w - labelW - 12;
+      var values = items.slice(0, count).map(function (item) { return Number(item[valueKey]) || 0; });
+      var maxValue = options.maxValue || Math.max.apply(null, values.concat([1]));
+      for (var i = 0; i < count; i += 1) {
+        var item = items[i];
+        if (!item) continue;
+        var value = Number(item[valueKey]) || 0;
+        var py = y + i * rowH;
+        doc.setFont('helvetica', 'normal'); doc.setFontSize(options.fontSize || 6.4); setColor(C.muted);
+        doc.text(ellipsize(options.labelFn ? options.labelFn(item) : item.label, labelW - 3, options.fontSize || 6.4), x, py + rowH * 0.62);
+        setColor(C.line, true); doc.roundedRect(barX, py + rowH * 0.25, barW, Math.max(2.2, rowH * 0.42), 1, 1, 'F');
+        var tone = options.colorFn ? options.colorFn(item) : C.blue;
+        setColor(tone, true);
+        var width = maxValue ? barW * value / maxValue : 0;
+        if (value > 0) doc.roundedRect(barX, py + rowH * 0.25, Math.max(0.8, width), Math.max(2.2, rowH * 0.42), 1, 1, 'F');
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(options.fontSize || 6.4); setColor(C.ink);
+        doc.text(options.valueFn ? options.valueFn(item) : String(value), x + w, py + rowH * 0.62, { align: 'right' });
+      }
+    }
+
+    function drawComboAccuracy(items, x, y, w, h) {
+      var chosen = items.slice(0, 12);
+      if (!chosen.length) return;
+      drawHorizontalBars(chosen, x, y, w, h, 'accuracy', {
+        maxRows: 12, maxValue: 100, labelWidth: 66,
+        labelFn: function (item) { return item.label; },
+        valueFn: function (item) { return item.accuracy + '%'; },
+        colorFn: function (item) { return item.misses ? (item.accuracy >= 80 ? C.gold : C.red) : C.green; },
+        fontSize: 6.1
+      });
+    }
+
+    function drawAttemptHistory(items, x, y, w, h) {
+      var chosen = items.filter(function (item) { return item.history && item.history.length; }).slice(0, 8);
+      if (!chosen.length) return;
+      var labelW = 68;
+      var rowH = h / chosen.length;
+      var dotArea = w - labelW - 5;
+      chosen.forEach(function (item, index) {
+        var py = y + index * rowH;
+        doc.setFont('helvetica', 'normal'); doc.setFontSize(6.3); setColor(C.muted);
+        doc.text(ellipsize(item.label, labelW - 4, 6.3), x, py + rowH * 0.58);
+        var history = item.history.slice(-14);
+        var gap = Math.min(8, dotArea / Math.max(14, history.length));
+        history.forEach(function (attempt, idx) {
+          var cx = x + labelW + idx * gap + 2.5;
+          var cy = py + rowH * 0.48;
+          setColor(attempt && attempt.success ? C.green : C.red, true);
+          doc.circle(cx, cy, 1.6, 'F');
         });
-        var lines = wrapped.reduce(function (max, item) { return Math.max(max, item.length); }, 1);
-        var rowH = Math.max(7, lines * 3.5 + 3);
-        ensure(rowH + 1, sectionTitle || 'A8 Lernnachweis', student);
-        if (isHeader) doc.setFillColor(226, 232, 240);
-        else doc.setFillColor(248, 250, 252);
-        doc.rect(M, y - 4.5, CONTENT_W, rowH, 'F');
-        doc.setDrawColor(226, 232, 240);
-        doc.rect(M, y - 4.5, CONTENT_W, rowH);
-        for (var c = 0; c < maxCols; c += 1) {
-          var x = M + c * colW;
-          if (c) doc.line(x, y - 4.5, x, y - 4.5 + rowH);
-          doc.setFont('helvetica', isHeader ? 'bold' : 'normal');
-          doc.setFontSize(isHeader ? 7.5 : 7.2);
-          doc.setTextColor(isHeader ? 30 : 71, isHeader ? 41 : 85, isHeader ? 59 : 105);
-          doc.text(wrapped[c] || [''], x + 2, y);
-        }
-        y += rowH;
-      }
-
-      drawRow(header, true);
-      body.forEach(function (row) { drawRow(row, false); });
-      y += 4;
-    }
-
-    function renderBlock(block, sectionTitle) {
-      var data = nodeSnapshot(block);
-      if (data.title) heading(data.title, 2);
-      keyValueRows(data.highlights);
-      data.paragraphs.forEach(paragraph);
-      data.lists.forEach(bulletList);
-      data.tables.forEach(function (rows) { table(rows, sectionTitle); });
-      y += 2;
-    }
-
-    pageHeader('A8 · Shortcut Quest – Lernnachweis', student);
-    doc.setTextColor(15, 23, 42);
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(15);
-    doc.text(student, M, y);
-    y += 7;
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(9);
-    doc.setTextColor(100, 116, 139);
-    doc.text('Erstellt am ' + new Date().toLocaleString('de-CH') + ' · vollständiger Diagnose-Export aller Report-Tabs', M, y);
-    y += 10;
-    doc.setFillColor(236, 253, 245);
-    doc.roundedRect(M, y - 5, CONTENT_W, 17, 2, 2, 'F');
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(9.2);
-    doc.setTextColor(5, 150, 105);
-    doc.text('Enthalten: Überblick · Kombinationen · Abschnitte · alle Tabellen · alle verfügbaren Statistik-Grafiken', M + 4, y + 1);
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(8.2);
-    doc.setTextColor(71, 85, 105);
-    doc.text('So sind Stärken, Fehlerschwerpunkte, Übungsbedarf und Entwicklung direkt sichtbar.', M + 4, y + 7);
-    y += 20;
-
-    snapshots.forEach(function (snapshot, index) {
-      if (index > 0 || y > 55) newPage('A8 · ' + snapshot.label, student);
-      else heading(snapshot.label, 1);
-      snapshot.blocks.forEach(function (block) { renderBlock(block, 'A8 · ' + snapshot.label); });
-    });
-
-    snapshots.forEach(function (snapshot) {
-      (snapshot.chartImages || []).forEach(function (chart) {
-        if (!chart.imgURI) return;
-        newPage('Statistik-Grafik · ' + chart.title, snapshot.label + ' · ' + student);
-        var maxW = CONTENT_W;
-        var maxH = H - y - 18;
-        var ratio = chart.width / Math.max(1, chart.height);
-        var drawW = maxW;
-        var drawH = drawW / ratio;
-        if (drawH > maxH) {
-          drawH = maxH;
-          drawW = drawH * ratio;
-        }
-        var x = M + (CONTENT_W - drawW) / 2;
-        doc.addImage(chart.imgURI, 'PNG', x, y, drawW, drawH, undefined, 'FAST');
-        y += drawH + 5;
+        lineColor(C.line); doc.line(x + labelW, py + rowH - 1, x + w, py + rowH - 1);
       });
+    }
+
+    function sectionDetailRows(items) {
+      return items.map(function (item) {
+        return [item.id + '. ' + item.title, item.completed ? 'Ja' : '-', String(item.attempts), item.misses ? item.misses + ' Fehler' : '0', item.accuracy + '%', item.best + '%'];
+      });
+    }
+
+    header('Lernnachweis - Überblick', 'INFORMATIK B25 | TK2 | A8 SHORTCUT QUEST');
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(18); setColor(C.ink); doc.text(student, M, 36);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(7.6); setColor(C.muted);
+    doc.text('Stand: ' + new Date().toLocaleString('de-CH') + ' | automatisch aus dem gespeicherten Spielstand', M, 42);
+
+    var cardGap = 5;
+    var cardW = (W - 2 * M - 3 * cardGap) / 4;
+    metricCard(M, 49, cardW, 31, 'Abschnitte abgeschlossen', data.completedCount + '/30', data.completedCount === 30 ? 'green' : 'blue', 'Fortschritt im A8-Kurs');
+    metricCard(M + cardW + cardGap, 49, cardW, 31, 'Antwortversuche', data.totalAttempts, 'blue', 'über alle Aufgaben hinweg');
+    metricCard(M + 2 * (cardW + cardGap), 49, cardW, 31, 'Fehlversuche', data.totalMisses, data.totalMisses ? 'red' : 'green', data.focusSections.length + ' Abschnitte betroffen');
+    metricCard(M + 3 * (cardW + cardGap), 49, cardW, 31, 'Trefferquote', data.overallAccuracy + '%', data.overallAccuracy >= 90 ? 'green' : data.overallAccuracy >= 75 ? 'gold' : 'red', 'über alle protokollierten Antworten');
+
+    sectionHeading('Wo noch ansetzen', M, 94, C.red);
+    drawFocusRows(data.focusSections, M, 100, 132, 6);
+    sectionHeading('Starke Kombinationen', 151, 94, C.green);
+    var strongRows = data.strongCombos.slice(0, 7).map(function (item) { return [item.label, item.attempts + ' Versuche', '0 Fehler']; });
+    if (strongRows.length) drawSimpleTable(strongRows, 151, 100, [83, 25, 25], ['Kombination', 'Praxis', 'Fehler'], 7);
+    else {
+      roundedPanel(151, 100, 133, 18, C.panel, C.line);
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(8); setColor(C.muted);
+      doc.text('Noch zu wenig Daten für eine Stärkenliste.', 156, 111);
+    }
+
+    sectionHeading('Lehrpersonen-Fazit', M, 181, C.gold);
+    roundedPanel(M, 186, W - 2 * M, 10, C.goldSoft, C.line);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(7.4); setColor(C.ink);
+    var summary = data.totalMisses
+      ? 'Fokus zuerst auf ' + data.focusSections.slice(0, 3).map(function (item) { return item.id + '. ' + item.title; }).join(' | ') + '. Fehler bleiben sichtbar, auch wenn ein späterer Versuch 100% erreicht.'
+      : 'Aktuell sind keine Fehlversuche registriert. Für eine belastbare Diagnose sind weitere Wiederholungen sinnvoll.';
+    doc.text(ellipsize(summary, W - 2 * M - 10, 7.4), M + 5, 192.3);
+
+    newPage('Alle 30 Abschnitte', 'DETAILANSICHT | ABSCHLUSS, FEHLER, TREFFERQUOTE');
+    sectionHeading('Abschnitte 1-15', M, 35, C.blue);
+    sectionHeading('Abschnitte 16-30', 151, 35, C.blue);
+    var detailRows = sectionDetailRows(data.sections);
+    drawSimpleTable(detailRows.slice(0, 15), M, 41, [55, 13, 16, 18, 18, 18], ['Abschnitt', 'OK', 'Vers.', 'Fehler', 'Quote', 'Best'], 15);
+    drawSimpleTable(detailRows.slice(15), 151, 41, [55, 13, 16, 18, 18, 18], ['Abschnitt', 'OK', 'Vers.', 'Fehler', 'Quote', 'Best'], 15);
+
+    newPage('Kombinationen - Fehler & Trefferquote', 'DIAGNOSE | WORST FIRST');
+    sectionHeading('Trefferquote pro Kombination', M, 35, C.gold);
+    sectionHeading('Fehlversuche je Kombination', 151, 35, C.red);
+    var comboWorst = data.comboAccuracy.filter(function (item) { return item.misses > 0; });
+    if (comboWorst.length < 12) {
+      data.comboAccuracy.forEach(function (item) { if (comboWorst.length < 12 && comboWorst.indexOf(item) === -1) comboWorst.push(item); });
+    }
+    drawComboAccuracy(comboWorst, M, 42, 132, 92);
+    drawHorizontalBars(data.problemCombos.slice(0, 12), 151, 42, 133, 92, 'misses', {
+      maxRows: 12, labelWidth: 72,
+      labelFn: function (item) { return item.label; },
+      valueFn: function (item) { return item.misses + '/' + item.attempts; },
+      colorFn: function () { return C.red; }, fontSize: 6.0
     });
+    sectionHeading('Fehlerdetails', M, 146, C.red);
+    var problemRows = data.problemCombos.slice(0, 8).map(function (item) { return [item.label, String(item.attempts), String(item.misses), item.accuracy + '%']; });
+    if (problemRows.length) drawSimpleTable(problemRows, M, 152, [78, 18, 18, 18], ['Kombination', 'Vers.', 'Fehler', 'Quote'], 8);
+    else {
+      roundedPanel(M, 152, 132, 18, C.greenSoft, C.line);
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(8); setColor(C.green);
+      doc.text('Keine Fehlversuche in Kombinationen.', M + 5, 163);
+    }
+    sectionHeading('Interpretation', 151, 146, C.blue);
+    roundedPanel(151, 152, 133, 36, C.blueSoft, C.line);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(7.2); setColor(C.ink);
+    var interp = data.problemCombos.length
+      ? 'Die rote Liste zeigt nicht nur das Endergebnis, sondern echte Fehlversuche aus früheren Durchläufen. So bleibt sichtbar, welche Shortcuts erst nach Wiederholung sicher wurden.'
+      : 'Alle protokollierten Kombinationen sind aktuell fehlerfrei. Bei wenigen Versuchen ist das noch keine sichere Mastery-Aussage.';
+    doc.text(doc.splitTextToSize(interp, 122), 157, 161);
+
+    newPage('Versuchshistorie & Übungsintensität', 'ENTWICKLUNG | WIEDERHOLUNGEN');
+    sectionHeading('Versuchshistorie pro Kombination', M, 35, C.blue);
+    var historyItems = data.problemCombos.concat(data.strongCombos).filter(function (item, idx, arr) { return arr.indexOf(item) === idx; });
+    drawAttemptHistory(historyItems, M, 43, 132, 78);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(6.6); setColor(C.muted);
+    doc.text('Punkt = ein Versuch | grün = richtig | rot = falsch | gezeigt werden die letzten 14 Versuche.', M, 128);
+    sectionHeading('Meist geübte Abschnitte', 151, 35, C.blue);
+    drawHorizontalBars(data.practicedSections.slice(0, 10), 151, 43, 133, 78, 'attempts', {
+      maxRows: 10, labelWidth: 69,
+      labelFn: function (item) { return item.id + '. ' + item.title; },
+      valueFn: function (item) { return String(item.attempts); },
+      colorFn: function (item) { return item.misses ? C.gold : C.blue; }, fontSize: 6.1
+    });
+    sectionHeading('Was bedeutet das?', M, 147, C.gold);
+    roundedPanel(M, 153, W - 2 * M, 35, C.goldSoft, C.line);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(7.2); setColor(C.ink);
+    doc.text(doc.splitTextToSize('Viele Versuche sind nicht automatisch schlecht: Sie zeigen Übungsintensität. Entscheidend ist die Kombination aus Wiederholungen, Fehlversuchen und späterer Trefferquote. Ein Abschnitt mit mehreren Versuchen und steigender Sicherheit kann didaktisch wertvoller sein als ein einmalig perfekter Treffer.', W - 2 * M - 12), M + 6, 163);
+
+    newPage('Trefferquote je Abschnitt', 'ALLE 30 ABSCHNITTE | FEHLER BLEIBEN SICHTBAR');
+    sectionHeading('Trefferquote', M, 35, C.green);
+    drawSectionMatrix(data.sections, M, 43, W - 2 * M, 137, 'accuracy');
+    roundedPanel(M, 184, W - 2 * M, 9, C.panel, C.line);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(6.7); setColor(C.muted);
+    doc.text('Rot/Gold markiert Abschnitte mit Fehlversuchen oder tieferer Quote. 100% kann trotzdem einen früheren Fehler enthalten; dafür siehe Fehler-Spalte auf Seite 2.', M + 5, 189.8);
+
+    newPage('Top-Ergebnisse je Abschnitt', 'BESTES ERGEBNIS | ALLE 30 ABSCHNITTE');
+    sectionHeading('Bestes Ergebnis', M, 35, C.green);
+    drawSectionMatrix(data.sections, M, 43, W - 2 * M, 137, 'best');
+    roundedPanel(M, 184, W - 2 * M, 9, C.greenSoft, C.line);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(6.7); setColor(C.muted);
+    doc.text('Diese Seite zeigt das beste erreichte Ergebnis. Für Diagnose immer zusammen mit Trefferquote und Fehlversuchen lesen.', M + 5, 189.8);
+
+    newPage('Performance pro Abschnitt', 'BESTES / LETZTES ERGEBNIS');
+    sectionHeading('Bestwert (blau) vs. letzter Lauf (grün/gold)', M, 35, C.blue);
+    drawPerformanceMatrix(data.sections, M, 43, W - 2 * M, 137);
+    roundedPanel(M, 184, W - 2 * M, 9, C.blueSoft, C.line);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(6.7); setColor(C.muted);
+    doc.text('Zahlen rechts: Bestwert / letzter Lauf. Gold zeigt einen letzten Lauf, der klar unter dem persönlichen Bestwert liegt.', M + 5, 189.8);
 
     footer();
     doc.save('A8_Shortcut_Quest_Lernnachweis_' + safeFileName(student) + '.pdf');
@@ -412,18 +562,18 @@
     var originalText = button ? button.textContent : '';
     if (button) {
       button.disabled = true;
-      button.textContent = 'PDF wird erstellt …';
+      button.textContent = 'PDF wird erstellt ...';
     }
-
     try {
       var student = window.prompt('Bitte gib deinen Vornamen für den Lernnachweis ein:', '');
       if (!student) return;
       await ensureJsPdf();
-      var snapshots = await captureAllReportTabs();
-      var chartCount = snapshots.reduce(function (sum, tab) { return sum + ((tab.chartImages || []).length); }, 0);
-      if (!snapshots.length) throw new Error('Keine Reportdaten gefunden.');
-      drawPdf(student, snapshots);
-      console.info('A8 PDF erstellt:', snapshots.length + ' Report-Tabs, ' + chartCount + ' Grafiken.');
+      var gameState = readGameState();
+      if (!gameState) throw new Error('Kein gespeicherter A8-Spielstand gefunden.');
+      var data = buildReportData(gameState);
+      if (!data.sections.length) throw new Error('Keine Reportdaten gefunden.');
+      drawPdf(student, data);
+      console.info('A8 PDF erstellt: kompakter 7-Seiten-Lernnachweis mit nativen Statistik-Grafiken.');
     } catch (error) {
       console.error('A8 PDF export failed', error);
       window.alert('Das A8-PDF konnte nicht erzeugt werden. Bitte aktualisiere zuerst den Lern-Report und versuche es erneut.');
@@ -444,17 +594,14 @@
     button.id = BUTTON_ID;
     button.type = 'button';
     button.className = 'report-action ghost';
-    button.textContent = '📄 PDF Lernnachweis';
-    button.title = 'Alle Statistiken, Tabellen und Grafiken als PDF exportieren';
+    button.textContent = 'PDF Lernnachweis';
+    button.title = 'Kompakter Lernnachweis mit Statistiken, Fehlern und Entwicklung';
     button.addEventListener('click', function () { generatePdf(button); });
     actions.insertBefore(button, actions.firstChild);
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', installButton);
-  } else {
-    installButton();
-  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', installButton);
+  else installButton();
 
   var observer = new MutationObserver(function () { installButton(); });
   observer.observe(document.documentElement, { childList: true, subtree: true });
