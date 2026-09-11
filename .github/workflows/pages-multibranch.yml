@@ -48,7 +48,7 @@ jobs:
 
           # TK2 A8 review build: inject the pinned Shortcut Quest 2026 runtime
           # into DEV only so classroom review stays deterministic.
-          SHORTCUT_QUEST_SHA="642006c01c3039fa2033b46a8b649fcc0002da21"
+          SHORTCUT_QUEST_SHA="3b3f207afcda9764515dfce9fb7d2aad08fa8de9"
           rm -rf /tmp/shortcut-quest-a8
           git init -q /tmp/shortcut-quest-a8
           git -C /tmp/shortcut-quest-a8 remote add origin https://github.com/modebrecht/shortcut-quest.git
@@ -67,6 +67,7 @@ jobs:
           cp /tmp/shortcut-quest-a8/2026/favicon.svg _site/dev/tk2/A8/
           cp /tmp/shortcut-quest-a8/2026/premium-motion.js _site/dev/tk2/A8/
           cp /tmp/shortcut-quest-a8/2026/battle-motion.js _site/dev/tk2/A8/
+          cp /tmp/shortcut-quest-a8/2026/arena-dev-fix.js _site/dev/tk2/A8/
           cp -R /tmp/shortcut-quest-a8/2026/assets _site/dev/tk2/A8/
 
           # IB2026-only A8 diagnostic PDF overlay.
@@ -88,6 +89,7 @@ jobs:
           scripts = [
               '<script src="premium-motion.js"></script>',
               '<script src="battle-motion.js"></script>',
+              '<script src="arena-dev-fix.js"></script>',
               '<script src="pdf-report.js"></script>',
           ]
           if '</body>' not in html:
@@ -101,13 +103,16 @@ jobs:
           # Fail the build early if review scripts are malformed or missing.
           node --check _site/dev/tk2/A8/premium-motion.js
           node --check _site/dev/tk2/A8/battle-motion.js
+          node --check _site/dev/tk2/A8/arena-dev-fix.js
           node --check _site/dev/tk2/A8/pdf-report.js
           test -s _site/dev/tk2/A8/premium-motion.js
           test -s _site/dev/tk2/A8/battle-motion.js
+          test -s _site/dev/tk2/A8/arena-dev-fix.js
           test -s _site/dev/tk2/A8/pdf-report.js
           grep -Fq "doc.save('A8-' + safeFileName(student) + '.pdf');" _site/dev/tk2/A8/pdf-report.js
           grep -Fq '<script src="premium-motion.js"></script>' _site/dev/tk2/A8/index.html
           grep -Fq '<script src="battle-motion.js"></script>' _site/dev/tk2/A8/index.html
+          grep -Fq '<script src="arena-dev-fix.js"></script>' _site/dev/tk2/A8/index.html
           grep -Fq '<script src="pdf-report.js"></script>' _site/dev/tk2/A8/index.html
 
           # Serve files exactly as committed; do not run Jekyll processing.
