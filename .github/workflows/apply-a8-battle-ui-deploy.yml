@@ -1,0 +1,37 @@
+name: Apply A8 Battle UI Deploy
+
+on:
+  push:
+    branches: [dev]
+    paths:
+      - '.github/workflows/apply-a8-battle-ui-deploy.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 1
+
+      - name: Patch Pages deployment
+        run: python3 .github/a8-battle-ui-deploy-patch.py
+
+      - name: Verify patch contract
+        run: |
+          grep -Fq 'SHORTCUT_QUEST_SHA="228a4ef4217e65a1169525693670d085ed99bdc4"' .github/workflows/pages-multibranch.yml
+          grep -Fq 'BATTLE UI SKILL BAR PREMIUM PASS 2026' .github/workflows/pages-multibranch.yml
+          grep -Fq 'Deployed Battle skills must use the redesigned grid' .github/workflows/pages-multibranch.yml
+
+      - name: Commit deploy update
+        run: |
+          git config user.name 'modebrecht'
+          git config user.email '137332207+modebrecht@users.noreply.github.com'
+          git add .github/workflows/pages-multibranch.yml
+          git commit -m 'style: deploy and verify A8 Battle skill UI'
+          git push origin HEAD:dev
