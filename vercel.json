@@ -1,19 +1,12 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "buildCommand": "bash scripts/build-vercel-site.sh",
+  "outputDirectory": "dist",
   "git": {
     "deploymentEnabled": {
       "*": false,
       "main": true
     }
-  },
-  "rewrites": [
-    {
-      "source": "/tk2/A8",
-      "destination": "https://modebrecht.github.io/ib2026/tk2/A8/"
-    },
-    {
-      "source": "/tk2/A8/:path*",
-      "destination": "https://modebrecht.github.io/ib2026/tk2/A8/:path*"
-    }
-  ]
+  }
 }
