@@ -48,7 +48,7 @@ jobs:
 
           # TK2 A8 review build: inject the pinned Shortcut Quest 2026 runtime
           # into DEV only so classroom review stays deterministic.
-          SHORTCUT_QUEST_SHA="6193079dd297e67d54190f8a58c67c46b40517d4"
+          SHORTCUT_QUEST_SHA="21ceebc95f0e18aba6a2a0e0ceceafd42e3c6fcb"
           rm -rf /tmp/shortcut-quest-a8
           git init -q /tmp/shortcut-quest-a8
           git -C /tmp/shortcut-quest-a8 remote add origin https://github.com/modebrecht/shortcut-quest.git
@@ -69,6 +69,7 @@ jobs:
           cp /tmp/shortcut-quest-a8/2026/battle-motion.js _site/dev/tk2/A8/
           cp /tmp/shortcut-quest-a8/2026/arena-dev-fix.js _site/dev/tk2/A8/
           cp /tmp/shortcut-quest-a8/2026/arena-dev-tuning.css _site/dev/tk2/A8/
+          cp /tmp/shortcut-quest-a8/2026/a8-dev-polish.js _site/dev/tk2/A8/
           cp -R /tmp/shortcut-quest-a8/2026/assets _site/dev/tk2/A8/
 
           # IB2026-only A8 diagnostic PDF overlay.
@@ -92,6 +93,7 @@ jobs:
               '<script src="premium-motion.js"></script>',
               '<script src="battle-motion.js"></script>',
               '<script src="arena-dev-fix.js?v=59809da9"></script>',
+              '<script src="a8-dev-polish.js?v=21ceebc9"></script>',
               '<script src="pdf-report.js"></script>',
           ]
           if '</head>' not in html or '</body>' not in html:
@@ -108,17 +110,20 @@ jobs:
           node --check _site/dev/tk2/A8/premium-motion.js
           node --check _site/dev/tk2/A8/battle-motion.js
           node --check _site/dev/tk2/A8/arena-dev-fix.js
+          node --check _site/dev/tk2/A8/a8-dev-polish.js
           node --check _site/dev/tk2/A8/pdf-report.js
           test -s _site/dev/tk2/A8/premium-motion.js
           test -s _site/dev/tk2/A8/battle-motion.js
           test -s _site/dev/tk2/A8/arena-dev-fix.js
           test -s _site/dev/tk2/A8/arena-dev-tuning.css
+          test -s _site/dev/tk2/A8/a8-dev-polish.js
           test -s _site/dev/tk2/A8/pdf-report.js
           grep -Fq "doc.save('A8-' + safeFileName(student) + '.pdf');" _site/dev/tk2/A8/pdf-report.js
           grep -Fq '<link rel="stylesheet" href="arena-dev-tuning.css?v=6193079d">' _site/dev/tk2/A8/index.html
           grep -Fq '<script src="premium-motion.js"></script>' _site/dev/tk2/A8/index.html
           grep -Fq '<script src="battle-motion.js"></script>' _site/dev/tk2/A8/index.html
           grep -Fq '<script src="arena-dev-fix.js?v=59809da9"></script>' _site/dev/tk2/A8/index.html
+          grep -Fq '<script src="a8-dev-polish.js?v=21ceebc9"></script>' _site/dev/tk2/A8/index.html
           grep -Fq '<script src="pdf-report.js"></script>' _site/dev/tk2/A8/index.html
 
           # Serve files exactly as committed; do not run Jekyll processing.
@@ -167,7 +172,7 @@ jobs:
           const assert = require('node:assert/strict');
 
           (async () => {
-            const url = 'https://modebrecht.github.io/ib2026/dev/tk2/A8/?qa=6193079d';
+            const url = 'https://modebrecht.github.io/ib2026/dev/tk2/A8/?qa=21ceebc9';
             const browser = await chromium.launch({ headless: true });
             try {
               const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
@@ -176,17 +181,15 @@ jobs:
                 const response = await page.goto(url + '&attempt=' + attempt, { waitUntil: 'networkidle' });
                 assert.ok(response && response.ok(), `DEV A8 did not load: ${response?.status()}`);
                 const html = await page.content();
-                if (html.includes('arena-dev-tuning.css?v=6193079d')) {
+                if (html.includes('a8-dev-polish.js?v=21ceebc9')) {
                   ready = true;
                   break;
                 }
                 await page.waitForTimeout(5000);
               }
-              assert.equal(ready, true, 'GitHub Pages did not expose the expected 6193079d A8 tuning in time');
+              assert.equal(ready, true, 'GitHub Pages did not expose the expected 21ceebc9 A8 polish in time');
 
-              // Regression for the reported "Auto anziehen works only halfway" issue.
-              // Seed one compatible item per visible loadout position plus two swords,
-              // then use the real button and verify both state-driven labels and artwork.
+              // Seed one compatible item per visible loadout position plus two swords.
               await page.evaluate(() => {
                 const now = Date.now();
                 const item = (key, name, icon, slot, category, atk = 0, def = 0, hp = 0) => ({
@@ -225,6 +228,28 @@ jobs:
               });
               await page.reload({ waitUntil: 'networkidle' });
               await page.locator('.nav-toggle[data-view="inventory"]').click();
+              await page.waitForTimeout(250);
+
+              const guidanceBeforeEquip = await page.locator('#inventoryView').evaluate(view => {
+                const slots = Array.from(view.querySelectorAll('[data-equip-slot]'));
+                const button = view.querySelector('#autoEquipBtn');
+                return {
+                  buttonText: button?.textContent?.trim() || '',
+                  slots: slots.map(slot => ({
+                    key: slot.dataset.equipSlot,
+                    equipped: slot.classList.contains('equipped'),
+                    ready: slot.classList.contains('a8-slot-ready'),
+                    readyFlag: slot.dataset.readyToEquip || '',
+                    animationName: getComputedStyle(slot).animationName
+                  }))
+                };
+              });
+              assert.equal(guidanceBeforeEquip.buttonText, 'Alles anziehen', 'Auto-equip control must use the clearer label Alles anziehen');
+              assert.equal(guidanceBeforeEquip.slots.length, 8, 'Inventory must expose all eight equipment slots');
+              assert.ok(guidanceBeforeEquip.slots.every(slot => !slot.equipped), 'Seeded regression starts with empty equipment');
+              assert.ok(guidanceBeforeEquip.slots.every(slot => slot.ready && slot.readyFlag === 'true'), 'Every empty slot with a compatible owned item must be marked ready');
+              assert.ok(guidanceBeforeEquip.slots.every(slot => /a8EquipSlotPulse/.test(slot.animationName)), 'Ready empty slots must visibly pulse');
+
               await page.locator('#autoEquipBtn').click();
               await page.waitForTimeout(500);
               await page.waitForFunction(() => {
@@ -247,6 +272,7 @@ jobs:
                   return {
                     slot: slot.dataset.equipSlot,
                     equipped: slot.classList.contains('equipped'),
+                    ready: slot.classList.contains('a8-slot-ready'),
                     label: slot.querySelector('.slot-header span')?.textContent?.trim() || '',
                     art: art?.tagName || '',
                     artWidth: rect?.width || 0,
@@ -255,16 +281,16 @@ jobs:
                   };
                 });
               });
-              assert.equal(inventoryState.length, 8, 'Inventory must expose all eight equipment slots');
-              assert.ok(inventoryState.every(slot => slot.equipped), 'Auto-equip must fill every compatible equipment slot');
-              assert.ok(inventoryState.every(slot => slot.art), 'Every auto-equipped slot must render item art');
-              assert.ok(inventoryState.every(slot => slot.artWidth >= 45 && slot.artHeight >= 45), 'Auto-equipped item art must be visibly sized');
-              assert.ok(inventoryState.every(slot => slot.imageLoaded), 'External auto-equipped item art must load successfully');
-              assert.ok(inventoryState.some(slot => slot.label === 'Feuerklinge'), 'Best weapon must be auto-equipped');
+              assert.ok(inventoryState.every(slot => slot.equipped), 'Alles anziehen must fill every compatible equipment slot');
+              assert.ok(inventoryState.every(slot => !slot.ready), 'Equipped slots must stop pulsing immediately');
+              assert.ok(inventoryState.every(slot => slot.art), 'Every equipped slot must render item art');
+              assert.ok(inventoryState.every(slot => slot.artWidth >= 45 && slot.artHeight >= 45), 'Equipped item art must be visibly sized');
+              assert.ok(inventoryState.every(slot => slot.imageLoaded), 'External equipped item art must load successfully');
+              assert.ok(inventoryState.some(slot => slot.label === 'Feuerklinge'), 'Best weapon must be equipped');
               assert.ok(inventoryState.some(slot => slot.label === 'Stahlklinge'), 'Second weapon must fill the second weapon slot');
               await page.locator('#playerCard').screenshot({ path: 'a8-inventory-deployed.png' });
 
-              // Existing arena regression coverage stays intact.
+              // Existing arena regression coverage plus hand-follow weapon motion.
               await page.locator('.nav-toggle[data-view="battle"]').click();
               await page.waitForFunction(() => document.getElementById('battleStagePreview')?.classList.contains('arena-svg-composed'));
               await page.waitForTimeout(600);
@@ -303,6 +329,7 @@ jobs:
                   enemyGround: enemyPortraitRect?.bottom || 0,
                   heroStatsGap: headRect && statsRect ? statsRect.top - headRect.bottom : 999,
                   weaponCount: weapons.length,
+                  weaponAnimations: weapons.map(weapon => getComputedStyle(weapon).animationName),
                   weaponTransforms: weapons.map(weapon => getComputedStyle(weapon).transform),
                   weaponArtTransforms: weapons.map(weapon => {
                     const art = weapon.querySelector('img, svg, object');
@@ -333,13 +360,15 @@ jobs:
               assert.ok(Math.abs(state.heroGround - state.enemyGround) <= 2, 'Knight and enemy must share the same arena ground line');
               assert.ok(state.heroStatsGap >= 0 && state.heroStatsGap <= 16, 'Knight stats must sit directly below the knight info box');
               assert.equal(state.weaponCount, 2, 'Knight must show two arena weapon layers');
+              assert.ok(state.weaponAnimations.some(name => /a8WeaponLeftHandFollow/.test(name)), 'Left weapon must follow the animated hanging arm');
+              assert.ok(state.weaponAnimations.some(name => /a8WeaponRightHandFollow/.test(name)), 'Right weapon must follow the animated hanging arm');
               assert.ok(state.weaponSizes.every(size => size.width >= 60 && size.height >= 70), 'Knight arena weapons must remain visibly sized');
               assert.ok(state.weaponSizes.every(size => size.top >= state.heroTop + state.heroHeight * 0.76), 'Knight sword grips must stay down at the hanging fists, not the waist');
               assert.ok(state.weaponTransforms.every(transform => transform && transform !== 'none'), 'Knight sword wrapper rotations must be active');
               assert.ok(state.weaponArtTransforms.every(transform => transform && transform !== 'none'), 'Knight sword art must be flipped blade-down');
               assert.equal(state.cardOverflow, false, 'Deployed battle card must not overflow horizontally');
               assert.equal(state.pageOverflow, false, 'Deployed page must not overflow horizontally');
-              console.log('OK: deployed DEV A8 auto-equip visuals and arena verified; screenshots captured.');
+              console.log('OK: deployed DEV A8 slot guidance, Alles anziehen, and hand-follow weapons verified.');
             } finally {
               await browser.close();
             }
