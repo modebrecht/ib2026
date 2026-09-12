@@ -48,7 +48,7 @@ jobs:
 
           # TK2 A8 review build: inject the pinned Shortcut Quest 2026 runtime
           # into DEV only so classroom review stays deterministic.
-          SHORTCUT_QUEST_SHA="59809da992334942a4ff05c2ed02751576de15bd"
+          SHORTCUT_QUEST_SHA="cf6df4f6b663f8f86f096320463c94c07e27939c"
           rm -rf /tmp/shortcut-quest-a8
           git init -q /tmp/shortcut-quest-a8
           git -C /tmp/shortcut-quest-a8 remote add origin https://github.com/modebrecht/shortcut-quest.git
@@ -68,6 +68,7 @@ jobs:
           cp /tmp/shortcut-quest-a8/2026/premium-motion.js _site/dev/tk2/A8/
           cp /tmp/shortcut-quest-a8/2026/battle-motion.js _site/dev/tk2/A8/
           cp /tmp/shortcut-quest-a8/2026/arena-dev-fix.js _site/dev/tk2/A8/
+          cp /tmp/shortcut-quest-a8/2026/arena-dev-tuning.css _site/dev/tk2/A8/
           cp -R /tmp/shortcut-quest-a8/2026/assets _site/dev/tk2/A8/
 
           # IB2026-only A8 diagnostic PDF overlay.
@@ -86,21 +87,24 @@ jobs:
 
           path = Path('_site/dev/tk2/A8/index.html')
           html = path.read_text(encoding='utf-8')
+          arena_style = '<link rel="stylesheet" href="arena-dev-tuning.css?v=cf6df4f6">'
           scripts = [
               '<script src="premium-motion.js"></script>',
               '<script src="battle-motion.js"></script>',
               '<script src="arena-dev-fix.js?v=59809da9"></script>',
               '<script src="pdf-report.js"></script>',
           ]
-          if '</body>' not in html:
-              raise SystemExit('A8 index.html has no </body> marker for overlay injection')
+          if '</head>' not in html or '</body>' not in html:
+              raise SystemExit('A8 index.html is missing head/body markers for overlay injection')
+          if arena_style not in html:
+              html = html.replace('</head>', arena_style + '\n</head>', 1)
           missing = [script for script in scripts if script not in html]
           if missing:
               html = html.replace('</body>', '\n'.join(missing) + '\n</body>', 1)
-              path.write_text(html, encoding='utf-8')
+          path.write_text(html, encoding='utf-8')
           PY
 
-          # Fail the build early if review scripts are malformed or missing.
+          # Fail the build early if review scripts/styles are malformed or missing.
           node --check _site/dev/tk2/A8/premium-motion.js
           node --check _site/dev/tk2/A8/battle-motion.js
           node --check _site/dev/tk2/A8/arena-dev-fix.js
@@ -108,8 +112,10 @@ jobs:
           test -s _site/dev/tk2/A8/premium-motion.js
           test -s _site/dev/tk2/A8/battle-motion.js
           test -s _site/dev/tk2/A8/arena-dev-fix.js
+          test -s _site/dev/tk2/A8/arena-dev-tuning.css
           test -s _site/dev/tk2/A8/pdf-report.js
           grep -Fq "doc.save('A8-' + safeFileName(student) + '.pdf');" _site/dev/tk2/A8/pdf-report.js
+          grep -Fq '<link rel="stylesheet" href="arena-dev-tuning.css?v=cf6df4f6">' _site/dev/tk2/A8/index.html
           grep -Fq '<script src="premium-motion.js"></script>' _site/dev/tk2/A8/index.html
           grep -Fq '<script src="battle-motion.js"></script>' _site/dev/tk2/A8/index.html
           grep -Fq '<script src="arena-dev-fix.js?v=59809da9"></script>' _site/dev/tk2/A8/index.html
@@ -161,7 +167,7 @@ jobs:
           const assert = require('node:assert/strict');
 
           (async () => {
-            const url = 'https://modebrecht.github.io/ib2026/dev/tk2/A8/?qa=59809da9';
+            const url = 'https://modebrecht.github.io/ib2026/dev/tk2/A8/?qa=cf6df4f6';
             const browser = await chromium.launch({ headless: true });
             try {
               const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
@@ -170,13 +176,13 @@ jobs:
                 const response = await page.goto(url + '&attempt=' + attempt, { waitUntil: 'networkidle' });
                 assert.ok(response && response.ok(), `DEV A8 did not load: ${response?.status()}`);
                 const html = await page.content();
-                if (html.includes('arena-dev-fix.js?v=59809da9')) {
+                if (html.includes('arena-dev-tuning.css?v=cf6df4f6')) {
                   ready = true;
                   break;
                 }
                 await page.waitForTimeout(5000);
               }
-              assert.equal(ready, true, 'GitHub Pages did not expose the expected 59809da9 A8 runtime in time');
+              assert.equal(ready, true, 'GitHub Pages did not expose the expected cf6df4f6 A8 tuning in time');
 
               await page.locator('.nav-toggle[data-view="battle"]').click();
               await page.waitForFunction(() => document.getElementById('battleStagePreview')?.classList.contains('arena-svg-composed'));
@@ -185,6 +191,8 @@ jobs:
               const state = await page.locator('#battleStagePreview').evaluate(stage => {
                 const hero = stage.querySelector('.battle-side.hero');
                 const enemy = stage.querySelector('.battle-side.enemy');
+                const heroHead = stage.querySelector('.battle-side.hero .battle-side-head');
+                const heroStats = stage.querySelector('.battle-side.hero .battle-statline');
                 const heroPortrait = stage.querySelector('.battle-side.hero .battle-portrait');
                 const enemyPortrait = stage.querySelector('.battle-side.enemy .battle-portrait');
                 const enemyImage = stage.querySelector('.battle-side.enemy .battle-portrait-icon > img');
@@ -196,6 +204,8 @@ jobs:
                 const rect = el => el?.getBoundingClientRect();
                 const heroPortraitRect = rect(heroPortrait);
                 const enemyPortraitRect = rect(enemyPortrait);
+                const headRect = rect(heroHead);
+                const statsRect = rect(heroStats);
                 return {
                   background: getComputedStyle(stage).backgroundImage,
                   width: rect(stage)?.width || 0,
@@ -210,17 +220,18 @@ jobs:
                   enemyImageTransform: enemyImage ? getComputedStyle(enemyImage).transform : '',
                   heroGround: heroPortraitRect?.bottom || 0,
                   enemyGround: enemyPortraitRect?.bottom || 0,
+                  heroStatsGap: headRect && statsRect ? statsRect.top - headRect.bottom : 999,
                   weaponCount: weapons.length,
+                  weaponTransforms: weapons.map(weapon => getComputedStyle(weapon).transform),
                   weaponSizes: weapons.map(weapon => {
                     const r = rect(weapon);
-                    return { width: r?.width || 0, height: r?.height || 0, bottom: r?.bottom || 0 };
+                    return { width: r?.width || 0, height: r?.height || 0 };
                   }),
                   cardOverflow: card ? card.scrollWidth > card.clientWidth + 2 : true,
                   pageOverflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 2
                 };
               });
 
-              // Capture first so failed assertions still leave visual evidence.
               await page.locator('#battleStagePreview').screenshot({ path: 'a8-arena-deployed.png' });
 
               assert.match(state.background, /arena-scene\.svg/i, 'Deployed arena must use arena-scene.svg');
@@ -233,11 +244,13 @@ jobs:
               assert.match(state.enemyAnimation, /a8EnemyIdle/i, 'Enemy idle animation must run');
               assert.notEqual(state.enemyImageTransform, 'none', 'Enemy PNG visual footline correction must be active');
               assert.ok(Math.abs(state.heroGround - state.enemyGround) <= 2, 'Knight and enemy must share the same arena ground line');
+              assert.ok(state.heroStatsGap >= 0 && state.heroStatsGap <= 16, 'Knight stats must sit directly below the knight info box');
               assert.equal(state.weaponCount, 2, 'Knight must show two arena weapon layers');
               assert.ok(state.weaponSizes.every(size => size.width >= 60 && size.height >= 60), 'Knight arena weapons must remain visibly sized');
+              assert.ok(state.weaponTransforms.every(transform => transform && transform !== 'none'), 'Knight sword grip rotations must be active');
               assert.equal(state.cardOverflow, false, 'Deployed battle card must not overflow horizontally');
               assert.equal(state.pageOverflow, false, 'Deployed page must not overflow horizontally');
-              console.log('OK: deployed DEV A8 arena visually grounded, armed and screenshot captured.');
+              console.log('OK: deployed DEV A8 arena stance tuning verified and screenshot captured.');
             } finally {
               await browser.close();
             }
