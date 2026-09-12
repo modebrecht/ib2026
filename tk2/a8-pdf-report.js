@@ -599,7 +599,7 @@
 (() => {
   if (document.querySelector('script[data-a8-battle-continuity-loader]')) return;
   const script = document.createElement('script');
-  script.src = 'battle-continuity.js?v=eee22b57';
+  script.src = 'battle-continuity.js?v=a6d1d495';
   script.async = false;
   script.dataset.a8BattleContinuityLoader = 'true';
   document.head.appendChild(script);
