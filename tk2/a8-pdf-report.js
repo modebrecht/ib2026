@@ -593,3 +593,14 @@
   script.dataset.a8TieredGearLoader = 'true';
   document.head.appendChild(script);
 })();
+
+
+/* A8 BATTLE CONTINUITY DEV LOADER 2026 */
+(() => {
+  if (document.querySelector('script[data-a8-battle-continuity-loader]')) return;
+  const script = document.createElement('script');
+  script.src = 'battle-continuity.js?v=14d5f2bb';
+  script.async = false;
+  script.dataset.a8BattleContinuityLoader = 'true';
+  document.head.appendChild(script);
+})();
