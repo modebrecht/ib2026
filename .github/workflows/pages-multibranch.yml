@@ -44,7 +44,7 @@ jobs:
           git archive refs/remotes/origin/render | tar -x -C _site/render
 
           # Deterministic DEV-only TK2 A8 preview.
-          SHORTCUT_QUEST_SHA="8af72c1b306861668e9741320309a1ee772dbc22"
+          SHORTCUT_QUEST_SHA="5f9aa1a74423ac600d3cb49a3974ccfb20f41688"
           rm -rf /tmp/shortcut-quest-a8
           git init -q /tmp/shortcut-quest-a8
           git -C /tmp/shortcut-quest-a8 remote add origin https://github.com/modebrecht/shortcut-quest.git
@@ -79,7 +79,7 @@ jobs:
           arena_style = '<link rel="stylesheet" href="arena-dev-tuning.css?v=6193079d">'
           scripts = [
               '<script src="premium-motion.js"></script>',
-              '<script src="battle-motion.js?v=b6bc39b4"></script>',
+              '<script src="battle-motion.js?v=5f9aa1a7"></script>',
               '<script src="arena-dev-fix.js?v=59809da9"></script>',
               '<script src="a8-dev-polish.js?v=8af72c1b"></script>',
               '<script src="pdf-report.js"></script>',
@@ -100,8 +100,11 @@ jobs:
           node --check _site/dev/tk2/A8/a8-dev-polish.js
           node --check _site/dev/tk2/A8/pdf-report.js
           grep -Fq "doc.save('A8-' + safeFileName(student) + '.pdf');" _site/dev/tk2/A8/pdf-report.js
+          grep -Fq '<script src="battle-motion.js?v=5f9aa1a7"></script>' _site/dev/tk2/A8/index.html
           grep -Fq '<script src="a8-dev-polish.js?v=8af72c1b"></script>' _site/dev/tk2/A8/index.html
           grep -Fq 'SHORTCUT_QUEST_BATTLE_ENGINE_V2' _site/dev/tk2/A8/index.html
+          grep -Fq 'SHORTCUT_QUEST_ENEMY_ITEMS' _site/dev/tk2/A8/index.html
+          grep -Fq 'A8 PREMIUM HD BATTLE MOTION 2026' _site/dev/tk2/A8/battle-motion.js
           grep -Fq 'BATTLE UI SKILL BAR PREMIUM PASS 2026' _site/dev/tk2/A8/modern-battle.css
           grep -Fq 'BATTLE UI SKILL CARD FIT FIX 2026' _site/dev/tk2/A8/modern-battle.css
           grep -Fq 'BATTLE SKILL CONTENT HIERARCHY FIX 2026' _site/dev/tk2/A8/modern-battle.css
@@ -150,7 +153,7 @@ jobs:
           const assert = require('node:assert/strict');
 
           (async () => {
-            const url = 'https://modebrecht.github.io/ib2026/dev/tk2/A8/?qa=8af72c1b';
+            const url = 'https://modebrecht.github.io/ib2026/dev/tk2/A8/?qa=5f9aa1a7';
             const browser = await chromium.launch({ headless: true });
             try {
               const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
@@ -159,13 +162,13 @@ jobs:
                 const response = await page.goto(url + '&attempt=' + attempt, { waitUntil: 'networkidle' });
                 assert.ok(response && response.ok(), `DEV A8 did not load: ${response?.status()}`);
                 const html = await page.content();
-                if (html.includes('a8-dev-polish.js?v=8af72c1b') && html.includes('SHORTCUT_QUEST_BATTLE_ENGINE_V2')) {
+                if (html.includes('battle-motion.js?v=5f9aa1a7') && html.includes('SHORTCUT_QUEST_ENEMY_ITEMS') && html.includes('SHORTCUT_QUEST_BATTLE_ENGINE_V2')) {
                   ready = true;
                   break;
                 }
                 await page.waitForTimeout(5000);
               }
-              assert.equal(ready, true, 'GitHub Pages did not expose the expected 8af72c1b A8 build in time');
+              assert.equal(ready, true, 'GitHub Pages did not expose the expected 5f9aa1a7 A8 build in time');
 
               await page.evaluate(() => {
                 const now = Date.now();
@@ -174,7 +177,12 @@ jobs:
                   baseAtk: atk, baseDef: def, baseHp: hp, atk, def, hp,
                   tier: 1, totalCopies: 1, createdAt: now, lastObtainedAt: now
                 });
+                const sectionClears = {};
+                for (let i = 1; i <= 30; i += 1) sectionClears[String(i)] = 1;
                 localStorage.setItem('shortcutRitter_v1', JSON.stringify({
+                  sectionClears,
+                  battleClears: { '1': true, '2': true, '3': true, '4': true },
+                  battleUnlocked: 5,
                   items: [
                     item('feuer_klinge', 'Feuerklinge', 'sword_fire', 'weapon', 'weapon', 4),
                     item('stahl_sword', 'Stahlklinge', 'sword_steel', 'weapon', 'weapon', 3),
@@ -211,20 +219,25 @@ jobs:
               await page.waitForFunction(() => Array.from(document.querySelectorAll('#inventoryView [data-equip-slot]')).length === 8 && Array.from(document.querySelectorAll('#inventoryView [data-equip-slot]')).every(slot => slot.classList.contains('equipped')));
               await page.locator('#playerCard').screenshot({ path: 'a8-inventory-deployed.png' });
 
-              // Pre-battle arena stays intact.
+              // Pre-battle arena stays intact and enemy gear is visible.
               await page.locator('.nav-toggle[data-view="battle"]').click();
               await page.waitForFunction(() => document.getElementById('battleStagePreview')?.classList.contains('arena-svg-composed'));
+              await page.locator('#battleButtons .battle-btn[data-enemy="5"]').click();
+              await page.waitForFunction(() => document.querySelector('.a8-preview-enemy-item')?.getAttribute('title') === 'Steinschild');
               const preview = await page.locator('#battleStagePreview').evaluate(stage => {
                 const rect = el => el?.getBoundingClientRect();
                 const hero = stage.querySelector('.battle-side.hero .battle-portrait');
                 const enemy = stage.querySelector('.battle-side.enemy .battle-portrait');
                 const weapons = Array.from(stage.querySelectorAll('.battle-side.hero .a8-arena-weapon'));
+                const enemyItem = stage.querySelector('.a8-preview-enemy-item');
                 return {
                   background: getComputedStyle(stage).backgroundImage,
                   width: rect(stage)?.width || 0,
                   height: rect(stage)?.height || 0,
                   groundDelta: Math.abs((rect(hero)?.bottom || 0) - (rect(enemy)?.bottom || 0)),
                   weaponCount: weapons.length,
+                  enemyItem: enemyItem?.getAttribute('title') || '',
+                  enemyItemKind: enemyItem?.dataset.kind || '',
                   pageOverflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 2
                 };
               });
@@ -232,13 +245,16 @@ jobs:
               assert.ok(preview.width > 900 && preview.height >= 500);
               assert.ok(preview.groundDelta <= 2);
               assert.equal(preview.weaponCount, 2);
+              assert.equal(preview.enemyItem, 'Steinschild');
+              assert.equal(preview.enemyItemKind, 'shield');
               assert.equal(preview.pageOverflow, false);
               await page.locator('#battleStagePreview').screenshot({ path: 'a8-arena-deployed.png' });
 
-              // Real active battle + redesigned skill UI.
+              // Real active battle + redesigned skill UI + premium enemy item use.
               await page.locator('#battleStartBtn').click();
               await page.waitForFunction(() => !document.getElementById('battleSimulation')?.classList.contains('hidden'));
-              await page.waitForTimeout(250);
+              await page.waitForFunction(() => (window.A8_PREMIUM_BATTLE_DEBUG?.enemyItemUses || 0) >= 1 && (window.A8_PREMIUM_BATTLE_DEBUG?.impacts || 0) >= 1, null, { timeout: 4000 });
+              await page.waitForTimeout(120);
 
               const active = await page.locator('#battleSimulation').evaluate(sim => {
                 const rect = el => el?.getBoundingClientRect();
@@ -246,18 +262,30 @@ jobs:
                 const arena = document.getElementById('battleArena');
                 const knight = document.getElementById('battleKnightSprite');
                 const enemy = document.getElementById('battleEnemySprite');
+                const enemyItem = document.querySelector('#battleEnemy .a8-enemy-item');
+                const debug = window.A8_PREMIUM_BATTLE_DEBUG || {};
                 return {
                   visible: !sim.classList.contains('hidden') && (rect(sim)?.height || 0) > 0,
                   arenaWidth: rect(arena)?.width || 0,
                   arenaHeight: rect(arena)?.height || 0,
                   knightHeight: rect(knight)?.height || 0,
                   enemyHeight: rect(enemy)?.height || 0,
+                  enemyItem: enemyItem?.getAttribute('title') || '',
+                  enemyItemUses: debug.enemyItemUses || 0,
+                  impacts: debug.impacts || 0,
+                  lastItemAction: debug.lastItemAction || '',
+                  premiumVersion: window.A8_PREMIUM_BATTLE?.version || 0,
                   cardOverflow: card ? card.scrollWidth > card.clientWidth + 2 : true
                 };
               });
               assert.equal(active.visible, true);
               assert.ok(active.arenaWidth > 900 && active.arenaHeight >= 400);
               assert.ok(active.knightHeight >= 220 && active.enemyHeight >= 200);
+              assert.equal(active.enemyItem, 'Steinschild');
+              assert.ok(active.enemyItemUses >= 1);
+              assert.ok(active.impacts >= 1);
+              assert.equal(active.lastItemAction, 'block');
+              assert.equal(active.premiumVersion, 2);
               assert.equal(active.cardOverflow, false);
 
               const skillUi = await page.locator('#battleSkillBar').evaluate(bar => {
@@ -332,7 +360,7 @@ jobs:
               assert.equal(finished.lastError, null);
               await page.locator('#battleSimulation').screenshot({ path: 'a8-battle-active-deployed.png' });
 
-              console.log('OK: deployed DEV A8 inventory, arena, Battle V2 and skill hierarchy verified.');
+              console.log('OK: deployed DEV A8 inventory, arena, Battle V2, premium enemy-item motion and skill hierarchy verified.');
             } finally {
               await browser.close();
             }
