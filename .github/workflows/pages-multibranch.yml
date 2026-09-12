@@ -48,7 +48,7 @@ jobs:
 
           # TK2 A8 review build: inject the pinned Shortcut Quest 2026 runtime
           # into DEV only so classroom review stays deterministic.
-          SHORTCUT_QUEST_SHA="afa8c9ebdbc19446f1ed972f7c5ac0678074c16e"
+          SHORTCUT_QUEST_SHA="59809da992334942a4ff05c2ed02751576de15bd"
           rm -rf /tmp/shortcut-quest-a8
           git init -q /tmp/shortcut-quest-a8
           git -C /tmp/shortcut-quest-a8 remote add origin https://github.com/modebrecht/shortcut-quest.git
@@ -89,7 +89,7 @@ jobs:
           scripts = [
               '<script src="premium-motion.js"></script>',
               '<script src="battle-motion.js"></script>',
-              '<script src="arena-dev-fix.js?v=afa8c9eb"></script>',
+              '<script src="arena-dev-fix.js?v=59809da9"></script>',
               '<script src="pdf-report.js"></script>',
           ]
           if '</body>' not in html:
@@ -112,7 +112,7 @@ jobs:
           grep -Fq "doc.save('A8-' + safeFileName(student) + '.pdf');" _site/dev/tk2/A8/pdf-report.js
           grep -Fq '<script src="premium-motion.js"></script>' _site/dev/tk2/A8/index.html
           grep -Fq '<script src="battle-motion.js"></script>' _site/dev/tk2/A8/index.html
-          grep -Fq '<script src="arena-dev-fix.js?v=afa8c9eb"></script>' _site/dev/tk2/A8/index.html
+          grep -Fq '<script src="arena-dev-fix.js?v=59809da9"></script>' _site/dev/tk2/A8/index.html
           grep -Fq '<script src="pdf-report.js"></script>' _site/dev/tk2/A8/index.html
 
           # Serve files exactly as committed; do not run Jekyll processing.
@@ -161,7 +161,7 @@ jobs:
           const assert = require('node:assert/strict');
 
           (async () => {
-            const url = 'https://modebrecht.github.io/ib2026/dev/tk2/A8/?qa=afa8c9eb';
+            const url = 'https://modebrecht.github.io/ib2026/dev/tk2/A8/?qa=59809da9';
             const browser = await chromium.launch({ headless: true });
             try {
               const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
@@ -170,13 +170,13 @@ jobs:
                 const response = await page.goto(url + '&attempt=' + attempt, { waitUntil: 'networkidle' });
                 assert.ok(response && response.ok(), `DEV A8 did not load: ${response?.status()}`);
                 const html = await page.content();
-                if (html.includes('arena-dev-fix.js?v=afa8c9eb')) {
+                if (html.includes('arena-dev-fix.js?v=59809da9')) {
                   ready = true;
                   break;
                 }
                 await page.waitForTimeout(5000);
               }
-              assert.equal(ready, true, 'GitHub Pages did not expose the expected afa8c9eb A8 runtime in time');
+              assert.equal(ready, true, 'GitHub Pages did not expose the expected 59809da9 A8 runtime in time');
 
               await page.locator('.nav-toggle[data-view="battle"]').click();
               await page.waitForFunction(() => document.getElementById('battleStagePreview')?.classList.contains('arena-svg-composed'));
