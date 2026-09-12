@@ -48,7 +48,7 @@ jobs:
 
           # TK2 A8 review build: inject the pinned Shortcut Quest 2026 runtime
           # into DEV only so classroom review stays deterministic.
-          SHORTCUT_QUEST_SHA="d849c46c86950b9ad4b54ad3afaa42e42b6b60b1"
+          SHORTCUT_QUEST_SHA="e64d49559f3cb5cb2a8f8214402586f1ad0da4b8"
           rm -rf /tmp/shortcut-quest-a8
           git init -q /tmp/shortcut-quest-a8
           git -C /tmp/shortcut-quest-a8 remote add origin https://github.com/modebrecht/shortcut-quest.git
@@ -93,7 +93,7 @@ jobs:
               '<script src="premium-motion.js"></script>',
               '<script src="battle-motion.js?v=b6bc39b4"></script>',
               '<script src="arena-dev-fix.js?v=59809da9"></script>',
-              '<script src="a8-dev-polish.js?v=d849c46c"></script>',
+              '<script src="a8-dev-polish.js?v=e64d4955"></script>',
               '<script src="pdf-report.js"></script>',
           ]
           if '</head>' not in html or '</body>' not in html:
@@ -123,8 +123,9 @@ jobs:
           grep -Fq '<script src="premium-motion.js"></script>' _site/dev/tk2/A8/index.html
           grep -Fq '<script src="battle-motion.js?v=b6bc39b4"></script>' _site/dev/tk2/A8/index.html
           grep -Fq '<script src="arena-dev-fix.js?v=59809da9"></script>' _site/dev/tk2/A8/index.html
-          grep -Fq '<script src="a8-dev-polish.js?v=d849c46c"></script>' _site/dev/tk2/A8/index.html
+          grep -Fq '<script src="a8-dev-polish.js?v=e64d4955"></script>' _site/dev/tk2/A8/index.html
           grep -Fq '<script src="pdf-report.js"></script>' _site/dev/tk2/A8/index.html
+          grep -Fq 'SHORTCUT_QUEST_BATTLE_ENGINE_V2' _site/dev/tk2/A8/index.html
 
           # Serve files exactly as committed; do not run Jekyll processing.
           touch _site/.nojekyll
@@ -172,7 +173,7 @@ jobs:
           const assert = require('node:assert/strict');
 
           (async () => {
-            const url = 'https://modebrecht.github.io/ib2026/dev/tk2/A8/?qa=d849c46c';
+            const url = 'https://modebrecht.github.io/ib2026/dev/tk2/A8/?qa=e64d4955';
             const browser = await chromium.launch({ headless: true });
             try {
               const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
@@ -181,13 +182,13 @@ jobs:
                 const response = await page.goto(url + '&attempt=' + attempt, { waitUntil: 'networkidle' });
                 assert.ok(response && response.ok(), `DEV A8 did not load: ${response?.status()}`);
                 const html = await page.content();
-                if (html.includes('a8-dev-polish.js?v=d849c46c')) {
+                if (html.includes('a8-dev-polish.js?v=e64d4955') && html.includes('SHORTCUT_QUEST_BATTLE_ENGINE_V2')) {
                   ready = true;
                   break;
                 }
                 await page.waitForTimeout(5000);
               }
-              assert.equal(ready, true, 'GitHub Pages did not expose the expected d849c46c battle-continuity fix in time');
+              assert.equal(ready, true, 'GitHub Pages did not expose the expected e64d4955 Battle V2 build in time');
 
               // Seed one compatible item per visible loadout position plus two swords.
               await page.evaluate(() => {
@@ -369,8 +370,7 @@ jobs:
               assert.equal(state.cardOverflow, false, 'Deployed battle card must not overflow horizontally');
               assert.equal(state.pageOverflow, false, 'Deployed page must not overflow horizontally');
 
-              // Critical regression: click the real Start button and verify the actual fight scene,
-              // not only the pre-battle showcase.
+              // Click the real Start button and verify the actual fight scene.
               await page.locator('#battleStartBtn').click();
               await page.waitForFunction(() => !document.getElementById('battleSimulation')?.classList.contains('hidden'));
               await page.waitForTimeout(250);
@@ -415,24 +415,43 @@ jobs:
               assert.equal(active.cardOverflow, false, 'Active battle card must not overflow horizontally');
               assert.equal(active.pageOverflow, false, 'Active battle page must not overflow horizontally');
 
-              // Exact regression for the reported freeze: battle must advance past the
-              // knight's first hit to the enemy turn, or finish cleanly if damage is lethal.
+              // Battle V2 regression: the engine must advance beyond the first hit and
+              // then reach a clean terminal state without presentation code blocking it.
               await page.waitForFunction(() => {
-                const logCount = document.querySelectorAll('#battleLog > *, .battle-log > *').length;
-                const result = document.getElementById('battleResult')?.textContent?.trim() || '';
-                return logCount >= 3 || /Sieg|Niederlage|gewonnen|verloren/i.test(result);
-              }, null, { timeout: 4000 });
-              const continuity = await page.evaluate(() => ({
-                logCount: document.querySelectorAll('#battleLog > *, .battle-log > *').length,
+                const engine = window.SHORTCUT_QUEST_BATTLE_ENGINE_V2;
+                return engine && (engine.turn >= 3 || engine.phase !== 'fighting');
+              }, null, { timeout: 7000 });
+
+              const progressed = await page.evaluate(() => ({
+                version: window.SHORTCUT_QUEST_BATTLE_ENGINE_V2?.version,
+                phase: window.SHORTCUT_QUEST_BATTLE_ENGINE_V2?.phase,
+                turn: window.SHORTCUT_QUEST_BATTLE_ENGINE_V2?.turn,
+                lastError: window.SHORTCUT_QUEST_BATTLE_ENGINE_V2?.lastError
+              }));
+              assert.equal(progressed.version, 2, 'Deployed battle must run Battle V2');
+              assert.ok(progressed.turn >= 2, 'Deployed battle must advance beyond the opening strike');
+              assert.equal(progressed.lastError, null, 'Deployed Battle V2 must not report an engine error');
+
+              await page.waitForFunction(() => {
+                const phase = window.SHORTCUT_QUEST_BATTLE_ENGINE_V2?.phase;
+                return phase === 'victory' || phase === 'defeat';
+              }, null, { timeout: 45000 });
+
+              const finished = await page.evaluate(() => ({
+                phase: window.SHORTCUT_QUEST_BATTLE_ENGINE_V2?.phase,
+                outcome: window.SHORTCUT_QUEST_BATTLE_ENGINE_V2?.lastOutcome,
+                turn: window.SHORTCUT_QUEST_BATTLE_ENGINE_V2?.turn,
+                lastError: window.SHORTCUT_QUEST_BATTLE_ENGINE_V2?.lastError,
                 result: document.getElementById('battleResult')?.textContent?.trim() || ''
               }));
-              assert.ok(
-                continuity.logCount >= 3 || /Sieg|Niederlage|gewonnen|verloren/i.test(continuity.result),
-                'Deployed battle must continue beyond the knight first hit or finish cleanly'
-              );
-              await page.locator('#battleSimulation').screenshot({ path: 'a8-battle-active-deployed.png' });
+              assert.ok(['victory', 'defeat'].includes(finished.phase), 'Deployed battle must finish cleanly');
+              assert.equal(finished.outcome, finished.phase, 'Deployed Battle V2 outcome must match terminal phase');
+              assert.ok(finished.turn >= 2, 'Deployed complete fight must contain multiple turns');
+              assert.equal(finished.lastError, null, 'Deployed complete fight must finish without engine errors');
+              assert.match(finished.result, /Sieg|Niederlage/i, 'Deployed complete fight must show a clear result');
 
-              console.log('OK: deployed DEV A8 inventory, pre-battle arena, and multi-turn active battle verified.');
+              await page.locator('#battleSimulation').screenshot({ path: 'a8-battle-active-deployed.png' });
+              console.log(`OK: deployed DEV A8 Battle V2 completed (${finished.phase}, ${finished.turn} turns).`);
             } finally {
               await browser.close();
             }
