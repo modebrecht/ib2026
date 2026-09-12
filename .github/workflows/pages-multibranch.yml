@@ -48,7 +48,7 @@ jobs:
 
           # TK2 A8 review build: inject the pinned Shortcut Quest 2026 runtime
           # into DEV only so classroom review stays deterministic.
-          SHORTCUT_QUEST_SHA="ec06f4e4dc4f18e8a3e1f19f68801dd3537ff068"
+          SHORTCUT_QUEST_SHA="6193079dd297e67d54190f8a58c67c46b40517d4"
           rm -rf /tmp/shortcut-quest-a8
           git init -q /tmp/shortcut-quest-a8
           git -C /tmp/shortcut-quest-a8 remote add origin https://github.com/modebrecht/shortcut-quest.git
@@ -87,7 +87,7 @@ jobs:
 
           path = Path('_site/dev/tk2/A8/index.html')
           html = path.read_text(encoding='utf-8')
-          arena_style = '<link rel="stylesheet" href="arena-dev-tuning.css?v=ec06f4e4">'
+          arena_style = '<link rel="stylesheet" href="arena-dev-tuning.css?v=6193079d">'
           scripts = [
               '<script src="premium-motion.js"></script>',
               '<script src="battle-motion.js"></script>',
@@ -115,7 +115,7 @@ jobs:
           test -s _site/dev/tk2/A8/arena-dev-tuning.css
           test -s _site/dev/tk2/A8/pdf-report.js
           grep -Fq "doc.save('A8-' + safeFileName(student) + '.pdf');" _site/dev/tk2/A8/pdf-report.js
-          grep -Fq '<link rel="stylesheet" href="arena-dev-tuning.css?v=ec06f4e4">' _site/dev/tk2/A8/index.html
+          grep -Fq '<link rel="stylesheet" href="arena-dev-tuning.css?v=6193079d">' _site/dev/tk2/A8/index.html
           grep -Fq '<script src="premium-motion.js"></script>' _site/dev/tk2/A8/index.html
           grep -Fq '<script src="battle-motion.js"></script>' _site/dev/tk2/A8/index.html
           grep -Fq '<script src="arena-dev-fix.js?v=59809da9"></script>' _site/dev/tk2/A8/index.html
@@ -145,7 +145,7 @@ jobs:
         uses: actions/deploy-pages@v4
 
   verify-a8-dev:
-    name: Verify DEV A8 arena
+    name: Verify DEV A8 UI
     needs: deploy
     if: github.ref == 'refs/heads/dev'
     runs-on: ubuntu-latest
@@ -160,14 +160,14 @@ jobs:
           npm install --no-save playwright
           npx playwright install chromium
 
-      - name: Verify deployed arena and capture screenshot
+      - name: Verify deployed inventory and arena
         run: |
           node <<'NODE'
           const { chromium } = require('playwright');
           const assert = require('node:assert/strict');
 
           (async () => {
-            const url = 'https://modebrecht.github.io/ib2026/dev/tk2/A8/?qa=ec06f4e4';
+            const url = 'https://modebrecht.github.io/ib2026/dev/tk2/A8/?qa=6193079d';
             const browser = await chromium.launch({ headless: true });
             try {
               const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
@@ -176,14 +176,95 @@ jobs:
                 const response = await page.goto(url + '&attempt=' + attempt, { waitUntil: 'networkidle' });
                 assert.ok(response && response.ok(), `DEV A8 did not load: ${response?.status()}`);
                 const html = await page.content();
-                if (html.includes('arena-dev-tuning.css?v=ec06f4e4')) {
+                if (html.includes('arena-dev-tuning.css?v=6193079d')) {
                   ready = true;
                   break;
                 }
                 await page.waitForTimeout(5000);
               }
-              assert.equal(ready, true, 'GitHub Pages did not expose the expected ec06f4e4 A8 tuning in time');
+              assert.equal(ready, true, 'GitHub Pages did not expose the expected 6193079d A8 tuning in time');
 
+              // Regression for the reported "Auto anziehen works only halfway" issue.
+              // Seed one compatible item per visible loadout position plus two swords,
+              // then use the real button and verify both state-driven labels and artwork.
+              await page.evaluate(() => {
+                const now = Date.now();
+                const item = (key, name, icon, slot, category, atk = 0, def = 0, hp = 0) => ({
+                  id: `${key}-${now}`,
+                  key,
+                  name,
+                  icon,
+                  slot,
+                  category,
+                  theme: 'knight',
+                  description: '',
+                  baseAtk: atk,
+                  baseDef: def,
+                  baseHp: hp,
+                  atk,
+                  def,
+                  hp,
+                  tier: 1,
+                  totalCopies: 1,
+                  createdAt: now,
+                  lastObtainedAt: now
+                });
+                localStorage.setItem('shortcutRitter_v1', JSON.stringify({
+                  items: [
+                    item('feuer_klinge', 'Feuerklinge', 'sword_fire', 'weapon', 'weapon', 4, 0),
+                    item('stahl_sword', 'Stahlklinge', 'sword_steel', 'weapon', 'weapon', 3, 0),
+                    item('taktik_helm', 'Taktikhelm', 'helm', 'helm', 'armor', 1, 1),
+                    item('panzerhandschuhe', 'Panzerhandschuhe', 'panzerhandschuhe', 'gloves', 'armor', 0, 1),
+                    item('runen_amulet', 'Runen-Amulett', 'talisman', 'necklace', 'accessory'),
+                    item('stahl_stiefel', 'Stahl-Stiefel', 'stahl-stiefel', 'boots', 'armor', 0, 2),
+                    item('lebens_ring', 'Lebensring', 'lebensring', 'ring_left', 'accessory', 0, 0, 20),
+                    item('gluecks_ring', 'Glücksring', 'gluecksring', 'ring_right', 'accessory')
+                  ],
+                  equipment: {}
+                }));
+              });
+              await page.reload({ waitUntil: 'networkidle' });
+              await page.locator('.nav-toggle[data-view="inventory"]').click();
+              await page.locator('#autoEquipBtn').click();
+              await page.waitForTimeout(500);
+              await page.waitForFunction(() => {
+                const slots = Array.from(document.querySelectorAll('#inventoryView [data-equip-slot]'));
+                if (slots.length !== 8 || !slots.every(slot => slot.classList.contains('equipped'))) return false;
+                return slots.every(slot => {
+                  const art = slot.querySelector('.slot-icon > img, .slot-icon > svg');
+                  if (!art) return false;
+                  const rect = art.getBoundingClientRect();
+                  if (rect.width < 45 || rect.height < 45) return false;
+                  return art.tagName !== 'IMG' || (art.complete && art.naturalWidth > 0);
+                });
+              });
+
+              const inventoryState = await page.locator('#inventoryView').evaluate(view => {
+                const slots = Array.from(view.querySelectorAll('[data-equip-slot]'));
+                return slots.map(slot => {
+                  const art = slot.querySelector('.slot-icon > img, .slot-icon > svg');
+                  const rect = art?.getBoundingClientRect();
+                  return {
+                    slot: slot.dataset.equipSlot,
+                    equipped: slot.classList.contains('equipped'),
+                    label: slot.querySelector('.slot-header span')?.textContent?.trim() || '',
+                    art: art?.tagName || '',
+                    artWidth: rect?.width || 0,
+                    artHeight: rect?.height || 0,
+                    imageLoaded: art?.tagName === 'IMG' ? Boolean(art.complete && art.naturalWidth > 0) : true
+                  };
+                });
+              });
+              assert.equal(inventoryState.length, 8, 'Inventory must expose all eight equipment slots');
+              assert.ok(inventoryState.every(slot => slot.equipped), 'Auto-equip must fill every compatible equipment slot');
+              assert.ok(inventoryState.every(slot => slot.art), 'Every auto-equipped slot must render item art');
+              assert.ok(inventoryState.every(slot => slot.artWidth >= 45 && slot.artHeight >= 45), 'Auto-equipped item art must be visibly sized');
+              assert.ok(inventoryState.every(slot => slot.imageLoaded), 'External auto-equipped item art must load successfully');
+              assert.ok(inventoryState.some(slot => slot.label === 'Feuerklinge'), 'Best weapon must be auto-equipped');
+              assert.ok(inventoryState.some(slot => slot.label === 'Stahlklinge'), 'Second weapon must fill the second weapon slot');
+              await page.locator('#playerCard').screenshot({ path: 'a8-inventory-deployed.png' });
+
+              // Existing arena regression coverage stays intact.
               await page.locator('.nav-toggle[data-view="battle"]').click();
               await page.waitForFunction(() => document.getElementById('battleStagePreview')?.classList.contains('arena-svg-composed'));
               await page.waitForTimeout(600);
@@ -258,7 +339,7 @@ jobs:
               assert.ok(state.weaponArtTransforms.every(transform => transform && transform !== 'none'), 'Knight sword art must be flipped blade-down');
               assert.equal(state.cardOverflow, false, 'Deployed battle card must not overflow horizontally');
               assert.equal(state.pageOverflow, false, 'Deployed page must not overflow horizontally');
-              console.log('OK: deployed DEV A8 knight stats and in-hand blade-down stance verified and screenshot captured.');
+              console.log('OK: deployed DEV A8 auto-equip visuals and arena verified; screenshots captured.');
             } finally {
               await browser.close();
             }
@@ -268,11 +349,13 @@ jobs:
           });
           NODE
 
-      - name: Upload A8 arena screenshot
+      - name: Upload A8 UI screenshots
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: a8-arena-deployed
-          path: a8-arena-deployed.png
+          name: a8-ui-deployed
+          path: |
+            a8-inventory-deployed.png
+            a8-arena-deployed.png
           if-no-files-found: error
           retention-days: 7
