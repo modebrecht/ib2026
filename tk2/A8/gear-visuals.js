@@ -2,22 +2,19 @@
   'use strict';
 
   const STYLE_ID = 'a8GearVisualStyles';
-  const VISIBLE_BODY_SLOTS = ['gloves', 'necklace', 'boots'];
-  const INVENTORY_VISIBLE_SLOTS = ['weapon', 'offhand', ...VISIBLE_BODY_SLOTS];
   const DEBUG = {
-    version: 2,
+    version: 3,
     renderedPieces: 0,
-    helmetSuppressed: true,
-    ringsSuppressed: true,
+    bodyOverlaySuppressed: true,
     lastSignature: ''
   };
 
   const TIER = {
     1: { color: '#94a3b8', glow: 'rgba(148,163,184,.24)', weapon: 'drop-shadow(0 0 4px rgba(148,163,184,.35))' },
-    2: { color: '#4ade80', glow: 'rgba(74,222,128,.28)', weapon: 'sepia(.55) saturate(2.2) hue-rotate(74deg) brightness(1.06) drop-shadow(0 0 7px rgba(74,222,128,.55))' },
-    3: { color: '#60a5fa', glow: 'rgba(96,165,250,.32)', weapon: 'sepia(.62) saturate(3) hue-rotate(165deg) brightness(1.08) drop-shadow(0 0 8px rgba(96,165,250,.65))' },
-    4: { color: '#c084fc', glow: 'rgba(192,132,252,.38)', weapon: 'sepia(.72) saturate(4.2) hue-rotate(228deg) brightness(1.1) drop-shadow(0 0 10px rgba(192,132,252,.72))' },
-    5: { color: '#fbbf24', glow: 'rgba(251,191,36,.44)', weapon: 'sepia(.9) saturate(6.2) hue-rotate(318deg) brightness(1.15) contrast(1.06) drop-shadow(0 0 12px rgba(248,113,113,.9))' }
+    2: { color: '#4ade80', glow: 'rgba(74,222,128,.28)', weapon: 'sepia(.45) saturate(2) hue-rotate(72deg) brightness(1.05) drop-shadow(0 0 7px rgba(74,222,128,.55))' },
+    3: { color: '#60a5fa', glow: 'rgba(96,165,250,.32)', weapon: 'sepia(.58) saturate(2.8) hue-rotate(164deg) brightness(1.08) drop-shadow(0 0 8px rgba(96,165,250,.65))' },
+    4: { color: '#c084fc', glow: 'rgba(192,132,252,.38)', weapon: 'sepia(.7) saturate(4) hue-rotate(228deg) brightness(1.1) drop-shadow(0 0 10px rgba(192,132,252,.72))' },
+    5: { color: '#f87171', glow: 'rgba(248,113,113,.46)', weapon: 'sepia(.92) saturate(6.4) hue-rotate(318deg) brightness(1.15) contrast(1.08) drop-shadow(0 0 13px rgba(248,113,113,.95))' }
   };
 
   const css = `
@@ -29,6 +26,7 @@
         inset 0 0 0 1px var(--a8-tier-glow),
         0 0 18px var(--a8-tier-glow) !important;
     }
+
     #inventoryView .equipment-slot.a8-tier-frame .slot-icon {
       border-color: var(--a8-tier-color) !important;
       box-shadow:
@@ -36,97 +34,42 @@
         0 0 0 1px var(--a8-tier-glow),
         0 0 14px var(--a8-tier-glow) !important;
     }
+
     #inventoryView .equipment-slot.a8-tier-item-art .slot-icon > img,
-    #inventoryView .equipment-slot.a8-tier-item-art .slot-icon > svg {
-      filter: var(--a8-weapon-filter) !important;
-    }
-
-    .a8-knight-gear-piece {
-      position: absolute;
-      z-index: 7;
-      display: grid;
-      place-items: center;
-      pointer-events: none;
-      transform-origin: 50% 50%;
-      filter: drop-shadow(0 4px 5px rgba(0,0,0,.48)) drop-shadow(0 0 8px var(--a8-tier-glow));
-    }
-    .a8-knight-gear-piece > img,
-    .a8-knight-gear-piece > svg {
-      width: 100% !important;
-      height: 100% !important;
-      max-width: none !important;
-      max-height: none !important;
-      object-fit: contain !important;
-      overflow: visible !important;
-    }
-
-    /* Inventory hero: show everything meaningful except helmet/rings. */
-    #inventoryView #heroAvatar .a8-knight-gear-piece[data-slot='weapon'] { left:21%; top:57%; width:46px; height:86px; transform:translate(-50%,-50%) rotate(7deg); z-index:8; }
-    #inventoryView #heroAvatar .a8-knight-gear-piece[data-slot='offhand'] { right:21%; top:57%; width:46px; height:86px; transform:translate(50%,-50%) rotate(-7deg); z-index:8; }
-    #inventoryView #heroAvatar .a8-knight-gear-piece[data-slot='gloves'] { left:50%; top:57%; width:70px; height:50px; transform:translate(-50%,-50%); }
-    #inventoryView #heroAvatar .a8-knight-gear-piece[data-slot='necklace'] { left:50%; top:38%; width:32px; height:32px; transform:translate(-50%,-50%); }
-    #inventoryView #heroAvatar .a8-knight-gear-piece[data-slot='boots'] { left:50%; bottom:5%; width:76px; height:48px; transform:translateX(-50%); }
-
-    #battleView .battle-stage-preview .battle-side.hero .battle-portrait-icon .a8-knight-gear-piece[data-slot='gloves'] { left:50%; bottom:17%; width:80px; height:54px; transform:translateX(-50%); }
-    #battleView .battle-stage-preview .battle-side.hero .battle-portrait-icon .a8-knight-gear-piece[data-slot='necklace'] { left:50%; top:35%; width:36px; height:36px; transform:translateX(-50%); }
-    #battleView .battle-stage-preview .battle-side.hero .battle-portrait-icon .a8-knight-gear-piece[data-slot='boots'] { left:50%; bottom:-1%; width:84px; height:54px; transform:translateX(-50%); }
-    #battleView .battle-stage-preview .battle-side.hero .battle-portrait-icon .a8-knight-gear-piece > img,
-    #battleView .battle-stage-preview .battle-side.hero .battle-portrait-icon .a8-knight-gear-piece > svg {
-      animation: none !important;
-      transform: none !important;
-    }
-
-    #battleView .battle-arena .fighter.knight .a8-knight-gear-piece[data-slot='gloves'] { left:50%; bottom:60px; width:66px; height:46px; transform:translateX(-50%); }
-    #battleView .battle-arena .fighter.knight .a8-knight-gear-piece[data-slot='necklace'] { left:50%; top:82px; width:30px; height:30px; transform:translateX(-50%); }
-    #battleView .battle-arena .fighter.knight .a8-knight-gear-piece[data-slot='boots'] { left:50%; bottom:-2px; width:72px; height:44px; transform:translateX(-50%); }
-    #battleView .battle-arena .fighter.knight:not(.attacking-left):not(.hit):not(.defeated):not(.a8-knight-victory) .a8-knight-gear-piece {
-      animation: a8GearBodyIdle 3.05s cubic-bezier(.45,0,.55,1) infinite;
-    }
-    @keyframes a8GearBodyIdle {
-      0%,100% { translate: 0 0; }
-      50% { translate: 0 -3px; }
-      74% { translate: 0 -1.5px; }
-    }
-
+    #inventoryView .equipment-slot.a8-tier-item-art .slot-icon > svg,
     .a8-tier-weapon > img,
     .a8-tier-weapon > svg {
       filter: var(--a8-weapon-filter) !important;
       transition: filter .18s ease;
     }
+
+    #inventoryView .equipment-slot[data-a8-gear-tier='5'] {
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.04),
+        inset 0 0 0 1px rgba(248,113,113,.34),
+        0 0 20px rgba(248,113,113,.34) !important;
+    }
+
     .a8-tier-weapon[data-a8-gear-tier='5']::after {
       content: '';
       position: absolute;
       inset: 14%;
       border-radius: 999px;
       pointer-events: none;
-      background: radial-gradient(circle, rgba(248,113,113,.22), transparent 66%);
+      background: radial-gradient(circle, rgba(248,113,113,.24), transparent 66%);
       filter: blur(5px);
-      opacity: .8;
-    }
-
-    @media (max-width:720px) {
-      #inventoryView #heroAvatar .a8-knight-gear-piece[data-slot='weapon'],
-      #inventoryView #heroAvatar .a8-knight-gear-piece[data-slot='offhand'] { width:38px; height:70px; }
-      #inventoryView #heroAvatar .a8-knight-gear-piece[data-slot='gloves'] { width:56px; height:40px; }
-      #inventoryView #heroAvatar .a8-knight-gear-piece[data-slot='boots'] { width:62px; height:40px; }
-      #battleView .battle-stage-preview .battle-side.hero .battle-portrait-icon .a8-knight-gear-piece[data-slot='gloves'] { width:64px; height:44px; }
-      #battleView .battle-stage-preview .battle-side.hero .battle-portrait-icon .a8-knight-gear-piece[data-slot='boots'] { width:68px; height:44px; }
-      #battleView .battle-arena .fighter.knight .a8-knight-gear-piece[data-slot='gloves'] { width:54px; height:38px; bottom:48px; }
-      #battleView .battle-arena .fighter.knight .a8-knight-gear-piece[data-slot='boots'] { width:58px; height:38px; }
-      #battleView .battle-arena .fighter.knight .a8-knight-gear-piece[data-slot='necklace'] { top:66px; width:25px; height:25px; }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      #battleView .a8-knight-gear-piece { animation:none !important; }
+      opacity: .84;
     }
   `;
 
   function installStyles() {
-    if (document.getElementById(STYLE_ID)) return;
-    const style = document.createElement('style');
-    style.id = STYLE_ID;
+    let style = document.getElementById(STYLE_ID);
+    if (!style) {
+      style = document.createElement('style');
+      style.id = STYLE_ID;
+      document.head.appendChild(style);
+    }
     style.textContent = css;
-    document.head.appendChild(style);
   }
 
   function getOwnedItems() {
@@ -170,6 +113,7 @@
       element.style.removeProperty('--a8-weapon-filter');
       return;
     }
+
     const tier = tierOf(item);
     const palette = TIER[tier];
     element.dataset.a8GearTier = String(tier);
@@ -180,51 +124,14 @@
     element.classList.toggle('a8-tier-weapon', Boolean(weapon));
   }
 
-  function iconMarkup(item, slotKey) {
-    try {
-      if (typeof getItemIcon === 'function') return getItemIcon(item.icon, item.key);
-    } catch (_) {}
-    if (slotKey === 'gloves') return '<img src="assets/panzerhandschuhe.svg" alt="" aria-hidden="true">';
-    if (slotKey === 'boots') return '<img src="assets/stahl-stiefel.svg" alt="" aria-hidden="true">';
-    return '<svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="9" fill="rgba(254,243,199,.9)" stroke="#fbbf24" stroke-width="1.6"/><path d="m16 8 2 6 6 2-6 2-2 6-2-6-6-2 6-2z" fill="#f59e0b"/></svg>';
-  }
-
-  function visibleSlotsFor(context) {
-    return context === 'inventory' ? INVENTORY_VISIBLE_SLOTS : VISIBLE_BODY_SLOTS;
-  }
-
-  function signatureForVisibleGear(context) {
-    return visibleSlotsFor(context).map(slot => {
-      const item = equippedItem(slot);
-      return item ? `${slot}:${itemKey(item)}:${tierOf(item)}` : `${slot}:-`;
-    }).join('|');
-  }
-
-  function renderBodyGear(host, context) {
-    if (!host) return;
-    const signature = `${context}|${signatureForVisibleGear(context)}`;
-    if (host.dataset.a8GearSignature === signature) return;
-    host.querySelectorAll('.a8-knight-gear-piece').forEach(node => node.remove());
-    host.dataset.a8GearSignature = signature;
-
-    visibleSlotsFor(context).forEach(slotKey => {
-      const item = equippedItem(slotKey);
-      if (!item) return;
-      const piece = document.createElement('span');
-      piece.className = 'a8-knight-gear-piece';
-      piece.dataset.slot = slotKey;
-      piece.title = `${item.name || itemKey(item)} · Tier ${tierOf(item)}`;
-      piece.innerHTML = iconMarkup(item, slotKey);
-      piece.querySelectorAll('img').forEach(img => {
-        img.loading = 'eager';
-        img.alt = '';
-        img.setAttribute('aria-hidden', 'true');
-      });
-      const weaponPiece = slotKey === 'weapon' || slotKey === 'offhand';
-      applyTierVisual(piece, item, weaponPiece);
-      piece.classList.remove('a8-tier-frame');
-      host.appendChild(piece);
+  function clearBodyOverlays() {
+    document.querySelectorAll('.a8-knight-gear-piece').forEach(node => node.remove());
+    ['heroAvatar', 'battleKnight'].forEach(id => {
+      const host = document.getElementById(id);
+      if (host) delete host.dataset.a8GearSignature;
     });
+    const preview = document.querySelector('#battleView .battle-stage-preview .battle-side.hero .battle-portrait-icon');
+    if (preview) delete preview.dataset.a8GearSignature;
   }
 
   function syncInventoryFrames() {
@@ -245,19 +152,21 @@
     applyTierVisual(document.getElementById('battleWeaponSlot2'), offhand, true);
   }
 
-  function syncBodyGear() {
-    renderBodyGear(document.getElementById('heroAvatar'), 'inventory');
-    renderBodyGear(document.querySelector('#battleView .battle-stage-preview .battle-side.hero .battle-portrait-icon'), 'preview');
-    renderBodyGear(document.getElementById('battleKnight'), 'active');
+  function inventorySignature() {
+    const equipment = getEquipment();
+    return Object.keys(equipment).sort().map(slot => {
+      const item = equippedItem(slot);
+      return item ? `${slot}:${itemKey(item)}:${tierOf(item)}` : `${slot}:-`;
+    }).join('|');
   }
 
   function sync() {
     installStyles();
+    clearBodyOverlays();
     syncInventoryFrames();
     syncWeaponTiers();
-    syncBodyGear();
-    DEBUG.renderedPieces = document.querySelectorAll('.a8-knight-gear-piece').length;
-    DEBUG.lastSignature = signatureForVisibleGear('inventory');
+    DEBUG.renderedPieces = 0;
+    DEBUG.lastSignature = inventorySignature();
   }
 
   let frame = 0;
@@ -285,7 +194,7 @@
   }
 
   window.A8_GEAR_VISUAL_DEBUG = DEBUG;
-  window.A8_GEAR_VISUALS = Object.freeze({ version: 2, sync });
+  window.A8_GEAR_VISUALS = Object.freeze({ version: 3, sync });
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
   else init();
