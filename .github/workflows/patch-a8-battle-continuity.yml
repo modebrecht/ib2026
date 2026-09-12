@@ -1,0 +1,81 @@
+name: Patch A8 Battle Continuity
+
+on:
+  push:
+    branches: [dev]
+    paths:
+      - '.github/workflows/patch-a8-battle-continuity.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 1
+      - name: Patch A8 pin and deployed continuity gate
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('.github/workflows/pages-multibranch.yml')
+          s = p.read_text(encoding='utf-8')
+          replacements = {
+            'SHORTCUT_QUEST_SHA="b6bc39b4c7b40f4f8aed8ccd81aa0ccf6fcea52e"': 'SHORTCUT_QUEST_SHA="d849c46c86950b9ad4b54ad3afaa42e42b6b60b1"',
+            '<script src="a8-dev-polish.js?v=47c853a3"></script>': '<script src="a8-dev-polish.js?v=d849c46c"></script>',
+            "const url = 'https://modebrecht.github.io/ib2026/dev/tk2/A8/?qa=b6bc39b4';": "const url = 'https://modebrecht.github.io/ib2026/dev/tk2/A8/?qa=d849c46c';",
+            "if (html.includes('battle-motion.js?v=b6bc39b4')) {": "if (html.includes('a8-dev-polish.js?v=d849c46c')) {",
+            "assert.equal(ready, true, 'GitHub Pages did not expose the expected b6bc39b4 active-battle fix in time');": "assert.equal(ready, true, 'GitHub Pages did not expose the expected d849c46c battle-continuity fix in time');",
+            "grep -Fq '<script src=\"a8-dev-polish.js?v=47c853a3\"></script>' _site/dev/tk2/A8/index.html": "grep -Fq '<script src=\"a8-dev-polish.js?v=d849c46c\"></script>' _site/dev/tk2/A8/index.html",
+          }
+          for old, new in replacements.items():
+              if old not in s:
+                  raise SystemExit(f'missing replacement marker: {old}')
+              s = s.replace(old, new)
+
+          anchor = """              assert.equal(active.pageOverflow, false, 'Active battle page must not overflow horizontally');
+              await page.locator('#battleSimulation').screenshot({ path: 'a8-battle-active-deployed.png' });
+
+              console.log('OK: deployed DEV A8 inventory, pre-battle arena, and active battle verified.');"""
+          replacement = """              assert.equal(active.pageOverflow, false, 'Active battle page must not overflow horizontally');
+
+              // Regression for the exact freeze that used to occur after the knight's first hit.
+              // Require the enemy turn (third log line including battle start) or a clean finish.
+              await page.waitForFunction(() => {
+                const logCount = document.querySelectorAll('#battleLog > *, .battle-log > *').length;
+                const result = document.getElementById('battleResult')?.textContent?.trim() || '';
+                return logCount >= 3 || /Sieg|Niederlage|gewonnen|verloren/i.test(result);
+              }, null, { timeout: 4000 });
+              const continuity = await page.evaluate(() => ({
+                logCount: document.querySelectorAll('#battleLog > *, .battle-log > *').length,
+                result: document.getElementById('battleResult')?.textContent?.trim() || '',
+                heroHp: document.getElementById('battleHeroHpValue')?.textContent?.trim() || document.getElementById('heroHpValue')?.textContent?.trim() || '',
+                enemyHp: document.getElementById('battleEnemyHpValue')?.textContent?.trim() || document.getElementById('enemyHpValue')?.textContent?.trim() || ''
+              }));
+              assert.ok(
+                continuity.logCount >= 3 || /Sieg|Niederlage|gewonnen|verloren/i.test(continuity.result),
+                'Deployed battle must continue beyond the knight first hit or finish cleanly'
+              );
+              await page.locator('#battleSimulation').screenshot({ path: 'a8-battle-active-deployed.png' });
+
+              console.log('OK: deployed DEV A8 inventory, pre-battle arena, and multi-turn active battle verified.');"""
+          if anchor not in s:
+              raise SystemExit('continuity insertion anchor missing')
+          s = s.replace(anchor, replacement, 1)
+          p.write_text(s, encoding='utf-8')
+          PY
+
+          grep -Fq 'SHORTCUT_QUEST_SHA="d849c46c86950b9ad4b54ad3afaa42e42b6b60b1"' .github/workflows/pages-multibranch.yml
+          grep -Fq 'a8-dev-polish.js?v=d849c46c' .github/workflows/pages-multibranch.yml
+          grep -Fq 'Deployed battle must continue beyond the knight first hit or finish cleanly' .github/workflows/pages-multibranch.yml
+
+      - name: Commit patch
+        run: |
+          git config user.name 'modebrecht'
+          git config user.email '137332207+modebrecht@users.noreply.github.com'
+          git add .github/workflows/pages-multibranch.yml
+          git commit -m 'fix: deploy A8 multi-turn battle continuity'
+          git push origin HEAD:dev
