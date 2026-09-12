@@ -212,11 +212,18 @@ jobs:
                 });
                 const sectionClears = {};
                 for (let i = 1; i <= 30; i += 1) sectionClears[String(i)] = 1;
+                const skills = SKILL_POOL.map(skill => ({
+                  ...skill,
+                  tier: 1,
+                  totalCopies: 1,
+                  overcapBonusPercent: 0
+                }));
                 localStorage.setItem('shortcutRitter_v1', JSON.stringify({
                   sectionClears,
                   battleClears: { '1': true, '2': true, '3': true, '4': true },
                   battleUnlocked: 5,
                   coins: 40,
+                  skills,
                   items: [
                     item('feuer_klinge', 'Feuerklinge', 'sword_fire', 'weapon', 'weapon', 4),
                     item('stahl_sword', 'Stahlklinge', 'sword_steel', 'weapon', 'weapon', 3),
@@ -231,6 +238,7 @@ jobs:
                 }));
               });
               await page.reload({ waitUntil: 'networkidle' });
+              assert.equal(await page.evaluate(() => state.skills?.length || 0), 4, 'DEV QA state must load the four current shortcut skills');
 
               // Inventory -> equip remains functional.
               await page.locator('.nav-toggle[data-view="inventory"]').click();
