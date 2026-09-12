@@ -45,16 +45,20 @@
     #battleView #battleArena {
       height:clamp(420px,40vw,520px) !important;
       min-height:420px !important;
+      /* One shared visual floor for both fighters and both contact shadows.
+         Keeping this as a percentage makes the baseline scale with every SVG arena size. */
+      --a8-battle-ground-y:94.5%;
+      --a8-battle-ground-bottom:calc(100% - var(--a8-battle-ground-y));
     }
     #battleView .battle-arena .fighter.knight {
       left:21% !important;
-      bottom:5.5% !important;
+      bottom:var(--a8-battle-ground-bottom) !important;
       width:260px !important;
       height:360px !important;
     }
     #battleView .battle-arena .fighter.enemy {
       right:21% !important;
-      bottom:5.5% !important;
+      bottom:var(--a8-battle-ground-bottom) !important;
       width:260px !important;
       height:350px !important;
     }
@@ -65,8 +69,16 @@
       height:clamp(270px,26vw,335px) !important;
     }
     #battleView .battle-arena .fighter::after {
+      display:block !important;
+      top:auto !important;
+      bottom:0 !important;
       width:184px !important;
       height:28px !important;
+      transform:translate(-50%,35%) !important;
+    }
+    #battleView .battle-arena .fighter-sprite {
+      top:auto !important;
+      bottom:0 !important;
     }
     #battleView .battle-arena .fighter.knight .battle-weapon-slot {
       width:88px !important;
@@ -183,5 +195,5 @@
     });
   }
 
-  window.A8_BATTLE_CONTINUITY = Object.freeze({ version:5, previewArena:true, activeThemedBackgrounds:true, backdropLayer:true });
+  window.A8_BATTLE_CONTINUITY = Object.freeze({ version:6, previewArena:true, activeThemedBackgrounds:true, backdropLayer:true, sharedGroundLine:true });
 })();
