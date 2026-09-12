@@ -12,28 +12,28 @@
        keep both swords seated at the knight's hands, and preserve the original
        themed SVG battle environments. */
 
-    /* Restore the original battle backgrounds by rank/theme. The generic
-       arena-scene.svg remains only as the fallback underneath these selectors. */
+    /* Restore the original battle backgrounds by rank/theme. Keep arena-scene
+       underneath as a real fallback layer; the themed SVG is always the top layer. */
     #battleView .battle-stage-preview[data-battle-theme='forest'],
     #battleView .battle-arena[data-battle-theme='forest'] {
-      background-image: url('assets/battle-bg-forest.svg') !important;
-      background-size: cover !important;
-      background-position: center center !important;
-      background-repeat: no-repeat !important;
+      background-image: url('assets/battle-bg-forest.svg'), url('assets/arena-scene.svg?v=20260912-svg-arena') !important;
+      background-size: cover, cover !important;
+      background-position: center center, center center !important;
+      background-repeat: no-repeat, no-repeat !important;
     }
     #battleView .battle-stage-preview[data-battle-theme='mountain'],
     #battleView .battle-arena[data-battle-theme='mountain'] {
-      background-image: url('assets/battle-bg-mountain.svg') !important;
-      background-size: cover !important;
-      background-position: center center !important;
-      background-repeat: no-repeat !important;
+      background-image: url('assets/battle-bg-mountain.svg'), url('assets/arena-scene.svg?v=20260912-svg-arena') !important;
+      background-size: cover, cover !important;
+      background-position: center center, center center !important;
+      background-repeat: no-repeat, no-repeat !important;
     }
     #battleView .battle-stage-preview[data-battle-theme='celestial'],
     #battleView .battle-arena[data-battle-theme='celestial'] {
-      background-image: url('assets/battle-bg-celestial.svg') !important;
-      background-size: cover !important;
-      background-position: center top !important;
-      background-repeat: no-repeat !important;
+      background-image: url('assets/battle-bg-celestial.svg'), url('assets/arena-scene.svg?v=20260912-svg-arena') !important;
+      background-size: cover, cover !important;
+      background-position: center top, center center !important;
+      background-repeat: no-repeat, no-repeat !important;
     }
 
     /* PRE-BATTLE: the previous calc(... + 132px) pushed the hilts almost to
