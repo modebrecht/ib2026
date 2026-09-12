@@ -582,3 +582,14 @@
   var observer = new MutationObserver(function () { installButton(); });
   observer.observe(document.documentElement, { childList: true, subtree: true });
 })();
+
+
+/* A8 TIERED GEAR DEV LOADER 2026 */
+(() => {
+  if (document.querySelector('script[data-a8-tiered-gear-loader]')) return;
+  const script = document.createElement('script');
+  script.src = 'gear-visuals.js?v=2340e9cf';
+  script.async = false;
+  script.dataset.a8TieredGearLoader = 'true';
+  document.head.appendChild(script);
+})();
