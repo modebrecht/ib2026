@@ -7,8 +7,10 @@
   const style = document.createElement('style');
   style.id = STYLE_ID;
   style.textContent = `
-    /* A8 BATTLE CONTINUITY PASS 2026 */
-    #battleView .a8-themed-battle-backdrop {
+    /* A8 BATTLE CONTINUITY PASS 2026
+       Pre-battle keeps the premium arena-scene. Only the active fight switches
+       to the original per-rank SVG battle environments. */
+    #battleView .battle-arena > .a8-themed-battle-backdrop {
       position:absolute !important;
       inset:0 !important;
       z-index:0 !important;
@@ -19,7 +21,7 @@
       background-position:center center !important;
       background-repeat:no-repeat !important;
     }
-    #battleView .a8-themed-battle-backdrop[data-theme='celestial'] {
+    #battleView .battle-arena > .a8-themed-battle-backdrop[data-theme='celestial'] {
       background-position:center top !important;
     }
 
@@ -153,7 +155,10 @@
   }
 
   function syncAllBackdrops() {
-    document.querySelectorAll('#battleView .battle-stage-preview[data-battle-theme], #battleView .battle-arena[data-battle-theme]').forEach(syncBackdrop);
+    /* Preview deliberately stays on arena-scene.svg. Remove stale layers left
+       by older cached versions, then theme only the live battle arena. */
+    document.querySelectorAll('#battleView .battle-stage-preview > .a8-themed-battle-backdrop').forEach(layer => layer.remove());
+    document.querySelectorAll('#battleView .battle-arena[data-battle-theme]').forEach(syncBackdrop);
   }
 
   let queued = false;
@@ -178,5 +183,5 @@
     });
   }
 
-  window.A8_BATTLE_CONTINUITY = Object.freeze({ version:4, themedBackgrounds:true, backdropLayer:true });
+  window.A8_BATTLE_CONTINUITY = Object.freeze({ version:5, previewArena:true, activeThemedBackgrounds:true, backdropLayer:true });
 })();
