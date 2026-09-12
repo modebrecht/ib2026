@@ -1,0 +1,41 @@
+name: Apply A8 Groundline Loader
+
+on:
+  push:
+    branches:
+      - dev
+    paths:
+      - .github/workflows/apply-a8-groundline-loader.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 1
+      - name: Refresh battle continuity loader
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('tk2/a8-pdf-report.js')
+          t = p.read_text(encoding='utf-8')
+          old = 'battle-continuity.js?v=eee22b57'
+          new = 'battle-continuity.js?v=a6d1d495'
+          if old not in t:
+              raise SystemExit('old loader marker missing')
+          p.write_text(t.replace(old, new, 1), encoding='utf-8')
+          PY
+          node --check tk2/a8-pdf-report.js
+          grep -Fq 'battle-continuity.js?v=a6d1d495' tk2/a8-pdf-report.js
+      - name: Commit loader refresh
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tk2/a8-pdf-report.js
+          git commit -m "fix: refresh A8 shared groundline loader"
+          git push origin HEAD:dev
