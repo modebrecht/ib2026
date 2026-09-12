@@ -1,0 +1,89 @@
+name: Apply A8 Tiered Gear Deploy
+
+on:
+  push:
+    branches:
+      - dev
+    paths:
+      - .github/workflows/apply-a8-tiered-gear.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 1
+
+      - name: Patch A8 DEV deployment
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path('.github/workflows/pages-multibranch.yml')
+          text = path.read_text(encoding='utf-8')
+
+          def one(old, new, label):
+              global text
+              count = text.count(old)
+              if count != 1:
+                  raise SystemExit(f'{label}: expected exactly 1 match, found {count}')
+              text = text.replace(old, new, 1)
+
+          one('SHORTCUT_QUEST_SHA="74934b8fac08d76f17fab0cc1600745b09475306"',
+              'SHORTCUT_QUEST_SHA="2340e9cfdfb95a1747172c09686256ed8f9b4826"', 'pin')
+          one('apexcharts.min.js favicon.svg premium-motion.js battle-motion.js knight-premium-motion.js \\\n            arena-dev-fix.js arena-dev-tuning.css a8-dev-polish.js; do',
+              'apexcharts.min.js favicon.svg premium-motion.js battle-motion.js knight-premium-motion.js gear-visuals.js \\\n            arena-dev-fix.js arena-dev-tuning.css a8-dev-polish.js; do', 'copy gear script')
+          one("              '<script src=\"knight-premium-motion.js?v=74934b8f\"></script>',\n              '<script src=\"pdf-report.js\"></script>',",
+              "              '<script src=\"knight-premium-motion.js?v=74934b8f\"></script>',\n              '<script src=\"gear-visuals.js?v=2340e9cf\"></script>',\n              '<script src=\"pdf-report.js\"></script>',", 'inject gear script')
+          one('          node --check _site/dev/tk2/A8/knight-premium-motion.js\n          node --check _site/dev/tk2/A8/arena-dev-fix.js',
+              '          node --check _site/dev/tk2/A8/knight-premium-motion.js\n          node --check _site/dev/tk2/A8/gear-visuals.js\n          node --check _site/dev/tk2/A8/arena-dev-fix.js', 'node check')
+          one("          grep -Fq '<script src=\"knight-premium-motion.js?v=74934b8f\"></script>' _site/dev/tk2/A8/index.html\n          grep -Fq '<script src=\"a8-dev-polish.js?v=8af72c1b\"></script>' _site/dev/tk2/A8/index.html",
+              "          grep -Fq '<script src=\"knight-premium-motion.js?v=74934b8f\"></script>' _site/dev/tk2/A8/index.html\n          grep -Fq '<script src=\"gear-visuals.js?v=2340e9cf\"></script>' _site/dev/tk2/A8/index.html\n          grep -Fq '<script src=\"a8-dev-polish.js?v=8af72c1b\"></script>' _site/dev/tk2/A8/index.html", 'script grep')
+          one("          grep -Fq 'A8 PREMIUM KNIGHT MOTION 2026' _site/dev/tk2/A8/knight-premium-motion.js\n          grep -Fq 'BATTLE UI SKILL BAR PREMIUM PASS 2026' _site/dev/tk2/A8/modern-battle.css",
+              "          grep -Fq 'A8 PREMIUM KNIGHT MOTION 2026' _site/dev/tk2/A8/knight-premium-motion.js\n          grep -Fq 'A8 TIERED KNIGHT GEAR VISUALS 2026' _site/dev/tk2/A8/gear-visuals.js\n          grep -Fq 'BATTLE UI SKILL BAR PREMIUM PASS 2026' _site/dev/tk2/A8/modern-battle.css", 'marker grep')
+          text = text.replace('?qa=74934b8f', '?qa=2340e9cf')
+          if text.count('?qa=2340e9cf') != 1:
+              raise SystemExit('QA cache marker replacement failed')
+          one("html.includes('battle-motion.js?v=5f9aa1a7') && html.includes('knight-premium-motion.js?v=74934b8f') && html.includes('SHORTCUT_QUEST_ENEMY_ITEMS')",
+              "html.includes('battle-motion.js?v=5f9aa1a7') && html.includes('knight-premium-motion.js?v=74934b8f') && html.includes('gear-visuals.js?v=2340e9cf') && html.includes('SHORTCUT_QUEST_ENEMY_ITEMS')", 'ready marker')
+          one('expected 74934b8f A8 build in time', 'expected 2340e9cf A8 build in time', 'ready error')
+
+          one('const item = (key, name, icon, slot, category, atk = 0, def = 0, hp = 0) => ({',
+              'const item = (key, name, icon, slot, category, atk = 0, def = 0, hp = 0, tier = 1) => ({', 'seed helper')
+          one('baseAtk: atk, baseDef: def, baseHp: hp, atk, def, hp,\n                  tier: 1, totalCopies: 1, createdAt: now, lastObtainedAt: now',
+              'baseAtk: atk, baseDef: def, baseHp: hp, atk: atk * tier, def: def * tier, hp: hp * tier,\n                  tier, totalCopies: 2 ** (tier - 1), createdAt: now, lastObtainedAt: now', 'tier seed')
+          replacements = {
+              "item('feuer_klinge', 'Feuerklinge', 'sword_fire', 'weapon', 'weapon', 4)": "item('feuer_klinge', 'Feuerklinge', 'sword_fire', 'weapon', 'weapon', 4, 0, 0, 5)",
+              "item('stahl_sword', 'Stahlklinge', 'sword_steel', 'weapon', 'weapon', 3)": "item('stahl_sword', 'Stahlklinge', 'sword_steel', 'weapon', 'weapon', 3, 0, 0, 4)",
+              "item('taktik_helm', 'Taktikhelm', 'helm', 'helm', 'armor', 1, 1)": "item('taktik_helm', 'Taktikhelm', 'helm', 'helm', 'armor', 1, 1, 0, 5)",
+              "item('panzerhandschuhe', 'Panzerhandschuhe', 'panzerhandschuhe', 'gloves', 'armor', 0, 1)": "item('panzerhandschuhe', 'Panzerhandschuhe', 'panzerhandschuhe', 'gloves', 'armor', 0, 1, 0, 3)",
+              "item('runen_amulet', 'Runen-Amulett', 'talisman', 'necklace', 'accessory')": "item('runen_amulet', 'Runen-Amulett', 'talisman', 'necklace', 'accessory', 0, 0, 0, 2)",
+              "item('stahl_stiefel', 'Stahl-Stiefel', 'stahl-stiefel', 'boots', 'armor', 0, 2)": "item('stahl_stiefel', 'Stahl-Stiefel', 'stahl-stiefel', 'boots', 'armor', 0, 2, 0, 4)",
+              "item('lebens_ring', 'Lebensring', 'lebensring', 'ring_left', 'accessory', 0, 0, 20)": "item('lebens_ring', 'Lebensring', 'lebensring', 'ring_left', 'accessory', 0, 0, 20, 3)",
+              "item('gluecks_ring', 'Glücksring', 'gluecksring', 'ring_right', 'accessory')": "item('gluecks_ring', 'Glücksring', 'gluecksring', 'ring_right', 'accessory', 0, 0, 0, 2)",
+          }
+          for old, new in replacements.items():
+              one(old, new, f'seed {old[:24]}')
+
+          one("              await page.waitForFunction(() => Array.from(document.querySelectorAll('#inventoryView [data-equip-slot]')).length === 8 && Array.from(document.querySelectorAll('#inventoryView [data-equip-slot]')).every(slot => slot.classList.contains('equipped')));\n              await page.locator('#playerCard').screenshot({ path: 'a8-inventory-deployed.png' });",
+              "              await page.waitForFunction(() => Array.from(document.querySelectorAll('#inventoryView [data-equip-slot]')).length === 8 && Array.from(document.querySelectorAll('#inventoryView [data-equip-slot]')).every(slot => slot.classList.contains('equipped')));\n              await page.waitForFunction(() => window.A8_GEAR_VISUALS?.version === 1 && document.querySelectorAll('#heroAvatar .a8-knight-gear-piece').length === 3);\n              const deployedGear = await page.evaluate(() => ({\n                bodySlots: Array.from(document.querySelectorAll('#heroAvatar .a8-knight-gear-piece')).map(el => el.dataset.slot).sort(),\n                helmetPieces: document.querySelectorAll('#heroAvatar .a8-knight-gear-piece[data-slot=\\\"helm\\\"]').length,\n                ringPieces: document.querySelectorAll('#heroAvatar .a8-knight-gear-piece[data-slot^=\\\"ring\\\"]').length,\n                weaponTier: document.querySelector('#inventoryView [data-equip-slot=\\\"weapon\\\"]')?.dataset.a8GearTier || '',\n                helmetTier: document.querySelector('#inventoryView [data-equip-slot=\\\"helm\\\"]')?.dataset.a8GearTier || '',\n                framed: document.querySelectorAll('#inventoryView .equipment-slot.a8-tier-frame').length\n              }));\n              assert.deepEqual(deployedGear.bodySlots, ['boots', 'gloves', 'necklace']);\n              assert.equal(deployedGear.helmetPieces, 0);\n              assert.equal(deployedGear.ringPieces, 0);\n              assert.equal(deployedGear.weaponTier, '5');\n              assert.equal(deployedGear.helmetTier, '5');\n              assert.equal(deployedGear.framed, 8);\n              await page.locator('#playerCard').screenshot({ path: 'a8-inventory-deployed.png' });", 'deployed gear assertions')
+
+          path.write_text(text, encoding='utf-8')
+          PY
+
+          git diff --check
+          grep -F 'SHORTCUT_QUEST_SHA="2340e9cfdfb95a1747172c09686256ed8f9b4826"' .github/workflows/pages-multibranch.yml
+          grep -F 'gear-visuals.js?v=2340e9cf' .github/workflows/pages-multibranch.yml
+
+      - name: Commit deployment update
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .github/workflows/pages-multibranch.yml
+          git commit -m "feat: deploy tiered A8 knight gear"
+          git push origin HEAD:dev
