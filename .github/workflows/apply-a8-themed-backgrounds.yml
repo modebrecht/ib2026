@@ -19,44 +19,25 @@ jobs:
           ref: dev
           fetch-depth: 1
 
-      - name: Re-pin A8 and restore themed SVG verification
+      - name: Refresh battle continuity loader
         run: |
           python3 - <<'PY'
           from pathlib import Path
-
-          path = Path('.github/workflows/pages-multibranch.yml')
+          path = Path('tk2/a8-pdf-report.js')
           text = path.read_text(encoding='utf-8')
-
-          replacements = {
-              'SHORTCUT_QUEST_SHA="74934b8fac08d76f17fab0cc1600745b09475306"': 'SHORTCUT_QUEST_SHA="924579ce9ab9f84bb5be59dd549642b44555e1bd"',
-              'arena-dev-tuning.css?v=6193079d': 'arena-dev-tuning.css?v=924579ce',
-              "const url = 'https://modebrecht.github.io/ib2026/dev/tk2/A8/?qa=74934b8f';": "const url = 'https://modebrecht.github.io/ib2026/dev/tk2/A8/?qa=924579ce';",
-              "assert.equal(ready, true, 'GitHub Pages did not expose the expected 74934b8f A8 build in time');": "assert.equal(ready, true, 'GitHub Pages did not expose the expected 924579ce A8 build in time');",
-              'assert.match(preview.background, /arena-scene\\.svg/i);': 'assert.match(preview.background, /battle-bg-mountain\\.svg/i);',
-              "arenaWidth: rect(arena)?.width || 0,\n                  arenaHeight: rect(arena)?.height || 0,": "arenaWidth: rect(arena)?.width || 0,\n                  arenaHeight: rect(arena)?.height || 0,\n                  background: arena ? getComputedStyle(arena).backgroundImage : '',",
-              'assert.ok(active.arenaWidth > 900 && active.arenaHeight >= 400);': 'assert.ok(active.arenaWidth > 900 && active.arenaHeight >= 400);\n              assert.match(active.background, /battle-bg-mountain\\.svg/i);'
-          }
-
-          for old, new in replacements.items():
-              if old not in text:
-                  raise SystemExit(f'marker not found: {old}')
-              text = text.replace(old, new, 1)
-
-          css_check = """\n          grep -Fq 'battle-bg-forest.svg' _site/dev/tk2/A8/arena-dev-tuning.css\n          grep -Fq 'battle-bg-mountain.svg' _site/dev/tk2/A8/arena-dev-tuning.css\n          grep -Fq 'battle-bg-celestial.svg' _site/dev/tk2/A8/arena-dev-tuning.css\n"""
-          marker = "          grep -Fq 'BATTLE SKILL CONTENT HIERARCHY FIX 2026' _site/dev/tk2/A8/modern-battle.css\n"
-          if marker not in text:
-              raise SystemExit('CSS QA insertion marker missing')
-          text = text.replace(marker, marker + css_check, 1)
-
-          path.write_text(text, encoding='utf-8')
+          old = 'battle-continuity.js?v=14d5f2bb'
+          new = 'battle-continuity.js?v=95a3b280'
+          if old not in text:
+              raise SystemExit('battle continuity loader marker missing')
+          path.write_text(text.replace(old, new, 1), encoding='utf-8')
           PY
+          node --check tk2/a8-pdf-report.js
+          grep -Fq 'battle-continuity.js?v=95a3b280' tk2/a8-pdf-report.js
 
-          grep -Fq '924579ce9ab9f84bb5be59dd549642b44555e1bd' .github/workflows/pages-multibranch.yml
-
-      - name: Commit DEV deployment update
+      - name: Commit loader refresh
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add .github/workflows/pages-multibranch.yml
-          git commit -m "fix: restore A8 themed SVG battle backgrounds"
+          git add tk2/a8-pdf-report.js
+          git commit -m "fix: refresh A8 themed battle background loader"
           git push origin HEAD:dev
