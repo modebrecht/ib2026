@@ -12,8 +12,6 @@
        keep both swords seated at the knight's hands, and preserve the original
        themed SVG battle environments. */
 
-    /* Restore the original battle backgrounds by rank/theme. Keep arena-scene
-       underneath as a real fallback layer; the themed SVG is always the top layer. */
     #battleView .battle-stage-preview[data-battle-theme='forest'],
     #battleView .battle-arena[data-battle-theme='forest'] {
       background-image: url('assets/battle-bg-forest.svg'), url('assets/arena-scene.svg?v=20260912-svg-arena') !important;
@@ -184,5 +182,40 @@
   `;
   document.head.appendChild(style);
 
-  window.A8_BATTLE_CONTINUITY = Object.freeze({ version: 2, themedBackgrounds: true });
+  const THEME_ASSETS = Object.freeze({
+    forest: 'assets/battle-bg-forest.svg',
+    mountain: 'assets/battle-bg-mountain.svg',
+    celestial: 'assets/battle-bg-celestial.svg'
+  });
+  const FALLBACK = 'assets/arena-scene.svg?v=20260912-svg-arena';
+
+  function applyThemedBackdrops() {
+    document.querySelectorAll('#battleView .battle-stage-preview[data-battle-theme], #battleView .battle-arena[data-battle-theme]').forEach(stage => {
+      const theme = stage.getAttribute('data-battle-theme') || 'forest';
+      const themed = THEME_ASSETS[theme] || THEME_ASSETS.forest;
+      const position = theme === 'celestial' ? 'center top, center center' : 'center center, center center';
+      stage.style.setProperty('background-image', `url("${themed}"), url("${FALLBACK}")`, 'important');
+      stage.style.setProperty('background-size', 'cover, cover', 'important');
+      stage.style.setProperty('background-position', position, 'important');
+      stage.style.setProperty('background-repeat', 'no-repeat, no-repeat', 'important');
+    });
+  }
+
+  function scheduleThemedBackdrops() {
+    requestAnimationFrame(() => requestAnimationFrame(applyThemedBackdrops));
+  }
+
+  applyThemedBackdrops();
+  const battleView = document.getElementById('battleView');
+  if (battleView && 'MutationObserver' in window) {
+    const observer = new MutationObserver(scheduleThemedBackdrops);
+    observer.observe(battleView, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['data-battle-theme']
+    });
+  }
+
+  window.A8_BATTLE_CONTINUITY = Object.freeze({ version: 3, themedBackgrounds: true });
 })();
