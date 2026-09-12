@@ -44,7 +44,7 @@ jobs:
           git archive refs/remotes/origin/render | tar -x -C _site/render
 
           # Deterministic DEV-only TK2 A8 preview.
-          SHORTCUT_QUEST_SHA="228a4ef4217e65a1169525693670d085ed99bdc4"
+          SHORTCUT_QUEST_SHA="8af72c1b306861668e9741320309a1ee772dbc22"
           rm -rf /tmp/shortcut-quest-a8
           git init -q /tmp/shortcut-quest-a8
           git -C /tmp/shortcut-quest-a8 remote add origin https://github.com/modebrecht/shortcut-quest.git
@@ -81,7 +81,7 @@ jobs:
               '<script src="premium-motion.js"></script>',
               '<script src="battle-motion.js?v=b6bc39b4"></script>',
               '<script src="arena-dev-fix.js?v=59809da9"></script>',
-              '<script src="a8-dev-polish.js?v=228a4ef4"></script>',
+              '<script src="a8-dev-polish.js?v=8af72c1b"></script>',
               '<script src="pdf-report.js"></script>',
           ]
           if '</head>' not in html or '</body>' not in html:
@@ -100,10 +100,11 @@ jobs:
           node --check _site/dev/tk2/A8/a8-dev-polish.js
           node --check _site/dev/tk2/A8/pdf-report.js
           grep -Fq "doc.save('A8-' + safeFileName(student) + '.pdf');" _site/dev/tk2/A8/pdf-report.js
-          grep -Fq '<script src="a8-dev-polish.js?v=228a4ef4"></script>' _site/dev/tk2/A8/index.html
+          grep -Fq '<script src="a8-dev-polish.js?v=8af72c1b"></script>' _site/dev/tk2/A8/index.html
           grep -Fq 'SHORTCUT_QUEST_BATTLE_ENGINE_V2' _site/dev/tk2/A8/index.html
           grep -Fq 'BATTLE UI SKILL BAR PREMIUM PASS 2026' _site/dev/tk2/A8/modern-battle.css
           grep -Fq 'BATTLE UI SKILL CARD FIT FIX 2026' _site/dev/tk2/A8/modern-battle.css
+          grep -Fq 'BATTLE SKILL CONTENT HIERARCHY FIX 2026' _site/dev/tk2/A8/modern-battle.css
           touch _site/.nojekyll
 
       - name: Configure Pages
@@ -149,7 +150,7 @@ jobs:
           const assert = require('node:assert/strict');
 
           (async () => {
-            const url = 'https://modebrecht.github.io/ib2026/dev/tk2/A8/?qa=228a4ef4';
+            const url = 'https://modebrecht.github.io/ib2026/dev/tk2/A8/?qa=8af72c1b';
             const browser = await chromium.launch({ headless: true });
             try {
               const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
@@ -158,13 +159,13 @@ jobs:
                 const response = await page.goto(url + '&attempt=' + attempt, { waitUntil: 'networkidle' });
                 assert.ok(response && response.ok(), `DEV A8 did not load: ${response?.status()}`);
                 const html = await page.content();
-                if (html.includes('a8-dev-polish.js?v=228a4ef4') && html.includes('SHORTCUT_QUEST_BATTLE_ENGINE_V2')) {
+                if (html.includes('a8-dev-polish.js?v=8af72c1b') && html.includes('SHORTCUT_QUEST_BATTLE_ENGINE_V2')) {
                   ready = true;
                   break;
                 }
                 await page.waitForTimeout(5000);
               }
-              assert.equal(ready, true, 'GitHub Pages did not expose the expected 228a4ef4 A8 build in time');
+              assert.equal(ready, true, 'GitHub Pages did not expose the expected 8af72c1b A8 build in time');
 
               await page.evaluate(() => {
                 const now = Date.now();
@@ -264,15 +265,31 @@ jobs:
                 const cards = Array.from(bar.querySelectorAll('.battle-skill'));
                 return {
                   display: getComputedStyle(bar).display,
-                  cards: cards.map(card => ({
-                    width: rect(card)?.width || 0,
-                    height: rect(card)?.height || 0,
-                    iconWidth: rect(card.querySelector('.battle-skill-icon'))?.width || 0,
-                    iconHeight: rect(card.querySelector('.battle-skill-icon'))?.height || 0,
-                    descHeight: rect(card.querySelector('.battle-skill-desc'))?.height || 0,
-                    buttonHeight: rect(card.querySelector('button'))?.height || 0,
-                    clipped: card.scrollHeight > card.clientHeight + 2
-                  })),
+                  cards: cards.map(card => {
+                    const name = card.querySelector('.battle-skill-name');
+                    const icon = card.querySelector('.battle-skill-icon');
+                    const desc = card.querySelector('.battle-skill-desc');
+                    const combo = card.querySelector('.battle-skill-combo');
+                    const nameRect = rect(name);
+                    const descRect = rect(desc);
+                    const comboRect = rect(combo);
+                    return {
+                      width: rect(card)?.width || 0,
+                      height: rect(card)?.height || 0,
+                      iconWidth: rect(icon)?.width || 0,
+                      iconHeight: rect(icon)?.height || 0,
+                      iconMarkup: icon?.innerHTML || '',
+                      descHeight: descRect?.height || 0,
+                      descTop: descRect?.top || 0,
+                      comboBottom: comboRect?.bottom || 0,
+                      buttonHeight: rect(card.querySelector('button'))?.height || 0,
+                      nameText: name?.textContent?.trim() || '',
+                      nameWidth: nameRect?.width || 0,
+                      nameScrollWidth: name?.scrollWidth || 0,
+                      nameWhiteSpace: name ? getComputedStyle(name).whiteSpace : '',
+                      clipped: card.scrollHeight > card.clientHeight + 2
+                    };
+                  }),
                   pageOverflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 2
                 };
               });
@@ -281,7 +298,12 @@ jobs:
               assert.ok(skillUi.cards.every(card => card.width >= 210));
               assert.ok(skillUi.cards.every(card => card.height >= 120 && card.height <= 190));
               assert.ok(skillUi.cards.every(card => card.iconWidth >= 40 && card.iconHeight >= 40));
-              assert.ok(skillUi.cards.every(card => card.descHeight >= 28 && card.buttonHeight >= 70));
+              assert.equal(new Set(skillUi.cards.map(card => card.iconMarkup)).size, 4);
+              assert.ok(skillUi.cards.every(card => card.descHeight >= 14 && card.buttonHeight >= 110));
+              assert.ok(skillUi.cards.every(card => card.comboBottom === 0 || card.descTop >= card.comboBottom - 1));
+              assert.ok(skillUi.cards.every(card => card.nameText.length >= 3));
+              assert.ok(skillUi.cards.every(card => card.nameWhiteSpace !== 'nowrap'));
+              assert.ok(skillUi.cards.every(card => card.nameScrollWidth <= card.nameWidth + 2));
               assert.ok(skillUi.cards.every(card => !card.clipped));
               assert.equal(skillUi.pageOverflow, false);
 
@@ -310,7 +332,7 @@ jobs:
               assert.equal(finished.lastError, null);
               await page.locator('#battleSimulation').screenshot({ path: 'a8-battle-active-deployed.png' });
 
-              console.log('OK: deployed DEV A8 inventory, arena, Battle V2 and redesigned skills verified.');
+              console.log('OK: deployed DEV A8 inventory, arena, Battle V2 and skill hierarchy verified.');
             } finally {
               await browser.close();
             }
