@@ -29,7 +29,6 @@ jobs:
             "const url = 'https://modebrecht.github.io/ib2026/dev/tk2/A8/?qa=b6bc39b4';": "const url = 'https://modebrecht.github.io/ib2026/dev/tk2/A8/?qa=d849c46c';",
             "if (html.includes('battle-motion.js?v=b6bc39b4')) {": "if (html.includes('a8-dev-polish.js?v=d849c46c')) {",
             "assert.equal(ready, true, 'GitHub Pages did not expose the expected b6bc39b4 active-battle fix in time');": "assert.equal(ready, true, 'GitHub Pages did not expose the expected d849c46c battle-continuity fix in time');",
-            "grep -Fq '<script src=\"a8-dev-polish.js?v=47c853a3\"></script>' _site/dev/tk2/A8/index.html": "grep -Fq '<script src=\"a8-dev-polish.js?v=d849c46c\"></script>' _site/dev/tk2/A8/index.html",
           }
           for old, new in replacements.items():
               if old not in s:
