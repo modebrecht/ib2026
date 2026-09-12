@@ -1,0 +1,225 @@
+name: TEMP Full Smoke Render Candidate
+
+on:
+  push:
+    branches:
+      - qa-render-full-smoke-20260913
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: render-full-smoke-20260913
+  cancel-in-progress: false
+
+jobs:
+  full-smoke:
+    name: HW + TK + A8 production-build smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      BASE_URL: http://127.0.0.1:4173
+      RENDER_SHA: cc048cfc6eb5322a04dee516974ad5cda6e1c2a3
+
+    steps:
+      - name: Checkout exact render candidate
+        uses: actions/checkout@v4
+        with:
+          ref: cc048cfc6eb5322a04dee516974ad5cda6e1c2a3
+
+      - name: Confirm exact candidate
+        run: |
+          test "$(git rev-parse HEAD)" = "$RENDER_SHA"
+          echo "Smoke candidate: $(git rev-parse HEAD)"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Playwright
+        run: |
+          npm init -y >/dev/null
+          npm install --no-save @playwright/test
+          npx playwright install --with-deps chromium
+
+      - name: Build production-style dist
+        run: |
+          bash scripts/build-vercel-site.sh
+          test -s dist/index.html
+          test -s dist/tk2/A8/index.html
+          grep -Fq 'battle-continuity.js?v=6a655e2b' dist/tk2/A8/index.html
+          grep -Fq 'battle-balance.js?v=6a655e2b' dist/tk2/A8/index.html
+
+      - name: Start candidate server
+        run: |
+          python3 -m http.server 4173 --directory dist >/tmp/render-smoke-server.log 2>&1 &
+          echo $! >/tmp/render-smoke-server.pid
+          for i in {1..30}; do
+            if curl -fsS "$BASE_URL/" >/dev/null; then
+              echo "Candidate server ready: $BASE_URL"
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/render-smoke-server.log || true
+          exit 1
+
+      - name: Smoke HW A1-A14
+        run: |
+          npx playwright test \
+            e2e/hw-a1-a14.spec.js \
+            e2e/hw-score-history-fast.spec.js \
+            e2e/hw-persistence-contract.spec.js \
+            --browser=chromium --workers=1 --reporter=line
+
+      - name: Smoke TK A1-A7 + retries + history + persistence
+        run: |
+          npx playwright test \
+            e2e/tk-a1-a7.spec.js \
+            e2e/tk-a7-full-play.spec.js \
+            e2e/tk-score-history-fast.spec.js \
+            e2e/tk-persistence-contract.spec.js \
+            e2e/tk-unlimited-retries.spec.js \
+            --browser=chromium --workers=1 --reporter=line
+
+      - name: Generate and validate TK2 Gesamt-PDF
+        run: |
+          mkdir -p smoke-artifacts
+          node <<'NODE'
+          const fs = require('fs');
+          const path = require('path');
+          const { chromium } = require('@playwright/test');
+
+          (async () => {
+            const baseUrl = process.env.BASE_URL.replace(/\/$/, '');
+            const browser = await chromium.launch();
+            const context = await browser.newContext({ acceptDownloads: true });
+            const page = await context.newPage();
+            await page.goto(`${baseUrl}/`, { waitUntil: 'domcontentloaded' });
+            await page.evaluate(() => {
+              localStorage.clear();
+              sessionStorage.clear();
+              localStorage.setItem('studentVorname', 'Render Smoke');
+              localStorage.setItem('student_vorname', 'Render Smoke');
+              localStorage.setItem('tk_student_name_v1', 'Render Smoke');
+              localStorage.setItem('tk_quest_scores_v1', JSON.stringify({
+                q1:100,q2:100,q3:100,q4:100,q5:100,q6:100,q7:100,
+                q8:100,q9:100,q10:100,q11:100,q12:100,q13:100
+              }));
+              localStorage.setItem('tk_a3_progress_v1', JSON.stringify({
+                schemaVersion:2,downloaded:true,onedriveStored:true,completed:true,rewarded:true,
+                choices:[
+                  {shortcut:'Ctrl + C',reason:'Schneller kopieren'},
+                  {shortcut:'Ctrl + Z',reason:'Fehler rueckgaengig machen'},
+                  {shortcut:'Win + L',reason:'Computer schnell sperren'}
+                ]
+              }));
+              localStorage.setItem('tk_a4_progress_v1', JSON.stringify({A:{attempts:2,first:100,second:100,best:100}}));
+              localStorage.setItem('tk_a5_progress_v1', JSON.stringify({A:{attempts:2,first:100,second:100,best:100}}));
+              localStorage.setItem('tk_a6_progress_v1', JSON.stringify({
+                A:{first:100,best:100},B:{first:100,best:100},C:{first:100,best:100},D:{first:100,best:100}
+              }));
+              const now = new Date().toISOString();
+              localStorage.setItem('tk_a7_training_v1', JSON.stringify({
+                schemaVersion:1,modes:{
+                  challenge:{all:{completedRuns:2,correct:18,wrong:2,lastAccuracy:90,bestAccuracy:100,lastAt:now,retries:0}},
+                  hunt:{all:{completedRuns:1,correct:9,wrong:1,lastAccuracy:90,bestAccuracy:90,lastAt:now,retries:0}},
+                  memory:{all:{completedRuns:3,pairs:12,moves:15,points:220,lastEfficiency:80,bestEfficiency:100,lastDiff:'easy',lastElapsed:1000,lastAt:now}}
+                }
+              }));
+              localStorage.setItem('tk_a7_progress_v1', JSON.stringify({
+                schemaVersion:2,completed:true,completedStations:3,stations:{challenge:2,hunt:1,memory:3},
+                completedRuns:6,accuracy:90,target:70,targetReached:true,pdfReady:true,updatedAt:now
+              }));
+            });
+
+            await page.goto(`${baseUrl}/tk2/index.html`, { waitUntil: 'domcontentloaded' });
+            const a7Sheet = await page.evaluate(() => {
+              if (!window.tk2Pdf || typeof window.tk2Pdf.collectSheets !== 'function') return null;
+              return window.tk2Pdf.collectSheets().find(sheet => sheet.id === 'A7') || null;
+            });
+            if (!a7Sheet || !Array.isArray(a7Sheet.rows) || a7Sheet.rows.length !== 4) {
+              throw new Error(`Invalid A7 Gesamt-PDF dataset: ${JSON.stringify(a7Sheet)}`);
+            }
+            const labels = a7Sheet.rows.map(row => row.label);
+            for (const label of ['Challenge','Fehlerjagd','Memory','Gesamt']) {
+              if (!labels.includes(label)) throw new Error(`Missing A7 Gesamt-PDF row: ${label}`);
+            }
+
+            const exportButton = page.locator('button, a').filter({ hasText: 'Zwischenstand erzeugen' });
+            if (await exportButton.count() !== 1) throw new Error('Expected exactly one Zwischenstand erzeugen control');
+            const [download] = await Promise.all([
+              page.waitForEvent('download', { timeout: 30000 }),
+              exportButton.click()
+            ]);
+            const output = path.resolve('smoke-artifacts', 'TK2-Gesamt-Zwischenstand-Render-Smoke.pdf');
+            await download.saveAs(output);
+            const bytes = fs.readFileSync(output);
+            if (bytes.length <= 1000 || bytes.subarray(0,5).toString('ascii') !== '%PDF-') {
+              throw new Error(`Invalid Gesamt-PDF (${bytes.length} bytes)`);
+            }
+            console.log(`Gesamt-PDF OK: ${bytes.length} bytes`);
+            await browser.close();
+          })().catch(error => { console.error(error); process.exit(1); });
+          NODE
+
+      - name: Verify current A8 Battle Balance runtime
+        run: |
+          node <<'NODE'
+          const { chromium } = require('@playwright/test');
+          const assert = require('node:assert/strict');
+          (async () => {
+            const browser = await chromium.launch();
+            try {
+              const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+              const response = await page.goto(`${process.env.BASE_URL}/tk2/A8/?renderSmoke=1`, { waitUntil: 'networkidle' });
+              assert.ok(response && response.ok(), `A8 load failed: ${response?.status()}`);
+              const html = await page.content();
+              assert.match(html, /battle-continuity\.js\?v=6a655e2b/);
+              assert.match(html, /battle-balance\.js\?v=6a655e2b/);
+              const probe = await page.evaluate(() => ({
+                engine: Boolean(window.SHORTCUT_QUEST_BATTLE_ENGINE_V2),
+                installed: window.SHORTCUT_QUEST_BATTLE_BALANCE?.installed,
+                multiplier: window.SHORTCUT_QUEST_BATTLE_BALANCE?.heroAutoAttackMultiplier,
+                cooldown: window.SHORTCUT_QUEST_BATTLE_BALANCE?.cooldownTurns,
+                cap: window.SHORTCUT_QUEST_BATTLE_BALANCE?.shortcutCoinCap,
+                powers: ['sturm_hieb','schutzwall','kampfrausch','lichtbrunnen'].map(key =>
+                  window.SHORTCUT_QUEST_BATTLE_BALANCE?.getSkillBasePower(key, 1))
+              }));
+              assert.equal(probe.engine, true);
+              assert.equal(probe.installed, true);
+              assert.equal(probe.multiplier, 0.45);
+              assert.equal(probe.cooldown, 4);
+              assert.equal(probe.cap, 4);
+              assert.deepEqual(probe.powers, [12,7,4,18]);
+              console.log('A8 Battle Balance runtime OK:', probe);
+            } finally {
+              await browser.close();
+            }
+          })().catch(error => { console.error(error); process.exit(1); });
+          NODE
+
+      - name: Run A8 30-section full-course E2E + exports
+        run: |
+          mkdir -p .qa-runtime smoke-artifacts/a8
+          curl -fsSL \
+            https://raw.githubusercontent.com/modebrecht/ib2026/3b7842454774e9a271ba56cc81445dc54e423736/qa/a8-full-course-report-e2e.mjs \
+            -o .qa-runtime/a8-full-course-report-e2e.mjs
+          A8_URL="$BASE_URL/tk2/A8/" \
+          A8_OUT_DIR="smoke-artifacts/a8" \
+          node .qa-runtime/a8-full-course-report-e2e.mjs
+
+      - name: Upload smoke artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: render-full-smoke-${{ github.run_id }}
+          path: |
+            smoke-artifacts/
+            test-results/
+            playwright-report/
+            /tmp/render-smoke-server.log
+          if-no-files-found: ignore
+          retention-days: 7
