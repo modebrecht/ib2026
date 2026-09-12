@@ -48,7 +48,7 @@ jobs:
 
           # TK2 A8 review build: inject the pinned Shortcut Quest 2026 runtime
           # into DEV only so classroom review stays deterministic.
-          SHORTCUT_QUEST_SHA="4863e334c19a8c1202535a4a4f1b893cbf73a9f6"
+          SHORTCUT_QUEST_SHA="c0615b3c7ce0553e81d32cec4c076d9794c0bd7c"
           rm -rf /tmp/shortcut-quest-a8
           git init -q /tmp/shortcut-quest-a8
           git -C /tmp/shortcut-quest-a8 remote add origin https://github.com/modebrecht/shortcut-quest.git
@@ -89,7 +89,7 @@ jobs:
           scripts = [
               '<script src="premium-motion.js"></script>',
               '<script src="battle-motion.js"></script>',
-              '<script src="arena-dev-fix.js?v=4863e334"></script>',
+              '<script src="arena-dev-fix.js?v=c0615b3c"></script>',
               '<script src="pdf-report.js"></script>',
           ]
           if '</body>' not in html:
@@ -112,7 +112,7 @@ jobs:
           grep -Fq "doc.save('A8-' + safeFileName(student) + '.pdf');" _site/dev/tk2/A8/pdf-report.js
           grep -Fq '<script src="premium-motion.js"></script>' _site/dev/tk2/A8/index.html
           grep -Fq '<script src="battle-motion.js"></script>' _site/dev/tk2/A8/index.html
-          grep -Fq '<script src="arena-dev-fix.js?v=4863e334"></script>' _site/dev/tk2/A8/index.html
+          grep -Fq '<script src="arena-dev-fix.js?v=c0615b3c"></script>' _site/dev/tk2/A8/index.html
           grep -Fq '<script src="pdf-report.js"></script>' _site/dev/tk2/A8/index.html
 
           # Serve files exactly as committed; do not run Jekyll processing.
