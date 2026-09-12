@@ -256,19 +256,14 @@ jobs:
                 };
               });
               assert.match(preview.background, /arena-scene\.svg/i);
-              assert.ok(preview.groundDelta <= 2);
+              assert.ok(preview.groundDelta <= 2, `Pre-battle fighters must share the groundline (delta ${preview.groundDelta})`);
               assert.equal(preview.pageOverflow, false);
               await page.locator('#battleStagePreview').screenshot({ path: 'a8-arena-deployed.png' });
 
-              // Real active battle keeps old themed background, shared groundline and premium motion.
+              // Measure the static active-battle baseline before attack transforms move either fighter.
               await page.locator('#battleStartBtn').click();
               await page.waitForFunction(() => window.SHORTCUT_QUEST_BATTLE_ENGINE_V2?.phase === 'fighting');
-              await page.waitForFunction(() => {
-                const battle = window.A8_PREMIUM_BATTLE_DEBUG;
-                const knight = window.A8_KNIGHT_PREMIUM_DEBUG;
-                return battle && knight && battle.impacts >= 1 && knight.attacks >= 1;
-              }, null, { timeout: 5000 });
-
+              await page.waitForFunction(() => Boolean(document.querySelector('#battleArena .a8-themed-battle-backdrop')));
               const active = await page.locator('#battleArena').evaluate(arena => {
                 const rect = el => el?.getBoundingClientRect();
                 const hero = arena.querySelector('.fighter.knight');
@@ -282,9 +277,17 @@ jobs:
                 };
               });
               assert.match(active.background, /battle-bg-mountain\.svg/i);
-              assert.ok(active.groundDelta <= 2);
+              assert.ok(active.groundDelta <= 2, `Active fighters must share the static groundline (delta ${active.groundDelta})`);
               assert.equal(active.premiumVersion, 2);
               assert.equal(active.knightVersion, 1);
+              await page.locator('#battleArena').screenshot({ path: 'a8-battle-active-deployed.png' });
+
+              // Premium attack choreography is verified separately so its transforms cannot invalidate baseline geometry.
+              await page.waitForFunction(() => {
+                const battle = window.A8_PREMIUM_BATTLE_DEBUG;
+                const knight = window.A8_KNIGHT_PREMIUM_DEBUG;
+                return battle && knight && battle.impacts >= 1 && knight.attacks >= 1;
+              }, null, { timeout: 5000 });
 
               // Use one real assigned shortcut: deployed bonus must be +1 and visibly stronger than autohit.
               const shortcut = await page.evaluate(() => {
@@ -297,12 +300,12 @@ jobs:
               await page.waitForTimeout(40);
               for (const key of [...keys].reverse()) await page.keyboard.up(key);
               await page.waitForFunction(() => window.SHORTCUT_QUEST_BATTLE_BALANCE?.shortcutCoinsThisBattle === 1);
-              const rewarded = await page.evaluate(startCoins => ({
+              const rewarded = await page.evaluate(() => ({
                 coins: state.coins,
                 bonus: window.SHORTCUT_QUEST_BATTLE_BALANCE.shortcutCoinsThisBattle,
                 strong: document.getElementById('battleArena')?.classList.contains('a8-skill-impact-strong') || false,
                 log: document.getElementById('battleLog')?.textContent || ''
-              }), shortcut.coins);
+              }));
               assert.equal(rewarded.coins, shortcut.coins + 1);
               assert.equal(rewarded.bonus, 1);
               assert.equal(rewarded.strong, true);
@@ -323,7 +326,6 @@ jobs:
               assert.ok(['victory', 'defeat'].includes(finished.phase));
               assert.equal(finished.phase, finished.outcome);
               assert.equal(finished.lastError, null);
-              await page.locator('#battleSimulation').screenshot({ path: 'a8-battle-active-deployed.png' });
 
               console.log('OK: deployed DEV A8 pin, balance runtime, inventory, arena, themed active battle, real shortcut reward and Battle V2 verified.');
             } finally {
@@ -343,7 +345,7 @@ jobs:
           path: |
             a8-inventory-deployed.png
             a8-arena-deployed.png
-            a8-battle-balance-deployed.png
             a8-battle-active-deployed.png
+            a8-battle-balance-deployed.png
           if-no-files-found: error
           retention-days: 7
