@@ -9,7 +9,32 @@
   style.textContent = `
     /* A8 BATTLE CONTINUITY PASS 2026
        Keep pre-battle and active-battle character scale visually consistent,
-       and keep both swords seated at the knight's hands. */
+       keep both swords seated at the knight's hands, and preserve the original
+       themed SVG battle environments. */
+
+    /* Restore the original battle backgrounds by rank/theme. The generic
+       arena-scene.svg remains only as the fallback underneath these selectors. */
+    #battleView .battle-stage-preview[data-battle-theme='forest'],
+    #battleView .battle-arena[data-battle-theme='forest'] {
+      background-image: url('assets/battle-bg-forest.svg') !important;
+      background-size: cover !important;
+      background-position: center center !important;
+      background-repeat: no-repeat !important;
+    }
+    #battleView .battle-stage-preview[data-battle-theme='mountain'],
+    #battleView .battle-arena[data-battle-theme='mountain'] {
+      background-image: url('assets/battle-bg-mountain.svg') !important;
+      background-size: cover !important;
+      background-position: center center !important;
+      background-repeat: no-repeat !important;
+    }
+    #battleView .battle-stage-preview[data-battle-theme='celestial'],
+    #battleView .battle-arena[data-battle-theme='celestial'] {
+      background-image: url('assets/battle-bg-celestial.svg') !important;
+      background-size: cover !important;
+      background-position: center top !important;
+      background-repeat: no-repeat !important;
+    }
 
     /* PRE-BATTLE: the previous calc(... + 132px) pushed the hilts almost to
        the floor. Anchor the weapon wrappers to the hand line instead. */
@@ -159,5 +184,5 @@
   `;
   document.head.appendChild(style);
 
-  window.A8_BATTLE_CONTINUITY = Object.freeze({ version: 1 });
+  window.A8_BATTLE_CONTINUITY = Object.freeze({ version: 2, themedBackgrounds: true });
 })();
