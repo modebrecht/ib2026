@@ -188,6 +188,7 @@ jobs:
                 const start = stage.querySelector('#battleStartBtn');
                 const heroIcon = stage.querySelector('.battle-side.hero .battle-portrait-icon');
                 const enemyIcon = stage.querySelector('.battle-side.enemy .battle-portrait-icon');
+                const card = stage.closest('.battle-card');
                 const rect = el => el?.getBoundingClientRect();
                 return {
                   background: getComputedStyle(stage).backgroundImage,
@@ -200,9 +201,13 @@ jobs:
                   startHeight: rect(start)?.height || 0,
                   heroAnimation: heroIcon ? getComputedStyle(heroIcon).animationName : '',
                   enemyAnimation: enemyIcon ? getComputedStyle(enemyIcon).animationName : '',
-                  overflow: stage.scrollWidth > stage.clientWidth + 2
+                  cardOverflow: card ? card.scrollWidth > card.clientWidth + 2 : true,
+                  pageOverflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 2
                 };
               });
+
+              // Capture first so failed assertions still leave visual evidence.
+              await page.locator('#battleStagePreview').screenshot({ path: 'a8-arena-deployed.png' });
 
               assert.match(state.background, /arena-scene\.svg/i, 'Deployed arena must use arena-scene.svg');
               assert.ok(state.width > 900 && state.height >= 500, 'Deployed desktop arena must remain a large showpiece');
@@ -212,9 +217,8 @@ jobs:
               assert.ok(state.startWidth >= 300 && state.startHeight >= 56, 'Fight CTA must stay large');
               assert.match(state.heroAnimation, /a8KnightIdle/i, 'Knight idle animation must run');
               assert.match(state.enemyAnimation, /a8EnemyIdle/i, 'Enemy idle animation must run');
-              assert.equal(state.overflow, false, 'Deployed arena must not overflow horizontally');
-
-              await page.locator('#battleStagePreview').screenshot({ path: 'a8-arena-deployed.png' });
+              assert.equal(state.cardOverflow, false, 'Deployed battle card must not overflow horizontally');
+              assert.equal(state.pageOverflow, false, 'Deployed page must not overflow horizontally');
               console.log('OK: deployed DEV A8 arena verified and screenshot captured.');
             } finally {
               await browser.close();
@@ -226,6 +230,7 @@ jobs:
           NODE
 
       - name: Upload A8 arena screenshot
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: a8-arena-deployed
