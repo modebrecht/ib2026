@@ -3,8 +3,9 @@
 
   const STYLE_ID = 'a8GearVisualStyles';
   const VISIBLE_BODY_SLOTS = ['gloves', 'necklace', 'boots'];
+  const INVENTORY_VISIBLE_SLOTS = ['weapon', 'offhand', ...VISIBLE_BODY_SLOTS];
   const DEBUG = {
-    version: 1,
+    version: 2,
     renderedPieces: 0,
     helmetSuppressed: true,
     ringsSuppressed: true,
@@ -35,6 +36,10 @@
         0 0 0 1px var(--a8-tier-glow),
         0 0 14px var(--a8-tier-glow) !important;
     }
+    #inventoryView .equipment-slot.a8-tier-item-art .slot-icon > img,
+    #inventoryView .equipment-slot.a8-tier-item-art .slot-icon > svg {
+      filter: var(--a8-weapon-filter) !important;
+    }
 
     .a8-knight-gear-piece {
       position: absolute;
@@ -55,6 +60,9 @@
       overflow: visible !important;
     }
 
+    /* Inventory hero: show everything meaningful except helmet/rings. */
+    #inventoryView #heroAvatar .a8-knight-gear-piece[data-slot='weapon'] { left:21%; top:57%; width:46px; height:86px; transform:translate(-50%,-50%) rotate(7deg); z-index:8; }
+    #inventoryView #heroAvatar .a8-knight-gear-piece[data-slot='offhand'] { right:21%; top:57%; width:46px; height:86px; transform:translate(50%,-50%) rotate(-7deg); z-index:8; }
     #inventoryView #heroAvatar .a8-knight-gear-piece[data-slot='gloves'] { left:50%; top:57%; width:70px; height:50px; transform:translate(-50%,-50%); }
     #inventoryView #heroAvatar .a8-knight-gear-piece[data-slot='necklace'] { left:50%; top:38%; width:32px; height:32px; transform:translate(-50%,-50%); }
     #inventoryView #heroAvatar .a8-knight-gear-piece[data-slot='boots'] { left:50%; bottom:5%; width:76px; height:48px; transform:translateX(-50%); }
@@ -97,6 +105,8 @@
     }
 
     @media (max-width:720px) {
+      #inventoryView #heroAvatar .a8-knight-gear-piece[data-slot='weapon'],
+      #inventoryView #heroAvatar .a8-knight-gear-piece[data-slot='offhand'] { width:38px; height:70px; }
       #inventoryView #heroAvatar .a8-knight-gear-piece[data-slot='gloves'] { width:56px; height:40px; }
       #inventoryView #heroAvatar .a8-knight-gear-piece[data-slot='boots'] { width:62px; height:40px; }
       #battleView .battle-stage-preview .battle-side.hero .battle-portrait-icon .a8-knight-gear-piece[data-slot='gloves'] { width:64px; height:44px; }
@@ -153,7 +163,7 @@
   function applyTierVisual(element, item, weapon) {
     if (!element) return;
     if (!item) {
-      element.classList.remove('a8-tier-frame', 'a8-tier-weapon');
+      element.classList.remove('a8-tier-frame', 'a8-tier-weapon', 'a8-tier-item-art');
       delete element.dataset.a8GearTier;
       element.style.removeProperty('--a8-tier-color');
       element.style.removeProperty('--a8-tier-glow');
@@ -179,8 +189,12 @@
     return '<svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="9" fill="rgba(254,243,199,.9)" stroke="#fbbf24" stroke-width="1.6"/><path d="m16 8 2 6 6 2-6 2-2 6-2-6-6-2 6-2z" fill="#f59e0b"/></svg>';
   }
 
-  function signatureForVisibleGear() {
-    return VISIBLE_BODY_SLOTS.map(slot => {
+  function visibleSlotsFor(context) {
+    return context === 'inventory' ? INVENTORY_VISIBLE_SLOTS : VISIBLE_BODY_SLOTS;
+  }
+
+  function signatureForVisibleGear(context) {
+    return visibleSlotsFor(context).map(slot => {
       const item = equippedItem(slot);
       return item ? `${slot}:${itemKey(item)}:${tierOf(item)}` : `${slot}:-`;
     }).join('|');
@@ -188,12 +202,12 @@
 
   function renderBodyGear(host, context) {
     if (!host) return;
-    const signature = `${context}|${signatureForVisibleGear()}`;
+    const signature = `${context}|${signatureForVisibleGear(context)}`;
     if (host.dataset.a8GearSignature === signature) return;
     host.querySelectorAll('.a8-knight-gear-piece').forEach(node => node.remove());
     host.dataset.a8GearSignature = signature;
 
-    VISIBLE_BODY_SLOTS.forEach(slotKey => {
+    visibleSlotsFor(context).forEach(slotKey => {
       const item = equippedItem(slotKey);
       if (!item) return;
       const piece = document.createElement('span');
@@ -206,7 +220,8 @@
         img.alt = '';
         img.setAttribute('aria-hidden', 'true');
       });
-      applyTierVisual(piece, item, false);
+      const weaponPiece = slotKey === 'weapon' || slotKey === 'offhand';
+      applyTierVisual(piece, item, weaponPiece);
       piece.classList.remove('a8-tier-frame');
       host.appendChild(piece);
     });
@@ -215,7 +230,9 @@
   function syncInventoryFrames() {
     document.querySelectorAll('#inventoryView [data-equip-slot]').forEach(slot => {
       const slotKey = slot.dataset.equipSlot || '';
-      applyTierVisual(slot, equippedItem(slotKey), false);
+      const item = equippedItem(slotKey);
+      applyTierVisual(slot, item, false);
+      slot.classList.toggle('a8-tier-item-art', Boolean(item && (slotKey === 'weapon' || slotKey === 'offhand')));
     });
   }
 
@@ -240,7 +257,7 @@
     syncWeaponTiers();
     syncBodyGear();
     DEBUG.renderedPieces = document.querySelectorAll('.a8-knight-gear-piece').length;
-    DEBUG.lastSignature = signatureForVisibleGear();
+    DEBUG.lastSignature = signatureForVisibleGear('inventory');
   }
 
   let frame = 0;
@@ -268,7 +285,7 @@
   }
 
   window.A8_GEAR_VISUAL_DEBUG = DEBUG;
-  window.A8_GEAR_VISUALS = Object.freeze({ version: 1, sync });
+  window.A8_GEAR_VISUALS = Object.freeze({ version: 2, sync });
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
   else init();

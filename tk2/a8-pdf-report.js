@@ -588,7 +588,7 @@
 (() => {
   if (document.querySelector('script[data-a8-tiered-gear-loader]')) return;
   const script = document.createElement('script');
-  script.src = 'gear-visuals.js?v=2340e9cf';
+  script.src = 'gear-visuals.js?v=dafdb006';
   script.async = false;
   script.dataset.a8TieredGearLoader = 'true';
   document.head.appendChild(script);
