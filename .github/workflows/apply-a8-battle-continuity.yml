@@ -1,0 +1,50 @@
+name: Apply A8 Battle Continuity
+
+on:
+  push:
+    branches:
+      - dev
+    paths:
+      - .github/workflows/apply-a8-battle-continuity.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 1
+
+      - name: Install battle continuity overlay
+        run: |
+          curl -fsSL \
+            https://raw.githubusercontent.com/modebrecht/shortcut-quest/14d5f2bb4bac23a684054d7031f73d5d9d40677a/2026/battle-continuity.js \
+            -o tk2/A8/battle-continuity.js
+          python3 - <<'PY'
+          from pathlib import Path
+          path = Path('tk2/a8-pdf-report.js')
+          text = path.read_text(encoding='utf-8')
+          marker = '/* A8 BATTLE CONTINUITY DEV LOADER 2026 */'
+          if marker not in text:
+              text += """\n\n/* A8 BATTLE CONTINUITY DEV LOADER 2026 */\n(() => {\n  if (document.querySelector('script[data-a8-battle-continuity-loader]')) return;\n  const script = document.createElement('script');\n  script.src = 'battle-continuity.js?v=14d5f2bb';\n  script.async = false;\n  script.dataset.a8BattleContinuityLoader = 'true';\n  document.head.appendChild(script);\n})();\n"""
+          else:
+              import re
+              text = re.sub(r"battle-continuity\.js\?v=[A-Za-z0-9]+", 'battle-continuity.js?v=14d5f2bb', text)
+          path.write_text(text, encoding='utf-8')
+          PY
+          node --check tk2/A8/battle-continuity.js
+          node --check tk2/a8-pdf-report.js
+          grep -Fq 'A8 BATTLE CONTINUITY PASS 2026' tk2/A8/battle-continuity.js
+          grep -Fq 'battle-continuity.js?v=14d5f2bb' tk2/a8-pdf-report.js
+
+      - name: Commit DEV hotfix
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tk2/A8/battle-continuity.js tk2/a8-pdf-report.js
+          git commit -m "fix: align A8 battle scale and sword grips"
+          git push origin HEAD:dev
