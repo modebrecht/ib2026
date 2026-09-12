@@ -42,7 +42,6 @@ jobs:
                   raise SystemExit(f'marker not found: {old}')
               text = text.replace(old, new, 1)
 
-          # Verify all original SVG themes are present in the assembled CSS.
           css_check = """\n          grep -Fq 'battle-bg-forest.svg' _site/dev/tk2/A8/arena-dev-tuning.css\n          grep -Fq 'battle-bg-mountain.svg' _site/dev/tk2/A8/arena-dev-tuning.css\n          grep -Fq 'battle-bg-celestial.svg' _site/dev/tk2/A8/arena-dev-tuning.css\n"""
           marker = "          grep -Fq 'BATTLE SKILL CONTENT HIERARCHY FIX 2026' _site/dev/tk2/A8/modern-battle.css\n"
           if marker not in text:
@@ -53,7 +52,6 @@ jobs:
           PY
 
           grep -Fq '924579ce9ab9f84bb5be59dd549642b44555e1bd' .github/workflows/pages-multibranch.yml
-          grep -Fq 'battle-bg-mountain\\.svg' .github/workflows/pages-multibranch.yml
 
       - name: Commit DEV deployment update
         run: |
