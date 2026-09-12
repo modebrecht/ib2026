@@ -48,7 +48,7 @@ jobs:
 
           # TK2 A8 review build: inject the pinned Shortcut Quest 2026 runtime
           # into DEV only so classroom review stays deterministic.
-          SHORTCUT_QUEST_SHA="52d108c12554b6cd682cd9466208fb27df448e8f"
+          SHORTCUT_QUEST_SHA="b5c485caa168b485f2b06f3c797bf93a9c876ae7"
           rm -rf /tmp/shortcut-quest-a8
           git init -q /tmp/shortcut-quest-a8
           git -C /tmp/shortcut-quest-a8 remote add origin https://github.com/modebrecht/shortcut-quest.git
@@ -87,7 +87,7 @@ jobs:
 
           path = Path('_site/dev/tk2/A8/index.html')
           html = path.read_text(encoding='utf-8')
-          arena_style = '<link rel="stylesheet" href="arena-dev-tuning.css?v=52d108c1">'
+          arena_style = '<link rel="stylesheet" href="arena-dev-tuning.css?v=b5c485ca">'
           scripts = [
               '<script src="premium-motion.js"></script>',
               '<script src="battle-motion.js"></script>',
@@ -115,7 +115,7 @@ jobs:
           test -s _site/dev/tk2/A8/arena-dev-tuning.css
           test -s _site/dev/tk2/A8/pdf-report.js
           grep -Fq "doc.save('A8-' + safeFileName(student) + '.pdf');" _site/dev/tk2/A8/pdf-report.js
-          grep -Fq '<link rel="stylesheet" href="arena-dev-tuning.css?v=52d108c1">' _site/dev/tk2/A8/index.html
+          grep -Fq '<link rel="stylesheet" href="arena-dev-tuning.css?v=b5c485ca">' _site/dev/tk2/A8/index.html
           grep -Fq '<script src="premium-motion.js"></script>' _site/dev/tk2/A8/index.html
           grep -Fq '<script src="battle-motion.js"></script>' _site/dev/tk2/A8/index.html
           grep -Fq '<script src="arena-dev-fix.js?v=59809da9"></script>' _site/dev/tk2/A8/index.html
@@ -167,7 +167,7 @@ jobs:
           const assert = require('node:assert/strict');
 
           (async () => {
-            const url = 'https://modebrecht.github.io/ib2026/dev/tk2/A8/?qa=52d108c1';
+            const url = 'https://modebrecht.github.io/ib2026/dev/tk2/A8/?qa=b5c485ca';
             const browser = await chromium.launch({ headless: true });
             try {
               const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
@@ -176,13 +176,13 @@ jobs:
                 const response = await page.goto(url + '&attempt=' + attempt, { waitUntil: 'networkidle' });
                 assert.ok(response && response.ok(), `DEV A8 did not load: ${response?.status()}`);
                 const html = await page.content();
-                if (html.includes('arena-dev-tuning.css?v=52d108c1')) {
+                if (html.includes('arena-dev-tuning.css?v=b5c485ca')) {
                   ready = true;
                   break;
                 }
                 await page.waitForTimeout(5000);
               }
-              assert.equal(ready, true, 'GitHub Pages did not expose the expected 52d108c1 A8 tuning in time');
+              assert.equal(ready, true, 'GitHub Pages did not expose the expected b5c485ca A8 tuning in time');
 
               await page.locator('.nav-toggle[data-view="battle"]').click();
               await page.waitForFunction(() => document.getElementById('battleStagePreview')?.classList.contains('arena-svg-composed'));
@@ -253,12 +253,12 @@ jobs:
               assert.ok(state.heroStatsGap >= 0 && state.heroStatsGap <= 16, 'Knight stats must sit directly below the knight info box');
               assert.equal(state.weaponCount, 2, 'Knight must show two arena weapon layers');
               assert.ok(state.weaponSizes.every(size => size.width >= 60 && size.height >= 70), 'Knight arena weapons must remain visibly sized');
-              assert.ok(state.weaponSizes.every(size => size.top >= state.heroTop + state.heroHeight * 0.70), 'Knight sword hilts must be down at the hanging fists, not the torso');
+              assert.ok(state.weaponSizes.every(size => size.top >= state.heroTop + state.heroHeight * 0.82), 'Knight sword hilts must be at the low hanging fists, not the waist');
               assert.ok(state.weaponTransforms.every(transform => transform && transform !== 'none'), 'Knight sword wrapper rotations must be active');
               assert.ok(state.weaponArtTransforms.every(transform => transform && transform !== 'none'), 'Knight sword art must be flipped blade-down');
               assert.equal(state.cardOverflow, false, 'Deployed battle card must not overflow horizontally');
               assert.equal(state.pageOverflow, false, 'Deployed page must not overflow horizontally');
-              console.log('OK: deployed DEV A8 knight stats and fist-level blade-down stance verified and screenshot captured.');
+              console.log('OK: deployed DEV A8 knight stats and low fist-level blade-down stance verified and screenshot captured.');
             } finally {
               await browser.close();
             }
