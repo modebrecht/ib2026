@@ -4,7 +4,7 @@ set -euo pipefail
 ROOT="$(pwd)"
 OUT="$ROOT/dist"
 A8_TMP="/tmp/shortcut-quest-a8"
-SHORTCUT_QUEST_SHA="5c64aa8e9b836233f4238f92a09ae796e9a376e6"
+SHORTCUT_QUEST_SHA="6588df3ee87797f916fe7cd6b8a149d7b48e6dee"
 
 rm -rf "$OUT" "$A8_TMP"
 mkdir -p "$OUT"
@@ -72,7 +72,7 @@ const scripts = [
   '<script src="arena-dev-fix.js?v=59809da9"></script>',
   '<script src="a8-dev-polish.js?v=8af72c1b"></script>',
   '<script src="battle-continuity.js?v=6a655e2b"></script>',
-  '<script src="battle-balance.js?v=5c64aa8e"></script>',
+  '<script src="battle-balance.js?v=6588df3e"></script>',
   '<script src="knight-premium-motion.js?v=74934b8f"></script>',
   '<script src="pdf-report.js"></script>'
 ];
@@ -90,7 +90,7 @@ test -s "$OUT/tk2/A8/index.html"
 test -s "$OUT/tk2/A8/assets/arena-scene.svg"
 grep -Fq "doc.save('A8-' + safeFileName(student) + '.pdf');" "$OUT/tk2/A8/pdf-report.js"
 grep -Fq '<script src="battle-continuity.js?v=6a655e2b"></script>' "$OUT/tk2/A8/index.html"
-grep -Fq '<script src="battle-balance.js?v=5c64aa8e"></script>' "$OUT/tk2/A8/index.html"
+grep -Fq '<script src="battle-balance.js?v=6588df3e"></script>' "$OUT/tk2/A8/index.html"
 grep -Fq 'SHORTCUT_QUEST_BATTLE_ENGINE_V2' "$OUT/tk2/A8/index.html"
 grep -Fq 'SHORTCUT_QUEST_ENEMY_ITEMS' "$OUT/tk2/A8/index.html"
 grep -Fq 'A8 PREMIUM HD BATTLE MOTION 2026' "$OUT/tk2/A8/battle-motion.js"
