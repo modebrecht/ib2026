@@ -1,0 +1,367 @@
+name: One-shot render A8 full battle audit
+
+on:
+  push:
+    branches:
+      - render
+    paths:
+      - '.github/workflows/render-a8-battle-audit-once.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: render-a8-battle-audit-once
+  cancel-in-progress: true
+
+jobs:
+  battle-audit:
+    name: A8 battle systems — equipment, stats, skills, combat, persistence
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout render
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Playwright
+        run: |
+          npm init -y >/dev/null
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+
+      - name: Build exact render production bundle
+        run: bash scripts/build-vercel-site.sh
+
+      - name: Prepare upstream battle QA and local server
+        run: |
+          rm -rf .qa-runtime 2026
+          mkdir -p .qa-runtime
+          cp /tmp/shortcut-quest-a8/2026/qa/battle-engine-v2-browser.mjs .qa-runtime/
+          cp /tmp/shortcut-quest-a8/2026/qa/battle-ui-browser.mjs .qa-runtime/
+          cp /tmp/shortcut-quest-a8/2026/qa/battle-premium-hd-browser.mjs .qa-runtime/
+          cp /tmp/shortcut-quest-a8/2026/qa/economy-browser.mjs .qa-runtime/
+          ln -s "$PWD/dist/tk2/A8" 2026
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/render-a8-http.log 2>&1 &
+          echo $! > /tmp/render-a8-http.pid
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:4173/dist/tk2/A8/ >/dev/null; then
+              exit 0
+            fi
+            sleep 0.5
+          done
+          cat /tmp/render-a8-http.log
+          exit 1
+
+      - name: Existing Battle V2 lifecycle + all four real shortcut skills
+        env:
+          TK2_BASE_URL: http://127.0.0.1:4173/dist/tk2/A8/
+        run: node .qa-runtime/battle-engine-v2-browser.mjs
+
+      - name: Existing Battle skill UI gate
+        run: node .qa-runtime/battle-ui-browser.mjs
+
+      - name: Existing premium battle + enemy item + gear visual gate
+        env:
+          TK2_BASE_URL: http://127.0.0.1:4173/dist/tk2/A8/
+        run: node .qa-runtime/battle-premium-hd-browser.mjs
+
+      - name: Existing economy + Runen-Amulett gate
+        env:
+          TK2_BASE_URL: http://127.0.0.1:4173/dist/tk2/A8/
+        run: node .qa-runtime/economy-browser.mjs
+
+      - name: Full equipment, stat math, persistence, victory and defeat contract
+        env:
+          TK2_BASE_URL: http://127.0.0.1:4173/dist/tk2/A8/
+        run: |
+          cat > .qa-runtime/render-battle-contract.mjs <<'NODE'
+          import assert from 'node:assert/strict';
+          import { chromium } from 'playwright';
+
+          const BASE_URL = process.env.TK2_BASE_URL;
+          const browser = await chromium.launch({ headless: true });
+          const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+          const pageErrors = [];
+          page.on('pageerror', error => pageErrors.push(String(error?.stack || error)));
+
+          try {
+            await page.goto(BASE_URL, { waitUntil: 'networkidle' });
+            await page.waitForFunction(() =>
+              typeof state !== 'undefined' &&
+              typeof equipItem === 'function' &&
+              typeof recalcStats === 'function' &&
+              typeof getHeroMaxHp === 'function' &&
+              window.SHORTCUT_QUEST_BATTLE_BALANCE?.installed === true
+            );
+
+            const equipment = await page.evaluate(() => {
+              const now = Date.now();
+              const copiesForTier = tier => 2 ** (tier - 1);
+              const mk = (key, name, icon, slot, category, tier, baseAtk = 0, baseDef = 0, baseHp = 0) => ({
+                id: `qa-${key}-${now}`,
+                key, name, icon, slot, category, theme: 'knight', description: '',
+                tier, totalCopies: copiesForTier(tier),
+                baseAtk, baseDef, baseHp,
+                atk: baseAtk, def: baseDef, hp: baseHp,
+                createdAt: now, lastObtainedAt: now
+              });
+
+              const sections = {};
+              for (let i = 1; i <= 30; i += 1) sections[String(i)] = 1;
+              state.sectionClears = sections;
+              state.battleClears = { '1': true, '2': true, '3': true, '4': true };
+              state.battleUnlocked = 5;
+              state.coins = 100;
+              state.skills = SKILL_POOL.map(skill => ({
+                ...skill, tier: 1, totalCopies: 1, overcapBonusPercent: 0
+              }));
+              state.items = [
+                mk('stahl_sword', 'Stahlklinge', 'sword_steel', 'weapon', 'weapon', 2, 3, 0, 0),
+                mk('turm_schild', 'Turmschild', 'shield', 'offhand', 'armor', 3, 0, 3, 0),
+                mk('taktik_helm', 'Taktikhelm', 'helm', 'helm', 'armor', 2, 1, 1, 0),
+                mk('panzerhandschuhe', 'Panzerhandschuhe', 'panzerhandschuhe', 'gloves', 'armor', 4, 0, 1, 0),
+                mk('runen_amulet', 'Runen-Amulett', 'talisman', 'necklace', 'accessory', 3, 0, 0, 0),
+                mk('stahl_stiefel', 'Stahl-Stiefel', 'stahl-stiefel', 'boots', 'armor', 2, 0, 2, 0),
+                mk('lebens_ring', 'Lebensring', 'lebensring', 'ring_left', 'accessory', 3, 0, 0, 20),
+                mk('gluecks_ring', 'Glücksring', 'gluecksring', 'ring_right', 'accessory', 4, 0, 0, 0)
+              ];
+              state.equipment = {};
+              state.items.forEach(item => updateItemDerivedStats(item));
+              recalcStats();
+
+              const derived = Object.fromEntries(state.items.map(item => [item.key, {
+                tier: item.tier, atk: item.atk, def: item.def, hp: item.hp,
+                critDamagePercent: item.critDamagePercent || 0,
+                baseDef: item.baseDef
+              }]));
+              const baseline = {
+                atk: state.atk, def: state.def, hp: state.hp,
+                maxHp: getHeroMaxHp(), crit: state.critDamagePercent
+              };
+
+              autoEquipBest();
+              const auto = {
+                equipment: { ...state.equipment },
+                count: Object.values(state.equipment).filter(Boolean).length,
+                atk: state.atk, def: state.def, hp: state.hp,
+                maxHp: getHeroMaxHp(), crit: state.critDamagePercent
+              };
+
+              unequipAllSlots();
+              const unequipped = {
+                atk: state.atk, def: state.def, hp: state.hp,
+                maxHp: getHeroMaxHp(), crit: state.critDamagePercent,
+                count: Object.values(state.equipment).filter(Boolean).length
+              };
+
+              // A single item may move slots, but must never be duplicated across slots.
+              equipItem('weapon', 'stahl_sword');
+              equipItem('offhand', 'stahl_sword');
+              const moved = {
+                weapon: state.equipment.weapon || null,
+                offhand: state.equipment.offhand || null,
+                duplicates: Object.values(state.equipment).filter(value => value === 'stahl_sword').length
+              };
+              unequipAllSlots();
+
+              const plan = [
+                ['weapon', 'stahl_sword'],
+                ['offhand', 'turm_schild'],
+                ['helm', 'taktik_helm'],
+                ['gloves', 'panzerhandschuhe'],
+                ['necklace', 'runen_amulet'],
+                ['boots', 'stahl_stiefel'],
+                ['ring_left', 'lebens_ring'],
+                ['ring_right', 'gluecks_ring']
+              ];
+              plan.forEach(([slot, key]) => equipItem(slot, key));
+              recalcStats();
+              saveState();
+              updateUI();
+
+              const manual = {
+                equipment: { ...state.equipment },
+                count: Object.values(state.equipment).filter(Boolean).length,
+                atk: state.atk, def: state.def, hp: state.hp,
+                maxHp: getHeroMaxHp(), crit: state.critDamagePercent,
+                coins: state.coins
+              };
+
+              const clampProbe = mk('stahl_sword', 'Clamp Probe', 'sword_steel', 'weapon', 'weapon', 5, 3, 0, 0);
+              clampProbe.totalCopies = 1;
+              updateItemDerivedStats(clampProbe);
+
+              return { baseline, derived, auto, unequipped, moved, manual, clampProbe: { tier: clampProbe.tier, atk: clampProbe.atk } };
+            });
+
+            assert.deepEqual(equipment.baseline, { atk: 1, def: 0, hp: 0, maxHp: 12, crit: 0 });
+            assert.deepEqual(equipment.derived.stahl_sword, { tier: 2, atk: 6, def: 0, hp: 0, critDamagePercent: 0, baseDef: 0 });
+            assert.equal(equipment.derived.turm_schild.def, 9);
+            assert.equal(equipment.derived.taktik_helm.atk, 2);
+            assert.equal(equipment.derived.taktik_helm.def, 2);
+            assert.equal(equipment.derived.panzerhandschuhe.def, 4);
+            assert.equal(equipment.derived.runen_amulet.baseDef, 1, '2026 Runen-Amulett must migrate to base DEF 1');
+            assert.equal(equipment.derived.runen_amulet.def, 3);
+            assert.equal(equipment.derived.stahl_stiefel.def, 4);
+            assert.equal(equipment.derived.lebens_ring.hp, 60, 'Tier-3 Lebensring must provide exactly +60 HP');
+            assert.equal(equipment.derived.gluecks_ring.critDamagePercent, 8, 'Tier-4 Glücksring must provide +8% crit damage');
+            assert.deepEqual(equipment.clampProbe, { tier: 1, atk: 3 }, 'Tier must be copy-gated');
+
+            for (const snapshot of [equipment.auto, equipment.manual]) {
+              assert.equal(snapshot.count, 8, 'All eight equipment slots must be populated');
+              assert.equal(snapshot.atk, 9, 'Full QA loadout ATK must be 1 base + 6 sword + 2 helm = 9');
+              assert.equal(snapshot.def, 22, 'Full QA loadout DEF must total exactly 22');
+              assert.equal(snapshot.hp, 60, 'Gear HP pool must be exactly 60');
+              assert.equal(snapshot.maxHp, 204, 'Max HP must be 12 base + 60 gear + (22 DEF × 6) = 204');
+              assert.equal(snapshot.crit, 8, 'Crit damage bonus must be exactly 8%');
+            }
+            assert.deepEqual(equipment.unequipped, { atk: 1, def: 0, hp: 0, maxHp: 12, crit: 0, count: 0 });
+            assert.equal(equipment.moved.weapon, null, 'Moving the same sword to offhand must clear weapon slot');
+            assert.equal(equipment.moved.offhand, 'stahl_sword');
+            assert.equal(equipment.moved.duplicates, 1, 'Same item must never be equipped twice');
+
+            const skillTable = await page.evaluate(() => {
+              const keys = ['sturm_hieb', 'schutzwall', 'kampfrausch', 'lichtbrunnen'];
+              return Object.fromEntries(keys.map(key => {
+                const template = SKILL_POOL.find(skill => skill.key === key);
+                return [key, [1,2,3,4,5,6].map(tier => getSkillEffectivePower({ ...template, tier, totalCopies: 2 ** (tier - 1), overcapBonusPercent: 0 }))];
+              }));
+            });
+            assert.deepEqual(skillTable.sturm_hieb, [12,16,20,24,28,32]);
+            assert.deepEqual(skillTable.schutzwall, [7,9,11,13,15,17]);
+            assert.deepEqual(skillTable.kampfrausch, [4,7,12,17,27,27]);
+            assert.deepEqual(skillTable.lichtbrunnen, [18,24,30,36,42,48]);
+
+            const mechanics = await page.evaluate(() => {
+              const hero = createHeroState();
+              const enemyHit = { atk: 30, variance: 0, crit: 0 };
+              const normalDamage = calculateDamage(enemyHit, hero).amount;
+
+              applyShieldWallBuff(hero, 7);
+              const shieldDamage = calculateDamage(enemyHit, hero).amount;
+              const shieldStart = { bonus: hero.shieldWallBonus, charges: hero.shieldWallCharges };
+              consumeShieldWallCharge(hero);
+              const shieldAfterOne = { bonus: hero.shieldWallBonus, charges: hero.shieldWallCharges };
+              hero.shieldWallCharges = 0;
+              hero.shieldWallBonus = 0;
+
+              setHeroSkillCooldown(hero, 'sturm_hieb', 5);
+              const cooldownStart = getHeroSkillCooldown(hero, 'sturm_hieb');
+              tickHeroSkillCooldowns(hero);
+              const cooldownAfterTick = getHeroSkillCooldown(hero, 'sturm_hieb');
+
+              const baseAtk = hero.atk;
+              applyTempAtkBuff(hero, 4, 5, 'kampfrausch');
+              const frenzyStart = { atk: hero.atk, rounds: hero.activeAtkBuffs[0]?.rounds || 0 };
+              for (let i = 0; i < 5; i += 1) tickHeroBuffs(hero);
+              const frenzyEnd = { atk: hero.atk, buffs: hero.activeAtkBuffs.length };
+
+              return { normalDamage, shieldDamage, shieldStart, shieldAfterOne, cooldownStart, cooldownAfterTick, baseAtk, frenzyStart, frenzyEnd };
+            });
+            assert.equal(mechanics.normalDamage, 8, '30 ATK against 22 DEF must deal exactly 8 damage');
+            assert.equal(mechanics.shieldDamage, 1, 'Schutzwall +7 DEF must reduce 30 vs 29 DEF to minimum 1 damage');
+            assert.deepEqual(mechanics.shieldStart, { bonus: 7, charges: 5 });
+            assert.deepEqual(mechanics.shieldAfterOne, { bonus: 7, charges: 4 });
+            assert.equal(mechanics.cooldownStart, 4, 'Skill cooldown must start at 4');
+            assert.equal(mechanics.cooldownAfterTick, 3, 'Cooldown must tick down exactly one on a hero turn');
+            assert.equal(mechanics.baseAtk, 9);
+            assert.deepEqual(mechanics.frenzyStart, { atk: 13, rounds: 5 });
+            assert.deepEqual(mechanics.frenzyEnd, { atk: 9, buffs: 0 }, 'Kampfrausch must expire cleanly after five hero ticks');
+
+            await page.reload({ waitUntil: 'networkidle' });
+            await page.waitForFunction(() => typeof state !== 'undefined' && window.SHORTCUT_QUEST_BATTLE_BALANCE?.installed === true);
+            const persisted = await page.evaluate(() => ({
+              equipment: { ...state.equipment },
+              atk: state.atk, def: state.def, hp: state.hp,
+              maxHp: getHeroMaxHp(), crit: state.critDamagePercent,
+              battleUnlocked: state.battleUnlocked,
+              stored2026: Boolean(localStorage.getItem('shortcutRitter_2026_v1'))
+            }));
+            assert.equal(Object.values(persisted.equipment).filter(Boolean).length, 8, 'All equipment must survive reload');
+            assert.deepEqual({ atk: persisted.atk, def: persisted.def, hp: persisted.hp, maxHp: persisted.maxHp, crit: persisted.crit }, { atk: 9, def: 22, hp: 60, maxHp: 204, crit: 8 });
+            assert.equal(persisted.battleUnlocked, 5);
+            assert.equal(persisted.stored2026, true, '2026 save key must exist');
+
+            await page.locator('.nav-toggle[data-view="battle"]').click();
+            await page.waitForFunction(() => document.getElementById('battleView')?.classList.contains('active'));
+            await page.locator('#battleButtons .battle-btn[data-enemy="5"]').click();
+            const coinsBeforeVictory = await page.evaluate(() => state.coins);
+            await page.locator('#battleStartBtn').click();
+            await page.waitForFunction(() => window.SHORTCUT_QUEST_BATTLE_ENGINE_V2?.phase === 'fighting');
+
+            const liveHero = await page.evaluate(() => ({
+              atk: currentBattleContext.hero.atk,
+              def: currentBattleContext.hero.def,
+              hp: currentBattleContext.hero.hp,
+              maxHp: currentBattleContext.hero.maxHp,
+              critDamageBonusPercent: currentBattleContext.hero.critDamageBonusPercent
+            }));
+            assert.deepEqual(liveHero, { atk: 9, def: 22, hp: 204, maxHp: 204, critDamageBonusPercent: 8 }, 'Equipped stats must transfer exactly into the live battle hero');
+
+            await page.evaluate(() => {
+              currentBattleContext.enemy.hp = 1;
+              currentBattleContext.enemy.atk = 0;
+              currentBattleContext.enemy.variance = 0;
+              currentBattleContext.enemy.crit = 0;
+            });
+            await page.waitForFunction(() => window.SHORTCUT_QUEST_BATTLE_ENGINE_V2?.phase === 'victory', null, { timeout: 12000 });
+            const victory = await page.evaluate(() => ({
+              cleared: Boolean(state.battleClears?.['5']),
+              unlocked: state.battleUnlocked,
+              coins: state.coins
+            }));
+            assert.equal(victory.cleared, true, 'Victory must persist battle 5 clear');
+            assert.equal(victory.unlocked, 6, 'Victory must unlock exactly the next rank');
+            assert.equal(victory.coins, coinsBeforeVictory + 3, 'Rank 5 victory without shortcut use must award exactly 3 scaled coins');
+
+            await page.reload({ waitUntil: 'networkidle' });
+            await page.waitForFunction(() => typeof state !== 'undefined');
+            const afterVictoryReload = await page.evaluate(() => ({
+              cleared5: Boolean(state.battleClears?.['5']),
+              unlocked: state.battleUnlocked,
+              equipmentCount: Object.values(state.equipment || {}).filter(Boolean).length,
+              coins: state.coins
+            }));
+            assert.equal(afterVictoryReload.cleared5, true);
+            assert.equal(afterVictoryReload.unlocked, 6);
+            assert.equal(afterVictoryReload.equipmentCount, 8);
+
+            await page.locator('.nav-toggle[data-view="battle"]').click();
+            await page.locator('#battleButtons .battle-btn[data-enemy="6"]').click();
+            const coinsBeforeDefeat = await page.evaluate(() => state.coins);
+            await page.locator('#battleStartBtn').click();
+            await page.waitForFunction(() => window.SHORTCUT_QUEST_BATTLE_ENGINE_V2?.phase === 'fighting');
+            await page.evaluate(() => {
+              currentBattleContext.hero.hp = 1;
+              currentBattleContext.enemy.atk = 999;
+              currentBattleContext.enemy.variance = 0;
+              currentBattleContext.enemy.crit = 0;
+              currentBattleContext.enemy.hp = currentBattleContext.enemy.maxHp;
+            });
+            await page.waitForFunction(() => window.SHORTCUT_QUEST_BATTLE_ENGINE_V2?.phase === 'defeat', null, { timeout: 12000 });
+            const defeat = await page.evaluate(() => ({
+              cleared6: Boolean(state.battleClears?.['6']),
+              unlocked: state.battleUnlocked,
+              coins: state.coins
+            }));
+            assert.equal(defeat.cleared6, false, 'Defeat must not mark rank 6 cleared');
+            assert.equal(defeat.unlocked, 6, 'Defeat must not unlock rank 7');
+            assert.equal(defeat.coins, coinsBeforeDefeat, 'Defeat without shortcut use must not award coins');
+
+            assert.deepEqual(pageErrors, [], `No uncaught page errors allowed: ${pageErrors.join(' | ')}`);
+            console.log('FULL BATTLE CONTRACT OK');
+            console.log(JSON.stringify({ equipment, skillTable, mechanics, persisted, liveHero, victory, defeat }, null, 2));
+          } finally {
+            await browser.close();
+          }
+          NODE
+          node .qa-runtime/render-battle-contract.mjs
+
+      - name: Show server log on failure
+        if: failure()
+        run: cat /tmp/render-a8-http.log || true
