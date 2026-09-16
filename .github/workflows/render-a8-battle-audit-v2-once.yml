@@ -1,0 +1,114 @@
+name: One-shot render A8 battle audit v2
+
+on:
+  push:
+    branches:
+      - render
+    paths:
+      - '.github/workflows/render-a8-battle-audit-v2-once.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: render-a8-battle-audit-v2-once
+  cancel-in-progress: true
+
+jobs:
+  battle-audit:
+    name: A8 battle systems — corrected production-bundle QA
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout render
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Playwright
+        run: |
+          npm init -y >/dev/null
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+
+      - name: Build exact render production bundle
+        run: bash scripts/build-vercel-site.sh
+
+      - name: Prepare production-bundle QA harness
+        run: |
+          rm -rf .qa-runtime 2026
+          mkdir -p .qa-runtime
+          cp /tmp/shortcut-quest-a8/2026/qa/battle-engine-v2-browser.mjs .qa-runtime/
+          cp /tmp/shortcut-quest-a8/2026/qa/battle-ui-browser.mjs .qa-runtime/
+          cp /tmp/shortcut-quest-a8/2026/qa/battle-premium-hd-browser.mjs .qa-runtime/
+          cp /tmp/shortcut-quest-a8/2026/qa/economy-browser.mjs .qa-runtime/
+
+          # These upstream tests normally run against the raw 2026 source page and
+          # inject overlay scripts themselves. The production bundle already contains
+          # those scripts, so injecting them again can reset diagnostics closures while
+          # the guarded runtime remains patched. Remove only the duplicate injections.
+          python3 - <<'PY'
+          from pathlib import Path
+          import re, textwrap
+
+          engine = Path('.qa-runtime/battle-engine-v2-browser.mjs')
+          text = engine.read_text(encoding='utf-8')
+          text = re.sub(r"\n\s*await page\.addScriptTag\(\{ url: new URL\('[^']+', BASE_URL\)\.href \}\);", '', text)
+          engine.write_text(text, encoding='utf-8')
+
+          premium = Path('.qa-runtime/battle-premium-hd-browser.mjs')
+          text = premium.read_text(encoding='utf-8')
+          text = re.sub(
+              r"\n\s*for \(const file of \[[\s\S]*?\]\) \{\n\s*await page\.addScriptTag\(\{ url: new URL\(file, BASE_URL\)\.href \}\);\n\s*\}",
+              '', text, count=1
+          )
+          premium.write_text(text, encoding='utf-8')
+
+          source = Path('.github/workflows/render-a8-battle-audit-once.yml').read_text(encoding='utf-8')
+          start_marker = "cat > .qa-runtime/render-battle-contract.mjs <<'NODE'\n"
+          end_marker = "\n          NODE\n          node .qa-runtime/render-battle-contract.mjs"
+          start = source.index(start_marker) + len(start_marker)
+          end = source.index(end_marker, start)
+          contract = textwrap.dedent(source[start:end])
+          Path('.qa-runtime/render-battle-contract.mjs').write_text(contract, encoding='utf-8')
+          PY
+
+          ln -s "$PWD/dist/tk2/A8" 2026
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/render-a8-http.log 2>&1 &
+          echo $! > /tmp/render-a8-http.pid
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:4173/dist/tk2/A8/ >/dev/null; then exit 0; fi
+            sleep 0.5
+          done
+          cat /tmp/render-a8-http.log
+          exit 1
+
+      - name: Battle V2 lifecycle + all four real shortcut skills
+        env:
+          TK2_BASE_URL: http://127.0.0.1:4173/dist/tk2/A8/
+        run: node .qa-runtime/battle-engine-v2-browser.mjs
+
+      - name: Battle skill UI gate
+        run: node .qa-runtime/battle-ui-browser.mjs
+
+      - name: Premium battle + enemy items + gear visuals
+        env:
+          TK2_BASE_URL: http://127.0.0.1:4173/dist/tk2/A8/
+        run: node .qa-runtime/battle-premium-hd-browser.mjs
+
+      - name: Economy + Runen-Amulett gate
+        env:
+          TK2_BASE_URL: http://127.0.0.1:4173/dist/tk2/A8/
+        run: node .qa-runtime/economy-browser.mjs
+
+      - name: Full equipment, exact stats, persistence, victory and defeat contract
+        env:
+          TK2_BASE_URL: http://127.0.0.1:4173/dist/tk2/A8/
+        run: node .qa-runtime/render-battle-contract.mjs
+
+      - name: Show server log on failure
+        if: failure()
+        run: cat /tmp/render-a8-http.log || true
