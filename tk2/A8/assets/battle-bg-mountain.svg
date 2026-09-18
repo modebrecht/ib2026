@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="mountainSky" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0d1b2a"/>
+      <stop offset="60%" stop-color="#15263d"/>
+      <stop offset="100%" stop-color="#0a111b"/>
+    </linearGradient>
+    <linearGradient id="snow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e2e8f0"/>
+      <stop offset="100%" stop-color="#94a3b8"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="400" fill="url(#mountainSky)"/>
+  <g fill="#0e1f33" opacity="0.85">
+    <path d="M-40 310 L140 120 L260 260 L360 150 L520 320 L700 110 L860 300 L1020 170 L1160 320 L1280 140 L1280 400 L-40 400 Z"/>
+  </g>
+  <g fill="#142a46" opacity="0.7">
+    <path d="M0 360 L120 200 L200 280 L300 180 L420 320 L560 190 L700 330 L860 210 L1000 320 L1120 190 L1200 330 L1200 400 L0 400 Z"/>
+  </g>
+  <g fill="url(#snow)" opacity="0.7">
+    <path d="M130 200 L180 150 L230 210 L200 230 Z"/>
+    <path d="M340 220 L390 170 L450 230 L420 250 Z"/>
+    <path d="M780 200 L830 150 L880 210 L840 235 Z"/>
+    <path d="M980 190 L1030 145 L1080 200 L1050 225 Z"/>
+  </g>
+  <g fill="rgba(255,255,255,0.15)">
+    <circle cx="260" cy="60" r="26"/>
+    <circle cx="840" cy="80" r="36"/>
+    <circle cx="980" cy="50" r="18"/>
+  </g>
+  <rect y="320" width="1200" height="120" fill="rgba(148,163,184,0.15)"/>
+</svg>

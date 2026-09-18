@@ -1,0 +1,65 @@
+<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="steel" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#dbe2ea"/>
+      <stop offset="55%" stop-color="#9aa6b5"/>
+      <stop offset="100%" stop-color="#e5edf5"/>
+    </linearGradient>
+    <linearGradient id="darkSteel" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#4b5563"/>
+      <stop offset="100%" stop-color="#1f2937"/>
+    </linearGradient>
+  </defs>
+
+  <!-- LEFT GAUNTLET -->
+  <g>
+    <!-- forearm plate -->
+    <path d="M6.4 9.5 H12.7 L13.6 13.1 Q10.2 14.0 6.4 13.1 Z"
+          fill="url(#steel)" stroke="#1f2937" stroke-width="0.9"/>
+    <!-- cuff band -->
+    <rect x="6.2" y="13.1" width="7.6" height="2" rx="0.8"
+          fill="url(#darkSteel)" stroke="#111827" stroke-width="0.7"/>
+    <!-- back of hand -->
+    <path d="M6.4 15 H13.6
+             Q14.5 16.1 14.0 17.7
+             L10.2 18.9 H7.0
+             Q6.0 18.8 6.1 17.6
+             Z"
+          fill="url(#steel)" stroke="#1f2937" stroke-width="0.9"/>
+    <!-- knuckle plate -->
+    <rect x="7.2" y="17.1" width="5.8" height="1.2" rx="0.5"
+          fill="url(#darkSteel)" opacity="0.55"/>
+    <!-- finger ridges -->
+    <path d="M7.6 18.6 v0.8 M9.0 18.6 v0.8 M10.4 18.6 v0.8 M11.8 18.6 v0.8"
+          stroke="#1f2937" stroke-width="0.6" stroke-linecap="round" opacity="0.55"/>
+    <!-- tiny highlight -->
+    <path d="M7.3 10.6 L11.7 10.6" stroke="rgba(255,255,255,0.45)"
+          stroke-width="0.7" stroke-linecap="round"/>
+  </g>
+
+  <!-- RIGHT GAUNTLET -->
+  <g>
+    <!-- forearm plate -->
+    <path d="M19.3 9.5 H25.6 L25.9 13.1 Q22.5 14.0 19.3 13.1 Z"
+          fill="url(#steel)" stroke="#1f2937" stroke-width="0.9"/>
+    <!-- cuff band -->
+    <rect x="18.9" y="13.1" width="7.6" height="2" rx="0.8"
+          fill="url(#darkSteel)" stroke="#111827" stroke-width="0.7"/>
+    <!-- back of hand -->
+    <path d="M18.6 15 H25.8
+             Q26.8 16.1 26.3 17.7
+             L22.5 18.9 H19.3
+             Q18.4 18.8 18.4 17.6
+             Z"
+          fill="url(#steel)" stroke="#1f2937" stroke-width="0.9"/>
+    <!-- knuckle plate -->
+    <rect x="19.6" y="17.1" width="5.8" height="1.2" rx="0.5"
+          fill="url(#darkSteel)" opacity="0.55"/>
+    <!-- finger ridges -->
+    <path d="M20.0 18.6 v0.8 M21.4 18.6 v0.8 M22.8 18.6 v0.8 M24.2 18.6 v0.8"
+          stroke="#1f2937" stroke-width="0.6" stroke-linecap="round" opacity="0.55"/>
+    <!-- tiny highlight -->
+    <path d="M20.2 10.6 L24.6 10.6" stroke="rgba(255,255,255,0.45)"
+          stroke-width="0.7" stroke-linecap="round"/>
+  </g>
+</svg>

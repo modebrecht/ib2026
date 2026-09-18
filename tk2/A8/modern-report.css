@@ -1,0 +1,371 @@
+/* Shortcut Quest 2026 — modern UI pass 5: report */
+
+#reportView .report-card {
+  width: 100%;
+  padding: .9rem;
+  gap: .75rem;
+  border: 1px solid rgba(148,163,184,.12);
+  border-radius: 1.45rem;
+  background:
+    radial-gradient(700px 240px at 8% -6%, rgba(96,165,250,.065), transparent 68%),
+    linear-gradient(145deg, rgba(20,32,53,.95), rgba(8,17,31,.98));
+  box-shadow: 0 24px 64px rgba(2,6,23,.32), inset 0 1px 0 rgba(255,255,255,.025);
+}
+
+#reportView .report-header {
+  padding: .9rem 1rem;
+  gap: .7rem 1rem;
+  align-items: center;
+  border-radius: 1.05rem;
+  border: 1px solid rgba(148,163,184,.11);
+  background:
+    radial-gradient(360px 120px at 4% 0%, rgba(96,165,250,.08), transparent 72%),
+    rgba(8,18,34,.42);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.018);
+}
+
+#reportView .report-header::after { display:none; }
+
+#reportView .report-header-info {
+  min-width: 180px;
+}
+
+#reportView .report-header-info h2 {
+  margin: 0;
+  color: #f8fafc;
+  font-size: 1.12rem;
+  font-weight: 880;
+  letter-spacing: -.02em;
+}
+
+#reportView .report-meta {
+  margin-top: .2rem;
+  color: #7f93ad;
+  font-size: .72rem;
+}
+
+#reportView .report-header-actions {
+  min-width: 0;
+  flex-direction: row;
+  align-items: center;
+  gap: .35rem;
+}
+
+#reportView .report-secondary-actions {
+  gap: .3rem;
+}
+
+#reportView .report-action {
+  min-height: 36px;
+  padding: .46rem .68rem;
+  border-radius: .68rem;
+  border: 1px solid rgba(148,163,184,.13);
+  background: rgba(15,23,42,.44);
+  color: #aebed2;
+  font-size: .72rem;
+  font-weight: 780;
+  box-shadow: none;
+}
+
+#reportView .report-action:hover {
+  transform: translateY(-1px);
+  border-color: rgba(148,163,184,.25);
+  background: rgba(30,41,59,.58);
+  color: #eef5ff;
+  box-shadow: none;
+}
+
+#reportView .report-action.primary {
+  border-color: rgba(96,165,250,.18);
+  background: rgba(30,64,175,.11);
+  color: #bfdbfe;
+}
+
+#reportView .report-action.ghost {
+  border-color: rgba(148,163,184,.12);
+  background: rgba(15,23,42,.34);
+}
+
+#reportView .report-action.danger {
+  border-color: rgba(248,113,113,.17);
+  background: rgba(127,29,29,.08);
+  color: #fca5a5;
+}
+
+#reportView .report-tabs {
+  gap: .25rem;
+  padding: .25rem;
+  border: 1px solid rgba(148,163,184,.10);
+  border-radius: .9rem;
+  background: rgba(8,18,34,.32);
+}
+
+#reportView .report-tabs button {
+  min-height: 38px;
+  padding: .48rem .65rem;
+  border-radius: .68rem;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #8195ad;
+  font-size: .74rem;
+  font-weight: 800;
+}
+
+#reportView .report-tabs button:hover:not(.active) {
+  color: #dbe7f5;
+  background: rgba(148,163,184,.07);
+}
+
+#reportView .report-tabs button.active {
+  border-color: rgba(96,165,250,.18);
+  background: rgba(30,64,175,.11);
+  color: #dbeafe;
+}
+
+#reportView .report-content {
+  gap: .65rem;
+}
+
+#reportView .report-block {
+  padding: .82rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(148,163,184,.10);
+  background: rgba(8,18,34,.36);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.016);
+  overflow: hidden;
+}
+
+#reportView .report-block::after { display:none; }
+
+#reportView .report-block h3 {
+  margin: 0 0 .5rem;
+  color: #dfe9f5;
+  font-size: .8rem;
+  font-weight: 840;
+  letter-spacing: .045em;
+  text-transform: uppercase;
+}
+
+#reportView .report-block h3 .report-icon {
+  font-size: .95em;
+  opacity: .75;
+}
+
+#reportView .report-badge {
+  padding: .25rem .48rem;
+  border-radius: .58rem;
+  border-color: rgba(148,163,184,.12);
+  background: rgba(15,23,42,.42);
+  color: #9fb0c7;
+  font-size: .68rem;
+  font-weight: 760;
+}
+
+#reportView .report-highlights {
+  grid-template-columns: repeat(auto-fit,minmax(150px,1fr));
+  gap: .45rem;
+}
+
+#reportView .highlight-card {
+  padding: .62rem .68rem;
+  gap: .14rem;
+  border-radius: .78rem;
+  border: 1px solid rgba(34,197,94,.13);
+  background: rgba(22,101,52,.07);
+}
+
+#reportView .highlight-card.bad {
+  border-color: rgba(248,113,113,.13);
+  background: rgba(127,29,29,.06);
+}
+
+#reportView .highlight-label {
+  color: #7f93ad;
+  font-size: .67rem;
+  font-weight: 730;
+}
+
+#reportView .highlight-value {
+  color: #e7eef8;
+  font-size: .88rem;
+  font-weight: 850;
+}
+
+#reportView .highlight-value.emphasized {
+  font-size: 1.35rem;
+  letter-spacing: -.025em;
+}
+
+#reportView .report-chart-grid {
+  gap: .65rem;
+}
+
+#reportView .report-chart-column {
+  gap: .65rem;
+}
+
+#reportView .chart-card {
+  min-height: 240px;
+  padding: .72rem;
+}
+
+#reportView .chart-shell {
+  min-height: 210px;
+}
+
+#reportView .report-insights {
+  gap: .3rem;
+  font-size: .76rem;
+}
+
+#reportView .report-insights li {
+  padding: .44rem .55rem;
+  border-radius: .65rem;
+  border-color: rgba(148,163,184,.10);
+  background: rgba(15,23,42,.32);
+  color: #9fb0c7;
+}
+
+#reportView .report-table {
+  margin-top: .3rem;
+  font-size: .74rem;
+}
+
+#reportView .report-table th,
+#reportView .report-table td {
+  padding: .5rem .55rem;
+  border-bottom-color: rgba(148,163,184,.09);
+}
+
+#reportView .report-table th {
+  color: #8fa3bb;
+  font-size: .66rem;
+  font-weight: 820;
+  letter-spacing: .035em;
+  text-transform: uppercase;
+}
+
+#reportView .report-table td {
+  color: #cbd8e7;
+}
+
+#reportView .report-table tbody tr:nth-child(odd) {
+  background: rgba(15,23,42,.18);
+}
+
+#reportView .report-table tbody tr:hover {
+  background: rgba(96,165,250,.055);
+}
+
+#reportView .apexcharts-tooltip,
+#reportView .apexcharts-xaxistooltip,
+#reportView .apexcharts-yaxistooltip {
+  border-color: rgba(148,163,184,.14) !important;
+  background: rgba(8,18,34,.96) !important;
+  box-shadow: 0 12px 28px rgba(2,6,23,.36) !important;
+}
+
+/* Cross-view focus safeguard: once combat starts, the selection view is gone. */
+#battleView #battleSimulation:not(.hidden) + .battle-overview {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  #reportView .report-card {
+    padding: .65rem;
+    border-radius: 1.12rem;
+  }
+
+  #reportView .report-header {
+    padding: .72rem;
+    align-items: stretch;
+  }
+
+  #reportView .report-header-actions {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  #reportView .report-secondary-actions {
+    display: grid;
+    grid-template-columns: repeat(3,minmax(0,1fr));
+  }
+
+  #reportView .report-action {
+    width: 100%;
+    padding-inline: .45rem;
+  }
+
+  #reportView .report-tabs {
+    overflow-x: auto;
+  }
+
+  #reportView .report-tabs button {
+    flex: 0 0 auto;
+    min-width: 115px;
+  }
+
+  #reportView .report-chart-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  #reportView .report-secondary-actions {
+    grid-template-columns: 1fr;
+  }
+
+  #reportView .report-highlights {
+    grid-template-columns: repeat(2,minmax(0,1fr));
+  }
+}
+
+/* Cross-view polish: normal recognition questions stay compact and unambiguous. */
+@media (min-width: 701px) {
+  #learnSections .a8-choice-options {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    width: 100%;
+    max-width: none;
+  }
+}
+
+@media (max-width: 700px) {
+  #learnSections .a8-choice-options {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+#learnSections .a8-choice-option:hover:not(:disabled):not(.removed):not(.selected),
+#learnSections .a8-choice-option:focus:not(:disabled):not(.removed):not(.selected),
+#learnSections .a8-choice-option:focus-visible:not(:disabled):not(.removed):not(.selected) {
+  border-color: rgba(96,165,250,.66) !important;
+  background: linear-gradient(145deg, rgba(37,63,102,.82), rgba(15,30,54,.94)) !important;
+  box-shadow: 0 0 0 2px rgba(96,165,250,.10), 0 10px 24px rgba(2,6,23,.20) !important;
+  outline: none !important;
+}
+
+#learnSections .a8-choice-option.selected,
+#learnSections .a8-choice-option.selected:hover,
+#learnSections .a8-choice-option.selected:focus,
+#learnSections .a8-choice-option.selected:focus-visible {
+  border-color: rgba(251,191,36,.78) !important;
+  background: linear-gradient(145deg, rgba(120,78,12,.32), rgba(45,38,30,.76)) !important;
+  box-shadow: 0 0 0 2px rgba(251,191,36,.08), 0 10px 24px rgba(245,158,11,.08) !important;
+  outline: none !important;
+}
+
+/* AltGr used to expose ten answers at once. Keep all ten learning targets,
+   but show only one correct answer plus three plausible distractors per question. */
+#learnSections .section[data-section="5"] .task-field:has(select[data-answer="AltGr+2"]) .a8-choice-option:not(:is([data-value="AltGr+2"],[data-value="AltGr+3"],[data-value="AltGr+E"],[data-value="AltGr+4"])),
+#learnSections .section[data-section="5"] .task-field:has(select[data-answer="AltGr+3"]) .a8-choice-option:not(:is([data-value="AltGr+3"],[data-value="AltGr+2"],[data-value="AltGr+7"],[data-value="AltGr+4"])),
+#learnSections .section[data-section="5"] .task-field:has(select[data-answer="AltGr+E"]) .a8-choice-option:not(:is([data-value="AltGr+E"],[data-value="AltGr+2"],[data-value="AltGr+3"],[data-value="AltGr+$"])),
+#learnSections .section[data-section="5"] .task-field:has(select[data-answer="AltGr+4"]) .a8-choice-option:not(:is([data-value="AltGr+4"],[data-value="AltGr+2"],[data-value="AltGr+7"],[data-value="AltGr+<"])),
+#learnSections .section[data-section="5"] .task-field:has(select[data-answer="AltGr+7"]) .a8-choice-option:not(:is([data-value="AltGr+7"],[data-value="AltGr+<"],[data-value="AltGr+4"],[data-value="AltGr+$"])),
+#learnSections .section[data-section="5"] .task-field:has(select[data-answer="AltGr+<"]) .a8-choice-option:not(:is([data-value="AltGr+<"],[data-value="AltGr+7"],[data-value="AltGr+ü"],[data-value="AltGr+¨"])),
+#learnSections .section[data-section="5"] .task-field:has(select[data-answer="AltGr+ü"]) .a8-choice-option:not(:is([data-value="AltGr+ü"],[data-value="AltGr+¨"],[data-value="AltGr+ä"],[data-value="AltGr+<"])),
+#learnSections .section[data-section="5"] .task-field:has(select[data-answer="AltGr+¨"]) .a8-choice-option:not(:is([data-value="AltGr+¨"],[data-value="AltGr+ü"],[data-value="AltGr+ä"],[data-value="AltGr+$"])),
+#learnSections .section[data-section="5"] .task-field:has(select[data-answer="AltGr+ä"]) .a8-choice-option:not(:is([data-value="AltGr+ä"],[data-value="AltGr+ü"],[data-value="AltGr+¨"],[data-value="AltGr+$"])),
+#learnSections .section[data-section="5"] .task-field:has(select[data-answer="AltGr+$"]) .a8-choice-option:not(:is([data-value="AltGr+$"],[data-value="AltGr+ä"],[data-value="AltGr+¨"],[data-value="AltGr+ü"])) {
+  display: none !important;
+}

@@ -1,0 +1,95 @@
+<svg viewBox="0 -40 120 110" xmlns="http://www.w3.org/2000/svg">
+  <!-- CHEST (drops in 2s) -->
+  <g id="chest" transform="translate(0,-80)">
+    <!-- base -->
+    <g>
+      <rect x="26" y="32" width="68" height="26"
+            fill="#6a3d1f"
+            stroke="#d3b158" stroke-width="1.3"/>
+      <rect x="36" y="32" width="3.5" height="26" fill="rgba(0,0,0,0.12)"/>
+      <rect x="48" y="32" width="3.5" height="26" fill="rgba(0,0,0,0.12)"/>
+      <rect x="60" y="32" width="3.5" height="26" fill="rgba(0,0,0,0.12)"/>
+      <rect x="72" y="32" width="3.5" height="26" fill="rgba(0,0,0,0.12)"/>
+      <rect x="84" y="32" width="3.5" height="26" fill="rgba(0,0,0,0.12)"/>
+    </g>
+
+    <!-- lid -->
+    <g id="lid">
+      <path d="M26 32 H94 V27 Q60 23 26 27 Z"
+            fill="#88522a"
+            stroke="#d3b158" stroke-width="1.3" stroke-linejoin="round"/>
+    </g>
+
+    <!-- lock -->
+    <g>
+      <rect x="58" y="23" width="4" height="35"
+            fill="#d3b158" stroke="#8f6f34" stroke-width="0.5"/>
+      <rect x="56.8" y="40" width="6.5" height="10" rx="1"
+            fill="#f7d78a" stroke="#8f6f34" stroke-width="0.5"/>
+      <circle cx="60" cy="45" r="1.1" fill="#604516"/>
+      <rect x="59.4" y="45.6" width="1.2" height="2.7" rx="0.4" fill="#604516"/>
+    </g>
+
+    <!-- feet -->
+    <rect x="30" y="58" width="6" height="2.5" fill="#312015" opacity="0.85"/>
+    <rect x="84" y="58" width="6" height="2.5" fill="#312015" opacity="0.85"/>
+
+    <!-- drop -->
+    <animateTransform
+      attributeName="transform"
+      type="translate"
+      dur="2s"
+      values="0,-80; 0,4; 0,0"
+      keyTimes="0; 0.7; 1"
+      fill="freeze"/>
+  </g>
+
+  <!-- KEY: outer = move, inner = rotate -->
+  <g id="key-move" opacity="0" transform="translate(90,5)">
+    <g id="key-body" transform="translate(0,0)">
+      <circle cx="0" cy="0" r="2.5" fill="#f7d78a" stroke="#996f2a" stroke-width="0.4"/>
+      <rect x="-0.6" y="2" width="1.2" height="8" fill="#f7d78a" stroke="#996f2a" stroke-width="0.2"/>
+      <rect x="-0.6" y="8" width="2.3" height="1.6" fill="#f7d78a" stroke="#996f2a" stroke-width="0.2"/>
+    </g>
+
+    <!-- appear -->
+    <animate attributeName="opacity"
+             begin="2s" dur="0.1s"
+             from="0" to="1"
+             fill="freeze"/>
+
+    <!-- fly to exact lock position: (60,36.6) + tip(0,9) = (60,45.6) -->
+    <animateTransform
+      attributeName="transform"
+      type="translate"
+      begin="2s"
+      dur="0.7s"
+      values="90,5; 62,34; 60,36.6"
+      keyTimes="0; 0.6; 1"
+      fill="freeze"/>
+  </g>
+
+  <!-- rotate key in place around tip (0,9) -->
+  <animateTransform
+    href="#key-body"
+    attributeName="transform"
+    type="rotate"
+    begin="2.9s"
+    dur="0.25s"
+    from="0 0 9"
+    to="35 0 9"
+    fill="freeze"
+  />
+
+  <!-- open lid -->
+  <animateTransform
+    href="#lid"
+    attributeName="transform"
+    type="rotate"
+    begin="3.2s"
+    dur="0.4s"
+    from="0 26 32"
+    to="-55 26 32"
+    fill="freeze"
+  />
+</svg>

@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="forestSky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#061425"/>
+      <stop offset="55%" stop-color="#0d2431"/>
+      <stop offset="100%" stop-color="#081912"/>
+    </linearGradient>
+    <linearGradient id="forestFog" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="rgba(46,204,113,0.18)"/>
+      <stop offset="100%" stop-color="rgba(79,209,197,0.18)"/>
+    </linearGradient>
+    <linearGradient id="forestGround" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2a3c25"/>
+      <stop offset="100%" stop-color="#18311f"/>
+    </linearGradient>
+    <linearGradient id="mountainShade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1f3b56"/>
+      <stop offset="100%" stop-color="#0b1f2a"/>
+    </linearGradient>
+    <g id="treeSimple">
+      <rect x="-6" y="-20" width="12" height="90" fill="#6b4428"/>
+      <polygon points="-65,-20 65,-20 0,-150" fill="#1f6038"/>
+      <polygon points="-50,-45 50,-45 0,-150" fill="#2a7b4a"/>
+    </g>
+  </defs>
+
+  <rect width="1200" height="400" fill="url(#forestSky)"/>
+
+  <g fill="url(#mountainShade)" opacity="0.95">
+    <path d="M-40 360 L80 140 L180 210 L280 115 L390 250 L520 130 L650 260 L800 115 L950 235 L1100 160 L1200 230 L1200 400 L-40 400 Z"/>
+  </g>
+  <g fill="#0d2733" opacity="0.75">
+    <path d="M0 360 L100 230 L220 300 L360 240 L510 310 L650 250 L800 305 L950 240 L1100 300 L1200 270 L1200 400 L0 400 Z"/>
+  </g>
+
+  <rect y="280" width="1200" height="120" fill="url(#forestGround)"/>
+  <rect y="380" width="1200" height="20" fill="#4a2f1d"/>
+  <rect y="370" width="1200" height="30" fill="#4a2f1d"/>
+  
+  <g opacity="0.9">
+    <g transform="translate(90 300) scale(0.944)">
+      <polygon points="-55,-15 55,-15 0,-135" fill="#1a4d30" opacity="0.4"/>
+      <polygon points="-45,-35 45,-35 0,-135" fill="#2a6b44" opacity="0.35"/>
+    </g>
+    <g transform="translate(160 290) scale(0.908)">
+      <polygon points="-50,-10 50,-10 0,-125" fill="#1a4d30" opacity="0.38"/>
+      <polygon points="-42,-30 42,-30 0,-125" fill="#2a6b44" opacity="0.33"/>
+    </g>
+    <g transform="translate(310 305) scale(0.968)">
+      <polygon points="-55,-20 55,-20 0,-140" fill="#1a4d30" opacity="0.36"/>
+      <polygon points="-45,-40 45,-40 0,-140" fill="#2a6b44" opacity="0.32"/>
+    </g>
+    <g transform="translate(430 295) scale(0.932)">
+      <polygon points="-52,-18 52,-18 0,-132" fill="#1a4d30" opacity="0.38"/>
+      <polygon points="-42,-35 42,-35 0,-132" fill="#2a6b44" opacity="0.34"/>
+    </g>
+    <g transform="translate(560 305) scale(0.944)">
+      <polygon points="-55,-15 55,-15 0,-135" fill="#1a4d30" opacity="0.36"/>
+      <polygon points="-45,-35 45,-35 0,-135" fill="#2a6b44" opacity="0.32"/>
+    </g>
+    <g transform="translate(700 290) scale(0.92)">
+      <polygon points="-50,-12 50,-12 0,-128" fill="#1a4d30" opacity="0.36"/>
+      <polygon points="-40,-30 40,-30 0,-128" fill="#2a6b44" opacity="0.32"/>
+    </g>
+    <g transform="translate(840 305) scale(0.944)">
+      <polygon points="-55,-18 55,-18 0,-138" fill="#1a4d30" opacity="0.36"/>
+      <polygon points="-45,-38 45,-38 0,-138" fill="#2a6b44" opacity="0.32"/>
+    </g>
+    <g transform="translate(980 295) scale(0.932)">
+      <polygon points="-50,-15 50,-15 0,-132" fill="#1a4d30" opacity="0.36"/>
+      <polygon points="-40,-33 40,-33 0,-132" fill="#2a6b44" opacity="0.32"/>
+    </g>
+    <g transform="translate(40 315) scale(1.1)">
+      <use href="#treeSimple"/>
+    </g>
+    <g transform="translate(120 300) scale(0.95)">
+      <use href="#treeSimple"/>
+    </g>
+    <g transform="translate(200 305) scale(1.15)">
+      <use href="#treeSimple"/>
+    </g>
+    <g transform="translate(280 310) scale(0.9)">
+      <use href="#treeSimple"/>
+    </g>
+    <g transform="translate(360 300) scale(1.05)">
+      <use href="#treeSimple"/>
+    </g>
+    <g transform="translate(450 315) scale(0.92)">
+      <use href="#treeSimple"/>
+    </g>
+    <g transform="translate(520 305) scale(1.1)">
+      <use href="#treeSimple"/>
+    </g>
+    <g transform="translate(610 320) scale(0.95)">
+      <use href="#treeSimple"/>
+    </g>
+    <g transform="translate(690 295) scale(1.12)">
+      <use href="#treeSimple"/>
+    </g>
+    <g transform="translate(780 315) scale(0.9)">
+      <use href="#treeSimple"/>
+    </g>
+    <g transform="translate(860 305) scale(1.1)">
+      <use href="#treeSimple"/>
+    </g>
+    <g transform="translate(950 315) scale(0.92)">
+      <use href="#treeSimple"/>
+    </g>
+    <g transform="translate(1030 300) scale(1.08)">
+      <use href="#treeSimple"/>
+    </g>
+    <g transform="translate(1110 325) scale(0.9)">
+      <use href="#treeSimple"/>
+    </g>
+  </g>
+
+  <g fill="rgba(255,255,255,0.4)">
+    <circle cx="180" cy="120" r="2"/>
+    <circle cx="260" cy="80" r="1.8"/>
+    <circle cx="420" cy="110" r="2"/>
+    <circle cx="540" cy="70" r="1.6"/>
+    <circle cx="720" cy="90" r="2"/>
+    <circle cx="860" cy="60" r="1.8"/>
+    <circle cx="1020" cy="90" r="2.2"/>
+  </g>
+</svg>

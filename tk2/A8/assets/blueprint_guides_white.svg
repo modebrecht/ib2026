@@ -1,0 +1,50 @@
+<svg viewBox="0 0 120 170" xmlns="http://www.w3.org/2000/svg">
+  <path d="M60 10 V165"
+        fill="none" stroke="rgba(37,99,235,0.4)" stroke-width="0.6" stroke-dasharray="3,3" />
+  <path d="M20 156 H100"
+        fill="none" stroke="rgba(37,99,235,0.4)" stroke-width="0.6" stroke-dasharray="2,3" />
+  <path d="M30 82 Q34 70 45 67 L49 82 L42 114 Q35 113 30 110 Z"
+        fill="#ffffff" stroke="rgba(37,99,235,0.66)" stroke-width="1" />
+  <path d="M90 82 Q86 70 75 67 L71 82 L78 114 Q85 113 90 110 Z"
+        fill="#ffffff" stroke="rgba(37,99,235,0.66)" stroke-width="1" />
+  <path d="M30 109 L38 112 L37 120 Q34 123 31 120 Z"
+        fill="#ffffff" stroke="rgba(37,99,235,0.66)" stroke-width="1" />
+  <path d="M31.5 111.2 L31.2 119" stroke="rgba(37,99,235,0.66)" stroke-width="0.6" />
+  <path d="M34 112 L33.8 120" stroke="rgba(37,99,235,0.66)" stroke-width="0.6" />
+  <path d="M36.2 112.7 L36 120.2" stroke="rgba(37,99,235,0.66)" stroke-width="0.6" />
+  <path d="M82 112 L91 109 L92 120 Q89 123 85.5 120 Z"
+        fill="#ffffff" stroke="rgba(37,99,235,0.66)" stroke-width="1" />
+  <path d="M84 113 L84.4 120.2" stroke="rgba(37,99,235,0.66)" stroke-width="0.6" />
+  <path d="M86.5 112.1 L87 120.1" stroke="rgba(37,99,235,0.66)" stroke-width="0.6" />
+  <path d="M89 111.2 L89.5 119.2" stroke="rgba(37,99,235,0.66)" stroke-width="0.6" />
+  <path d="M42 38 Q60 20 78 38 V60 Q60 66 42 60 Z"
+        fill="#ffffff" stroke="rgba(37,99,235,0.66)" stroke-width="1.8" />
+  <rect x="46" y="43" width="28" height="9" rx="3"
+        fill="#ffffff" stroke="rgba(37,99,235,0.66)" stroke-width="1" />
+  <rect x="50" y="46" width="20" height="3" rx="1.5"
+        fill="#ffffff" stroke="rgba(37,99,235,0.66)" stroke-width="0.7" />
+  <path d="M44 60 Q60 65 76 60 L78 69 Q60 74 42 69 Z"
+        fill="#ffffff" stroke="rgba(37,99,235,0.66)" stroke-width="1.2" />
+  <path d="M30 70 Q37 56 48 60 L46 83 Q36 82 30 75 Z"
+        fill="#ffffff" stroke="rgba(37,99,235,0.66)" stroke-width="1.1" />
+  <path d="M90 70 Q83 56 72 60 L74 83 Q84 82 90 75 Z"
+        fill="#ffffff" stroke="rgba(37,99,235,0.66)" stroke-width="1.1" />
+  <path d="M44 69 L76 69 L80 106 Q60 114 40 106 Z"
+        fill="#ffffff" stroke="rgba(37,99,235,0.66)" stroke-width="1.3" />
+  <path d="M60 70 V110"
+        fill="none" stroke="rgba(37,99,235,0.66)" stroke-width="2" />
+  <path d="M38 104 H82 L78 116 Q60 120 42 116 Z"
+        fill="#ffffff" stroke="rgba(37,99,235,0.66)" stroke-width="1" />
+  <path d="M46 122 L58 122 L56 156 Q51 158 46 156 Z"
+        fill="#ffffff" stroke="rgba(37,99,235,0.66)" stroke-width="1" />
+  <path d="M67 122 L79 122 L79 156 Q74 158 67 156 Z"
+        fill="#ffffff" stroke="rgba(37,99,235,0.66)" stroke-width="1" />
+  <path d="M40 108 H60 L57 137 L34 131 Z"
+        fill="#ffffff" stroke="rgba(37,99,235,0.66)" stroke-width="1" />
+  <path d="M80 108 H60 L63 137 L86 131 Z"
+        fill="#ffffff" stroke="rgba(37,99,235,0.66)" stroke-width="1" />
+  <path d="M42 156 H58 V163 Q50 165 43 163 Z"
+        fill="#ffffff" stroke="rgba(37,99,235,0.66)" stroke-width="1" />
+  <path d="M64 156 H80 V163 Q72 165 65 163 Z"
+        fill="#ffffff" stroke="rgba(37,99,235,0.66)" stroke-width="1" />
+</svg>
