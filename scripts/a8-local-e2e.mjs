@@ -21,22 +21,50 @@ try {
 
   const narrativeCards = page.locator('.section[data-section="1"] .narrative-card');
   assert.ok(await narrativeCards.count() >= 4, 'narrative cards missing');
+  const resetFirstNarrative = async () => {
+    await narrativeCards.first().locator('.narrative-blank').evaluate(blank => {
+      blank.textContent = ''; blank.dataset.value = ''; blank.dataset.filled = 'false';
+    });
+  };
+
+  // Normal animation completion.
   for (let i = 0; i < await narrativeCards.count(); i++) {
     await narrativeCards.nth(i).locator('.narrative-option').first().click();
   }
   assert.ok(await page.locator('.narrative-fly').count() > 0, 'shortcut fly animation no longer appears');
-  await page.locator('.section-tab[data-goto="2"]').click();
   await page.waitForTimeout(650);
-  assert.equal(await page.locator('.narrative-fly').count(), 0, 'section switch leaked narrative-fly nodes');
+  assert.equal(await page.locator('.narrative-fly').count(), 0, 'normally completed narrative flies leaked');
 
+  // Section switching cleanup, then exercise the real fast-paced drill in section 2.
+  await resetFirstNarrative();
+  await narrativeCards.first().locator('.narrative-option').first().click();
+  await page.locator('.section-tab[data-goto="2"]').click();
+  await page.waitForTimeout(80);
+  assert.equal(await page.locator('.narrative-fly').count(), 0, 'section switch leaked narrative-fly nodes');
+  const fastPaced = page.locator('.section[data-section="2"] .fast-paced');
+  assert.ok(await fastPaced.isVisible(), 'fast-paced training section failed to open');
+  assert.ok(await fastPaced.locator('button').count() > 0, 'fast-paced training has no interactive control');
+  await fastPaced.locator('button').first().click();
+  await page.waitForTimeout(100);
+  assert.ok(await fastPaced.isVisible(), 'fast-paced training interaction failed');
+
+  // Interrupted/paused animation cleanup.
   await page.locator('.section-tab[data-goto="1"]').click();
-  await narrativeCards.first().locator('.narrative-blank').evaluate(blank => {
-    blank.textContent = ''; blank.dataset.value = ''; blank.dataset.filled = 'false';
-  });
+  await resetFirstNarrative();
   await narrativeCards.first().locator('.narrative-option').first().click();
   await page.locator('.narrative-fly').evaluateAll(nodes => nodes.forEach(node => node.getAnimations().forEach(animation => animation.pause())));
   await page.waitForTimeout(650);
   assert.equal(await page.locator('.narrative-fly').count(), 0, 'interrupted animation leaked narrative-fly nodes');
+
+  // Repeated rapid interactions cannot accumulate stale DOM pills.
+  for (let repeat = 0; repeat < 6; repeat++) {
+    await resetFirstNarrative();
+    await narrativeCards.first().locator('.narrative-option').first().click();
+    await page.waitForTimeout(60);
+  }
+  assert.ok(await page.locator('.narrative-fly').count() > 0, 'repeated shortcut fly animation stopped rendering');
+  await page.waitForTimeout(650);
+  assert.equal(await page.locator('.narrative-fly').count(), 0, 'repeated narrative interactions accumulated stale fly nodes');
 
   const balance = await page.evaluate(() => ({
     installed: window.SHORTCUT_QUEST_BATTLE_BALANCE?.installed,
@@ -103,7 +131,7 @@ try {
   assert.equal(await mobile.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 2), false, 'mobile viewport introduced horizontal overflow');
   await mobile.close();
 
-  console.log('OK: direct-local A8 load, assets, narrative cleanup, training shell, state, inventory, skills, balance, battle, report, desktop and mobile verified');
+  console.log('OK: A8 load, assets, narrative lifecycle, fast-paced training, state, inventory, skills, balance, battle, report, desktop and mobile verified');
 } finally {
   await browser.close();
 }

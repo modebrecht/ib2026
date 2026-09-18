@@ -3,13 +3,13 @@ set -euo pipefail
 
 ROOT="$(pwd)"
 OUT="$ROOT/dist"
-A8_TMP="/tmp/shortcut-quest-a8"
-SHORTCUT_QUEST_SHA="6588df3ee87797f916fe7cd6b8a149d7b48e6dee"
+A8_SOURCE="$ROOT/tk2/A8"
 
-rm -rf "$OUT" "$A8_TMP"
+rm -rf "$OUT"
 mkdir -p "$OUT"
 
 # Copy the student-facing static site into a clean Vercel output directory.
+# tk2/A8 is intentionally included: it is the canonical checked-in A8 source.
 tar \
   --exclude='./.git' \
   --exclude='./.github' \
@@ -26,71 +26,24 @@ tar \
   --exclude='./vercel.json' \
   -cf - . | tar -xf - -C "$OUT"
 
-# Build TK2 A8 from the exact verified Shortcut Quest revision.
-git init -q "$A8_TMP"
-git -C "$A8_TMP" remote add origin https://github.com/modebrecht/shortcut-quest.git
-git -C "$A8_TMP" fetch -q --depth=1 origin "$SHORTCUT_QUEST_SHA"
-git -C "$A8_TMP" checkout -q --detach FETCH_HEAD
-
-mkdir -p "$OUT/tk2/A8"
+# Fail before deploy if the checked-in canonical A8 runtime is incomplete.
 for file in \
   index.html sections-data.js skill-hotkeys.js \
   modern-ui.css modern-exercises.css modern-game.css modern-battle.css modern-report.css \
   apexcharts.min.js favicon.svg premium-motion.js battle-motion.js knight-premium-motion.js \
-  arena-dev-fix.js arena-dev-tuning.css a8-dev-polish.js battle-continuity.js battle-balance.js
-do
-  cp "$A8_TMP/2026/$file" "$OUT/tk2/A8/$file"
+  arena-dev-fix.js arena-dev-tuning.css a8-dev-polish.js battle-continuity.js battle-balance.js \
+  gear-visuals.js pdf-report.js SOURCE.md; do
+  test -s "$OUT/tk2/A8/$file"
 done
-cp -R "$A8_TMP/2026/assets" "$OUT/tk2/A8/"
+test -s "$OUT/tk2/A8/assets/arena-scene.svg"
+test -s "$OUT/tk2/A8/assets/enemy-bergtroll.png"
 
-# Add the IB2026 diagnostic PDF overlay and classroom filename A8-VORNAME.pdf.
-cp "$ROOT/tk2/a8-pdf-report.js" "$OUT/tk2/A8/pdf-report.js"
-
-node <<'NODE'
-const fs = require('node:fs');
-const path = require('node:path');
-
-const a8 = path.join(process.cwd(), 'dist', 'tk2', 'A8');
-const pdfPath = path.join(a8, 'pdf-report.js');
-let pdf = fs.readFileSync(pdfPath, 'utf8');
-const oldName = "doc.save('A8_Shortcut_Quest_Lernnachweis_' + safeFileName(student) + '.pdf');";
-const newName = "doc.save('A8-' + safeFileName(student) + '.pdf');";
-if (pdf.includes(oldName)) pdf = pdf.replace(oldName, newName);
-else if (!pdf.includes(newName)) throw new Error('A8 PDF filename marker not found');
-fs.writeFileSync(pdfPath, pdf);
-
-const indexPath = path.join(a8, 'index.html');
-let html = fs.readFileSync(indexPath, 'utf8');
-if (!html.includes('</head>') || !html.includes('</body>')) throw new Error('A8 index.html is missing head/body markers');
-
-const arenaStyle = '<link rel="stylesheet" href="arena-dev-tuning.css?v=6193079d">';
-if (!html.includes(arenaStyle)) html = html.replace('</head>', `${arenaStyle}\n</head>`);
-
-const scripts = [
-  '<script src="premium-motion.js"></script>',
-  '<script src="battle-motion.js?v=5f9aa1a7"></script>',
-  '<script src="arena-dev-fix.js?v=59809da9"></script>',
-  '<script src="a8-dev-polish.js?v=8af72c1b"></script>',
-  '<script src="battle-continuity.js?v=6a655e2b"></script>',
-  '<script src="battle-balance.js?v=6588df3e"></script>',
-  '<script src="knight-premium-motion.js?v=74934b8f"></script>',
-  '<script src="pdf-report.js"></script>'
-];
-const missing = scripts.filter(script => !html.includes(script));
-if (missing.length) html = html.replace('</body>', `${missing.join('\n')}\n</body>`);
-fs.writeFileSync(indexPath, html);
-NODE
-
-python3 "$ROOT/scripts/test_patch_a8_narrative_fly.py"
-python3 "$ROOT/scripts/patch_a8_narrative_fly.py" "$OUT/tk2/A8/index.html"
-
-# Fail before deploy if the assembled runtime is incomplete.
-for file in premium-motion.js battle-motion.js knight-premium-motion.js arena-dev-fix.js a8-dev-polish.js battle-continuity.js battle-balance.js pdf-report.js; do
+for file in \
+  sections-data.js skill-hotkeys.js premium-motion.js battle-motion.js knight-premium-motion.js \
+  arena-dev-fix.js a8-dev-polish.js battle-continuity.js battle-balance.js gear-visuals.js pdf-report.js; do
   node --check "$OUT/tk2/A8/$file"
 done
 
-test -s "$OUT/tk2/A8/index.html"
-test -s "$OUT/tk2/A8/assets/arena-scene.svg"
 grep -Fq "doc.save('A8-' + safeFileName(student) + '.pdf');" "$OUT/tk2/A8/pdf-report.js"
 grep -Fq '<script src="battle-continuity.js?v=6a655e2b"></script>' "$OUT/tk2/A8/index.html"
 grep -Fq '<script src="battle-balance.js?v=6588df3e"></script>' "$OUT/tk2/A8/index.html"
@@ -103,4 +56,7 @@ grep -Fq 'BATTLE UI SKILL BAR PREMIUM PASS 2026' "$OUT/tk2/A8/modern-battle.css"
 grep -Fq 'BATTLE UI SKILL CARD FIT FIX 2026' "$OUT/tk2/A8/modern-battle.css"
 grep -Fq 'BATTLE SKILL CONTENT HIERARCHY FIX 2026' "$OUT/tk2/A8/modern-battle.css"
 
-echo "Vercel static bundle ready: $(find "$OUT/tk2/A8" -type f | wc -l | tr -d ' ') A8 files from $SHORTCUT_QUEST_SHA"
+# Vercel must deploy the exact checked-in A8 tree: copy + validate, never mutate.
+diff -qr "$A8_SOURCE" "$OUT/tk2/A8"
+
+echo "Vercel static bundle ready: $(find "$OUT/tk2/A8" -type f | wc -l | tr -d ' ') A8 files from checked-in tk2/A8"
