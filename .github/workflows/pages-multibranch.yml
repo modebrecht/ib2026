@@ -27,6 +27,14 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: Verify canonical A8 architecture
+        if: github.ref == 'refs/heads/dev'
+        run: python3 scripts/test_a8_local_canonical.py
+
+      - name: Verify Vercel canonical A8 bundle
+        if: github.ref == 'refs/heads/dev'
+        run: bash scripts/build-vercel-site.sh
+
       - name: Fetch publishing branches
         run: |
           git fetch --no-tags --depth=1 origin \
@@ -101,6 +109,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 8
     steps:
+      - name: Checkout DEV test suite
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 1
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -356,6 +370,11 @@ jobs:
             process.exit(1);
           });
           NODE
+
+      - name: Run canonical A8 E2E suite
+        env:
+          A8_LOCAL_URL: https://modebrecht.github.io/ib2026/dev/tk2/A8/?qa=canonical-e2e
+        run: node scripts/a8-local-e2e.mjs
 
       - name: Upload A8 UI screenshots
         if: always()

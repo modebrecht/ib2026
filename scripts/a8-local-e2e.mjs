@@ -43,10 +43,37 @@ try {
   assert.equal(await page.locator('.narrative-fly').count(), 0, 'section switch leaked narrative-fly nodes');
   const fastPaced = page.locator('.section[data-section="2"] .fast-paced');
   assert.ok(await fastPaced.isVisible(), 'fast-paced training section failed to open');
-  assert.ok(await fastPaced.locator('button').count() > 0, 'fast-paced training has no interactive control');
-  await fastPaced.locator('button').first().click();
-  await page.waitForTimeout(100);
-  assert.ok(await fastPaced.isVisible(), 'fast-paced training interaction failed');
+  const fastConfig = await page.evaluate(() => {
+    const section = window.LEARN_SECTION_BLUEPRINTS?.find(candidate => String(candidate?.id) === '2');
+    const config = section?.fastPaced;
+    return config ? {
+      rounds: Number(config.rounds) || 0,
+      combos: config.combos.map(item => ({ label: item.label || item.display, combo: item.combo }))
+    } : null;
+  });
+  assert.ok(fastConfig && fastConfig.rounds > 0 && fastConfig.combos.length >= fastConfig.rounds, 'fast-paced config missing');
+  await fastPaced.locator('.fast-paced-start').click();
+  let previousPrompt = '';
+  for (let round = 0; round < fastConfig.rounds; round += 1) {
+    await page.waitForFunction(previous => {
+      const root = document.querySelector('.section[data-section="2"] .fast-paced');
+      const prompt = root?.querySelector('.fast-paced-prompt')?.textContent?.trim() || '';
+      const enabledOptions = root?.querySelectorAll('.fast-paced-option:not([disabled])').length || 0;
+      return prompt && prompt !== previous && !prompt.startsWith('Ergebnis:') && enabledOptions > 0;
+    }, previousPrompt);
+    const prompt = (await fastPaced.locator('.fast-paced-prompt').textContent() || '').trim();
+    const expected = fastConfig.combos.find(item => item.label === prompt);
+    assert.ok(expected, `no fast-paced answer mapping for prompt: ${prompt}`);
+    const answer = fastPaced.locator('.fast-paced-option').filter({ hasText: expected.combo });
+    assert.equal(await answer.count(), 1, `expected exactly one fast-paced option for ${expected.combo}`);
+    await answer.click();
+    previousPrompt = prompt;
+  }
+  await page.waitForFunction(rounds => {
+    const prompt = document.querySelector('.section[data-section="2"] .fast-paced .fast-paced-prompt')?.textContent?.trim();
+    return prompt === `Ergebnis: ${rounds}/${rounds}`;
+  }, fastConfig.rounds);
+  assert.equal((await fastPaced.locator('.fast-paced-prompt').textContent() || '').trim(), `Ergebnis: ${fastConfig.rounds}/${fastConfig.rounds}`);
 
   // Interrupted/paused animation cleanup.
   await page.locator('.section-tab[data-goto="1"]').click();
@@ -119,6 +146,13 @@ try {
   await page.waitForTimeout(150);
   assert.ok(await page.locator('#reportView').isVisible(), 'report view failed');
   assert.equal(await page.evaluate(() => typeof window.jspdf !== 'undefined' || typeof window.jsPDF !== 'undefined' || document.querySelector('script[src="pdf-report.js"]') !== null), true, 'PDF/report integration missing');
+  const pdfButton = page.locator('#a8PdfReportBtn');
+  await pdfButton.waitFor({ state: 'visible' });
+  page.once('dialog', dialog => dialog.accept('David'));
+  const downloadPromise = page.waitForEvent('download', { timeout: 15000 });
+  await pdfButton.click();
+  const pdfDownload = await downloadPromise;
+  assert.equal(pdfDownload.suggestedFilename(), 'A8-David.pdf', 'PDF download filename contract changed');
 
   assert.equal(consoleErrors.length, 0, `console errors: ${consoleErrors.join('\n')}`);
 
@@ -131,7 +165,7 @@ try {
   assert.equal(await mobile.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 2), false, 'mobile viewport introduced horizontal overflow');
   await mobile.close();
 
-  console.log('OK: A8 load, assets, narrative lifecycle, fast-paced training, state, inventory, skills, balance, battle, report, desktop and mobile verified');
+  console.log('OK: A8 load, assets, narrative lifecycle, complete fast-paced run, state, inventory, skills, balance, battle, real PDF download filename, desktop and mobile verified');
 } finally {
   await browser.close();
 }

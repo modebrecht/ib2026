@@ -31,6 +31,8 @@ for marker in (
 pdf = (A8 / 'pdf-report.js').read_text(encoding='utf-8')
 assert "doc.save('A8-' + safeFileName(student) + '.pdf');" in pdf
 assert ('A8_' + 'Shortcut_Quest_Lernnachweis_') not in pdf
+assert 'data-a8-battle-continuity-loader' not in pdf, 'obsolete battle-continuity loader returned'
+assert 'battle-continuity.js?v=a6d1d495' not in pdf, 'stale battle-continuity cache pin returned'
 
 balance = (A8 / 'battle-balance.js').read_text(encoding='utf-8')
 assert 'enemy-item-consumed' in balance or 'consumed' in balance.lower(), 'enemy heal consumption fix missing'
