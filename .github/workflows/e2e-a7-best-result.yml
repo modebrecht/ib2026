@@ -1,0 +1,80 @@
+name: E2E A7 Best-Result Contract
+
+on:
+  push:
+    branches:
+      - dev
+      - main
+    paths:
+      - 'tk2/A7.html'
+      - 'tk2/a7-evidence-ui.js'
+      - 'tk2/pdf-base.js'
+      - 'tk/xp.js'
+      - 'e2e/tk-a7-best-result.spec.js'
+      - '.github/workflows/e2e-a7-best-result.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e2e-a7-best-result-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  contract:
+    name: A7 best-result grading + PDFs
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Playwright
+        run: |
+          npm init -y >/dev/null
+          npm install --no-save @playwright/test
+          npx playwright install --with-deps chromium
+
+      - name: Run A7 contract against checked-out branch
+        env:
+          BASE_URL: http://127.0.0.1:4173
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 >/tmp/a7-http.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+
+          ready=0
+          for _ in $(seq 1 30); do
+            if curl -fsS "$BASE_URL/tk2/A7.html" >/dev/null; then
+              ready=1
+              break
+            fi
+            sleep 1
+          done
+          if [ "$ready" -ne 1 ]; then
+            cat /tmp/a7-http.log
+            exit 1
+          fi
+
+          npx playwright test e2e/tk-a7-best-result.spec.js \
+            --browser=chromium \
+            --workers=1 \
+            --reporter=line,html
+
+      - name: Upload failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-a7-best-result-${{ github.run_id }}
+          path: |
+            test-results/
+            playwright-report/
+          if-no-files-found: ignore
+          retention-days: 7

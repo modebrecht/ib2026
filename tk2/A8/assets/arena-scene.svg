@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Shortcut Quest battle arena</title>
+  <desc id="desc">A dark fantasy stone arena with blue ambient light, warm braziers, banners, a central gate and circular fighting floor.</desc>
+  <defs>
+    <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#18263b"/>
+      <stop offset="0.58" stop-color="#0c1628"/>
+      <stop offset="1" stop-color="#07101d"/>
+    </linearGradient>
+    <radialGradient id="blueGlow" cx="50%" cy="38%" r="72%">
+      <stop offset="0" stop-color="#2b74aa" stop-opacity=".28"/>
+      <stop offset=".46" stop-color="#153656" stop-opacity=".14"/>
+      <stop offset="1" stop-color="#030813" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="floorGlow" cx="50%" cy="48%" r="58%">
+      <stop offset="0" stop-color="#6d7f8f" stop-opacity=".2"/>
+      <stop offset=".55" stop-color="#263847" stop-opacity=".13"/>
+      <stop offset="1" stop-color="#07101a" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="fire" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#fff1a8" stop-opacity=".95"/>
+      <stop offset=".3" stop-color="#ffb22f" stop-opacity=".72"/>
+      <stop offset="1" stop-color="#ff6a00" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="banner" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#294d7d"/>
+      <stop offset=".5" stop-color="#193c68"/>
+      <stop offset="1" stop-color="#102a4d"/>
+    </linearGradient>
+    <linearGradient id="stone" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#3e5361"/>
+      <stop offset="1" stop-color="#172631"/>
+    </linearGradient>
+    <linearGradient id="rim" x1="0" y1="0" x2="1" y2="0">
+      <stop stop-color="#17334d"/>
+      <stop offset=".5" stop-color="#6d7f8b"/>
+      <stop offset="1" stop-color="#17334d"/>
+    </linearGradient>
+    <filter id="softGlow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="24"/>
+    </filter>
+    <filter id="shadow" x="-40%" y="-40%" width="180%" height="180%">
+      <feDropShadow dx="0" dy="16" stdDeviation="16" flood-color="#02050b" flood-opacity=".75"/>
+    </filter>
+    <pattern id="blocks" width="160" height="82" patternUnits="userSpaceOnUse">
+      <rect width="160" height="82" fill="none" stroke="#94a3b8" stroke-opacity=".06" stroke-width="2"/>
+      <path d="M80 0v18M20 82V64M134 82V60" stroke="#d6e0e8" stroke-opacity=".035" stroke-width="2"/>
+    </pattern>
+  </defs>
+
+  <rect width="1600" height="900" fill="#040913"/>
+  <rect width="1600" height="660" fill="url(#wall)"/>
+  <rect width="1600" height="660" fill="url(#blocks)"/>
+  <rect width="1600" height="720" fill="url(#blueGlow)"/>
+
+  <!-- upper masonry -->
+  <path d="M0 0h1600v92H0z" fill="#0a1321"/>
+  <path d="M0 92h1600v22H0z" fill="#263847" opacity=".62"/>
+  <path d="M0 116h1600v12H0z" fill="#060c16"/>
+
+  <!-- side columns -->
+  <g opacity=".9" filter="url(#shadow)">
+    <path d="M64 95h188l-22 500H88z" fill="#172634" stroke="#435463" stroke-opacity=".5" stroke-width="5"/>
+    <path d="M1348 95h188l-24 500h-142z" fill="#172634" stroke="#435463" stroke-opacity=".5" stroke-width="5"/>
+    <path d="M38 92h240v44H38zM1322 92h240v44h-240z" fill="#334652"/>
+    <path d="M80 530h172v70H72zM1348 530h172l8 70h-188z" fill="#253946"/>
+  </g>
+
+  <!-- center gate -->
+  <g filter="url(#shadow)">
+    <path d="M586 166Q800 58 1014 166v394H586z" fill="#0a111c" stroke="#435463" stroke-width="10"/>
+    <path d="M628 188Q800 105 972 188v356H628z" fill="#111c27" stroke="#263b4d" stroke-width="8"/>
+    <path d="M662 214Q800 150 938 214v330H662z" fill="#05090f"/>
+    <g stroke="#253b4c" stroke-width="12" opacity=".85">
+      <path d="M702 203v341M752 178v366M802 166v378M852 178v366M902 204v340"/>
+    </g>
+    <path d="M650 548h300" stroke="#6e7e86" stroke-opacity=".35" stroke-width="9"/>
+    <path d="M602 174Q800 74 998 174" fill="none" stroke="#7f919c" stroke-opacity=".28" stroke-width="5"/>
+  </g>
+
+  <!-- banners -->
+  <g filter="url(#shadow)">
+    <path d="M330 120h154v318l-77-42-77 42z" fill="url(#banner)" stroke="#5378a0" stroke-opacity=".5" stroke-width="4"/>
+    <path d="M1116 120h154v318l-77-42-77 42z" fill="url(#banner)" stroke="#5378a0" stroke-opacity=".5" stroke-width="4"/>
+    <path d="M365 174l42-24 42 24-42 24z" fill="#e6c56d" opacity=".8"/>
+    <circle cx="407" cy="239" r="31" fill="none" stroke="#d7bd72" stroke-width="7" opacity=".72"/>
+    <path d="M1193 150l42 24-42 24-42-24z" fill="#e6c56d" opacity=".8"/>
+    <circle cx="1193" cy="239" r="31" fill="none" stroke="#d7bd72" stroke-width="7" opacity=".72"/>
+  </g>
+
+  <!-- braziers and animated light -->
+  <g>
+    <ellipse cx="260" cy="482" rx="150" ry="120" fill="url(#fire)" filter="url(#softGlow)" opacity=".45">
+      <animate attributeName="opacity" values=".38;.55;.42;.5;.38" dur="2.8s" repeatCount="indefinite"/>
+    </ellipse>
+    <ellipse cx="1340" cy="482" rx="150" ry="120" fill="url(#fire)" filter="url(#softGlow)" opacity=".45">
+      <animate attributeName="opacity" values=".5;.4;.57;.43;.5" dur="3.2s" repeatCount="indefinite"/>
+    </ellipse>
+    <g fill="#273945" stroke="#657580" stroke-width="5">
+      <path d="M205 482h110l-20 44h-70z"/><path d="M1285 482h110l-20 44h-70z"/>
+    </g>
+    <g fill="#ff9c19">
+      <path d="M224 480q-6-42 25-61-7 35 16 45 7-44 28-62 10 43-3 78z">
+        <animate attributeName="d" dur="1.35s" repeatCount="indefinite" values="M224 480q-6-42 25-61-7 35 16 45 7-44 28-62 10 43-3 78z;M224 480q6-44 31-62-12 39 11 49 11-46 25-60 16 41-1 73z;M224 480q-6-42 25-61-7 35 16 45 7-44 28-62 10 43-3 78z"/>
+      </path>
+      <path d="M1304 480q-6-42 25-61-7 35 16 45 7-44 28-62 10 43-3 78z">
+        <animate attributeName="d" dur="1.55s" repeatCount="indefinite" values="M1304 480q-6-42 25-61-7 35 16 45 7-44 28-62 10 43-3 78z;M1304 480q6-44 31-62-12 39 11 49 11-46 25-60 16 41-1 73z;M1304 480q-6-42 25-61-7 35 16 45 7-44 28-62 10 43-3 78z"/>
+      </path>
+    </g>
+  </g>
+
+  <!-- floor and combat ring -->
+  <path d="M0 548C290 510 520 518 800 548s510-36 800 0v352H0z" fill="#101b25"/>
+  <ellipse cx="800" cy="754" rx="690" ry="225" fill="#152632" stroke="#415462" stroke-width="8"/>
+  <ellipse cx="800" cy="750" rx="565" ry="170" fill="#0f1c27" stroke="url(#rim)" stroke-width="8"/>
+  <ellipse cx="800" cy="748" rx="420" ry="124" fill="url(#floorGlow)" stroke="#61727d" stroke-opacity=".26" stroke-width="4"/>
+  <path d="M245 746h1110M350 678h900M420 820h760" stroke="#8797a0" stroke-opacity=".08" stroke-width="3"/>
+  <path d="M800 580v310M560 602l120 276M1040 602 920 878" stroke="#8797a0" stroke-opacity=".06" stroke-width="3"/>
+  <ellipse cx="800" cy="760" rx="270" ry="72" fill="#6da9ce" opacity=".045">
+    <animate attributeName="opacity" values=".035;.065;.035" dur="4s" repeatCount="indefinite"/>
+  </ellipse>
+
+  <!-- foreground vignette -->
+  <path d="M0 0h1600v900H0z" fill="none" stroke="#02050a" stroke-width="90" opacity=".48"/>
+  <path d="M0 900h1600" stroke="#02050a" stroke-width="80" opacity=".72"/>
+</svg>

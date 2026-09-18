@@ -1,0 +1,29 @@
+<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="steel" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#dbe2ea"/>
+      <stop offset="55%" stop-color="#9aa6b5"/>
+      <stop offset="100%" stop-color="#e5edf5"/>
+    </linearGradient>
+    <linearGradient id="darkSteel" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#4b5563"/>
+      <stop offset="100%" stop-color="#1f2937"/>
+    </linearGradient>
+  </defs>
+  <g>
+    <path d="M7.5 9.5H12.8V18.2Q11.2 19.3 7.5 18.2Z" fill="url(#steel)" stroke="#1f2937" stroke-width="0.9"/>
+    <rect x="7.2" y="18" width="6.2" height="2" rx="0.8" fill="url(#darkSteel)" stroke="#111827" stroke-width="0.7"/>
+    <path d="M6.2 19.8H13.6L16.2 21.2Q16.9 22.0 16.0 22.9H9.4Q7.4 22.9 6.2 22.1Z" fill="url(#steel)" stroke="#1f2937" stroke-width="0.9"/>
+    <path d="M12.6 21.0H15.7Q16.1 21.4 15.8 21.9H12.6Z" fill="url(#darkSteel)" opacity="0.5"/>
+    <rect x="6.0" y="22.9" width="10.2" height="1.6" rx="0.4" fill="#111827"/>
+  </g>
+  <g>
+    <path d="M19.2 9.5H24.5V18.2Q22.9 19.3 19.2 18.2Z" fill="url(#steel)" stroke="#1f2937" stroke-width="0.9"/>
+    <rect x="18.9" y="18" width="6.2" height="2" rx="0.8" fill="url(#darkSteel)" stroke="#111827" stroke-width="0.7"/>
+    <path d="M17.9 19.8H25.3L26.0 22.1Q26.0 22.9 24.4 22.9H19.5Q18.4 22.9 17.9 22.2Z" fill="url(#steel)" stroke="#1f2937" stroke-width="0.9"/>
+    <path d="M21.9 21.0H24.8Q25.2 21.4 24.9 21.9H21.9Z" fill="url(#darkSteel)" opacity="0.5"/>
+    <rect x="17.7" y="22.9" width="8.7" height="1.6" rx="0.4" fill="#111827"/>
+  </g>
+  <path d="M8.5 11.0 L11.8 11.0" stroke="rgba(255,255,255,0.45)" stroke-width="0.7" stroke-linecap="round"/>
+  <path d="M20.2 11.0 L23.5 11.0" stroke="rgba(255,255,255,0.45)" stroke-width="0.7" stroke-linecap="round"/>
+</svg>

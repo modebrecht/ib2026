@@ -4,6 +4,7 @@
   if (!/\/tk2\/A7\.html$/i.test(location.pathname)) return;
 
   var TRAINING_KEY = 'tk_a7_training_v1';
+  var PROGRESS_KEY = 'tk_a7_progress_v1';
 
   function readTraining(){
     try {
@@ -48,12 +49,16 @@
     var attempts = correct + wrong;
     var moves = buckets.reduce(function(sum, b){ return sum + (Number(b.moves) || 0); }, 0);
     var pairs = buckets.reduce(function(sum, b){ return sum + (Number(b.pairs) || 0); }, 0);
+    var bestAccuracy = runs ? buckets.reduce(function(best, b){
+      return Math.max(best, Number(b.bestAccuracy) || 0);
+    }, 0) : null;
     return {
       runs: runs,
       correct: correct,
       wrong: wrong,
       attempts: attempts,
-      accuracy: attempts ? Math.round(correct / attempts * 100) : null,
+      accuracy: bestAccuracy,
+      trainingAccuracy: attempts ? Math.round(correct / attempts * 100) : null,
       moves: moves,
       pairs: pairs
     };
@@ -66,13 +71,116 @@
     var overallCorrect = challenge.correct + hunt.correct;
     var overallWrong = challenge.wrong + hunt.wrong;
     var overallAttempts = overallCorrect + overallWrong;
+    var assessmentScores = [challenge.accuracy, hunt.accuracy].filter(function(value){ return value !== null; });
+    var overallAccuracy = assessmentScores.length ? Math.round(assessmentScores.reduce(function(sum, value){ return sum + value; }, 0) / assessmentScores.length) : null;
     return {
       challenge: challenge,
       hunt: hunt,
       memory: memory,
       overallAttempts: overallAttempts,
-      overallAccuracy: overallAttempts ? Math.round(overallCorrect / overallAttempts * 100) : null
+      overallAccuracy: overallAccuracy,
+      trainingAccuracy: overallAttempts ? Math.round(overallCorrect / overallAttempts * 100) : null
     };
+  }
+
+  function syncAssessmentProgress(data, stats){
+    var progress = {};
+    try { progress = JSON.parse(localStorage.getItem(PROGRESS_KEY) || '{}'); } catch (e) {}
+
+    var s = summary(data);
+    var target = Number(progress.target);
+    if (!Number.isFinite(target) || target <= 0) target = 70;
+    var assessmentAccuracy = stats.overallAccuracy === null ? 0 : stats.overallAccuracy;
+    var next = Object.assign({}, progress, {
+      schemaVersion: Math.max(Number(progress.schemaVersion) || 0, 2),
+      completed: s.ready,
+      completedStations: s.completed,
+      stations: {challenge:s.challenge, hunt:s.hunt, memory:s.memory},
+      completedRuns: s.total,
+      accuracy: assessmentAccuracy,
+      trainingAccuracy: stats.trainingAccuracy === null ? 0 : stats.trainingAccuracy,
+      bestAccuracyByMode: {
+        challenge: stats.challenge.accuracy === null ? 0 : stats.challenge.accuracy,
+        hunt: stats.hunt.accuracy === null ? 0 : stats.hunt.accuracy
+      },
+      target: target,
+      targetReached: stats.overallAccuracy !== null && assessmentAccuracy >= target,
+      pdfReady: s.ready,
+      gradingRule: 'best-result-per-station'
+    });
+
+    var previousComparable = Object.assign({}, progress);
+    var nextComparable = Object.assign({}, next);
+    delete previousComparable.updatedAt;
+    delete nextComparable.updatedAt;
+    if (JSON.stringify(previousComparable) !== JSON.stringify(nextComparable)) {
+      next.updatedAt = new Date().toISOString();
+      localStorage.setItem(PROGRESS_KEY, JSON.stringify(next));
+    }
+  }
+
+  function canonicalSyncAssessmentProgress(){
+    var data = readTraining();
+    var stats = statisticsData(data);
+    syncAssessmentProgress(data, stats);
+    return {data:data, stats:stats};
+  }
+
+  function renderAssessmentUi(data, stats){
+    var overall = stats.overallAccuracy === null ? '–' : stats.overallAccuracy + ' %';
+    var statsOverall = document.getElementById('statsOverallAccuracy');
+    var evidenceAccuracy = document.getElementById('evidenceAccuracy');
+    if (statsOverall) {
+      statsOverall.textContent = overall;
+      var statsLabel = statsOverall.parentElement && statsOverall.parentElement.querySelector('span');
+      if (statsLabel) statsLabel.textContent = 'Fleissnoten-Genauigkeit · bestes Resultat je Station';
+    }
+    if (evidenceAccuracy) {
+      evidenceAccuracy.textContent = overall;
+      var evidenceLabel = evidenceAccuracy.parentElement && evidenceAccuracy.parentElement.querySelector('span');
+      if (evidenceLabel) evidenceLabel.textContent = 'Fleissnoten-Genauigkeit';
+    }
+
+    var cards = Array.from(document.querySelectorAll('#stationStats .station-card'));
+    [['Challenge', stats.challenge], ['Fehlerjagd', stats.hunt]].forEach(function(entry){
+      var title = entry[0];
+      var detail = entry[1];
+      var card = cards.find(function(candidate){
+        var heading = candidate.querySelector('h3');
+        return heading && heading.textContent.trim() === title;
+      });
+      if (!card) return;
+      var values = card.querySelectorAll('.station-value');
+      if (values[1]) {
+        var label = values[1].querySelector('span');
+        var strong = values[1].querySelector('strong');
+        if (label) label.textContent = 'Bestwert';
+        if (strong) strong.textContent = detail.accuracy === null ? '–' : detail.accuracy + ' %';
+      }
+      if (values[2]) {
+        var correctLabel = values[2].querySelector('span');
+        if (correctLabel) correctLabel.textContent = 'richtig ges.';
+      }
+      if (values[3]) {
+        var wrongLabel = values[3].querySelector('span');
+        if (wrongLabel) wrongLabel.textContent = 'falsch ges.';
+      }
+    });
+
+    var rows = document.querySelectorAll('#evidenceRows .evidence-row');
+    rows.forEach(function(row){
+      var cells = row.querySelectorAll('.evidence-cell');
+      if (cells[1]) {
+        var label = cells[1].querySelector('span');
+        if (label) label.textContent = 'Training gesamt';
+      }
+    });
+
+    var hint = document.getElementById('evidenceHint');
+    var s = summary(data);
+    if (hint && s.ready && stats.overallAccuracy !== null) {
+      hint.textContent = 'PDF freigeschaltet · Fleissnoten-Genauigkeit ' + stats.overallAccuracy + ' % · bestes Resultat je Station · Ziel 70 %.';
+    }
   }
 
   function showToast(text){
@@ -92,7 +200,11 @@
   }
 
   function renderHeaderPdfState(){
-    var s = summary(readTraining());
+    var synced = canonicalSyncAssessmentProgress();
+    var data = synced.data;
+    var stats = synced.stats;
+    var s = summary(data);
+    renderAssessmentUi(data, stats);
     var button = document.getElementById('downloadEvidencePdf');
     var status = document.getElementById('evidenceStatus');
     var hint = document.getElementById('evidenceHint');
@@ -103,7 +215,7 @@
       button.title = s.ready ? 'Trainingsnachweis als PDF herunterladen' : 'PDF-Freigabe anzeigen';
     }
     if (status) status.textContent = s.ready ? 'PDF bereit ✓' : s.completed + ' / 3 Stationen';
-    if (hint) hint.textContent = s.ready ? 'PDF freigeschaltet.' : 'Schliesse zuerst alle 3 Trainings einmal vollständig ab.';
+    if (hint && !s.ready) hint.textContent = 'Schliesse zuerst alle 3 Trainings einmal vollständig ab.';
   }
 
   function downloadClearPdf(){
@@ -117,7 +229,9 @@
     var student = typeof requireStudentName === 'function' ? requireStudentName() : '';
     if (!student) return;
 
-    var stats = statisticsData(data);
+    var synced = canonicalSyncAssessmentProgress();
+    data = synced.data;
+    var stats = synced.stats;
     var canvas = document.createElement('canvas');
     canvas.width = 1200;
     canvas.height = 850;
@@ -140,7 +254,7 @@
     ctx.fillText('TRAININGSNACHWEIS TASTENKÜRZEL', 600, 136);
     ctx.fillStyle = '#94a3b8';
     ctx.font = '500 17px sans-serif';
-    ctx.fillText('Statistik des abgeschlossenen Trainings', 600, 168);
+    ctx.fillText('Bestes Resultat zählt · Gesamttraining bleibt dokumentiert', 600, 168);
 
     ctx.fillStyle = 'rgba(56,189,248,.13)';
     ctx.strokeStyle = '#38bdf8';
@@ -172,7 +286,7 @@
 
       var labels = isMemory ?
         [['Runden', String(detail.runs)], ['Paare', String(detail.pairs)], ['Züge', String(detail.moves)], ['Genauigkeit', 'separat']] :
-        [['Runden', String(detail.runs)], ['Genauigkeit', detail.accuracy === null ? '–' : detail.accuracy + ' %'], ['richtig', String(detail.correct)], ['falsch', String(detail.wrong)]];
+        [['Runden', String(detail.runs)], ['Bestwert', detail.accuracy === null ? '–' : detail.accuracy + ' %'], ['richtig ges.', String(detail.correct)], ['falsch ges.', String(detail.wrong)]];
 
       labels.forEach(function(item, index){
         var col = index % 2;
@@ -207,7 +321,7 @@
     ctx.textAlign = 'left';
     ctx.fillStyle = '#94a3b8';
     ctx.font = '600 15px sans-serif';
-    ctx.fillText('Gesamtgenauigkeit aus Challenge + Fehlerjagd', 120, 657);
+    ctx.fillText('Fleissnoten-Genauigkeit · bestes Resultat je Station', 120, 657);
     ctx.fillStyle = '#f8fafc';
     ctx.font = '800 28px sans-serif';
     ctx.fillText(stats.overallAccuracy === null ? '–' : stats.overallAccuracy + ' %', 120, 697);
@@ -242,16 +356,40 @@
   }
 
   function install(){
+    // A7.html still contains the legacy cumulative writer. Replace that global
+    // contract once the page has defined it, so every later training save uses
+    // the same best-result grading rule as both PDF exporters.
+    try { window.syncA7Progress = canonicalSyncAssessmentProgress; } catch (e) {}
+
+    var baseRenderStats = typeof window.renderStats === 'function' ? window.renderStats : null;
+    var baseRenderEvidence = typeof window.renderEvidence === 'function' ? window.renderEvidence : null;
+
+    if (baseRenderStats) {
+      window.renderStats = function(){
+        baseRenderStats.apply(this, arguments);
+        var synced = canonicalSyncAssessmentProgress();
+        renderAssessmentUi(synced.data, synced.stats);
+      };
+    }
+    if (baseRenderEvidence) {
+      window.renderEvidence = function(){
+        baseRenderEvidence.apply(this, arguments);
+        renderHeaderPdfState();
+      };
+    }
+
     var placeholder = document.querySelector('.header-nav [data-view="evidence"]');
     var button = document.getElementById('downloadEvidencePdf');
-    if (!placeholder || !button) return;
+    if (!button) return;
 
-    button.disabled = false;
-    button.className = placeholder.className;
-    button.dataset.view = 'evidence';
-    button.innerHTML = '<span class="header-nav-ico">▤</span><span>PDF</span>';
-    button.title = 'Trainingsnachweis als PDF herunterladen';
-    placeholder.replaceWith(button);
+    if (placeholder && placeholder !== button) {
+      button.disabled = false;
+      button.className = placeholder.className;
+      button.dataset.view = 'evidence';
+      button.innerHTML = '<span class="header-nav-ico">▤</span><span>PDF</span>';
+      button.title = 'Trainingsnachweis als PDF herunterladen';
+      placeholder.replaceWith(button);
+    }
 
     button.onclick = function(event){
       event.preventDefault();
@@ -260,15 +398,21 @@
       renderHeaderPdfState();
     };
 
-    try { window.renderEvidence = renderHeaderPdfState; } catch (e) {}
     try { window.downloadTrainingPdf = downloadClearPdf; } catch (e) {}
 
-    renderHeaderPdfState();
+    if (typeof window.renderStats === 'function') window.renderStats();
+    if (typeof window.renderEvidence === 'function') window.renderEvidence();
+    else renderHeaderPdfState();
 
     window.addEventListener('storage', function(event){
-      if (event.key === TRAINING_KEY) renderHeaderPdfState();
+      if (event.key === TRAINING_KEY) {
+        if (typeof window.renderStats === 'function') window.renderStats();
+        if (typeof window.renderEvidence === 'function') window.renderEvidence();
+        else renderHeaderPdfState();
+      }
     });
   }
 
-  window.addEventListener('load', install, {once:true});
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', install, {once:true});
+  else install();
 })();

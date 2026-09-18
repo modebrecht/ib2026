@@ -1,0 +1,737 @@
+/* Shortcut Quest 2026 — modern UI pass 2: exercise interactions */
+
+/* ANSWER CHOICES ------------------------------------------------------- */
+#learnSections .a8-choice-ui {
+  gap: .72rem;
+  margin-top: .62rem;
+}
+
+#learnSections .a8-choice-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .62rem;
+  width: min(100%, 780px);
+}
+
+#learnSections .a8-choice-option {
+  position: relative;
+  min-height: 58px;
+  padding: .82rem 2.8rem .82rem 1rem;
+  border: 1px solid rgba(148, 163, 184, .17);
+  border-radius: 1rem;
+  background:
+    linear-gradient(145deg, rgba(28, 42, 66, .82), rgba(13, 24, 43, .88));
+  color: #edf4ff;
+  font-size: .94rem;
+  font-weight: 760;
+  line-height: 1.25;
+  text-align: left;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .025);
+  transition: transform .14s ease, border-color .14s ease, background .14s ease, box-shadow .14s ease;
+}
+
+#learnSections .a8-choice-option::after {
+  content: "";
+  position: absolute;
+  right: .95rem;
+  top: 50%;
+  width: 1.1rem;
+  height: 1.1rem;
+  border: 1.5px solid rgba(148, 163, 184, .38);
+  border-radius: 50%;
+  transform: translateY(-50%);
+}
+
+#learnSections .a8-choice-option:hover:not(:disabled):not(.removed) {
+  transform: translateY(-2px);
+  border-color: rgba(96, 165, 250, .48);
+  background: linear-gradient(145deg, rgba(37, 63, 102, .76), rgba(15, 30, 54, .92));
+  box-shadow: 0 10px 24px rgba(2, 6, 23, .22);
+}
+
+#learnSections .a8-choice-option.selected {
+  border-color: rgba(251, 191, 36, .78);
+  background: linear-gradient(145deg, rgba(120, 78, 12, .32), rgba(45, 38, 30, .76));
+  box-shadow: 0 0 0 2px rgba(251, 191, 36, .08), 0 10px 24px rgba(245, 158, 11, .08);
+}
+
+#learnSections .a8-choice-option.selected::after {
+  border-color: #fbbf24;
+  background: #fbbf24;
+  box-shadow: inset 0 0 0 4px #1b2639;
+}
+
+#learnSections .a8-choice-option.correct,
+#learnSections .a8-choice-option.correct-answer {
+  border-color: rgba(34, 197, 94, .52);
+  background: linear-gradient(145deg, rgba(22, 101, 52, .25), rgba(12, 37, 31, .72));
+  color: #dcfce7;
+}
+
+#learnSections .a8-choice-option.correct::after,
+#learnSections .a8-choice-option.correct-answer::after {
+  content: "✓";
+  display: grid;
+  place-items: center;
+  border-color: rgba(34, 197, 94, .72);
+  background: rgba(34, 197, 94, .18);
+  color: #86efac;
+  font-size: .72rem;
+  font-weight: 900;
+}
+
+#learnSections .a8-choice-option.wrong {
+  border-color: rgba(248, 113, 113, .48);
+  background: linear-gradient(145deg, rgba(127, 29, 29, .22), rgba(48, 23, 31, .72));
+  color: #fee2e2;
+}
+
+#learnSections .a8-choice-option.wrong::after {
+  content: "×";
+  display: grid;
+  place-items: center;
+  border-color: rgba(248, 113, 113, .65);
+  background: rgba(248, 113, 113, .14);
+  color: #fca5a5;
+  font-size: .88rem;
+  font-weight: 900;
+}
+
+/* A used hint should reduce clutter instead of showing a dead answer. */
+#learnSections .a8-choice-option.removed {
+  display: none !important;
+}
+
+/* HINT ---------------------------------------------------------------- */
+#learnSections .a8-hint-row {
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+  margin-top: .08rem;
+  padding-top: .58rem;
+  border-top: 1px solid rgba(148, 163, 184, .08);
+}
+
+#learnSections .a8-hint-button {
+  min-height: 36px;
+  padding: .42rem .68rem;
+  border: 1px solid rgba(251, 191, 36, .22);
+  border-radius: .72rem;
+  background: rgba(161, 98, 7, .10);
+  color: #fde68a;
+  font-size: .77rem;
+  font-weight: 800;
+  box-shadow: none;
+  transition: border-color .14s ease, background .14s ease, transform .14s ease;
+}
+
+#learnSections .a8-hint-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  border-color: rgba(251, 191, 36, .42);
+  background: rgba(161, 98, 7, .18);
+}
+
+#learnSections .a8-hint-button:disabled {
+  opacity: .38;
+}
+
+#learnSections .a8-hint-note {
+  color: #8193aa;
+  font-size: .76rem;
+}
+
+/* DND / MATCHING ------------------------------------------------------- */
+#learnSections .a8-dnd-shell {
+  gap: .72rem;
+  margin-top: .55rem;
+}
+
+#learnSections .a8-dnd-head {
+  min-height: 34px;
+  padding-inline: .05rem;
+}
+
+#learnSections .a8-dnd-help {
+  color: #8295ad;
+  font-size: .78rem;
+}
+
+#learnSections .a8-dnd-progress {
+  padding: .3rem .58rem;
+  border: 1px solid rgba(96, 165, 250, .18);
+  border-radius: .65rem;
+  background: rgba(30, 64, 175, .10);
+  color: #bfdbfe;
+  font-size: .74rem;
+  font-weight: 850;
+}
+
+#learnSections .a8-dnd-shell .dnd-target.a8-active {
+  min-height: 104px;
+  padding: 1rem 1.05rem !important;
+  border: 1px solid rgba(96, 165, 250, .28) !important;
+  border-radius: 1.1rem !important;
+  background:
+    radial-gradient(420px 120px at 6% 0%, rgba(96, 165, 250, .11), transparent 74%),
+    rgba(10, 21, 39, .70) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.025), 0 14px 30px rgba(2,6,23,.16);
+}
+
+#learnSections .a8-dnd-shell .dnd-target.a8-active .question-text {
+  margin: 0 !important;
+  color: #f8fafc;
+  font-size: clamp(1rem, 2vw, 1.18rem) !important;
+  font-weight: 850 !important;
+  line-height: 1.25;
+}
+
+#learnSections .a8-dnd-shell .dnd-target.a8-active .drop-slot {
+  min-width: 162px;
+  min-height: 52px;
+  border: 1px dashed rgba(96, 165, 250, .46) !important;
+  border-radius: .9rem !important;
+  background: rgba(8, 18, 34, .72) !important;
+  color: #bfdbfe !important;
+  font-size: .9rem;
+  font-weight: 850;
+}
+
+#learnSections .a8-dnd-shell .dnd-pool {
+  min-height: 58px;
+  padding: .62rem !important;
+  gap: .48rem !important;
+  border: 1px solid rgba(148, 163, 184, .11) !important;
+  border-radius: 1rem !important;
+  background: rgba(7, 16, 31, .34) !important;
+}
+
+#learnSections .a8-dnd-shell .dnd-token {
+  min-height: 40px;
+  padding: .5rem .72rem !important;
+  border: 1px solid rgba(96, 165, 250, .28) !important;
+  border-radius: .72rem !important;
+  background: rgba(27, 45, 72, .74) !important;
+  color: #dbeafe !important;
+  font-size: .84rem;
+  font-weight: 820 !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.025) !important;
+}
+
+#learnSections .a8-dnd-shell .dnd-token:hover {
+  transform: translateY(-2px);
+  border-color: rgba(96, 165, 250, .60) !important;
+  background: rgba(37, 99, 235, .20) !important;
+}
+
+#learnSections .a8-dnd-assignments {
+  gap: .38rem;
+}
+
+#learnSections .a8-dnd-assignment {
+  min-height: 32px;
+  padding: .34rem .55rem;
+  border: 1px solid rgba(148, 163, 184, .13);
+  border-radius: .65rem;
+  background: rgba(15, 23, 42, .30);
+  color: #8193aa;
+  font-size: .72rem;
+}
+
+#learnSections .a8-dnd-assignment strong {
+  color: #dbe7f5;
+}
+
+#learnSections .a8-dnd-done.visible {
+  padding: .72rem .85rem;
+  border-radius: .85rem;
+  border-color: rgba(34, 197, 94, .22);
+  background: rgba(22, 101, 52, .10);
+  color: #bbf7d0;
+}
+
+/* COMBO BUILDER -------------------------------------------------------- */
+#learnSections .combo-builder {
+  padding: 1rem;
+  gap: .72rem;
+}
+
+#learnSections .combo-builder > h3 {
+  color: #f8fafc;
+  font-size: 1rem;
+  font-weight: 850;
+}
+
+#learnSections .combo-rows {
+  gap: .66rem;
+}
+
+#learnSections .combo-row {
+  padding: .82rem .9rem;
+  gap: .62rem;
+  border: 1px solid rgba(148, 163, 184, .11);
+  border-radius: 1rem;
+  background: rgba(7, 16, 31, .30);
+}
+
+#learnSections .combo-title {
+  color: #eef5ff;
+  font-size: .9rem;
+  font-weight: 820;
+}
+
+#learnSections .combo-prompt .small {
+  color: #8092a9;
+  font-size: .76rem;
+  line-height: 1.4;
+}
+
+#learnSections .a8-filtered-combo {
+  align-items: center !important;
+  gap: .46rem !important;
+  flex-wrap: wrap;
+}
+
+#learnSections .a8-filtered-combo .combo-slot {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+#learnSections .a8-filtered-combo .combo-slot + .combo-slot::before {
+  content: "+";
+  margin-right: .46rem;
+  color: #60738e;
+  font-size: .9rem;
+  font-weight: 900;
+}
+
+#learnSections .a8-filtered-combo .combo-slot select {
+  width: auto !important;
+  min-width: 112px !important;
+  max-width: 168px !important;
+  height: 46px !important;
+  padding: .5rem 2rem .5rem .72rem !important;
+  border: 1px solid rgba(148, 163, 184, .20) !important;
+  border-radius: .82rem !important;
+  background-color: #101d32 !important;
+  color: #eaf2fc !important;
+  font-size: .85rem !important;
+  font-weight: 820 !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.025);
+}
+
+#learnSections .a8-filtered-combo .combo-slot select:hover {
+  border-color: rgba(96, 165, 250, .42) !important;
+}
+
+#learnSections .a8-filtered-combo .combo-slot select:focus {
+  outline: 2px solid rgba(96, 165, 250, .22) !important;
+  outline-offset: 2px !important;
+  border-color: rgba(96, 165, 250, .62) !important;
+}
+
+#learnSections .a8-filtered-combo .a8-combo-select-hint {
+  flex: 1 0 100%;
+  margin-top: .12rem;
+}
+
+/* FAST / NARRATIVE ----------------------------------------------------- */
+#learnSections .fast-paced {
+  gap: .88rem;
+  padding: 1.05rem;
+}
+
+#learnSections .fast-paced-timer-wrap {
+  width: 96px;
+  height: 96px;
+  border-width: 1px;
+  box-shadow: 0 0 24px rgba(245, 158, 11, .10), inset 0 0 18px rgba(245, 158, 11, .08);
+}
+
+#learnSections .fast-paced-timer {
+  min-width: 52px;
+  font-size: 1.75rem;
+}
+
+#learnSections .fast-paced-hourglass {
+  width: 30px;
+  height: 30px;
+}
+
+#learnSections .fast-paced-prompt,
+#learnSections .narrative-prompt {
+  font-size: clamp(1.08rem, 2.4vw, 1.42rem);
+  letter-spacing: -.01em;
+  text-transform: none;
+}
+
+#learnSections .fast-paced-options,
+#learnSections .narrative-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .6rem;
+  width: min(100%, 760px);
+}
+
+#learnSections .fast-paced-option,
+#learnSections .narrative-option {
+  min-height: 54px;
+  margin: 0;
+  padding: .75rem .9rem;
+  border: 1px solid rgba(148, 163, 184, .16);
+  border-radius: .95rem;
+  background: rgba(19, 33, 55, .80);
+  color: #edf4ff;
+  font-size: .9rem;
+  font-weight: 790;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.025);
+}
+
+#learnSections .fast-paced-option:hover:not(:disabled),
+#learnSections .narrative-option:hover:not(:disabled) {
+  transform: translateY(-2px);
+  border-color: rgba(96, 165, 250, .46);
+  background: rgba(28, 51, 84, .88);
+}
+
+#learnSections .fast-paced-start {
+  min-height: 44px;
+  padding: .68rem 1rem;
+  border-radius: .82rem;
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  color: #182235;
+  font-weight: 850;
+  box-shadow: 0 8px 20px rgba(245, 158, 11, .12);
+}
+
+#learnSections .narrative-card {
+  gap: .9rem;
+  padding: 1.05rem;
+}
+
+#learnSections .narrative-scene {
+  color: #a5b6ca;
+  font-size: .85rem;
+  line-height: 1.45;
+}
+
+#learnSections .narrative-blanks {
+  gap: .36rem;
+  font-size: 1rem;
+}
+
+#learnSections .narrative-blank {
+  min-width: 38px;
+  padding: .24rem .34rem;
+  border-bottom-width: 2px;
+}
+
+/* FEEDBACK ------------------------------------------------------------- */
+#learnSections .task-field.correct {
+  border-color: rgba(34, 197, 94, .24);
+  background: rgba(22, 101, 52, .08);
+}
+
+#learnSections .task-field.incorrect {
+  border-color: rgba(248, 113, 113, .24);
+  background: rgba(127, 29, 29, .08);
+}
+
+#learnSections .result-text:not(:empty) {
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  padding: .5rem .7rem;
+  border: 1px solid rgba(148, 163, 184, .10);
+  border-radius: .78rem;
+  background: rgba(7, 16, 31, .30);
+  color: #a7b7ca;
+  font-size: .8rem;
+  line-height: 1.35;
+}
+
+#learnSections .a8-xp-earned {
+  margin-left: .45rem;
+  padding: .24rem .48rem;
+  border-color: rgba(96, 165, 250, .24);
+  background: rgba(30, 64, 175, .12);
+  color: #bfdbfe;
+  font-size: .74rem;
+  letter-spacing: .01em;
+}
+
+#learnSections .action-card button.check-section,
+#learnSections .action-card .check-section {
+  min-width: 132px;
+}
+
+@media (max-width: 700px) {
+  #learnSections .a8-choice-options,
+  #learnSections .fast-paced-options,
+  #learnSections .narrative-options {
+    grid-template-columns: 1fr;
+  }
+
+  #learnSections .a8-choice-option,
+  #learnSections .fast-paced-option,
+  #learnSections .narrative-option {
+    min-height: 52px;
+  }
+
+  #learnSections .a8-dnd-shell .dnd-target.a8-active {
+    min-height: 0;
+    padding: .9rem !important;
+  }
+
+  #learnSections .a8-filtered-combo {
+    align-items: stretch !important;
+  }
+
+  #learnSections .a8-filtered-combo .combo-slot {
+    flex: 1 1 calc(50% - .3rem);
+  }
+
+  #learnSections .a8-filtered-combo .combo-slot + .combo-slot::before {
+    display: none;
+  }
+
+  #learnSections .a8-filtered-combo .combo-slot select {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+  }
+
+  #learnSections .action-card {
+    align-items: stretch;
+  }
+
+  #learnSections .action-card button {
+    flex: 1 1 140px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #learnSections .a8-choice-option,
+  #learnSections .dnd-token,
+  #learnSections .fast-paced-option,
+  #learnSections .narrative-option,
+  #learnSections .a8-hint-button {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
+/* PASS 2 STATE HARDENING */
+#learnSections .fast-paced-option.correct {
+  border-color: rgba(34, 197, 94, .58) !important;
+  background: linear-gradient(145deg, rgba(22, 101, 52, .28), rgba(12, 37, 31, .78)) !important;
+  color: #dcfce7 !important;
+}
+
+#learnSections .fast-paced-option.incorrect {
+  border-color: rgba(248, 113, 113, .52) !important;
+  background: linear-gradient(145deg, rgba(127, 29, 29, .25), rgba(48, 23, 31, .78)) !important;
+  color: #fee2e2 !important;
+}
+
+#learnSections .a8-filtered-combo .combo-slot select.correct {
+  border-color: rgba(34, 197, 94, .58) !important;
+  background-color: rgba(20, 70, 45, .72) !important;
+  color: #dcfce7 !important;
+}
+
+#learnSections .a8-filtered-combo .combo-slot select.incorrect {
+  border-color: rgba(248, 113, 113, .52) !important;
+  background-color: rgba(74, 30, 38, .72) !important;
+  color: #fee2e2 !important;
+}
+
+#learnSections .a8-dnd-assignment.correct {
+  border-color: rgba(34, 197, 94, .34) !important;
+  background: rgba(22, 101, 52, .10) !important;
+  color: #bbf7d0 !important;
+}
+
+#learnSections .a8-dnd-assignment.incorrect {
+  border-color: rgba(248, 113, 113, .34) !important;
+  background: rgba(127, 29, 29, .10) !important;
+  color: #fecaca !important;
+}
+
+
+
+/* INTEGRATED SECTION ACTIONS ------------------------------------------ */
+#learnSections .card--section > .section-actions {
+  display: grid;
+  grid-template-columns: max-content max-content minmax(0, 1fr);
+  align-items: center;
+  gap: .7rem;
+  margin: 0;
+  padding: .9rem 1.35rem 1.15rem 1.45rem;
+  border: 0;
+  border-top: 1px solid rgba(148, 163, 184, .11);
+  border-radius: 0;
+  background: linear-gradient(180deg, rgba(15, 23, 42, .08), rgba(7, 16, 31, .28));
+  box-shadow: none;
+}
+
+#learnSections .section-actions button {
+  width: auto;
+  min-width: 0;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .48rem;
+  cursor: pointer;
+}
+
+#learnSections .section-actions .section-action-icon {
+  width: 1.05rem;
+  height: 1.05rem;
+  flex: 0 0 auto;
+}
+
+#learnSections .section-actions .check-section {
+  min-height: 48px;
+  padding: .72rem 1.05rem;
+  border: 1px solid rgba(251, 191, 36, .58);
+  border-radius: .88rem;
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  color: #172033;
+  font-size: .9rem;
+  font-weight: 850;
+  letter-spacing: -.01em;
+  box-shadow: 0 8px 22px rgba(245, 158, 11, .12), inset 0 1px 0 rgba(255, 255, 255, .28);
+  transition: transform .16s ease, box-shadow .16s ease, filter .16s ease;
+}
+
+#learnSections .section-actions .check-section:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.035);
+  box-shadow: 0 11px 28px rgba(245, 158, 11, .18), inset 0 1px 0 rgba(255, 255, 255, .30);
+}
+
+#learnSections .section-actions .reset-section {
+  min-height: 42px;
+  padding: .6rem .76rem;
+  border: 1px solid rgba(148, 163, 184, .18);
+  border-radius: .78rem;
+  background: rgba(15, 23, 42, .28);
+  color: #91a4bd;
+  font-size: .78rem;
+  font-weight: 700;
+  box-shadow: none;
+  transition: color .15s ease, border-color .15s ease, background .15s ease;
+}
+
+#learnSections .section-actions .reset-section:hover {
+  color: #dbe7f5;
+  border-color: rgba(148, 163, 184, .32);
+  background: rgba(30, 41, 59, .52);
+}
+
+#learnSections .section-actions .result-text {
+  grid-column: 3;
+  margin: 0;
+  min-width: 0;
+  color: #9fb0c7;
+}
+
+@keyframes sq-ready-check-pulse {
+  0%, 100% {
+    box-shadow: 0 8px 22px rgba(245, 158, 11, .12), 0 0 0 0 rgba(251, 191, 36, 0), inset 0 1px 0 rgba(255,255,255,.28);
+  }
+  45% {
+    box-shadow: 0 10px 26px rgba(245, 158, 11, .24), 0 0 0 5px rgba(251, 191, 36, .16), inset 0 1px 0 rgba(255,255,255,.32);
+  }
+}
+
+#learnSections .section-actions .check-section.is-ready {
+  animation: sq-ready-check-pulse 1.45s ease-in-out 2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #learnSections .section-actions .check-section.is-ready { animation: none; }
+}
+
+@media (max-width: 700px) {
+  #learnSections .card--section > .section-actions {
+    grid-template-columns: minmax(0, 1fr) auto;
+    padding: .85rem 1rem 1rem;
+    gap: .55rem;
+  }
+  #learnSections .section-actions .check-section {
+    width: 100%;
+  }
+  #learnSections .section-actions .reset-section {
+    padding-inline: .68rem;
+  }
+  #learnSections .section-actions .result-text {
+    grid-column: 1 / -1;
+  }
+}
+
+
+/* UNAMBIGUOUS CHOICE STATES ------------------------------------------ */
+/* Neutral buttons stay neutral. Hover and focus must never look selected. */
+#learnSections .a8-choice-option:not(.selected):not(.correct):not(.correct-answer):not(.wrong) {
+  border-color: rgba(148, 163, 184, .17) !important;
+  background: linear-gradient(145deg, rgba(28, 42, 66, .82), rgba(13, 24, 43, .88)) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .025) !important;
+}
+
+#learnSections .a8-choice-option:not(.selected):not(.correct):not(.correct-answer):not(.wrong):hover:not(:disabled):not(.removed) {
+  transform: translateY(-1px);
+  border-color: rgba(96, 165, 250, .38) !important;
+  background: linear-gradient(145deg, rgba(30, 45, 70, .86), rgba(15, 27, 47, .90)) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .03) !important;
+}
+
+#learnSections .a8-choice-option:focus {
+  outline: none;
+}
+
+#learnSections .a8-choice-option:focus-visible:not(.selected):not(.correct):not(.correct-answer):not(.wrong) {
+  outline: 2px solid rgba(96, 165, 250, .58);
+  outline-offset: 3px;
+  border-color: rgba(148, 163, 184, .17) !important;
+  background: linear-gradient(145deg, rgba(28, 42, 66, .82), rgba(13, 24, 43, .88)) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .025) !important;
+}
+
+/* Selected is the only pre-grade filled state. */
+#learnSections .a8-choice-option.selected,
+#learnSections .a8-choice-option.selected:hover,
+#learnSections .a8-choice-option.selected:focus,
+#learnSections .a8-choice-option.selected:focus-visible {
+  border-color: rgba(251, 191, 36, .88) !important;
+  background: linear-gradient(145deg, rgba(120, 78, 12, .40), rgba(55, 43, 26, .82)) !important;
+  box-shadow: 0 0 0 2px rgba(251, 191, 36, .10), 0 10px 24px rgba(245, 158, 11, .08) !important;
+}
+
+
+/* A8 replay submission policy */
+.section-submission-badge {
+  margin-left: auto;
+  flex: 0 0 auto;
+  padding: .28rem .55rem;
+  border: 1px solid rgba(148,163,184,.28);
+  border-radius: 999px;
+  background: rgba(15,23,42,.42);
+  color: var(--muted);
+  font-size: .72rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.section.submission-exhausted .section-submission-badge,
+.section-tab.submission-exhausted {
+  opacity: .55;
+}
+.section-tab.submission-exhausted {
+  cursor: not-allowed;
+  filter: saturate(.55);
+}
+@media (max-width: 560px) {
+  .section-submission-badge { font-size: .68rem; padding: .24rem .45rem; }
+}

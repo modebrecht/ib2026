@@ -1,0 +1,1311 @@
+@import url("modern-report.css");
+
+/* Shortcut Quest 2026 — modern UI pass 3: inventory, shop, skills */
+
+/* Shared game surfaces ------------------------------------------------ */
+#inventoryView .card,
+#skillsView .card,
+#shopView .card {
+  border: 1px solid rgba(148,163,184,.13);
+  border-radius: 1.45rem;
+  background:
+    radial-gradient(720px 260px at 8% -8%, rgba(96,165,250,.07), transparent 66%),
+    linear-gradient(145deg, rgba(22,35,58,.94), rgba(11,21,38,.97));
+  box-shadow: 0 24px 64px rgba(2,6,23,.32), inset 0 1px 0 rgba(255,255,255,.025);
+}
+
+#inventoryView .badge,
+#skillsView .badge,
+#shopView .badge {
+  border-radius: .68rem;
+  border-color: rgba(148,163,184,.15);
+  background: rgba(8,18,34,.48);
+  font-weight: 780;
+}
+
+/* INVENTORY ----------------------------------------------------------- */
+#inventoryView #playerCard {
+  width: 100%;
+  padding: 1.05rem;
+  overflow: hidden;
+}
+
+#inventoryView .statline-row {
+  margin-bottom: .8rem;
+  padding: .7rem .8rem;
+  border: 1px solid rgba(148,163,184,.11);
+  border-radius: 1rem;
+  background: rgba(8,18,34,.36);
+}
+
+#inventoryView .statline {
+  gap: .42rem;
+}
+
+#inventoryView #atkDisplay,
+#inventoryView #defDisplay,
+#inventoryView #hpDisplay,
+#inventoryView #itemsDisplay {
+  min-height: 34px;
+  padding: .42rem .68rem;
+  font-size: .76rem;
+  letter-spacing: .015em;
+}
+
+#inventoryView #atkDisplay { color:#fecaca; border-color:rgba(248,113,113,.20); background:rgba(127,29,29,.12); }
+#inventoryView #defDisplay { color:#bfdbfe; border-color:rgba(96,165,250,.20); background:rgba(30,64,175,.12); }
+#inventoryView #hpDisplay { color:#bbf7d0; border-color:rgba(34,197,94,.18); background:rgba(22,101,52,.12); }
+#inventoryView #itemsDisplay { color:#e2e8f0; }
+
+#inventoryView .hero-wrapper {
+  display: grid;
+  grid-template-columns: minmax(0,1.08fr) minmax(330px,.92fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+#inventoryView .equipment-layout {
+  gap: .55rem;
+  padding: .78rem;
+  border: 1px solid rgba(148,163,184,.11);
+  border-radius: 1.2rem;
+  background:
+    radial-gradient(420px 260px at 50% 45%, rgba(59,130,246,.07), transparent 72%),
+    rgba(7,16,31,.34);
+}
+
+#inventoryView .slot-row {
+  gap: .52rem;
+}
+
+#inventoryView .equipment-slot {
+  padding: .58rem;
+  border-radius: 1rem;
+  border-color: rgba(148,163,184,.13);
+  background: rgba(15,23,42,.38);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.018);
+  transition: transform .16s ease, border-color .16s ease, background .16s ease, box-shadow .16s ease;
+}
+
+#inventoryView .equipment-slot:hover {
+  transform: translateY(-1px);
+  border-color: rgba(148,163,184,.23);
+  background: rgba(22,34,54,.52);
+}
+
+#inventoryView .equipment-slot.equipped {
+  box-shadow: 0 10px 26px rgba(2,6,23,.18), inset 0 1px 0 rgba(255,255,255,.025);
+}
+
+#inventoryView .slot-body {
+  gap: .58rem;
+  min-width: 0;
+}
+
+#inventoryView .slot-icon {
+  width: 78px;
+  min-width: 78px;
+  min-height: 78px;
+  height: auto;
+  border-radius: .82rem;
+  border-color: rgba(148,163,184,.16);
+  background:
+    radial-gradient(110% 110% at 30% 10%, rgba(255,255,255,.055), transparent 60%),
+    rgba(3,8,23,.68);
+  box-shadow: inset 0 0 22px rgba(2,6,23,.55);
+}
+
+#inventoryView .slot-icon::after { display:none; }
+
+#inventoryView .slot-icon img,
+#inventoryView .slot-icon svg {
+  max-width: 100%;
+  max-height: 100%;
+  transform: scale(1.12);
+}
+
+#inventoryView .slot-header {
+  color: #9fb0c7;
+  font-size: .68rem;
+  font-weight: 820;
+  letter-spacing: .065em;
+}
+
+#inventoryView .slot-stats {
+  gap: .3rem;
+  margin-top: auto;
+}
+
+#inventoryView .hero-center {
+  min-height: 230px;
+}
+
+#inventoryView .hero-avatar {
+  border-radius: 1.12rem;
+  border-color: rgba(96,165,250,.16);
+  background:
+    radial-gradient(circle at 50% 38%, rgba(96,165,250,.14), transparent 54%),
+    linear-gradient(165deg, rgba(25,42,72,.82), rgba(8,17,32,.90));
+  box-shadow: inset 0 0 28px rgba(2,6,23,.44), 0 16px 38px rgba(2,6,23,.18);
+}
+
+#inventoryView .inventory {
+  gap: .7rem;
+  min-width: 0;
+}
+
+#inventoryView .inventory-filter-bar {
+  margin: 0;
+  padding: .38rem;
+  gap: .42rem;
+  border: 1px solid rgba(148,163,184,.11);
+  border-radius: 1rem;
+  background: rgba(8,18,34,.34);
+}
+
+#inventoryView .inventory-filter-buttons {
+  gap: .25rem;
+  padding: .2rem;
+  border: 1px solid rgba(148,163,184,.10);
+  border-radius: .82rem;
+  background: rgba(15,23,42,.38);
+}
+
+#inventoryView .inventory-filter-btn {
+  min-height: 36px;
+  padding: .46rem .7rem;
+  border: 1px solid transparent;
+  border-radius: .66rem;
+  background: transparent;
+  color: #94a8c0;
+  font-size: .76rem;
+  font-weight: 780;
+}
+
+#inventoryView .inventory-filter-btn.active {
+  color: #fff4cf;
+  border-color: rgba(251,191,36,.22);
+  background: rgba(245,158,11,.13);
+}
+
+#inventoryView .inventory-actions {
+  gap: .3rem;
+  margin-left: 0;
+}
+
+#inventoryView .inventory-actions .primary-btn {
+  min-height: 36px;
+  padding: .45rem .62rem;
+  border-radius: .68rem;
+  background: rgba(15,23,42,.48);
+  border: 1px solid rgba(148,163,184,.14);
+  color: #aebed2;
+  font-size: .74rem;
+  font-weight: 760;
+  box-shadow: none;
+}
+
+#inventoryView .inventory-actions .primary-btn:hover {
+  border-color: rgba(148,163,184,.28);
+  color: #edf4ff;
+  background: rgba(30,41,59,.62);
+  box-shadow: none;
+}
+
+#inventoryView .inventory-list {
+  gap: .56rem;
+}
+
+#inventoryView .inventory-item {
+  padding: .7rem;
+  gap: .68rem;
+  border-radius: 1rem;
+  border-color: rgba(148,163,184,.13);
+  background: rgba(8,18,34,.42);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.018);
+}
+
+#inventoryView .inventory-item:hover {
+  transform: translateY(-1px);
+  border-color: rgba(148,163,184,.24);
+  box-shadow: 0 10px 24px rgba(2,6,23,.20);
+}
+
+#inventoryView .item-left {
+  min-width: 0;
+  gap: .7rem;
+}
+
+#inventoryView .item-icon {
+  width: 62px;
+  height: 62px;
+  padding: .3rem;
+  border-radius: .78rem;
+  overflow: hidden;
+  border-color: rgba(148,163,184,.15);
+  background: rgba(3,8,23,.62);
+  box-shadow: inset 0 0 18px rgba(2,6,23,.48);
+}
+
+#inventoryView .item-icon::after { display:none; }
+
+#inventoryView .item-text { gap: .16rem; min-width:0; }
+#inventoryView .item-text strong { color:#f8fafc; font-size:.88rem; font-weight:820; }
+#inventoryView .item-text span { color:#8fa3bb; font-size:.73rem; line-height:1.35; }
+#inventoryView .item-meta { color:#9fb0c7; font-size:.72rem; }
+
+#inventoryView .item-controls {
+  min-width: 0;
+  gap: .38rem;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+#inventoryView .item-equip,
+#inventoryView .item-upgrade {
+  min-height: 36px;
+  padding: .45rem .68rem;
+  border-radius: .68rem;
+  font-size: .74rem;
+  font-weight: 800;
+}
+
+#inventoryView .item-equip {
+  border-color: rgba(96,165,250,.22);
+  background: rgba(30,64,175,.12);
+  color: #bfdbfe;
+}
+
+#inventoryView .item-equip.equipped {
+  border-color: rgba(34,197,94,.22);
+  background: rgba(22,101,52,.12);
+  color: #bbf7d0;
+}
+
+#inventoryView .skill-bonus-indicator {
+  padding: .48rem .6rem;
+  border-radius: .72rem;
+  box-shadow: none;
+}
+
+#inventoryView .skill-empty {
+  border-style: dashed;
+  border-color: rgba(148,163,184,.16);
+  background: rgba(8,18,34,.25);
+  color: #7f93ad;
+}
+
+/* SHOP ---------------------------------------------------------------- */
+#shopView .game-grid > .card {
+  width: 100%;
+  padding: 1rem;
+}
+
+#shopView .gacha-options {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .55rem;
+  margin: 0;
+}
+
+#shopView .gacha-option {
+  min-height: 88px;
+  padding: .68rem .75rem;
+  display: grid;
+  grid-template-columns: 42px minmax(0,1fr);
+  grid-template-rows: auto auto;
+  align-items: center;
+  column-gap: .65rem;
+  row-gap: .1rem;
+  text-align: left;
+  border-radius: 1rem;
+  border-color: rgba(148,163,184,.12);
+  background: rgba(8,18,34,.38);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.018);
+  transform: none;
+}
+
+#shopView .gacha-option:hover {
+  transform: translateY(-1px);
+  border-color: rgba(148,163,184,.23);
+  background: rgba(22,34,54,.54);
+}
+
+#shopView .gacha-option.active {
+  border-color: rgba(251,191,36,.34);
+  background:
+    radial-gradient(160px 90px at 18% 50%, rgba(251,191,36,.12), transparent 75%),
+    rgba(71,49,8,.20);
+  box-shadow: 0 10px 24px rgba(245,158,11,.08), inset 0 1px 0 rgba(255,255,255,.025);
+  transform: none;
+}
+
+#shopView .gacha-option .gacha-icon {
+  grid-row: 1 / 3;
+  width: 42px;
+  height: 42px;
+  border-radius: .78rem;
+  border-color: rgba(148,163,184,.14);
+  background: rgba(15,23,42,.52);
+}
+
+#shopView .gacha-option.active .gacha-icon {
+  border-color: rgba(251,191,36,.22);
+  background: rgba(245,158,11,.11);
+}
+
+#shopView .gacha-option .gacha-icon svg {
+  width: 27px;
+  height: 27px;
+  color: #cbd5e1;
+}
+
+#shopView .gacha-option.active .gacha-icon svg { color:#fde68a; }
+
+#shopView .gacha-label {
+  align-self: end;
+  color: #edf4ff;
+  font-size: .88rem;
+  font-weight: 820;
+}
+
+#shopView .gacha-remaining {
+  align-self: start;
+  color: #7f93ad;
+  font-size: .7rem;
+}
+
+#shopView .shop-buy-btn,
+#shopView #gachaBtn {
+  min-height: 52px;
+  margin-top: .75rem;
+  border-radius: .9rem;
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  border-color: rgba(251,191,36,.64);
+  color: #172033;
+  font-size: .92rem;
+  font-weight: 900;
+  letter-spacing: -.005em;
+  box-shadow: 0 12px 26px rgba(245,158,11,.16);
+}
+
+#shopView .shop-buy-btn:hover,
+#shopView #gachaBtn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 16px 30px rgba(245,158,11,.21);
+}
+
+#shopView .shop-latest {
+  margin-top: .8rem;
+  gap: .45rem;
+}
+
+#shopView .shop-latest h3 {
+  color: #e7eef8;
+  font-size: .78rem;
+  font-weight: 820;
+  letter-spacing: .055em;
+  text-transform: uppercase;
+}
+
+#shopView .shop-latest .inventory-item {
+  padding: .72rem;
+  border-radius: 1rem;
+  border-color: rgba(148,163,184,.13);
+  background: rgba(8,18,34,.42);
+  box-shadow: none;
+}
+
+#shopView .shop-latest .item-icon {
+  width: 66px;
+  height: 66px;
+  border-radius: .82rem;
+}
+
+#shopView .shop-latest .item-text strong {
+  color: #f8fafc;
+  font-size: .9rem;
+  font-weight: 830;
+}
+
+#shopView .shop-latest .item-text span,
+#shopView .shop-latest .item-meta { color:#8fa3bb; font-size:.73rem; }
+
+/* SKILLS -------------------------------------------------------------- */
+#skillsView #skillCard {
+  width: 100%;
+  padding: 1rem;
+}
+
+#skillsView .skill-wrapper {
+  display: grid;
+  grid-template-columns: minmax(250px, .72fr) minmax(0, 1.28fr);
+  gap: 1rem;
+  margin: 0;
+  align-items: start;
+}
+
+#skillsView .skill-avatar {
+  --skill-svg-min: 210px;
+  --skill-svg-fluid: 24vw;
+  --skill-svg-max: 340px;
+  width: 100%;
+  min-width: 0;
+  min-height: 310px;
+  padding: 1rem;
+  border-radius: 1.2rem;
+  border-color: rgba(167,139,250,.17);
+  background:
+    radial-gradient(circle at 50% 38%, rgba(139,92,246,.20), transparent 52%),
+    radial-gradient(circle at 50% 78%, rgba(59,130,246,.08), transparent 62%),
+    rgba(8,18,34,.42);
+  box-shadow: inset 0 0 30px rgba(2,6,23,.45), 0 16px 40px rgba(2,6,23,.16);
+}
+
+#skillsView .skill-avatar::before {
+  inset: 1rem;
+  border-radius: 1rem;
+  background: radial-gradient(circle at 50% 42%, rgba(139,92,246,.18), rgba(59,130,246,.06), transparent 72%);
+}
+
+#skillsView .skill-compendium {
+  min-width: 0;
+  gap: .65rem;
+}
+
+#skillsView .skill-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: .58rem;
+}
+
+#skillsView .inventory-item[data-skill-key] {
+  min-width: 0;
+  padding: .72rem;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: .58rem;
+  border-radius: 1rem;
+  border-color: rgba(148,163,184,.13);
+  background: rgba(8,18,34,.42);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.018);
+}
+
+#skillsView .inventory-item[data-skill-key]:hover {
+  transform: translateY(-1px);
+  border-color: rgba(167,139,250,.25);
+  box-shadow: 0 12px 26px rgba(2,6,23,.20);
+}
+
+#skillsView .inventory-item[data-skill-key] .item-left {
+  min-width: 0;
+  width: 100%;
+  flex: 0 0 auto;
+  gap: .65rem;
+}
+
+#skillsView .inventory-item[data-skill-key] .item-icon {
+  width: 60px;
+  height: 60px;
+  min-width: 60px;
+  border-radius: .8rem;
+  border-color: rgba(167,139,250,.16);
+  background: rgba(35,25,72,.34);
+  overflow: hidden;
+  box-shadow: inset 0 0 18px rgba(2,6,23,.44);
+}
+
+#skillsView .inventory-item[data-skill-key] .item-icon::after { display:none; }
+
+#skillsView .inventory-item[data-skill-key] .item-text {
+  min-width: 0;
+  gap: .16rem;
+}
+
+#skillsView .inventory-item[data-skill-key] .item-text strong {
+  color:#f8fafc;
+  font-size:.9rem;
+  font-weight:840;
+}
+
+#skillsView .inventory-item[data-skill-key] .item-text span,
+#skillsView .inventory-item[data-skill-key] .item-meta {
+  color:#8fa3bb;
+  font-size:.72rem;
+  line-height:1.35;
+}
+
+#skillsView .inventory-item[data-skill-key] .item-controls {
+  width: 100%;
+  min-width: 0;
+  flex: 0 0 auto;
+  gap: .42rem;
+  align-items: stretch;
+}
+
+#skillsView .inventory-item[data-skill-key] .item-stats {
+  gap: .3rem;
+}
+
+#skillsView .inventory-item[data-skill-key] .skill-bonus-indicator {
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  margin: 0;
+  padding: .48rem .58rem;
+  border-radius: .72rem;
+  box-shadow: none;
+}
+
+#skillsView .skill-bonus-progress {
+  height: 6px;
+  border-width: 0;
+  background: rgba(15,23,42,.72);
+}
+
+#skillsView .skill-bonus-progress-fill {
+  background: linear-gradient(90deg, #a78bfa, #60a5fa);
+  animation: none;
+}
+
+#skillsView .skill-bonus-title {
+  font-weight: 760;
+}
+
+#skillsView .skill-empty {
+  min-height: 110px;
+  display: grid;
+  place-items: center;
+  border-style: dashed;
+  border-color: rgba(148,163,184,.16);
+  background: rgba(8,18,34,.25);
+  color:#7f93ad;
+}
+
+/* Tier color is an accent, not the whole card. */
+#inventoryView .inventory-item.tier-1,
+#inventoryView .inventory-item.tier-2,
+#inventoryView .inventory-item.tier-3,
+#inventoryView .inventory-item.tier-4,
+#inventoryView .inventory-item.tier-5,
+#inventoryView .inventory-item.tier-6,
+#skillsView .inventory-item.tier-1,
+#skillsView .inventory-item.tier-2,
+#skillsView .inventory-item.tier-3,
+#skillsView .inventory-item.tier-4,
+#skillsView .inventory-item.tier-5,
+#skillsView .inventory-item.tier-6,
+#shopView .inventory-item.tier-1,
+#shopView .inventory-item.tier-2,
+#shopView .inventory-item.tier-3,
+#shopView .inventory-item.tier-4,
+#shopView .inventory-item.tier-5,
+#shopView .inventory-item.tier-6 {
+  background: rgba(8,18,34,.42);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.018);
+}
+
+#inventoryView .inventory-item.tier-1,
+#skillsView .inventory-item.tier-1,
+#shopView .inventory-item.tier-1 { border-left:3px solid rgba(148,163,184,.55); }
+#inventoryView .inventory-item.tier-2,
+#skillsView .inventory-item.tier-2,
+#shopView .inventory-item.tier-2 { border-left:3px solid rgba(74,222,128,.62); }
+#inventoryView .inventory-item.tier-3,
+#skillsView .inventory-item.tier-3,
+#shopView .inventory-item.tier-3 { border-left:3px solid rgba(96,165,250,.70); }
+#inventoryView .inventory-item.tier-4,
+#skillsView .inventory-item.tier-4,
+#shopView .inventory-item.tier-4 { border-left:3px solid rgba(192,132,252,.72); }
+#inventoryView .inventory-item.tier-5,
+#skillsView .inventory-item.tier-5,
+#shopView .inventory-item.tier-5 { border-left:3px solid rgba(251,191,36,.78); }
+#inventoryView .inventory-item.tier-6,
+#skillsView .inventory-item.tier-6,
+#shopView .inventory-item.tier-6 { border-left:3px solid rgba(248,113,113,.80); }
+
+@media (max-width: 980px) {
+  #inventoryView .hero-wrapper,
+  #skillsView .skill-wrapper {
+    grid-template-columns: 1fr;
+  }
+
+  #skillsView .skill-avatar {
+    min-height: 240px;
+  }
+}
+
+@media (max-width: 720px) {
+  #inventoryView #playerCard,
+  #skillsView #skillCard,
+  #shopView .game-grid > .card {
+    padding: .72rem;
+    border-radius: 1.12rem;
+  }
+
+  #inventoryView .equipment-layout {
+    padding: .55rem;
+  }
+
+  #inventoryView .slot-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0,1fr));
+    grid-auto-rows: auto;
+  }
+
+  #inventoryView .slot-row.middle-row .hero-center {
+    grid-column: 1 / -1;
+    order: -1;
+  }
+
+  #inventoryView .equipment-slot,
+  #inventoryView .slot-row [data-equip-slot="weapon"],
+  #inventoryView .slot-row [data-equip-slot="offhand"] {
+    min-height: 100px;
+    height: auto;
+  }
+
+  #inventoryView .slot-icon {
+    width: 58px;
+    min-width: 58px;
+    min-height: 62px;
+  }
+
+  #inventoryView .hero-center { min-height: 200px; }
+
+  #inventoryView .inventory-filter-bar {
+    align-items: stretch;
+  }
+
+  #inventoryView .inventory-filter-buttons,
+  #inventoryView .inventory-actions {
+    width: 100%;
+  }
+
+  #inventoryView .inventory-filter-buttons {
+    overflow-x: auto;
+  }
+
+  #inventoryView .inventory-filter-btn,
+  #inventoryView .inventory-actions .primary-btn {
+    flex: 1 1 0;
+    white-space: nowrap;
+  }
+
+  #inventoryView .inventory-item {
+    align-items: stretch;
+  }
+
+  #inventoryView .item-controls {
+    justify-content: flex-start;
+  }
+
+  #shopView .gacha-options {
+    grid-template-columns: 1fr;
+  }
+
+  #shopView .gacha-option {
+    min-height: 72px;
+  }
+
+  #skillsView .skill-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 460px) {
+  #inventoryView .slot-row {
+    grid-template-columns: 1fr;
+  }
+
+  #inventoryView .slot-row.middle-row .hero-center {
+    grid-column: auto;
+  }
+
+  #inventoryView .item-left {
+    min-width: 0;
+  }
+}
+
+
+/* INVENTORY 3X3 LOADOUT REPAIR --------------------------------------- */
+#inventoryView .equipment-layout {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(3, minmax(150px, 1fr));
+  gap: .68rem !important;
+  width: 100%;
+  padding: .72rem !important;
+  align-items: stretch !important;
+  justify-items: stretch !important;
+  overflow: hidden;
+}
+
+/* Flatten the historical row wrappers into one real 3x3 equipment grid. */
+#inventoryView .equipment-layout > .slot-row {
+  display: contents !important;
+}
+
+#inventoryView .equipment-slot {
+  min-width: 0 !important;
+  width: auto !important;
+  height: auto !important;
+  min-height: 150px !important;
+  padding: .62rem !important;
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  display: block;
+}
+
+#inventoryView .equipment-slot .slot-body,
+#inventoryView .equipment-slot.equipped .slot-body {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(78px, 1fr) auto;
+  align-items: stretch !important;
+  gap: .42rem !important;
+  width: 100%;
+  height: 100%;
+}
+
+#inventoryView .equipment-slot .slot-info {
+  display: contents !important;
+}
+
+#inventoryView .equipment-slot .slot-header {
+  grid-row: 1;
+  min-width: 0;
+  width: 100%;
+  min-height: 1rem;
+  display: flex;
+  align-items: center;
+  color: #aebed2;
+  font-size: .65rem;
+  font-weight: 850;
+  letter-spacing: .07em;
+  line-height: 1.15;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#inventoryView .equipment-slot .slot-icon {
+  grid-row: 2;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  height: 100% !important;
+  min-height: 78px !important;
+  max-height: none !important;
+  margin: 0;
+  display: grid;
+  place-items: center;
+  border-radius: .78rem;
+  border: 1px solid rgba(148,163,184,.13);
+  background:
+    radial-gradient(circle at 50% 42%, rgba(59,130,246,.08), transparent 58%),
+    rgba(3,8,23,.56);
+}
+
+#inventoryView .equipment-slot .slot-icon img,
+#inventoryView .equipment-slot .slot-icon svg {
+  width: auto !important;
+  height: auto !important;
+  max-width: 78% !important;
+  max-height: 78% !important;
+  transform: none !important;
+  object-fit: contain;
+}
+
+#inventoryView .equipment-slot .slot-stats {
+  grid-row: 3;
+  min-width: 0;
+  min-height: 0;
+  margin: 0 !important;
+  gap: .24rem !important;
+}
+
+#inventoryView .equipment-slot .slot-placeholder {
+  position: relative;
+  display: block;
+  width: 24px;
+  height: 24px;
+  font-size: 0 !important;
+  color: transparent !important;
+  opacity: .38;
+}
+
+#inventoryView .equipment-slot .slot-placeholder::before,
+#inventoryView .equipment-slot .slot-placeholder::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  border-radius: 999px;
+  background: #8fa3bb;
+  transform: translate(-50%, -50%);
+}
+
+#inventoryView .equipment-slot .slot-placeholder::before {
+  width: 18px;
+  height: 2px;
+}
+
+#inventoryView .equipment-slot .slot-placeholder::after {
+  width: 2px;
+  height: 18px;
+}
+
+#inventoryView .equipment-slot .slot-unequip {
+  position: absolute;
+  top: .42rem;
+  right: .42rem;
+  z-index: 4;
+}
+
+/* The avatar is one grid cell, not a floating oversized card. */
+#inventoryView .equipment-layout .hero-center,
+#inventoryView .slot-row.middle-row .hero-center {
+  min-width: 0 !important;
+  width: auto !important;
+  min-height: 150px !important;
+  height: auto !important;
+  padding: .5rem;
+  margin: 0;
+  align-self: stretch !important;
+  justify-self: stretch !important;
+  display: grid !important;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid rgba(96,165,250,.20);
+  border-radius: 1rem;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(59,130,246,.16), transparent 57%),
+    linear-gradient(165deg, rgba(17,32,57,.92), rgba(6,15,29,.95));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
+}
+
+#inventoryView .equipment-layout .hero-avatar {
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: none !important;
+  max-height: none !important;
+  padding: .35rem !important;
+  border: 0 !important;
+  border-radius: .72rem !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+}
+
+#inventoryView .equipment-layout .hero-avatar .hero-illustration,
+#inventoryView .equipment-layout .hero-avatar .hero-illustration.is-blueprint,
+#inventoryView .equipment-layout .hero-avatar .hero-illustration.is-knight {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  padding: .2rem;
+  object-fit: contain !important;
+  object-position: center !important;
+  transform: none !important;
+}
+
+@media (max-width: 720px) {
+  #inventoryView .equipment-layout {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    grid-template-rows: repeat(3, minmax(112px, 1fr));
+    gap: .38rem !important;
+    padding: .42rem !important;
+  }
+
+  #inventoryView .equipment-slot,
+  #inventoryView .slot-row [data-equip-slot="weapon"],
+  #inventoryView .slot-row [data-equip-slot="offhand"],
+  #inventoryView .equipment-layout .hero-center,
+  #inventoryView .slot-row.middle-row .hero-center {
+    min-height: 112px !important;
+    height: auto !important;
+    grid-column: auto !important;
+    order: initial !important;
+  }
+
+  #inventoryView .equipment-slot {
+    padding: .42rem !important;
+  }
+
+  #inventoryView .equipment-slot .slot-body {
+    grid-template-rows: auto minmax(58px, 1fr) auto;
+    gap: .28rem !important;
+  }
+
+  #inventoryView .equipment-slot .slot-header {
+    font-size: .54rem;
+    letter-spacing: .045em;
+  }
+
+  #inventoryView .equipment-slot .slot-icon {
+    min-height: 58px !important;
+  }
+}
+
+@media (max-width: 460px) {
+  #inventoryView .equipment-layout {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: .28rem !important;
+    padding: .32rem !important;
+  }
+
+  #inventoryView .equipment-slot,
+  #inventoryView .equipment-layout .hero-center {
+    min-height: 100px !important;
+  }
+
+  #inventoryView .equipment-slot .slot-header {
+    font-size: .49rem;
+  }
+}
+
+
+/* SKILLS COMPACT LOADOUT POLISH --------------------------------------- */
+#skillsView .skill-wrapper {
+  grid-template-columns: minmax(210px, .52fr) minmax(0, 1.48fr) !important;
+  gap: .78rem !important;
+  align-items: stretch !important;
+}
+
+#skillsView .skill-avatar {
+  --skill-svg-min: 150px !important;
+  --skill-svg-fluid: 17vw !important;
+  --skill-svg-max: 230px !important;
+  min-height: 220px !important;
+  max-height: 280px;
+  padding: .72rem !important;
+  overflow: hidden;
+}
+
+#skillsView .skill-avatar::before {
+  inset: .65rem !important;
+}
+
+#skillsView .skill-compendium {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem !important;
+}
+
+#skillsView .skill-list {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  grid-auto-rows: minmax(132px, auto);
+  gap: .5rem !important;
+  align-items: stretch;
+}
+
+#skillsView .inventory-item[data-skill-key] {
+  min-height: 132px;
+  height: 100%;
+  padding: .62rem !important;
+  gap: .42rem !important;
+  border-radius: .9rem !important;
+  position: relative;
+  overflow: hidden;
+}
+
+#skillsView .inventory-item[data-skill-key]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.025);
+}
+
+#skillsView .inventory-item[data-skill-key] .item-left {
+  gap: .52rem !important;
+  align-items: center;
+}
+
+#skillsView .inventory-item[data-skill-key] .item-icon {
+  width: 50px !important;
+  height: 50px !important;
+  min-width: 50px !important;
+  border-radius: .68rem !important;
+}
+
+#skillsView .inventory-item[data-skill-key] .item-text {
+  min-width: 0 !important;
+  gap: .1rem !important;
+}
+
+#skillsView .inventory-item[data-skill-key] .item-text strong {
+  font-size: .84rem !important;
+  line-height: 1.15;
+}
+
+#skillsView .inventory-item[data-skill-key] .item-text span {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: .68rem !important;
+  line-height: 1.28 !important;
+}
+
+#skillsView .inventory-item[data-skill-key] .item-meta {
+  font-size: .66rem !important;
+}
+
+#skillsView .inventory-item[data-skill-key] .item-controls {
+  margin-top: auto;
+  gap: .3rem !important;
+  align-items: center !important;
+}
+
+#skillsView .inventory-item[data-skill-key] .item-stats {
+  gap: .22rem !important;
+  flex-wrap: wrap;
+}
+
+#skillsView .inventory-item[data-skill-key] .skill-bonus-indicator {
+  min-height: 34px;
+  padding: .38rem .48rem !important;
+  border-radius: .62rem !important;
+  background: rgba(15,23,42,.46);
+  border-color: rgba(148,163,184,.14);
+}
+
+#skillsView .inventory-item[data-skill-key] .skill-bonus-title {
+  font-size: .68rem;
+  line-height: 1.2;
+}
+
+#skillsView .inventory-item[data-skill-key] .skill-bonus-progress {
+  height: 4px !important;
+}
+
+#skillsView .skill-bonus-indicator[data-skill-bonus-ready="true"],
+#skillsView .skill-bonus-indicator[data-skill-upgrade-ready="true"] {
+  border-color: rgba(251,191,36,.48) !important;
+  background: rgba(245,158,11,.10) !important;
+  box-shadow: 0 0 0 1px rgba(251,191,36,.08), 0 8px 22px rgba(245,158,11,.08) !important;
+}
+
+#skillsView .skill-bonus-indicator[data-skill-bonus-ready="true"] .skill-bonus-title,
+#skillsView .skill-bonus-indicator[data-skill-upgrade-ready="true"] .skill-bonus-title {
+  color: #fde68a;
+}
+
+#skillsView .skill-empty {
+  min-height: 84px !important;
+  padding: .8rem;
+  text-align: center;
+  font-size: .76rem;
+}
+
+@media (max-width: 980px) {
+  #skillsView .skill-wrapper {
+    grid-template-columns: 1fr !important;
+  }
+
+  #skillsView .skill-avatar {
+    min-height: 160px !important;
+    max-height: 190px !important;
+    --skill-svg-min: 120px !important;
+    --skill-svg-fluid: 24vw !important;
+    --skill-svg-max: 170px !important;
+  }
+}
+
+@media (max-width: 720px) {
+  #skillsView .skill-list {
+    grid-template-columns: 1fr !important;
+    grid-auto-rows: auto;
+  }
+
+  #skillsView .skill-avatar {
+    min-height: 138px !important;
+    max-height: 160px !important;
+    padding: .5rem !important;
+  }
+
+  #skillsView .inventory-item[data-skill-key] {
+    min-height: 118px;
+    padding: .56rem !important;
+  }
+
+  #skillsView .inventory-item[data-skill-key] .item-icon {
+    width: 46px !important;
+    height: 46px !important;
+    min-width: 46px !important;
+  }
+}
+
+
+/* SHOP FOCUS POLISH --------------------------------------------------- */
+#shopView .game-grid {
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+#shopView .game-grid > .card {
+  padding: .92rem !important;
+  overflow: hidden;
+}
+
+#shopView .gacha-options {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: .5rem !important;
+  margin: 0 !important;
+}
+
+#shopView .gacha-option {
+  min-width: 0;
+  min-height: 86px !important;
+  padding: .62rem .68rem !important;
+  grid-template-columns: 44px minmax(0, 1fr) !important;
+  border-radius: .92rem !important;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+#shopView .gacha-option input[type="radio"] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+#shopView .gacha-option .gacha-icon {
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: .72rem !important;
+}
+
+#shopView .gacha-label {
+  font-size: .84rem !important;
+  line-height: 1.15;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#shopView .gacha-remaining {
+  font-size: .66rem !important;
+  line-height: 1.2;
+  opacity: .82;
+}
+
+#shopView .gacha-option.active {
+  border-color: rgba(251,191,36,.50) !important;
+  background:
+    radial-gradient(170px 100px at 18% 45%, rgba(251,191,36,.14), transparent 74%),
+    linear-gradient(145deg, rgba(91,61,7,.28), rgba(25,25,32,.36)) !important;
+  box-shadow: inset 0 0 0 1px rgba(251,191,36,.08), 0 10px 24px rgba(245,158,11,.09) !important;
+}
+
+#shopView .gacha-option.active::after {
+  content: "";
+  position: absolute;
+  left: .68rem;
+  right: .68rem;
+  bottom: 0;
+  height: 2px;
+  border-radius: 999px 999px 0 0;
+  background: rgba(251,191,36,.92);
+}
+
+#shopView #gachaBtn.shop-buy-btn {
+  width: 100%;
+  min-height: 54px !important;
+  margin-top: .62rem !important;
+  padding: .62rem .82rem !important;
+  display: grid;
+  grid-template-columns: 22px 1fr auto;
+  align-items: center;
+  gap: .58rem;
+  border-radius: .88rem !important;
+  text-align: left;
+}
+
+#shopView #gachaBtn .shop-buy-icon {
+  width: 20px;
+  height: 20px;
+}
+
+#shopView #gachaBtn > span:not(.shop-buy-price) {
+  font-size: .9rem;
+  font-weight: 900;
+}
+
+#shopView #gachaBtn .shop-buy-price {
+  padding: .28rem .48rem;
+  border-radius: 999px;
+  border: 1px solid rgba(23,32,51,.20);
+  background: rgba(255,255,255,.22);
+  font-size: .72rem;
+  font-weight: 850;
+  white-space: nowrap;
+}
+
+#shopView .shop-latest {
+  margin-top: .64rem !important;
+  padding-top: .58rem;
+  border-top: 1px solid rgba(148,163,184,.10);
+}
+
+#shopView .shop-latest h3 {
+  margin: 0 !important;
+  font-size: .7rem !important;
+  color: #8498b3 !important;
+}
+
+#shopView .shop-latest-empty {
+  margin: .32rem 0 0;
+  color: #71849d;
+  font-size: .72rem;
+}
+
+@media (max-width: 900px) {
+  #shopView .gacha-options {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 520px) {
+  #shopView .game-grid > .card {
+    padding: .68rem !important;
+  }
+
+  #shopView .gacha-options {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: .38rem !important;
+  }
+
+  #shopView .gacha-option {
+    min-height: 74px !important;
+    padding: .5rem !important;
+    grid-template-columns: 38px minmax(0, 1fr) !important;
+    column-gap: .48rem !important;
+  }
+
+  #shopView .gacha-option .gacha-icon {
+    width: 38px !important;
+    height: 38px !important;
+  }
+
+  #shopView .gacha-label {
+    font-size: .76rem !important;
+  }
+
+  #shopView #gachaBtn.shop-buy-btn {
+    min-height: 50px !important;
+  }
+}
