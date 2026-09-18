@@ -61,6 +61,7 @@ test('A7 Fleissnote and PDFs use the best result per scored station', async ({ p
       updatedAt: timestamp,
     }));
 
+    // Seed the old/broken aggregate value. Reload must repair it from A7 core.
     localStorage.setItem('tk_a7_progress_v1', JSON.stringify({
       schemaVersion: 2,
       completed: true,
@@ -84,6 +85,15 @@ test('A7 Fleissnote and PDFs use the best result per scored station', async ({ p
   expect(progress.bestAccuracyByMode).toEqual({ challenge: 100, hunt: 83 });
   expect(progress.gradingRule).toBe('best-result-per-station');
   expect(progress.targetReached).toBe(true);
+
+  // The visible A7 UI must distinguish grading from cumulative training statistics.
+  await expect(page.locator('#statsOverallAccuracy')).toHaveText('92 %');
+  await expect(page.locator('#evidenceAccuracy')).toHaveText('92 %');
+  await expect(page.locator('#stationStats')).toContainText('Bestwert');
+  await expect(page.locator('#stationStats')).toContainText('100 %');
+  await expect(page.locator('#stationStats')).toContainText('83 %');
+  await expect(page.locator('#evidenceRows')).toContainText('Training gesamt');
+  await expect(page.locator('#evidenceRows')).toContainText('91 %');
 
   const a7Sheet = await page.evaluate(() => {
     if (!window.tk2Pdf || typeof window.tk2Pdf.collectSheets !== 'function') return null;
