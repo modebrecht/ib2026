@@ -1090,7 +1090,6 @@
       font-weight: 700;
       pointer-events: none;
       transform: translate(-50%, -50%);
-      /* A8 NARRATIVE FLY LIFECYCLE FIX 2026 */
       transition: none;
       box-shadow: 0 8px 18px rgba(15,23,42,0.4);
       z-index: 999;
@@ -5604,7 +5603,6 @@ let frenzyAuraEl = null;
       container.appendChild(block);
     }
 
-    // A8 NARRATIVE FLY LIFECYCLE FIX 2026
     function removeNarrativeFly(ghost) {
       if (!ghost) return;
       if (typeof ghost.getAnimations === "function") {

@@ -66,7 +66,6 @@ jobs:
           grep -Fq '<script src="battle-balance.js?v=6588df3e"></script>' _site/dev/tk2/A8/index.html
           grep -Fq 'SHORTCUT_QUEST_BATTLE_ENGINE_V2' _site/dev/tk2/A8/index.html
           grep -Fq 'SHORTCUT_QUEST_ENEMY_ITEMS' _site/dev/tk2/A8/index.html
-          grep -Fq 'A8 NARRATIVE FLY LIFECYCLE FIX 2026' _site/dev/tk2/A8/index.html
           grep -Fq 'A8 PREMIUM HD BATTLE MOTION 2026' _site/dev/tk2/A8/battle-motion.js
           grep -Fq 'A8 PREMIUM KNIGHT MOTION 2026' _site/dev/tk2/A8/knight-premium-motion.js
           grep -Fq 'BATTLE UI SKILL BAR PREMIUM PASS 2026' _site/dev/tk2/A8/modern-battle.css

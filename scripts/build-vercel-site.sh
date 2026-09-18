@@ -49,7 +49,6 @@ grep -Fq '<script src="battle-continuity.js?v=6a655e2b"></script>' "$OUT/tk2/A8/
 grep -Fq '<script src="battle-balance.js?v=6588df3e"></script>' "$OUT/tk2/A8/index.html"
 grep -Fq 'SHORTCUT_QUEST_BATTLE_ENGINE_V2' "$OUT/tk2/A8/index.html"
 grep -Fq 'SHORTCUT_QUEST_ENEMY_ITEMS' "$OUT/tk2/A8/index.html"
-grep -Fq 'A8 NARRATIVE FLY LIFECYCLE FIX 2026' "$OUT/tk2/A8/index.html"
 grep -Fq 'A8 PREMIUM HD BATTLE MOTION 2026' "$OUT/tk2/A8/battle-motion.js"
 grep -Fq 'A8 PREMIUM KNIGHT MOTION 2026' "$OUT/tk2/A8/knight-premium-motion.js"
 grep -Fq 'BATTLE UI SKILL BAR PREMIUM PASS 2026' "$OUT/tk2/A8/modern-battle.css"
