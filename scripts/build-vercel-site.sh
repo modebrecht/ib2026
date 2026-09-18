@@ -81,6 +81,9 @@ if (missing.length) html = html.replace('</body>', `${missing.join('\n')}\n</bod
 fs.writeFileSync(indexPath, html);
 NODE
 
+python3 "$ROOT/scripts/test_patch_a8_narrative_fly.py"
+python3 "$ROOT/scripts/patch_a8_narrative_fly.py" "$OUT/tk2/A8/index.html"
+
 # Fail before deploy if the assembled runtime is incomplete.
 for file in premium-motion.js battle-motion.js knight-premium-motion.js arena-dev-fix.js a8-dev-polish.js battle-continuity.js battle-balance.js pdf-report.js; do
   node --check "$OUT/tk2/A8/$file"
@@ -93,6 +96,7 @@ grep -Fq '<script src="battle-continuity.js?v=6a655e2b"></script>' "$OUT/tk2/A8/
 grep -Fq '<script src="battle-balance.js?v=6588df3e"></script>' "$OUT/tk2/A8/index.html"
 grep -Fq 'SHORTCUT_QUEST_BATTLE_ENGINE_V2' "$OUT/tk2/A8/index.html"
 grep -Fq 'SHORTCUT_QUEST_ENEMY_ITEMS' "$OUT/tk2/A8/index.html"
+grep -Fq 'A8 NARRATIVE FLY LIFECYCLE FIX 2026' "$OUT/tk2/A8/index.html"
 grep -Fq 'A8 PREMIUM HD BATTLE MOTION 2026' "$OUT/tk2/A8/battle-motion.js"
 grep -Fq 'A8 PREMIUM KNIGHT MOTION 2026' "$OUT/tk2/A8/knight-premium-motion.js"
 grep -Fq 'BATTLE UI SKILL BAR PREMIUM PASS 2026' "$OUT/tk2/A8/modern-battle.css"
