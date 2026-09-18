@@ -27,6 +27,14 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: Verify canonical A8 architecture
+        if: github.ref == 'refs/heads/dev'
+        run: python3 scripts/test_a8_local_canonical.py
+
+      - name: Verify Vercel canonical A8 bundle
+        if: github.ref == 'refs/heads/dev'
+        run: bash scripts/build-vercel-site.sh
+
       - name: Fetch publishing branches
         run: |
           git fetch --no-tags --depth=1 origin \
@@ -43,60 +51,16 @@ jobs:
           git archive refs/remotes/origin/dev | tar -x -C _site/dev
           git archive refs/remotes/origin/render | tar -x -C _site/render
 
-          # Deterministic DEV-only TK2 A8 preview.
-          SHORTCUT_QUEST_SHA="6a655e2ba732dca9c84b08a74341d6adcda9b63b"
-          rm -rf /tmp/shortcut-quest-a8
-          git init -q /tmp/shortcut-quest-a8
-          git -C /tmp/shortcut-quest-a8 remote add origin https://github.com/modebrecht/shortcut-quest.git
-          git -C /tmp/shortcut-quest-a8 fetch -q --depth=1 origin "$SHORTCUT_QUEST_SHA"
-          git -C /tmp/shortcut-quest-a8 checkout -q --detach FETCH_HEAD
-
-          mkdir -p _site/dev/tk2/A8
+          # TK2 A8 comes directly from the checked-in dev branch archive.
           for file in \
             index.html sections-data.js skill-hotkeys.js \
             modern-ui.css modern-exercises.css modern-game.css modern-battle.css modern-report.css \
-            apexcharts.min.js favicon.svg premium-motion.js battle-motion.js knight-premium-motion.js \
-            arena-dev-fix.js arena-dev-tuning.css a8-dev-polish.js battle-continuity.js battle-balance.js; do
-            cp "/tmp/shortcut-quest-a8/2026/$file" "_site/dev/tk2/A8/$file"
+            premium-motion.js battle-motion.js knight-premium-motion.js arena-dev-fix.js a8-dev-polish.js \
+            battle-continuity.js battle-balance.js gear-visuals.js pdf-report.js SOURCE.md; do
+            test -s "_site/dev/tk2/A8/$file"
           done
-          cp -R /tmp/shortcut-quest-a8/2026/assets _site/dev/tk2/A8/
-
-          # IB2026-only diagnostic PDF overlay.
-          cp _site/dev/tk2/a8-pdf-report.js _site/dev/tk2/A8/pdf-report.js
-          python3 - <<'PY'
-          from pathlib import Path
-
-          pdf_path = Path('_site/dev/tk2/A8/pdf-report.js')
-          pdf_js = pdf_path.read_text(encoding='utf-8')
-          old_name = "doc.save('A8_Shortcut_Quest_Lernnachweis_' + safeFileName(student) + '.pdf');"
-          new_name = "doc.save('A8-' + safeFileName(student) + '.pdf');"
-          if old_name not in pdf_js:
-              raise SystemExit('A8 PDF filename marker not found')
-          pdf_path.write_text(pdf_js.replace(old_name, new_name, 1), encoding='utf-8')
-
-          path = Path('_site/dev/tk2/A8/index.html')
-          html = path.read_text(encoding='utf-8')
-          arena_style = '<link rel="stylesheet" href="arena-dev-tuning.css?v=6193079d">'
-          scripts = [
-              '<script src="premium-motion.js"></script>',
-              '<script src="battle-motion.js?v=5f9aa1a7"></script>',
-              '<script src="arena-dev-fix.js?v=59809da9"></script>',
-              '<script src="a8-dev-polish.js?v=8af72c1b"></script>',
-              '<script src="battle-continuity.js?v=6a655e2b"></script>',
-              '<script src="battle-balance.js?v=6a655e2b"></script>',
-              '<script src="knight-premium-motion.js?v=74934b8f"></script>',
-              '<script src="pdf-report.js"></script>',
-          ]
-          if '</head>' not in html or '</body>' not in html:
-              raise SystemExit('A8 index.html is missing head/body markers')
-          if arena_style not in html:
-              html = html.replace('</head>', arena_style + '\n</head>', 1)
-          missing = [script for script in scripts if script not in html]
-          if missing:
-              html = html.replace('</body>', '\n'.join(missing) + '\n</body>', 1)
-          path.write_text(html, encoding='utf-8')
-          PY
-
+          test -s _site/dev/tk2/A8/assets/arena-scene.svg
+          test -s _site/dev/tk2/A8/assets/enemy-bergtroll.png
           node --check _site/dev/tk2/A8/premium-motion.js
           node --check _site/dev/tk2/A8/battle-motion.js
           node --check _site/dev/tk2/A8/knight-premium-motion.js
@@ -107,7 +71,7 @@ jobs:
           node --check _site/dev/tk2/A8/pdf-report.js
           grep -Fq "doc.save('A8-' + safeFileName(student) + '.pdf');" _site/dev/tk2/A8/pdf-report.js
           grep -Fq '<script src="battle-continuity.js?v=6a655e2b"></script>' _site/dev/tk2/A8/index.html
-          grep -Fq '<script src="battle-balance.js?v=6a655e2b"></script>' _site/dev/tk2/A8/index.html
+          grep -Fq '<script src="battle-balance.js?v=6588df3e"></script>' _site/dev/tk2/A8/index.html
           grep -Fq 'SHORTCUT_QUEST_BATTLE_ENGINE_V2' _site/dev/tk2/A8/index.html
           grep -Fq 'SHORTCUT_QUEST_ENEMY_ITEMS' _site/dev/tk2/A8/index.html
           grep -Fq 'A8 PREMIUM HD BATTLE MOTION 2026' _site/dev/tk2/A8/battle-motion.js
@@ -115,6 +79,7 @@ jobs:
           grep -Fq 'BATTLE UI SKILL BAR PREMIUM PASS 2026' _site/dev/tk2/A8/modern-battle.css
           grep -Fq 'BATTLE UI SKILL CARD FIT FIX 2026' _site/dev/tk2/A8/modern-battle.css
           grep -Fq 'BATTLE SKILL CONTENT HIERARCHY FIX 2026' _site/dev/tk2/A8/modern-battle.css
+
           touch _site/.nojekyll
 
       - name: Configure Pages
@@ -144,6 +109,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 8
     steps:
+      - name: Checkout DEV test suite
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 1
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -168,7 +139,7 @@ jobs:
           const pwKey = token => keyMap[String(token || '').toUpperCase()] || token;
 
           (async () => {
-            const url = 'https://modebrecht.github.io/ib2026/dev/tk2/A8/?qa=6a655e2b';
+            const url = 'https://modebrecht.github.io/ib2026/dev/tk2/A8/?qa=local-canonical';
             const browser = await chromium.launch({ headless: true });
             try {
               const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
@@ -179,7 +150,7 @@ jobs:
                 const html = await page.content();
                 if (
                   html.includes('battle-continuity.js?v=6a655e2b') &&
-                  html.includes('battle-balance.js?v=6a655e2b') &&
+                  html.includes('battle-balance.js?v=6588df3e') &&
                   html.includes('SHORTCUT_QUEST_ENEMY_ITEMS') &&
                   html.includes('SHORTCUT_QUEST_BATTLE_ENGINE_V2')
                 ) {
@@ -188,7 +159,62 @@ jobs:
                 }
                 await page.waitForTimeout(5000);
               }
-              assert.equal(ready, true, 'GitHub Pages did not expose the expected 6a655e2b A8 build in time');
+              assert.equal(ready, true, 'GitHub Pages did not expose the checked-in canonical A8 build in time');
+
+              // Narrative fly nodes must have a bounded lifetime in every lifecycle path.
+              const narrativeCards = page.locator('.section[data-section="1"] .narrative-card');
+              assert.ok(await narrativeCards.count() >= 4, 'Expected narrative shortcut cards in section 1');
+              const resetFirstNarrative = async () => {
+                await narrativeCards.first().locator('.narrative-blank').evaluate(blank => {
+                  blank.textContent = '';
+                  blank.dataset.value = '';
+                  blank.dataset.filled = 'false';
+                });
+              };
+
+              // Normal completion must clean every fly node without a refresh.
+              for (let index = 0; index < await narrativeCards.count(); index += 1) {
+                await narrativeCards.nth(index).locator('.narrative-option').first().click();
+              }
+              assert.ok(await page.locator('.narrative-fly').count() > 0, 'Narrative fly effect must still render');
+              await page.waitForTimeout(650);
+              assert.equal(await page.locator('.narrative-fly').count(), 0, 'Normally completed narrative flies must be removed');
+
+              // Section switching must synchronously dispose transient nodes.
+              await resetFirstNarrative();
+              await narrativeCards.first().locator('.narrative-option').first().click();
+              assert.ok(await page.locator('.narrative-fly').count() > 0, 'Narrative fly must render before section switch');
+              await page.locator('.section-tab[data-goto="2"]').click();
+              await page.waitForTimeout(80);
+              assert.equal(await page.locator('.narrative-fly').count(), 0, 'Section switch must dispose every narrative fly pill');
+
+              // Exercise the real fast-paced drill in section 2, not only its shell.
+              const fastPaced = page.locator('.section[data-section="2"] .fast-paced');
+              assert.ok(await fastPaced.isVisible(), 'Fast-paced training section must be visible');
+              assert.ok(await fastPaced.locator('button').count() > 0, 'Fast-paced training must expose an interactive control');
+              await fastPaced.locator('button').first().click();
+              await page.waitForTimeout(100);
+              assert.ok(await fastPaced.isVisible(), 'Fast-paced training must remain operational after interaction');
+
+              // Defensive timeout must clean an interrupted/paused animation.
+              await page.locator('.section-tab[data-goto="1"]').click();
+              await resetFirstNarrative();
+              await narrativeCards.first().locator('.narrative-option').first().click();
+              await page.locator('.narrative-fly').evaluateAll(nodes => nodes.forEach(node => {
+                node.getAnimations().forEach(animation => animation.pause());
+              }));
+              await page.waitForTimeout(650);
+              assert.equal(await page.locator('.narrative-fly').count(), 0, 'Interrupted animations must not leak DOM pills');
+
+              // Repeated rapid use must never accumulate stale compositor/DOM pills.
+              for (let repeat = 0; repeat < 6; repeat += 1) {
+                await resetFirstNarrative();
+                await narrativeCards.first().locator('.narrative-option').first().click();
+                await page.waitForTimeout(60);
+              }
+              assert.ok(await page.locator('.narrative-fly').count() > 0, 'Repeated narrative interactions must still animate');
+              await page.waitForTimeout(650);
+              assert.equal(await page.locator('.narrative-fly').count(), 0, 'Repeated narrative interactions accumulated stale fly nodes');
 
               const balance = await page.evaluate(() => ({
                 installed: window.SHORTCUT_QUEST_BATTLE_BALANCE?.installed,
@@ -344,6 +370,11 @@ jobs:
             process.exit(1);
           });
           NODE
+
+      - name: Run canonical A8 E2E suite
+        env:
+          A8_LOCAL_URL: https://modebrecht.github.io/ib2026/dev/tk2/A8/?qa=canonical-e2e
+        run: node scripts/a8-local-e2e.mjs
 
       - name: Upload A8 UI screenshots
         if: always()

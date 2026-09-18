@@ -1,0 +1,31 @@
+<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="redBlade" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f88a5f"/>
+      <stop offset="55%" stop-color="#f45b4d"/>
+      <stop offset="100%" stop-color="#b91c1c"/>
+    </linearGradient>
+    <linearGradient id="outerFlame" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffe9c4"/>
+      <stop offset="40%" stop-color="#ff9731"/>
+      <stop offset="100%" stop-color="#d9480f"/>
+    </linearGradient>
+    <linearGradient id="innerFlame" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fffdf2"/>
+      <stop offset="90%" stop-color="#ffb347"/>
+    </linearGradient>
+  </defs>
+  <rect x="14" y="5" width="4" height="14" rx="2" fill="url(#redBlade)"/>
+  <rect x="10" y="17" width="12" height="3.3" rx="1.6" fill="#9f1239"/>
+  <rect x="13" y="20" width="6" height="5" rx="1.5" fill="#7f1d1d"/>
+  <circle cx="16" cy="26.5" r="2" fill="#5f0f17"/>
+  <path d="M16 2.4 C17.3 3.6 18.1 5.1 18.1 6.4 C18.1 7.4 17.7 8.1 17.3 8.7 C16.5 9.8 16 11 16 12 C16 11 15.4 9.8 14.6 8.7 C14.2 8.1 13.8 7.4 13.8 6.4 C13.8 5.1 14.6 3.6 16 2.4 Z"
+        fill="url(#outerFlame)" opacity="0.9">
+    <animate attributeName="opacity" values="0.7;1;0.65;1" dur="0.9s" repeatCount="indefinite"/>
+    <animateTransform attributeName="transform" type="scale" values="1 1; 1 1.12; 1 1" dur="0.9s" repeatCount="indefinite" additive="replace"/>
+  </path>
+  <path d="M16 3.2 C16.9 4.1 17.3 5.2 17.3 6 C17.3 6.7 17 7.2 16.7 7.6 C16.3 8.2 16 8.9 16 9.5 C16 8.9 15.7 8.2 15.3 7.6 C15 7.2 14.7 6.7 14.7 6 C14.7 5.2 15.1 4.1 16 3.2 Z"
+        fill="url(#innerFlame)" opacity="0.95">
+    <animate attributeName="opacity" values="0.6;1;0.6" dur="0.9s" repeatCount="indefinite"/>
+  </path>
+</svg>

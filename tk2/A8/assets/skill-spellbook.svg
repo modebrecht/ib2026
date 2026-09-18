@@ -1,0 +1,149 @@
+<svg viewBox="35 0 140 190" xmlns="http://www.w3.org/2000/svg" role="img" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <filter id="emblemGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <!-- Funken-Basis: 60s wie Mond -->
+    <circle id="spark" cx="0" cy="0" r="2" fill="#ffe9a9">
+      <animate attributeName="fill"
+               values="#ffe9a9;#ffe9a9;#9b5cff;#9b5cff;#ffe9a9"
+               keyTimes="0;0.4667;0.5;0.9667;1"
+               dur="60s"
+               repeatCount="indefinite" />
+    </circle>
+  </defs>
+
+  <g id="book" transform="translate(0,6.6)">
+    <!-- Spine -->
+    <rect x="43" y="25" width="7" height="140" fill="#5a371e" stroke="#3f2411" stroke-width="2"/>
+
+    <!-- Book cover -->
+    <path d="M50 25 H160 a6 6 0 0 1 6 6 V159 a6 6 0 0 1 -6 6 H50 Z"
+          fill="#7b4b26" stroke="#3f2411" stroke-width="3" />
+
+    <!-- Pages -->
+    <rect x="160" y="31" width="3" height="130" rx="1.5" ry="1.5"
+          fill="#f3e7d4" stroke="#c8b49a" stroke-width="1"/>
+
+    <!-- Emblem + Glow -->
+    <g filter="url(#emblemGlow)">
+      <circle cx="105" cy="85" r="28" fill="#f3e7d4" stroke="#caa052" stroke-width="3">
+        <animate attributeName="fill"
+                 values="#f3e7d4;#f3e7d4;#2b2b2b;#2b2b2b;#f3e7d4"
+                 keyTimes="0;0.4667;0.5;0.9667;1"
+                 dur="60s"
+                 repeatCount="indefinite" />
+      </circle>
+      <circle cx="105" cy="85" r="30" fill="none" stroke="#ffe9a9" stroke-width="1.5" opacity="0.4">
+        <animate attributeName="r" values="28;35;28" dur="3s" repeatCount="indefinite" />
+        <animate attributeName="opacity" values="0.1;0.5;0.1" dur="3s" repeatCount="indefinite" />
+        <animate attributeName="stroke"
+                 values="#ffe9a9;#ffe9a9;#9b5cff;#9b5cff;#ffe9a9"
+                 keyTimes="0;0.4667;0.5;0.9667;1"
+                 dur="60s"
+                 repeatCount="indefinite" />
+      </circle>
+    </g>
+
+    <!-- MOND -->
+    <g>
+      <circle cx="105" cy="85" r="12" fill="#caa052">
+        <animate attributeName="r"
+                 values="12;13;12"
+                 keyTimes="0;0.5;1"
+                 dur="20s"
+                 repeatCount="indefinite"
+                 calcMode="spline"
+                 keySplines="0.42 0 0.58 1; 0.42 0 0.58 1" />
+        <animate attributeName="fill"
+                 values="#caa052;#caa052;#9b5cff;#9b5cff;#caa052"
+                 keyTimes="0;0.4667;0.5;0.9667;1"
+                 dur="60s"
+                 repeatCount="indefinite" />
+      </circle>
+      <!-- Cutout fährt im selben Takt und färbt mit -->
+      <circle cx="111" cy="82" r="10" fill="#f3e7d4">
+        <animate attributeName="cx"
+                 values="111;111;99;99;111"
+                 keyTimes="0;0.4667;0.5;0.9667;1"
+                 dur="60s"
+                 calcMode="spline"
+                 keySplines="0 0 1 1;
+                             0.42 0 0.58 1;
+                             0 0 1 1;
+                             0.42 0 0.58 1"
+                 repeatCount="indefinite" />
+        <animate attributeName="fill"
+                 values="#f3e7d4;#f3e7d4;#2b2b2b;#2b2b2b;#f3e7d4"
+                 keyTimes="0;0.4667;0.5;0.9667;1"
+                 dur="60s"
+                 repeatCount="indefinite" />
+      </circle>
+    </g>
+
+    <!-- Goldene Ecken -->
+    <path d="M52 25 h26 v10 h-16 v14 h-10 z" fill="#caa052" stroke="#8f6f34" stroke-width="1"/>
+    <path d="M158 25 h-26 v10 h16 v14 h10 z" fill="#caa052" stroke="#8f6f34" stroke-width="1"/>
+    <path d="M52 165 v-24 h10 v14 h16 v10 z" fill="#caa052" stroke="#8f6f34" stroke-width="1"/>
+    <path d="M158 165 v-24 h-10 v14 h-16 v10 z" fill="#caa052" stroke="#8f6f34" stroke-width="1"/>
+
+    <!-- Bookmark -->
+    <path d="M140 165 L150 165 L150 180 L145 173 L140 180 Z"
+          fill="#b83232" stroke="#6d1a1a" stroke-width="1"/>
+
+    <!-- Funken (besser verteilt) -->
+    <g>
+      <use href="#spark" x="120" y="70">
+        <animate attributeName="y" values="70;40" dur="2.5s" repeatCount="indefinite" />
+        <animate attributeName="opacity" values="0;1;0" dur="2.5s" repeatCount="indefinite" />
+      </use>
+      <use href="#spark" x="95" y="90">
+        <animate attributeName="y" values="90;55" dur="2.8s" begin="0.3s" repeatCount="indefinite" />
+        <animate attributeName="opacity" values="0;1;0" dur="2.8s" begin="0.3s" repeatCount="indefinite" />
+      </use>
+      <use href="#spark" x="135" y="110">
+        <animate attributeName="y" values="110;70" dur="3s" begin="0.6s" repeatCount="indefinite" />
+        <animate attributeName="opacity" values="0;1;0" dur="3s" begin="0.6s" repeatCount="indefinite" />
+      </use>
+      <use href="#spark" x="60" y="145">
+        <animate attributeName="y" values="145;105" dur="3.2s" begin="0.2s" repeatCount="indefinite" />
+        <animate attributeName="opacity" values="0;1;0" dur="3.2s" begin="0.2s" repeatCount="indefinite" />
+      </use>
+      <use href="#spark" x="110" y="148">
+        <animate attributeName="y" values="148;110" dur="3.1s" begin="1.0s" repeatCount="indefinite" />
+        <animate attributeName="opacity" values="0;1;0" dur="3.1s" begin="1.0s" repeatCount="indefinite" />
+      </use>
+      <use href="#spark" x="140" y="155">
+        <animate attributeName="y" values="155;115" dur="3.4s" begin="0.4s" repeatCount="indefinite" />
+        <animate attributeName="opacity" values="0;1;0" dur="3.4s" begin="0.4s" repeatCount="indefinite" />
+      </use>
+      <use href="#spark" x="175" y="125">
+        <animate attributeName="y" values="125;85" dur="3.4s" begin="0.5s" repeatCount="indefinite" />
+        <animate attributeName="opacity" values="0;1;0" dur="3.4s" begin="0.5s" repeatCount="indefinite" />
+      </use>
+      <use href="#spark" x="75" y="50">
+        <animate attributeName="y" values="50;25" dur="2.6s" begin="0.9s" repeatCount="indefinite" />
+        <animate attributeName="opacity" values="0;1;0" dur="2.6s" begin="0.9s" repeatCount="indefinite" />
+      </use>
+    </g>
+
+    <!-- float -->
+    <animateTransform
+      attributeName="transform"
+      attributeType="XML"
+      type="translate"
+      dur="4s"
+      repeatCount="indefinite"
+      values="0,6.6; 0,6.6; 0,0; 0,6.6; 0,6.6"
+      keyTimes="0; 0.25; 0.6; 0.95; 1"
+      keySplines="0 0 1 1;
+                  0.42 0 0.58 1;
+                  0.42 0 0.58 1;
+                  0 0 1 1"
+      calcMode="spline" />
+  </g>
+</svg>

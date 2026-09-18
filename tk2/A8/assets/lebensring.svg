@@ -1,0 +1,62 @@
+<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Goldband -->
+    <linearGradient id="gold" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%"  stop-color="#f3e5a7"/>
+      <stop offset="55%" stop-color="#e0c46d"/>
+      <stop offset="100%" stop-color="#caa052"/>
+    </linearGradient>
+    <!-- Fassung -->
+    <linearGradient id="bezel" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%"  stop-color="#ffe9b7"/>
+      <stop offset="100%" stop-color="#b7893c"/>
+    </linearGradient>
+    <!-- Rubin -->
+    <radialGradient id="ruby" cx="35%" cy="30%" r="70%">
+      <stop offset="0%"  stop-color="#ffe1e8"/>
+      <stop offset="45%" stop-color="#ef4444"/>
+      <stop offset="100%" stop-color="#7f1d1d"/>
+    </radialGradient>
+    <!-- Glow -->
+    <filter id="gemGlow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="1.8"/>
+    </filter>
+  </defs>
+
+  <!-- Ring -->
+  <path
+    d="M16 4.8
+       a11.2 11.2 0 1 1 0 22.4
+       a11.2 11.2 0 1 1 0 -22.4
+       M16 8.8
+       a7.2 7.2 0 1 0 0 14.4
+       a7.2 7.2 0 1 0 0 -14.4"
+    fill="url(#gold)" fill-rule="evenodd"
+    stroke="#8f6f34" stroke-width="0.9"/>
+
+  <!-- Fassung -->
+  <ellipse cx="16" cy="6.9" rx="6.0" ry="2.7"
+           fill="url(#bezel)" stroke="#8f6f34" stroke-width="0.8"/>
+
+  <!-- Pulsierender Glow -->
+  <circle cx="16" cy="6.9" r="4.5" fill="#ef4444" opacity="0" filter="url(#gemGlow)">
+    <animate attributeName="r" values="4.2;5.8;4.2" dur="2.2s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0;0.55;0" dur="2.2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="16" cy="6.9" r="4.8" fill="none" stroke="#ef4444" stroke-width="0.6" opacity="0">
+    <animate attributeName="r" values="4.8;6.4;4.8" dur="2.2s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0;0.35;0" dur="2.2s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- Rubin -->
+  <circle cx="16" cy="6.9" r="3.6"
+          fill="url(#ruby)" stroke="#7f1d1d" stroke-width="0.6">
+    <animate attributeName="r" values="3.6;3.9;3.6" dur="2.2s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- Glanz -->
+  <path d="M17.8 5.8 l1.1 0.4 -1.1 0.4 -0.4 1.1 -0.4 -1.1 -1.1 -0.4 1.1 -0.4 0.4 -1.1 z"
+        fill="rgba(255,255,255,0.85)">
+    <animate attributeName="opacity" values="1;0.6;1" dur="2.2s" repeatCount="indefinite"/>
+  </path>
+</svg>

@@ -1,0 +1,69 @@
+<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gold band -->
+    <linearGradient id="gold" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%"  stop-color="#f3e5a7"/>
+      <stop offset="55%" stop-color="#e0c46d"/>
+      <stop offset="100%" stop-color="#caa052"/>
+    </linearGradient>
+    <!-- Bezel rim -->
+    <linearGradient id="bezel" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%"  stop-color="#ffe9b7"/>
+      <stop offset="100%" stop-color="#b7893c"/>
+    </linearGradient>
+    <!-- Clover gem -->
+    <radialGradient id="cloverGem" cx="35%" cy="30%" r="70%">
+      <stop offset="0%"  stop-color="#e9ffcc"/>
+      <stop offset="45%" stop-color="#22c55e"/>
+      <stop offset="100%" stop-color="#15803d"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Ring band (donut with hole) -->
+  <path
+    d="M16 4.8
+       a11.2 11.2 0 1 1 0 22.4
+       a11.2 11.2 0 1 1 0 -22.4
+       M16 8.8
+       a7.2 7.2 0 1 0 0 14.4
+       a7.2 7.2 0 1 0 0 -14.4"
+    fill="url(#gold)" fill-rule="evenodd"
+    stroke="#8f6f34" stroke-width="0.9"/>
+
+  <!-- Bezel base -->
+  <ellipse cx="16" cy="6.9" rx="6.0" ry="2.7"
+           fill="url(#bezel)" stroke="#8f6f34" stroke-width="0.8"/>
+
+  <!-- Clover gem (four leaves + stem) -->
+  <g transform="translate(16,6.9)" stroke="#0b5a2e" stroke-width="0.6">
+    <!-- leaves -->
+    <circle cx="-1.6" cy="0" r="1.6" fill="url(#cloverGem)"/>
+    <circle cx="1.6"  cy="0" r="1.6" fill="url(#cloverGem)"/>
+    <circle cx="0"    cy="-1.6" r="1.6" fill="url(#cloverGem)"/>
+    <circle cx="0"    cy="1.6"  r="1.6" fill="url(#cloverGem)"/>
+    <!-- center facet -->
+    <circle cx="0" cy="0" r="0.65" fill="#e9ffcc" stroke="#0b5a2e" stroke-width="0.4"/>
+    <!-- tiny stem -->
+    <path d="M0 2.2 q0.5 0.6 0.1 1.2" fill="none"/>
+  </g>
+
+  <!-- small sparkles -->
+  <path d="M20.8 4.9 l0.6 0.2 -0.6 0.2 -0.2 0.6 -0.2 -0.6 -0.6 -0.2 0.6 -0.2 0.2 -0.6z"
+        fill="rgba(255,255,255,0.9)">
+    <animate attributeName="opacity"
+             values="0;0;1;0;0"
+             keyTimes="0;0.25;0.5;0.75;1"
+             dur="3.5s"
+             repeatCount="indefinite" />
+  </path>
+
+  <path d="M11.2 5.8 l0.5 0.2 -0.5 0.2 -0.2 0.5 -0.2 -0.5 -0.5 -0.2 0.5 -0.2 0.2 -0.5z"
+        fill="rgba(255,255,255,0.6)">
+    <animate attributeName="opacity"
+             values="0;0;1;0;0"
+             keyTimes="0;0.25;0.5;0.75;1"
+             dur="4.5s"
+             begin="0.8s"
+             repeatCount="indefinite" />
+  </path>
+</svg>

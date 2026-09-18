@@ -42,18 +42,21 @@
     var attempts=correct+wrong;
     var moves=buckets.reduce(function(sum,b){return sum+(Number(b.moves)||0);},0);
     var pairs=buckets.reduce(function(sum,b){return sum+(Number(b.pairs)||0);},0);
-    return{runs:runs,correct:correct,wrong:wrong,attempts:attempts,accuracy:attempts?Math.round(correct/attempts*100):null,moves:moves,pairs:pairs};
+    var bestAccuracy=runs?buckets.reduce(function(best,b){return Math.max(best,Number(b.bestAccuracy)||0);},0):null;
+    return{runs:runs,correct:correct,wrong:wrong,attempts:attempts,accuracy:bestAccuracy,trainingAccuracy:attempts?Math.round(correct/attempts*100):null,moves:moves,pairs:pairs};
   }
   function a7Rows(){
     var data=parse(A7_KEY);if(!data.modes)data.modes={};
     var challenge=a7StationDetail(data,'challenge'),hunt=a7StationDetail(data,'hunt'),memory=a7StationDetail(data,'memory');
     if(challenge.runs+hunt.runs+memory.runs===0)return[];
-    var overallCorrect=challenge.correct+hunt.correct,overallWrong=challenge.wrong+hunt.wrong,overallAttempts=overallCorrect+overallWrong,overallAccuracy=overallAttempts?Math.round(overallCorrect/overallAttempts*100):null;
+    var scores=[challenge.accuracy,hunt.accuracy].filter(function(value){return value!==null;});
+    var overallAccuracy=scores.length?Math.round(scores.reduce(function(sum,value){return sum+value;},0)/scores.length):null;
+    var overallAttempts=challenge.attempts+hunt.attempts;
     return[
-      {q:null,label:'Challenge',value:'Runden '+challenge.runs+' · Genauigkeit '+(challenge.accuracy===null?'–':challenge.accuracy+' %')+' · richtig '+challenge.correct+' · falsch '+challenge.wrong},
-      {q:null,label:'Fehlerjagd',value:'Runden '+hunt.runs+' · Genauigkeit '+(hunt.accuracy===null?'–':hunt.accuracy+' %')+' · richtig '+hunt.correct+' · falsch '+hunt.wrong},
+      {q:null,label:'Challenge',value:'Runden '+challenge.runs+' · Bestwert '+(challenge.accuracy===null?'–':challenge.accuracy+' %')+' · richtig ges. '+challenge.correct+' · falsch ges. '+challenge.wrong},
+      {q:null,label:'Fehlerjagd',value:'Runden '+hunt.runs+' · Bestwert '+(hunt.accuracy===null?'–':hunt.accuracy+' %')+' · richtig ges. '+hunt.correct+' · falsch ges. '+hunt.wrong},
       {q:null,label:'Memory',value:'Runden '+memory.runs+' · Paare '+memory.pairs+' · Züge '+memory.moves+' · Genauigkeit separat'},
-      {q:null,label:'Gesamt',value:'Gesamtgenauigkeit aus Challenge + Fehlerjagd: '+(overallAccuracy===null?'–':overallAccuracy+' %')+' · Gesammelte Antworten / Entscheidungen: '+overallAttempts}
+      {q:null,label:'Gesamt',value:'Fleissnoten-Genauigkeit (bestes Resultat je Station): '+(overallAccuracy===null?'–':overallAccuracy+' %')+' · Gesammelte Antworten / Entscheidungen: '+overallAttempts}
     ];
   }
 
