@@ -14,7 +14,7 @@ async function openClean(page) {
   await page.goto(`${BASE_URL}/tk2/A7.html`, { waitUntil: 'load' });
 }
 
-test('A7 Fleissnote and PDF use the best result per scored station', async ({ page }) => {
+test('A7 Fleissnote and PDFs use the best result per scored station', async ({ page }) => {
   await openClean(page);
 
   const now = '2026-09-18T09:25:41.975Z';
@@ -84,6 +84,18 @@ test('A7 Fleissnote and PDF use the best result per scored station', async ({ pa
   expect(progress.bestAccuracyByMode).toEqual({ challenge: 100, hunt: 83 });
   expect(progress.gradingRule).toBe('best-result-per-station');
   expect(progress.targetReached).toBe(true);
+
+  const a7Sheet = await page.evaluate(() => {
+    if (!window.tk2Pdf || typeof window.tk2Pdf.collectSheets !== 'function') return null;
+    return window.tk2Pdf.collectSheets().find((sheet) => sheet.id === 'A7') || null;
+  });
+  expect(a7Sheet).not.toBeNull();
+  const challengeRow = a7Sheet.rows.find((row) => row.label === 'Challenge');
+  const huntRow = a7Sheet.rows.find((row) => row.label === 'Fehlerjagd');
+  const overallRow = a7Sheet.rows.find((row) => row.label === 'Gesamt');
+  expect(challengeRow.value).toContain('Bestwert 100 %');
+  expect(huntRow.value).toContain('Bestwert 83 %');
+  expect(overallRow.value).toContain('Fleissnoten-Genauigkeit (bestes Resultat je Station): 92 %');
 
   await page.evaluate(() => {
     window.__a7PdfTexts = [];
