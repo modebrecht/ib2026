@@ -63,6 +63,8 @@ jobs:
 
           # IB2026-only diagnostic PDF overlay.
           cp _site/dev/tk2/a8-pdf-report.js _site/dev/tk2/A8/pdf-report.js
+          python3 scripts/test_patch_a8_narrative_fly.py
+          python3 scripts/patch_a8_narrative_fly.py _site/dev/tk2/A8/index.html
           python3 - <<'PY'
           from pathlib import Path
 
@@ -110,6 +112,7 @@ jobs:
           grep -Fq '<script src="battle-balance.js?v=6a655e2b"></script>' _site/dev/tk2/A8/index.html
           grep -Fq 'SHORTCUT_QUEST_BATTLE_ENGINE_V2' _site/dev/tk2/A8/index.html
           grep -Fq 'SHORTCUT_QUEST_ENEMY_ITEMS' _site/dev/tk2/A8/index.html
+          grep -Fq 'A8 NARRATIVE FLY LIFECYCLE FIX 2026' _site/dev/tk2/A8/index.html
           grep -Fq 'A8 PREMIUM HD BATTLE MOTION 2026' _site/dev/tk2/A8/battle-motion.js
           grep -Fq 'A8 PREMIUM KNIGHT MOTION 2026' _site/dev/tk2/A8/knight-premium-motion.js
           grep -Fq 'BATTLE UI SKILL BAR PREMIUM PASS 2026' _site/dev/tk2/A8/modern-battle.css
@@ -189,6 +192,31 @@ jobs:
                 await page.waitForTimeout(5000);
               }
               assert.equal(ready, true, 'GitHub Pages did not expose the expected 6a655e2b A8 build in time');
+
+              // Narrative option pills must never survive their effect or a section switch.
+              const narrativeCards = page.locator('.section[data-section="1"] .narrative-card');
+              assert.ok(await narrativeCards.count() >= 4, 'Expected narrative shortcut cards in section 1');
+              for (let index = 0; index < await narrativeCards.count(); index += 1) {
+                await narrativeCards.nth(index).locator('.narrative-option').first().click();
+              }
+              assert.ok(await page.locator('.narrative-fly').count() > 0, 'Narrative fly effect must still render');
+              await page.locator('.section-tab[data-goto="2"]').click();
+              await page.waitForTimeout(650);
+              assert.equal(await page.locator('.narrative-fly').count(), 0, 'Section switch must dispose every narrative fly pill');
+
+              // The timeout is a second cleanup path if Chromium cancels the visual animation.
+              await page.locator('.section-tab[data-goto="1"]').click();
+              await narrativeCards.first().locator('.narrative-blank').evaluate(blank => {
+                blank.textContent = '';
+                blank.dataset.value = '';
+                blank.dataset.filled = 'false';
+              });
+              await narrativeCards.first().locator('.narrative-option').first().click();
+              await page.locator('.narrative-fly').evaluateAll(nodes => nodes.forEach(node => {
+                node.getAnimations().forEach(animation => animation.pause());
+              }));
+              await page.waitForTimeout(650);
+              assert.equal(await page.locator('.narrative-fly').count(), 0, 'Interrupted animations must not leak DOM pills');
 
               const balance = await page.evaluate(() => ({
                 installed: window.SHORTCUT_QUEST_BATTLE_BALANCE?.installed,
