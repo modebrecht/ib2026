@@ -4,6 +4,7 @@
   if (!/\/tk2\/A7\.html$/i.test(location.pathname)) return;
 
   var TRAINING_KEY = 'tk_a7_training_v1';
+  var PROGRESS_KEY = 'tk_a7_progress_v1';
 
   function readTraining(){
     try {
@@ -48,12 +49,16 @@
     var attempts = correct + wrong;
     var moves = buckets.reduce(function(sum, b){ return sum + (Number(b.moves) || 0); }, 0);
     var pairs = buckets.reduce(function(sum, b){ return sum + (Number(b.pairs) || 0); }, 0);
+    var bestAccuracy = runs ? buckets.reduce(function(best, b){
+      return Math.max(best, Number(b.bestAccuracy) || 0);
+    }, 0) : null;
     return {
       runs: runs,
       correct: correct,
       wrong: wrong,
       attempts: attempts,
-      accuracy: attempts ? Math.round(correct / attempts * 100) : null,
+      accuracy: bestAccuracy,
+      trainingAccuracy: attempts ? Math.round(correct / attempts * 100) : null,
       moves: moves,
       pairs: pairs
     };
@@ -66,13 +71,47 @@
     var overallCorrect = challenge.correct + hunt.correct;
     var overallWrong = challenge.wrong + hunt.wrong;
     var overallAttempts = overallCorrect + overallWrong;
+    var assessmentScores = [challenge.accuracy, hunt.accuracy].filter(function(value){ return value !== null; });
+    var overallAccuracy = assessmentScores.length ? Math.round(assessmentScores.reduce(function(sum, value){ return sum + value; }, 0) / assessmentScores.length) : null;
     return {
       challenge: challenge,
       hunt: hunt,
       memory: memory,
       overallAttempts: overallAttempts,
-      overallAccuracy: overallAttempts ? Math.round(overallCorrect / overallAttempts * 100) : null
+      overallAccuracy: overallAccuracy,
+      trainingAccuracy: overallAttempts ? Math.round(overallCorrect / overallAttempts * 100) : null
     };
+  }
+
+  function syncAssessmentProgress(data, stats){
+    var progress = {};
+    try { progress = JSON.parse(localStorage.getItem(PROGRESS_KEY) || '{}'); } catch (e) {}
+
+    var s = summary(data);
+    var target = Number(progress.target);
+    if (!Number.isFinite(target) || target <= 0) target = 70;
+    var assessmentAccuracy = stats.overallAccuracy === null ? 0 : stats.overallAccuracy;
+    var next = Object.assign({}, progress, {
+      schemaVersion: Math.max(Number(progress.schemaVersion) || 0, 2),
+      completed: s.ready,
+      completedStations: s.completed,
+      stations: {challenge:s.challenge, hunt:s.hunt, memory:s.memory},
+      completedRuns: s.total,
+      accuracy: assessmentAccuracy,
+      trainingAccuracy: stats.trainingAccuracy === null ? 0 : stats.trainingAccuracy,
+      bestAccuracyByMode: {
+        challenge: stats.challenge.accuracy === null ? 0 : stats.challenge.accuracy,
+        hunt: stats.hunt.accuracy === null ? 0 : stats.hunt.accuracy
+      },
+      target: target,
+      targetReached: stats.overallAccuracy !== null && assessmentAccuracy >= target,
+      pdfReady: s.ready,
+      gradingRule: 'best-result-per-station'
+    });
+
+    if (JSON.stringify(progress) !== JSON.stringify(next)) {
+      localStorage.setItem(PROGRESS_KEY, JSON.stringify(next));
+    }
   }
 
   function showToast(text){
@@ -92,7 +131,9 @@
   }
 
   function renderHeaderPdfState(){
-    var s = summary(readTraining());
+    var data = readTraining();
+    var s = summary(data);
+    syncAssessmentProgress(data, statisticsData(data));
     var button = document.getElementById('downloadEvidencePdf');
     var status = document.getElementById('evidenceStatus');
     var hint = document.getElementById('evidenceHint');
@@ -118,6 +159,7 @@
     if (!student) return;
 
     var stats = statisticsData(data);
+    syncAssessmentProgress(data, stats);
     var canvas = document.createElement('canvas');
     canvas.width = 1200;
     canvas.height = 850;
@@ -140,7 +182,7 @@
     ctx.fillText('TRAININGSNACHWEIS TASTENKÜRZEL', 600, 136);
     ctx.fillStyle = '#94a3b8';
     ctx.font = '500 17px sans-serif';
-    ctx.fillText('Statistik des abgeschlossenen Trainings', 600, 168);
+    ctx.fillText('Bestes Resultat zählt · Gesamttraining bleibt dokumentiert', 600, 168);
 
     ctx.fillStyle = 'rgba(56,189,248,.13)';
     ctx.strokeStyle = '#38bdf8';
@@ -172,7 +214,7 @@
 
       var labels = isMemory ?
         [['Runden', String(detail.runs)], ['Paare', String(detail.pairs)], ['Züge', String(detail.moves)], ['Genauigkeit', 'separat']] :
-        [['Runden', String(detail.runs)], ['Genauigkeit', detail.accuracy === null ? '–' : detail.accuracy + ' %'], ['richtig', String(detail.correct)], ['falsch', String(detail.wrong)]];
+        [['Runden', String(detail.runs)], ['Bestwert', detail.accuracy === null ? '–' : detail.accuracy + ' %'], ['richtig ges.', String(detail.correct)], ['falsch ges.', String(detail.wrong)]];
 
       labels.forEach(function(item, index){
         var col = index % 2;
@@ -207,7 +249,7 @@
     ctx.textAlign = 'left';
     ctx.fillStyle = '#94a3b8';
     ctx.font = '600 15px sans-serif';
-    ctx.fillText('Gesamtgenauigkeit aus Challenge + Fehlerjagd', 120, 657);
+    ctx.fillText('Fleissnoten-Genauigkeit · bestes Resultat je Station', 120, 657);
     ctx.fillStyle = '#f8fafc';
     ctx.font = '800 28px sans-serif';
     ctx.fillText(stats.overallAccuracy === null ? '–' : stats.overallAccuracy + ' %', 120, 697);
