@@ -3,7 +3,6 @@ set -euo pipefail
 
 ROOT="$(pwd)"
 OUT="$ROOT/dist"
-A8_SOURCE="$ROOT/tk2/A8"
 
 rm -rf "$OUT"
 mkdir -p "$OUT"
