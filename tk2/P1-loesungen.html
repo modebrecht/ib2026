@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#0b1323">
+  <title>TK2 · P1 – Lösungen &amp; Fehlerkorrektur</title>
+  <link rel="stylesheet" href="../tk/vendor/fonts.css">
+  <style>
+    :root{color-scheme:dark;--bg:#0b1323;--card:#131f33;--line:#30415a;--muted:#afc2d8;--text:#eff6ff;--mint:#6ee7b7;--orange:#fbbf24;--blue:#93c5fd}
+    *,*:before,*:after{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:radial-gradient(ellipse 56rem 30rem at 15% -5%,rgba(52,211,153,.12),transparent 72%),radial-gradient(ellipse 35rem 32rem at 95% 2%,rgba(59,130,246,.1),transparent 75%),var(--bg);color:var(--text);font:16px/1.55 'Outfit',system-ui,-apple-system,'Segoe UI',sans-serif}
+    a{color:inherit}
+    button,input,textarea{font:inherit}
+    button{cursor:pointer}
+    button:focus-visible,summary:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{outline:3px solid var(--orange);outline-offset:3px}
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px max(20px,calc((100vw - 1080px)/2));border-bottom:1px solid #26384e;background:rgba(10,18,33,.84)}
+    .brand{display:flex;align-items:center;gap:11px;font-weight:800;letter-spacing:.02em}.brand-mark{display:grid;place-items:center;width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,#10b981,#38bdf8);color:#082335;font:900 14px 'Space Grotesk',sans-serif}
+    .topbar a{text-decoration:none;color:#cad9ec;font-size:.9rem}.topbar a:hover{text-decoration:underline}
+    main{max-width:1080px;margin:auto;padding:28px 22px 72px}
+    .hero{border:1px solid #36536a;border-radius:23px;padding:clamp(22px,5vw,42px);background:linear-gradient(120deg,rgba(22,48,67,.9),rgba(18,30,51,.98));box-shadow:0 22px 70px rgba(0,0,0,.16)}
+    .eyebrow{display:inline-block;color:var(--mint);font-size:.77rem;text-transform:uppercase;font-weight:800;letter-spacing:.13em}
+    h1,h2,h3{font-family:'Space Grotesk','Outfit',sans-serif;line-height:1.2}
+    h1{font-size:clamp(2rem,5vw,3.15rem);max-width:780px;margin:12px 0 16px;letter-spacing:-.035em}
+    .intro{color:#d1e0ef;max-width:800px;font-size:1.06rem;margin:0 0 21px}
+    .instruction{border-left:3px solid var(--orange);padding:10px 14px;background:rgba(251,191,36,.07);border-radius:0 10px 10px 0;color:#e8e5d4;margin-bottom:20px}
+    .stats{display:flex;flex-wrap:wrap;gap:9px;margin:18px 0 24px}
+    .stat{border:1px solid #41576b;background:rgba(8,17,32,.42);border-radius:12px;padding:9px 14px;min-width:145px}.stat strong{font-size:1.35rem;color:#f8fafc;font-family:'Space Grotesk',sans-serif}.stat small{display:block;color:var(--muted);font-size:.76rem}
+    .toolbar{display:flex;gap:10px;flex-wrap:wrap}
+    .btn{border:1px solid #50647c;color:#ecf7ff;background:#24344d;padding:11px 16px;border-radius:12px;font-weight:750;min-height:44px}
+    .btn:hover{background:#314963}.btn.primary{background:#6ee7b7;color:#092d2a;border-color:#6ee7b7}.btn.primary:hover{background:#a7f3d0}.btn[aria-pressed="true"]{border-color:var(--mint);box-shadow:inset 0 0 0 1px var(--mint)}
+    .progress-area{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:20px;color:#c7d7e9;font-size:.9rem}
+    .progress-track{flex:1 1 210px;max-width:300px;height:9px;background:#0b1527;border:1px solid #3c516b;border-radius:10px;overflow:hidden}.progress-fill{width:0;height:100%;background:linear-gradient(90deg,#34d399,#93c5fd);transition:width .2s}
+    .section-nav{display:flex;gap:8px;flex-wrap:wrap;margin:23px 0 25px}.section-nav a{border:1px solid #34506b;background:#15253b;border-radius:10px;padding:7px 10px;text-decoration:none;font-size:.81rem;color:#d8e7f6}.section-nav a:hover{border-color:var(--mint)}
+    .sheet{scroll-margin-top:20px;margin-top:26px}.sheet-head{display:flex;align-items:flex-start;gap:15px;margin-bottom:16px}.sheet-number{flex:0 0 46px;display:grid;place-items:center;height:46px;border:1px solid rgba(110,231,183,.45);color:var(--mint);background:rgba(16,185,129,.10);border-radius:14px;font-size:1.2rem;font-weight:900}
+    .sheet.bonus .sheet-number{border-color:rgba(251,191,36,.55);color:var(--orange);background:rgba(251,191,36,.09)}
+    .sheet-head h2{margin:0 0 4px;font-size:clamp(1.24rem,3vw,1.65rem)}.sheet-head p{color:#b9cee2;margin:0;font-size:.93rem}
+    .points{display:inline-block;white-space:nowrap;color:#a7f3d0;font-size:.75rem;font-weight:800;letter-spacing:.04em;margin-top:4px}.bonus .points{color:#fde68a}
+    .question-list{display:grid;gap:14px}
+    .question-card{background:linear-gradient(140deg,#142238,#101b2c);border:1px solid #2e435d;border-radius:17px;padding:clamp(17px,3vw,24px);box-shadow:0 8px 23px rgba(2,8,21,.08)}
+    .question-card.solution-open{border-color:#416958}
+    .question-top{display:flex;gap:12px;align-items:flex-start}
+    .q-number{display:grid;place-items:center;border-radius:9px;background:#253954;color:#c4dbf4;font-size:.79rem;font-weight:850;flex:none;padding:5px 10px}
+    .q-text{margin:0;font-size:1.025rem;font-weight:700;white-space:pre-line;overflow-wrap:anywhere}
+    .q-meta{font-size:.78rem;color:#a4bad0;margin:6px 0 0}
+    .choices{display:grid;gap:7px;list-style:none;padding:0;margin:16px 0 0 0}
+    .choice{display:flex;gap:10px;align-items:flex-start;border:1px solid #31465f;border-radius:11px;background:rgba(8,19,35,.38);padding:9px 11px;color:#dce8f5;transition:background .16s}
+    .choice-letter{flex:none;display:grid;place-items:center;width:24px;height:24px;border:1px solid #496178;border-radius:7px;font-size:.75rem;color:#bfd3e9;font-weight:800}
+    .choice-tick{display:none;margin-left:auto;font-weight:900;color:#7df4bc}
+    .solution-open .choice.correct{border-color:#47b98e;background:rgba(16,185,129,.12)}.solution-open .choice.correct .choice-tick{display:inline}.solution-open .choice.correct .choice-letter{border-color:#6ee7b7;color:#6ee7b7}
+    details.solution{margin-top:16px;border:1px solid #3c5f77;border-radius:12px;overflow:hidden;background:rgba(10,27,42,.66)}
+    details.solution summary{padding:12px 15px;cursor:pointer;font-weight:800;color:#a9f5ce;list-style:none;display:flex;justify-content:space-between;gap:12px;align-items:center}
+    details.solution summary::-webkit-details-marker{display:none}
+    details.solution summary:after{content:'+';font-size:1.35rem;line-height:1;color:var(--mint)}
+    details.solution[open] summary:after{content:'−'}
+    .solution-body{border-top:1px solid #35566b;padding:15px;background:rgba(9,30,35,.68)}
+    .answer-label{display:block;color:#b4d9ca;font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;font-weight:800;margin-bottom:6px}
+    .answer{font-size:1.1rem;color:#dcfff0;font-weight:850;white-space:pre-line;overflow-wrap:anywhere}
+    .explanation{color:#c9e2d8;margin:9px 0 0;font-size:.94rem}
+    .selfcheck{display:flex;gap:9px;align-items:center;margin-top:17px;font-size:.93rem;color:#dce8f3;cursor:pointer;width:fit-content}
+    .selfcheck input,.done-label input{accent-color:#34d399;width:19px;height:19px;cursor:pointer;flex:none}
+    .correction-area{margin-top:13px;border:1px dashed #5f7590;background:#1a293e;border-radius:12px;padding:15px}
+    .correction-area[hidden]{display:none}
+    .correction-area label.note-label{font-weight:800;display:block;margin-bottom:7px}
+    .correction-area textarea{width:100%;min-height:88px;resize:vertical;background:#0d192a;border:1px solid #55708c;color:#fff;border-radius:9px;padding:11px 12px}
+    .correction-area textarea::placeholder{color:#a4b5c6}
+    .done-label{display:inline-flex;gap:9px;align-items:center;margin-top:10px;color:#d2e9dd;cursor:pointer;font-size:.9rem}
+    .fix-status{margin-left:8px;color:var(--orange);font-size:.78rem;font-weight:700}.question-card.is-fixed .fix-status{color:var(--mint)}
+    #emptyState{display:none;margin:20px 0 0;padding:20px;border:1px solid #466075;border-radius:12px;text-align:center;color:#c9deef}
+    .footer-note{margin-top:38px;border-top:1px solid #34465b;padding-top:17px;color:#a9bdd0;font-size:.88rem}
+    .small-note{font-size:.81rem;color:#aabfd3}
+    [hidden]{display:none!important}
+    @media(max-width:650px){main{padding:17px 12px 45px}.topbar{padding:12px 14px}.hero{padding:22px 17px}.stats{gap:7px}.stat{min-width:calc(50% - 4px);flex:1}.toolbar .btn{flex:1 1 170px}.section-nav{display:none}.question-top{gap:9px}.q-number{padding:5px 8px}.sheet-head{gap:9px}.sheet-number{height:38px;flex-basis:38px}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+    @media print{
+      :root{color-scheme:light}body{background:white!important;color:#131313;font:11pt/1.34 Arial,sans-serif}
+      .topbar,.toolbar,.progress-area,.section-nav,.selfcheck,.done-label,.fix-status,.footer-note,.instruction,.correction-area{display:none!important}
+      main{padding:0;max-width:none}.hero{box-shadow:none;border:0;padding:0 0 12px;background:none;color:#131313}.eyebrow{color:#303030}h1{font-size:23pt;margin:0 0 6px}.intro{color:#333;font-size:10pt}.stats{margin:7px 0}.stat{min-width:auto;border:1px solid #aaa;background:white;color:black;padding:5px 10px}.stat strong{color:#111}.stat small{color:#444}
+      .sheet{margin-top:16px;break-before:auto}.sheet-head h2,.sheet-head p,.points,.sheet-number,.q-number{color:#222!important}
+      .question-card{background:white;border:1px solid #aaa;box-shadow:none;padding:10px;margin:0 0 8px;break-inside:avoid;color:#111}
+      .q-text,.q-meta{color:#111}.choice{background:white;border:1px solid #ccc;padding:5px;color:#111}.choice-letter{color:#111;border-color:#999}
+      .solution-open .choice.correct{background:#e6f6e9!important;border-color:#88b99a}.solution-open .choice.correct .choice-letter{color:#111}
+      details.solution{background:white;border:1px solid #999;margin-top:8px}details.solution summary{color:#111;padding:5px 10px}details.solution summary:after{display:none}
+      .solution-body{display:block!important;background:#f1f7f4!important;border-top:1px solid #aaa;padding:7px 10px;color:#111}
+      .answer-label,.answer,.explanation{color:#111}.answer{font-size:11pt}.explanation{font-size:9pt}
+      .sheet-head{margin-bottom:8px}.sheet-head p{font-size:9pt}.sheet-number{border-color:#888;background:white}
+      .choices{margin-top:7px;gap:4px}
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark" aria-hidden="true">TK2</span><span>Tastenkombinationen</span></div>
+    <a href="index.html">← Zur Kursübersicht</a>
+  </header>
+  <main>
+    <section class="hero" aria-labelledby="pageTitle">
+      <span class="eyebrow">P1 · Lösungen und Selbstkorrektur</span>
+      <h1 id="pageTitle">Aus Fehlern wird Können.</h1>
+      <p class="intro">Hier findest du alle Aufgaben der Übungsprüfung P1 mit den passenden Lösungen. Vergleiche sie mit deinem ausgefüllten Übungsblatt und verbessere gezielt die Stellen, die du noch nicht sicher kannst.</p>
+      <div class="instruction"><strong>So funktioniert’s:</strong> Vergleiche zuerst deine Antwort auf dem Blatt. Öffne danach die Lösung. Wenn du etwas falsch hattest, markiere «Das hatte ich falsch» und schreibe die Korrektur in eigenen Worten auf. Kreuze «Jetzt verstanden» an, wenn du die Aufgabe nochmals selbst lösen könntest.</div>
+      <div class="stats">
+        <div class="stat"><strong>41</strong><small>reguläre Punkte</small></div>
+        <div class="stat"><strong>+2</strong><small>Bonuspunkte</small></div>
+        <div class="stat"><strong>8</strong><small>Aufgabenteile + Bonus</small></div>
+        <div class="stat"><strong>39</strong><small>einzelne Fragen</small></div>
+      </div>
+      <div class="toolbar">
+        <button class="btn primary" id="allSolutions" type="button">Alle Lösungen zeigen</button>
+        <button class="btn" id="errorFilter" type="button" aria-pressed="false">Nur meine Fehler</button>
+        <button class="btn" id="printButton" type="button">Druckansicht</button>
+      </div>
+      <div class="progress-area" aria-live="polite">
+        <strong id="progressLabel">Noch keine Fehler markiert</strong>
+        <div class="progress-track" role="progressbar" aria-label="Verbesserte Fehler" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-fill" id="progressFill"></div></div>
+        <span class="small-note">Deine Einträge bleiben auf diesem Gerät im Browser gespeichert.</span>
+      </div>
+    </section>
+    <nav class="section-nav" id="sectionNav" aria-label="Aufgabenteile"></nav>
+    <div id="sections"></div>
+    <div id="emptyState">Du hast noch keine Fehler markiert. Wechsle zu «Alle Aufgaben», um Fragen zu markieren.</div>
+    <div class="footer-note">TK2 · P1 – Selbstkorrektur · Grundlage: Übungsprüfung Tastenkombinationen A1–A7. Lösungen gelten für die im Unterricht eingesetzte Schweizer Tastatur und die üblichen Windows-/Word-/Browser-Funktionen. Funktionen können je nach Programm leicht abweichen.</div>
+  </main>
+  <script id="p1-data" type="application/json">[{"id":"grundlagen","title":"Was macht dieses Tastenkürzel?","points":4,"lead":"Kreuze jeweils die richtige Aussage an.","questions":[{"id":"1-1","q":"Ctrl + C","options":["Kopiert markierte Inhalte.","Fügt kopierte Inhalte ein.","Schliesst die aktuelle Anwendung."],"correct":0,"answer":"Ctrl + C kopiert markierte Inhalte in die Zwischenablage."},{"id":"1-2","q":"Ctrl + V","options":["Speichert das Dokument.","Fügt kopierte oder ausgeschnittene Inhalte ein.","Macht den letzten Schritt rückgängig."],"correct":1,"answer":"Ctrl + V fügt den Inhalt der Zwischenablage ein."},{"id":"1-3","q":"Ctrl + X","options":["Schneidet markierte Inhalte aus.","Sucht nach einem Begriff.","Öffnet eine Datei."],"correct":0,"answer":"Ctrl + X schneidet markierte Inhalte aus. Mit Ctrl + V kannst du sie anderswo einfügen."},{"id":"1-4","q":"Ctrl + Z","options":["Macht den letzten Schritt rückgängig.","Markiert alles.","Druckt das Dokument."],"correct":0,"answer":"Ctrl + Z macht den letzten Arbeitsschritt rückgängig."}]},{"id":"alltag","title":"Tastenkombinationen im Alltag","points":6,"lead":"Wähle jeweils die sinnvollste Tastenkombination.","questions":[{"id":"2-1","q":"Elena arbeitet seit längerer Zeit an einem wichtigen Dokument. Bevor sie weiterarbeitet, möchte sie den aktuellen Stand speichern.","options":["Ctrl + S","Ctrl + P","Ctrl + O"],"correct":0,"answer":"Ctrl + S – speichert den aktuellen Stand des Dokuments."},{"id":"2-2","q":"Jan möchte den gesamten Text seines Dokuments markieren, um die Schriftart für alles gleichzeitig zu ändern.","options":["Ctrl + A","Ctrl + F","Ctrl + C"],"correct":0,"answer":"Ctrl + A – markiert alles im aktuellen Bereich oder Dokument."},{"id":"2-3","q":"Amir hat ein sechsseitiges Dokument geöffnet. Er sucht darin nach dem Begriff «Datenschutz».","options":["Ctrl + F","Ctrl + H","Ctrl + L"],"correct":0,"answer":"Ctrl + F – öffnet die Suche im Dokument."},{"id":"2-4","q":"Sophie arbeitet an einem sehr langen Bericht. Sie befindet sich weit oben und möchte direkt ganz ans Ende des Dokuments springen.","options":["Ctrl + End","Ctrl + Home","Ctrl + ↓"],"correct":0,"answer":"Ctrl + End – springt ans Ende des Dokuments."},{"id":"2-5","q":"Tim kopiert Text von einer Webseite in ein Dokument. Die fremde Schriftart und Formatierung soll möglichst nicht übernommen werden.","options":["Ctrl + Shift + V","Ctrl + V","Ctrl + Shift + C"],"correct":0,"answer":"Ctrl + Shift + V – fügt in vielen Programmen als unformatierten Text ein. Die genaue Funktion kann je nach Programm abweichen."},{"id":"2-6","q":"Luca hat einen Schritt rückgängig gemacht und merkt, dass er ihn doch behalten wollte.","options":["Ctrl + Y","Ctrl + Z","Ctrl + S"],"correct":0,"answer":"Ctrl + Y – stellt in Word und vielen Windows-Programmen einen rückgängig gemachten Schritt wieder her."}]},{"id":"altgr","title":"Sonderzeichen mit AltGr","points":8,"lead":"Schweizer Tastatur: Schreibe jeweils nur die zweite Taste nach AltGr auf.","questions":[{"id":"3-1","q":"@ = AltGr + ___","answer":"2","explanation":"AltGr + 2 ergibt @."},{"id":"3-2","q":"# = AltGr + ___","answer":"3","explanation":"AltGr + 3 ergibt #."},{"id":"3-3","q":"€ = AltGr + ___","answer":"E","explanation":"AltGr + E ergibt €."},{"id":"3-4","q":"| = AltGr + ___","answer":"7","explanation":"AltGr + 7 ergibt |."},{"id":"3-5","q":"\\ = AltGr + ___","answer":"\u003c","explanation":"AltGr + \u003c ergibt den umgekehrten Schrägstrich (Backslash)."},{"id":"3-6","q":"[ = AltGr + ___","answer":"ü","explanation":"AltGr + ü ergibt [."},{"id":"3-7","q":"{ = AltGr + ___","answer":"ä","explanation":"AltGr + ä ergibt {."},{"id":"3-8","q":"° = AltGr + ___","answer":"4","explanation":"AltGr + 4 ergibt °."}]},{"id":"browser","title":"Programme & Browser","points":4,"lead":"Wähle die passendste Tastenkombination.","questions":[{"id":"4-1","q":"Du möchtest in Word ein neues Dokument erstellen.","options":["Ctrl + N","Ctrl + T","Ctrl + W"],"correct":0,"answer":"Ctrl + N – erstellt in Word ein neues Dokument."},{"id":"4-2","q":"Du möchtest im Browser einen neuen Tab öffnen.","options":["Ctrl + N","Ctrl + T","Ctrl + L"],"correct":1,"answer":"Ctrl + T – öffnet im Browser einen neuen Tab."},{"id":"4-3","q":"Du möchtest die aktuelle Webseite neu laden.","options":["F5","Ctrl + F","Win + D"],"correct":0,"answer":"F5 – lädt die aktuelle Webseite neu."},{"id":"4-4","q":"Du möchtest sofort die gesamte Adresse im Browser markieren.","options":["Ctrl + L","Ctrl + F","Ctrl + T"],"correct":0,"answer":"Ctrl + L – setzt den Fokus in die Adressleiste und markiert die Adresse."}]},{"id":"windows","title":"Windows & Arbeitsalltag","points":5,"lead":"Schreibe die passende Tastenkombination auf.","questions":[{"id":"5-1","q":"Desktop anzeigen","answer":"Win + D","explanation":"Zeigt den Desktop an; erneutes Drücken stellt die Fenster wieder her."},{"id":"5-2","q":"Datei-Explorer öffnen","answer":"Win + E","explanation":"Öffnet den Datei-Explorer."},{"id":"5-3","q":"Einen Bildschirmausschnitt aufnehmen","answer":"Win + Shift + S","explanation":"Öffnet die Auswahl für einen Screenshot-Ausschnitt."},{"id":"5-4","q":"Task-Manager direkt öffnen","answer":"Ctrl + Shift + Esc","explanation":"Öffnet den Task-Manager ohne zusätzlichen Zwischenschritt."},{"id":"5-5","q":"Verlauf der Zwischenablage öffnen","answer":"Win + V","explanation":"Öffnet den Zwischenablageverlauf, sofern diese Funktion aktiviert ist."}]},{"id":"erklaeren","title":"Kurz erklären","points":6,"lead":"Stichwort oder kurzer Satz genügt; die Wirkung muss stimmen.","questions":[{"id":"6-1","q":"Ctrl + H in Word","answer":"Öffnet Suchen und Ersetzen.","explanation":"Damit kannst du Textstellen im Dokument durch anderen Text ersetzen."},{"id":"6-2","q":"Ctrl + P","answer":"Öffnet den Druckdialog.","explanation":"Dort wählst du Drucker und Druckeinstellungen."},{"id":"6-3","q":"Ctrl + O","answer":"Öffnet einen Dialog zum Öffnen einer Datei.","explanation":"Damit kannst du eine bestehende Datei öffnen."},{"id":"6-4","q":"Win + ←","answer":"Dockt das aktive Fenster links am Bildschirm an.","explanation":"Das Fenster nimmt in der Regel die linke Bildschirmhälfte ein."},{"id":"6-5","q":"Win + ↑","answer":"Maximiert das aktive Fenster.","explanation":"Je nach Ausgangszustand kann der erste Schritt auch die Fensterposition ändern."},{"id":"6-6","q":"Win + ↓ bei maximiertem Fenster","answer":"Stellt die normale Fenstergrösse wieder her.","explanation":"Ein maximiertes Fenster wird verkleinert und ist danach nicht mehr maximiert."}]},{"id":"vergleichen","title":"Nicht verwechseln","points":4,"lead":"Erkläre jeweils kurz den Unterschied. Pro Vergleich sind 2 Punkte möglich.","questions":[{"id":"7-1","points":2,"q":"A) Ctrl + Tab und Alt + Tab – Wann verwendest du Ctrl + Tab und wann Alt + Tab?","answer":"Ctrl + Tab: Zwischen Tabs innerhalb einer Anwendung bzw. des Browsers wechseln.\nAlt + Tab: Zwischen geöffneten Fenstern beziehungsweise Programmen wechseln.","explanation":"Beide wechseln den Kontext, aber auf unterschiedlichen Ebenen."},{"id":"7-2","points":2,"q":"B) Ctrl + W und Alt + F4 – Was wird typischerweise mit Ctrl + W geschlossen und was mit Alt + F4?","answer":"Ctrl + W: Den aktuellen Tab bzw. das aktuelle Dokument schliessen.\nAlt + F4: Das aktive Fenster beziehungsweise Programm schliessen.","explanation":"Was genau geschlossen wird, kann vom jeweiligen Programm abhängen."}]},{"id":"transfer","title":"Transfer","points":4,"lead":"Nenne jeweils die sinnvollste Tastenkombination und begründe sie kurz. Pro Aufgabe 2 Punkte.","questions":[{"id":"8-1","points":2,"q":"A) Zwei Programme nebeneinander – Du arbeitest mit Browser und PowerPoint. Das aktive Browserfenster soll ohne Maus die rechte Bildschirmhälfte einnehmen, damit PowerPoint daneben sichtbar bleiben kann.","answer":"Win + →","explanation":"Damit wird das aktive Browserfenster rechts angedockt. Auf der anderen Hälfte bleibt Platz für PowerPoint. 1 Punkt für das Kürzel und 1 Punkt für die sinnvolle Begründung."},{"id":"8-2","points":2,"q":"B) Platz kurz verlassen – Du gehst für zwei Minuten aus dem Schulzimmer. Deine Programme sollen geöffnet bleiben, aber niemand soll deinen Computer benutzen können.","answer":"Win + L","explanation":"Damit wird der Computer gesperrt. Die geöffneten Programme und Dokumente bleiben erhalten. 1 Punkt für das Kürzel und 1 Punkt für die sinnvolle Begründung."}]},{"id":"bonus","title":"Bonus – genau unterscheiden","points":2,"bonus":true,"lead":"Freiwillige Zusatzfragen, maximal +2 Punkte.","questions":[{"id":"B-1","q":"Bonus 1 – Im Browser bleiben: Du hast mehrere Browser-Tabs geöffnet und gleichzeitig Word. Du möchtest zum vorherigen Browser-Tab wechseln, ohne zu Word zu wechseln. Welche Tastenkombination verwendest du?","answer":"Ctrl + Shift + Tab","explanation":"Damit wechselst du einen Tab zurück, bleibst aber im Browser."},{"id":"B-2","q":"Bonus 2 – Fenster neu anordnen: Ein Fenster ist maximiert. Du möchtest es zuerst wieder auf normale Grösse bringen und danach links am Bildschirm andocken. Nenne die zwei Tastenkombinationen in der richtigen Reihenfolge.","answer":"1. Win + ↓\n2. Win + ←","explanation":"Zuerst verlässt das Fenster die maximierte Ansicht; anschliessend dockst du es links an."}]}]</script>
+  <script>
+    (function(){
+      'use strict';
+      const data = JSON.parse(document.getElementById('p1-data').textContent);
+      const storageKey = 'ib2026_tk2_p1_korrektur_v1';
+      let states = {};
+      try {
+        const saved = JSON.parse(localStorage.getItem(storageKey) || '{}');
+        if (saved && typeof saved === 'object' && !Array.isArray(saved)) states = saved;
+      } catch (_e) {}
+      let errorsOnly = false;
+      const root = document.getElementById('sections');
+      const nav = document.getElementById('sectionNav');
+      const esc = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+      const entry = id => states[id] || (states[id] = {wrong:false,done:false,note:''});
+      function persist(){try{localStorage.setItem(storageKey,JSON.stringify(states));}catch(_e){}}
+      function questionHTML(q,idx) {
+        const options = q.options ? '<ul class="choices" aria-label="Antwortmöglichkeiten">'+q.options.map((option,i)=>'<li class="choice '+(q.correct===i?'correct':'')+'"><span class="choice-letter">'+String.fromCharCode(65+i)+'</span><span>'+esc(option)+'</span><span class="choice-tick" aria-label="Richtige Antwort">✓</span></li>').join('')+'</ul>' : '';
+        const answer = '<details class="solution"><summary>Lösung ansehen</summary><div class="solution-body"><span class="answer-label">Richtige Lösung</span><div class="answer">'+esc(q.answer)+'</div>'+(q.explanation?'<p class="explanation">'+esc(q.explanation)+'</p>':'')+'</div></details>';
+        const label = q.id.startsWith('B') ? q.id.replace('-','.') : q.id.replace('-', '.');
+        return '<article class="question-card" data-id="'+esc(q.id)+'"><div class="question-top"><span class="q-number">'+esc(label)+'</span><div><p class="q-text">'+esc(q.q)+'</p><div class="q-meta">'+(q.points || 1)+' '+((q.points||1)===1?'Punkt':'Punkte')+'</div></div></div>'+options+answer+
+          '<label class="selfcheck"><input class="wrong-input" type="checkbox" aria-label="Fehler bei Frage '+esc(label)+' markieren">Das hatte ich falsch <span class="fix-status" aria-live="polite"></span></label>'+
+          '<div class="correction-area" hidden><label class="note-label" for="correction-'+esc(q.id)+'">Meine Verbesserung</label><textarea id="correction-'+esc(q.id)+'" class="note-input" placeholder="Schreibe hier deine richtige Lösung oder eine Erklärung in eigenen Worten ..."></textarea><label class="done-label"><input type="checkbox" class="done-input">Jetzt verstanden und verbessert</label></div></article>';
+      }
+      data.forEach((s,index)=>{
+        const section = document.createElement('section');
+        section.className='sheet'+(s.bonus?' bonus':'');
+        section.id=s.id;
+        section.innerHTML='<header class="sheet-head"><span class="sheet-number">'+(s.bonus?'★':String(index+1).padStart(2,'0'))+'</span><div><h2>'+esc(s.title)+'</h2><p>'+esc(s.lead)+'</p><span class="points">'+(s.bonus?'+':'')+s.points+' '+(s.points===1?'Punkt':'Punkte')+'</span></div></header><div class="question-list">'+s.questions.map(questionHTML).join('')+'</div>';
+        root.appendChild(section);
+        const a=document.createElement('a');a.href='#'+s.id;a.textContent=(s.bonus?'★':index+1)+' · '+s.title;nav.appendChild(a);
+      });
+      function updateCard(card){
+        const s=entry(card.dataset.id);
+        card.querySelector('.wrong-input').checked=!!s.wrong;
+        card.querySelector('.correction-area').hidden=!s.wrong;
+        card.querySelector('.done-input').checked=!!s.done;
+        card.querySelector('.note-input').value=s.note || '';
+        card.classList.toggle('is-fixed',!!s.wrong&&!!s.done);
+        card.querySelector('.fix-status').textContent=s.wrong?(s.done?'✓ verbessert':'Noch offen'):'';
+      }
+      function updateProgress(){
+        let wrong=0,done=0;
+        Object.values(states).forEach(s=>{if(s.wrong){wrong++;if(s.done)done++;}});
+        const percent=wrong?Math.round(done/wrong*100):0;
+        document.getElementById('progressLabel').textContent=wrong?done+' von '+wrong+' markierten Fehlern verbessert':'Noch keine Fehler markiert';
+        document.getElementById('progressFill').style.width=percent+'%';
+        document.querySelector('.progress-track').setAttribute('aria-valuenow',String(percent));
+      }
+      function applyFilter(){
+        let visible=0;
+        document.querySelectorAll('.sheet').forEach(section=>{
+          let sectionVisible=0;
+          section.querySelectorAll('.question-card').forEach(card=>{
+            const show=!errorsOnly || !!entry(card.dataset.id).wrong;
+            card.hidden=!show;
+            if(show){sectionVisible++;visible++;}
+          });
+          section.hidden=sectionVisible===0;
+        });
+        document.getElementById('emptyState').style.display=(errorsOnly&&visible===0)?'block':'none';
+        const btn=document.getElementById('errorFilter');
+        btn.setAttribute('aria-pressed',String(errorsOnly));
+        btn.textContent=errorsOnly?'Alle Aufgaben zeigen':'Nur meine Fehler';
+      }
+      function updateAllButton(){
+        const all=[...document.querySelectorAll('details.solution')];
+        document.getElementById('allSolutions').textContent=all.every(x=>x.open)?'Alle Lösungen verbergen':'Alle Lösungen zeigen';
+      }
+      root.querySelectorAll('.question-card').forEach(updateCard);
+      root.querySelectorAll('details.solution').forEach(details=>details.addEventListener('toggle',()=>{
+        details.closest('.question-card').classList.toggle('solution-open',details.open);
+        updateAllButton();
+      }));
+      root.addEventListener('change',e=>{
+        const card=e.target.closest('.question-card');
+        if(!card)return;
+        const s=entry(card.dataset.id);
+        if(e.target.matches('.wrong-input')){
+          s.wrong=e.target.checked;
+          if(!s.wrong)s.done=false;
+          persist();updateCard(card);updateProgress();applyFilter();
+        }else if(e.target.matches('.done-input')){
+          s.done=e.target.checked;persist();card.classList.toggle('is-fixed',s.done);card.querySelector('.fix-status').textContent=s.done?'✓ verbessert':'Noch offen';updateProgress();
+        }
+      });
+      root.addEventListener('input',e=>{
+        if(!e.target.matches('.note-input'))return;
+        const card=e.target.closest('.question-card');
+        entry(card.dataset.id).note=e.target.value;
+        persist();
+      });
+      document.getElementById('allSolutions').addEventListener('click',()=>{
+        const list=[...document.querySelectorAll('details.solution')];
+        const show=!list.every(x=>x.open);
+        list.forEach(x=>{x.open=show;});
+        updateAllButton();
+      });
+      document.getElementById('errorFilter').addEventListener('click',()=>{errorsOnly=!errorsOnly;applyFilter();});
+      document.getElementById('printButton').addEventListener('click',()=>window.print());
+      let printOpen=null,printFilter=null;
+      window.addEventListener('beforeprint',()=>{
+        const list=[...document.querySelectorAll('details.solution')];
+        printOpen=list.map(x=>x.open);
+        printFilter=errorsOnly;
+        errorsOnly=false;applyFilter();
+        list.forEach(x=>{x.open=true;x.closest('.question-card').classList.add('solution-open');});
+      });
+      window.addEventListener('afterprint',()=>{
+        if(printOpen){document.querySelectorAll('details.solution').forEach((x,i)=>{x.open=printOpen[i];x.closest('.question-card').classList.toggle('solution-open',x.open);});printOpen=null;}
+        if(printFilter!==null){errorsOnly=printFilter;printFilter=null;applyFilter();}
+        updateAllButton();
+      });
+      updateProgress();applyFilter();updateAllButton();
+    })();
+  </script>
+</body>
+</html>
