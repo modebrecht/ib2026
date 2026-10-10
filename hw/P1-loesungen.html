@@ -155,7 +155,10 @@
         const options = q.options ? '<ul class="choices" aria-label="Antwortmöglichkeiten">'+q.options.map((option,i)=>'<li class="choice '+((Array.isArray(q.correct)?q.correct.includes(i):q.correct===i)?'correct':'')+'"><span class="choice-letter">'+String.fromCharCode(65+i)+'</span><span>'+esc(option)+'</span><span class="choice-tick" aria-label="Richtige Antwort">✓</span></li>').join('')+'</ul>' : '';
         const answer = '<details class="solution"><summary>Lösung ansehen</summary><div class="solution-body"><span class="answer-label">Richtige Lösung</span><div class="answer">'+esc(q.answer)+'</div>'+(q.explanation?'<p class="explanation">'+esc(q.explanation)+'</p>':'')+'</div></details>';
         const label = q.id.startsWith('B') ? q.id.replace('-','.') : q.id.replace('-', '.');
-        return '<article class="question-card" data-id="'+esc(q.id)+'"><div class="question-top"><span class="q-number">'+esc(label)+'</span><div><p class="q-text">'+esc(q.q)+'</p><div class="q-meta">'+(q.points || 1)+' '+((q.points||1)===1?'Punkt':'Punkte')+'</div></div></div>'+options+answer+
+        // Keep the exact Word question text; don't add a second visible question number.
+        const hasOriginalLabel = /^(?:\d+\.\s|[A-C]\)\s|Bonus\s+\d+\b)/.test(q.q);
+        const numberBadge = hasOriginalLabel ? '' : '<span class="q-number">'+esc(label)+'</span>';
+        return '<article class="question-card" data-id="'+esc(q.id)+'"><div class="question-top">'+numberBadge+'<div><p class="q-text">'+esc(q.q)+'</p><div class="q-meta">'+(q.points || 1)+' '+((q.points||1)===1?'Punkt':'Punkte')+'</div></div></div>'+options+answer+
           '<label class="selfcheck"><input class="wrong-input" type="checkbox" aria-label="Fehler bei Frage '+esc(label)+' markieren">Das hatte ich falsch <span class="fix-status" aria-live="polite"></span></label>'+
           '<div class="correction-area" hidden><label class="note-label" for="correction-'+esc(q.id)+'">Meine Verbesserung</label><textarea id="correction-'+esc(q.id)+'" class="note-input" placeholder="Schreibe hier deine richtige Lösung oder eine Erklärung in eigenen Worten ..."></textarea><label class="done-label"><input type="checkbox" class="done-input">Jetzt verstanden und verbessert</label></div></article>';
       }
@@ -165,9 +168,12 @@
         section.id=s.id;
         const context = s.context ? '<div class="section-context">'+esc(s.context)+'</div>' : '';
         const comparison = s.comparison ? '<div class="laptop-grid">'+s.comparison.map(l=>'<div class="laptop-card"><h3>'+esc(l.name)+'</h3><ul>'+l.details.map(d=>'<li>'+esc(d)+'</li>').join('')+'</ul></div>').join('')+'</div>' : '';
-        section.innerHTML='<header class="sheet-head"><span class="sheet-number">'+(s.bonus?'★':String(index+1).padStart(2,'0'))+'</span><div><h2>'+esc(s.title)+'</h2><p>'+esc(s.lead)+'</p><span class="points">'+(s.bonus?'+':'')+s.points+' '+(s.points===1?'Punkt':'Punkte')+'</span></div></header>'+context+comparison+'<div class="question-list">'+s.questions.map(questionHTML).join('')+'</div>';
+        // Word headings already contain their chapter number. Do not show it twice.
+        const hasOriginalChapterNumber = /^\d+\.\s/.test(s.title);
+        const sectionBadge = hasOriginalChapterNumber ? '' : '<span class="sheet-number">'+(s.bonus?'★':String(index+1).padStart(2,'0'))+'</span>';
+        section.innerHTML='<header class="sheet-head">'+sectionBadge+'<div><h2>'+esc(s.title)+'</h2><p>'+esc(s.lead)+'</p><span class="points">'+(s.bonus?'+':'')+s.points+' '+(s.points===1?'Punkt':'Punkte')+'</span></div></header>'+context+comparison+'<div class="question-list">'+s.questions.map(questionHTML).join('')+'</div>';
         root.appendChild(section);
-        const a=document.createElement('a');a.href='#'+s.id;a.textContent=(s.bonus?'★':index+1)+' · '+s.title;nav.appendChild(a);
+        const a=document.createElement('a');a.href='#'+s.id;a.textContent=(hasOriginalChapterNumber?'':(s.bonus?'★ · ':index+1+' · '))+s.title;nav.appendChild(a);
       });
       function updateCard(card){
         const s=entry(card.dataset.id);
