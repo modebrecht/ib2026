@@ -188,7 +188,7 @@
           });
           section.hidden=sectionVisible===0;
         });
-        document.getElementById('emptyState').style.display=(errorsOnly&&visible===0)?'block':'none';
+
         document.getElementById('reviewActions').hidden=wrongCount===0;
         const btn=document.getElementById('errorFilter');
         btn.setAttribute('aria-pressed',String(errorsOnly));
