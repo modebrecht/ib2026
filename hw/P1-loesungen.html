@@ -102,6 +102,44 @@
     .laptop-card li:last-child{border:0;padding-bottom:0}
     @media(max-width:550px){.laptop-grid{grid-template-columns:1fr}}
     @media print{.section-context,.laptop-card{color:#111;background:white;border:1px solid #aaa}.laptop-card h3,.laptop-card li{color:#111}.laptop-card li{border-color:#ccc}}
+
+    /* Compact answer key: green answers without repetitive solution toggles. */
+    .hero{padding:22px 26px}
+    .hero h1{font-size:clamp(1.8rem,4vw,2.4rem);margin:4px 0 7px}
+    .hero .intro{font-size:.99rem;margin:0 0 5px;color:#d7e3f0}
+    .meta-line{margin:0;color:#a5bed2;font-size:.83rem}
+    .hero .toolbar{margin-top:13px}
+    .hero .toolbar .btn{padding:7px 12px;min-height:36px;font-weight:650;font-size:.85rem;background:transparent}
+    .hero .progress-area{margin-top:12px;font-size:.82rem}
+    .question-card{padding:16px 19px}
+    .question-list{gap:10px}
+    .choices{margin-top:9px;gap:5px}
+    .choice{padding:7px 10px}
+    .choice.correct{border-color:#47b98e;background:rgba(16,185,129,.12);color:#e1fff2}
+    .choice.correct .choice-tick{display:inline}
+    .choice.correct .choice-letter{border-color:#6ee7b7;color:#6ee7b7}
+    .answer-line{display:flex;align-items:flex-start;gap:10px;margin-top:11px;padding:10px 12px;border:1px solid #437964;border-radius:10px;background:rgba(16,185,129,.09)}
+    .answer-line .answer{font-size:.98rem;line-height:1.45;font-weight:750}
+    .answer-mark{color:#6ee7b7;flex:none;font-weight:900}
+    .reason{display:inline-block;margin-top:9px;vertical-align:middle}
+    .reason summary{display:inline-grid;place-items:center;width:25px;height:25px;border:1px solid #4b6682;border-radius:50%;cursor:pointer;color:#bcd8ee;font-weight:850;font-size:.85rem;list-style:none}
+    .reason summary::-webkit-details-marker{display:none}
+    .reason summary:focus-visible{outline:3px solid var(--orange);outline-offset:3px}
+    .reason[open]{display:block}
+    .reason p{margin:9px 0 0;color:#c5d6e7;font-size:.91rem;white-space:pre-line}
+    .selfcheck{margin-top:10px;font-size:.88rem;color:#b9cde1}
+    .correction-area{margin-top:9px;padding:12px}
+    .correction-area label.note-label{font-size:.9rem}
+    .correction-area textarea{min-height:65px}
+    @media(max-width:650px){.hero{padding:18px}.question-card{padding:15px}}
+    @media print{
+      .hero .toolbar,.reason summary{display:none!important}
+      .reason p{display:none!important}
+      .choice.correct{border-color:#6da98c!important;background:#f1fbf4!important;color:#111}
+      .choice.correct .choice-letter,.answer-line .answer,.answer-mark{color:#111!important}
+      .choice.correct .choice-tick{display:inline!important}
+      .answer-line{background:#f2f8f3!important;color:#111!important;border:1px solid #8cad97}
+    }
   </style>
 </head>
 <body>
@@ -111,24 +149,14 @@
   </header>
   <main>
     <section class="hero" aria-labelledby="pageTitle">
-      <span class="eyebrow">P1 · Lösungen und Selbstkorrektur</span>
-      <h1 id="pageTitle">Aus Fehlern wird Können.</h1>
-      <p class="intro">Hier findest du alle Aufgaben der Übungsprüfung P1 mit den passenden Lösungen. Vergleiche sie mit deinem ausgefüllten Übungsblatt und verbessere gezielt die Stellen, die du noch nicht sicher kannst.</p>
-      <div class="instruction"><strong>So funktioniert’s:</strong> Vergleiche zuerst deine Antwort auf dem Blatt. Öffne danach die Lösung. Wenn du etwas falsch hattest, markiere «Das hatte ich falsch» und schreibe die Korrektur in eigenen Worten auf. Kreuze «Jetzt verstanden» an, wenn du die Aufgabe nochmals selbst lösen könntest.</div>
-      <div class="stats">
-        <div class="stat"><strong>41</strong><small>reguläre Punkte</small></div>
-        <div class="stat"><strong>+2</strong><small>Bonuspunkte</small></div>
-        <div class="stat"><strong>8</strong><small>Aufgabenteile + Bonus</small></div>
-        <div class="stat"><strong>36</strong><small>einzelne Fragen</small></div>
-      </div>
-      <div class="toolbar">
-        <button class="btn primary" id="allSolutions" type="button">Alle Lösungen zeigen</button>
-        <button class="btn" id="printButton" type="button">Druckansicht</button>
-      </div>
-      <div class="progress-area" aria-live="polite">
-        <strong id="progressLabel">Noch keine Fehler markiert</strong>
+      <span class="eyebrow">P1 · HW</span>
+      <h1 id="pageTitle">Lösungen</h1>
+      <p class="intro">Vergleiche mit deinem Prüfungsblatt. Markiere Fehler und verbessere sie.</p>
+      <p class="meta-line">41 Punkte + 2 Bonus · 36 Fragen</p>
+      <div class="toolbar"><button class="btn" id="printButton" type="button">Drucken</button></div>
+      <div class="progress-area" id="progressArea" hidden aria-live="polite">
+        <strong id="progressLabel"></strong>
         <div class="progress-track" role="progressbar" aria-label="Verbesserte Fehler" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-fill" id="progressFill"></div></div>
-        <span class="small-note">Deine Einträge bleiben auf diesem Gerät im Browser gespeichert.</span>
       </div>
     </section>
     <nav class="section-nav" id="sectionNav" aria-label="Aufgabenteile"></nav>
@@ -153,16 +181,17 @@
       const esc = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
       const entry = id => states[id] || (states[id] = {wrong:false,done:false,note:''});
       function persist(){try{localStorage.setItem(storageKey,JSON.stringify(states));}catch(_e){}}
-      function questionHTML(q,idx) {
-        const options = q.options ? '<ul class="choices" aria-label="Antwortmöglichkeiten">'+q.options.map((option,i)=>'<li class="choice '+((Array.isArray(q.correct)?q.correct.includes(i):q.correct===i)?'correct':'')+'"><span class="choice-letter">'+String.fromCharCode(65+i)+'</span><span>'+esc(option)+'</span><span class="choice-tick" aria-label="Richtige Antwort">✓</span></li>').join('')+'</ul>' : '';
-        const answer = '<details class="solution"><summary>Lösung ansehen</summary><div class="solution-body"><span class="answer-label">Richtige Lösung</span><div class="answer">'+esc(q.answer)+'</div>'+(q.explanation?'<p class="explanation">'+esc(q.explanation)+'</p>':'')+'</div></details>';
+      function questionHTML(q) {
+        const options = q.options ? '<ul class="choices" aria-label="Antwortmöglichkeiten">'+q.options.map((option,i)=>'<li class="choice '+((Array.isArray(q.correct)?q.correct.includes(i):q.correct===i)?'correct':'')+'"><span class="choice-letter">'+String.fromCharCode(65+i)+'</span><span>'+esc(option)+'</span><span class="choice-tick" aria-label="Richtig">✓</span></li>').join('')+'</ul>' : '';
+        // The highlighted answer choice is sufficient for multiple-choice questions.
+        const answer = q.options ? '' : '<div class="answer-line"><span class="answer-mark" aria-hidden="true">✓</span><span class="answer">'+esc(q.answer)+'</span></div>';
+        const why = q.explanation ? '<details class="reason"><summary aria-label="Erklärung anzeigen" title="Erklärung anzeigen">?</summary><p>'+esc(q.explanation)+'</p></details>' : '';
         const label = q.id.startsWith('B') ? q.id.replace('-','.') : q.id.replace('-', '.');
-        // Keep the exact Word question text; don't add a second visible question number.
         const hasOriginalLabel = /^(?:\d+\.\s|[A-C]\)\s|Bonus\s+\d+\b)/.test(q.q);
         const numberBadge = hasOriginalLabel ? '' : '<span class="q-number">'+esc(label)+'</span>';
-        return '<article class="question-card" data-id="'+esc(q.id)+'"><div class="question-top">'+numberBadge+'<div><p class="q-text">'+esc(q.q)+'</p><div class="q-meta">'+(q.points || 1)+' '+((q.points||1)===1?'Punkt':'Punkte')+'</div></div></div>'+options+answer+
-          '<label class="selfcheck"><input class="wrong-input" type="checkbox" aria-label="Fehler bei Frage '+esc(label)+' markieren">Das hatte ich falsch <span class="fix-status" aria-live="polite"></span></label>'+
-          '<div class="correction-area" hidden><label class="note-label" for="correction-'+esc(q.id)+'">Meine Verbesserung</label><textarea id="correction-'+esc(q.id)+'" class="note-input" placeholder="Schreibe hier deine richtige Lösung oder eine Erklärung in eigenen Worten ..."></textarea><label class="done-label"><input type="checkbox" class="done-input">Jetzt verstanden und verbessert</label></div></article>';
+        return '<article class="question-card" data-id="'+esc(q.id)+'"><div class="question-top">'+numberBadge+'<div><p class="q-text">'+esc(q.q)+'</p><div class="q-meta">'+(q.points || 1)+' '+((q.points||1)===1?'Punkt':'Punkte')+'</div></div></div>'+options+answer+why+
+          '<label class="selfcheck"><input class="wrong-input" type="checkbox" aria-label="Fehler bei Frage '+esc(label)+' markieren">Fehler markieren <span class="fix-status" aria-live="polite"></span></label>'+
+          '<div class="correction-area" hidden><label class="note-label" for="correction-'+esc(q.id)+'">Meine Korrektur</label><textarea id="correction-'+esc(q.id)+'" class="note-input" placeholder="So ist es richtig ..."></textarea><label class="done-label"><input type="checkbox" class="done-input">Korrigiert</label></div></article>';
       }
       data.forEach((s,index)=>{
         const section = document.createElement('section');
@@ -189,6 +218,7 @@
       function updateProgress(){
         let wrong=0,done=0;
         Object.values(states).forEach(s=>{if(s.wrong){wrong++;if(s.done)done++;}});
+        document.getElementById('progressArea').hidden=wrong===0;
         const percent=wrong?Math.round(done/wrong*100):0;
         document.getElementById('progressLabel').textContent=wrong?done+' von '+wrong+' markierten Fehlern verbessert':'Noch keine Fehler markiert';
         document.getElementById('progressFill').style.width=percent+'%';
@@ -212,15 +242,7 @@
         btn.setAttribute('aria-pressed',String(errorsOnly));
         btn.textContent=errorsOnly?'Alle Aufgaben zeigen':'Nur meine Fehler ('+wrongCount+')';
       }
-      function updateAllButton(){
-        const all=[...document.querySelectorAll('details.solution')];
-        document.getElementById('allSolutions').textContent=all.every(x=>x.open)?'Alle Lösungen verbergen':'Alle Lösungen zeigen';
-      }
       root.querySelectorAll('.question-card').forEach(updateCard);
-      root.querySelectorAll('details.solution').forEach(details=>details.addEventListener('toggle',()=>{
-        details.closest('.question-card').classList.toggle('solution-open',details.open);
-        updateAllButton();
-      }));
       root.addEventListener('change',e=>{
         const card=e.target.closest('.question-card');
         if(!card)return;
@@ -239,28 +261,18 @@
         entry(card.dataset.id).note=e.target.value;
         persist();
       });
-      document.getElementById('allSolutions').addEventListener('click',()=>{
-        const list=[...document.querySelectorAll('details.solution')];
-        const show=!list.every(x=>x.open);
-        list.forEach(x=>{x.open=show;});
-        updateAllButton();
-      });
       document.getElementById('errorFilter').addEventListener('click',()=>{errorsOnly=!errorsOnly;applyFilter();document.getElementById('sections').scrollIntoView({block:'start'});});
       document.getElementById('printButton').addEventListener('click',()=>window.print());
-      let printOpen=null,printFilter=null;
+      let printFilter=null;
       window.addEventListener('beforeprint',()=>{
-        const list=[...document.querySelectorAll('details.solution')];
-        printOpen=list.map(x=>x.open);
         printFilter=errorsOnly;
-        errorsOnly=false;applyFilter();
-        list.forEach(x=>{x.open=true;x.closest('.question-card').classList.add('solution-open');});
+        errorsOnly=false;
+        applyFilter();
       });
       window.addEventListener('afterprint',()=>{
-        if(printOpen){document.querySelectorAll('details.solution').forEach((x,i)=>{x.open=printOpen[i];x.closest('.question-card').classList.toggle('solution-open',x.open);});printOpen=null;}
         if(printFilter!==null){errorsOnly=printFilter;printFilter=null;applyFilter();}
-        updateAllButton();
       });
-      updateProgress();applyFilter();updateAllButton();
+      updateProgress();applyFilter();
     })();
   </script>
 </body>
