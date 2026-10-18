@@ -82,6 +82,58 @@ Mögliche Mini-Missionen:
 - **Mini-Mission:** Ein gemeinsames Dokument überarbeiten, eine versehentliche Änderung wiederherstellen und eine zu weit gefasste Freigabe korrigieren.
 - Ausschliesslich Testdateien und schulisch freigegebene Arbeitsumgebungen nutzen.
 
+## Schwerpunktidee: IB-PE modernisieren – zwei Lernwege
+
+**Projekt:** [IB-PE / Prompt Engineering Masterclass](https://ib-pe.vercel.app/)  
+**Ausführlicher Modernisierungsplan:** [`modebrecht/promptEngineering · dev/IB-PE-MODERNISIERUNG.md`](https://github.com/modebrecht/promptEngineering/blob/dev/IB-PE-MODERNISIERUNG.md)  
+**Status:** Dokumentierte Zukunftsidee. Keine automatische Änderung oder Ablösung des bestehenden Kurses.
+
+Die derzeitige IB-PE-Masterclass besitzt 11 Theorie-/Quizlevels mit Freischaltungen. Die Inhalte sollen **nicht ersatzlos verworfen** werden. Ziel ist, je nach Zielgruppe weniger Techniken auswendig lernen zu lassen und mehr **praktische KI-Kompetenz** zu trainieren.
+
+### Version A – Sek B: „KI im Alltag“
+
+**Ziel:** einfacher Pflichtpfad mit **vier Kernkompetenzen**; Orientierung **eine Doppellektion (90 Minuten)**, viel Praxis, kurze Texte und Hilfen auf Abruf.
+
+| Kernkompetenz | Praktische Aufgabe |
+| --- | --- |
+| **1. Klar fragen** | Einen unklaren Prompt verbessern; Antworten vergleichen. |
+| **2. Nachfragen & verbessern** | Eine erste KI-Antwort in zwei Runden gezielt verbessern. |
+| **3. KI-Fehler erkennen** | Drei Aussagen mit vorbereiteten, verlässlichen Quellen überprüfen. |
+| **4. Sicher & fair nutzen** | Persönliche Daten, Eigenleistung und sichere Eingaben anhand von Alltagsszenarien einschätzen. |
+
+**90-Minuten-Vorschlag:** 10 Min Einstieg, 15 Min Theorie, 45 Min Praxisstationen, 15 Min Transferaufgabe, 5 Min Reflexion. Keine Pflicht, Begriffe wie „RAG“, „Chain of Thought“ oder „Meta-Prompting“ auswendig zu kennen; keine fehlerfreien Multiple-Choice-Runden als alleiniger Abschluss.
+
+**Leistungsnachweis:** Verständlicher Auftrag, gezielte Verbesserung, eigenständige Ergebnisprüfung und Datenschutz/Eigenleistung. Auch ohne persönlichen KI-Zugang durch vorbereitete Antworten umsetzbar.
+
+### Version B – Allgemein: „KI-Kompetenz & Prompting“
+
+**Ziel:** vertiefter, modularer Pfad für andere Sek-I-Gruppen/Interessierte; ungefähr **2–3 Doppellektionen** mit grösseren Praxisaufträgen und optionalen Theoriebausteinen.
+
+1. **Ziel & Kontext** – klare Aufträge, Zielgruppe, Format; CLEAR als Hilfestellung.
+2. **Iterieren & Beispiele** – schrittweise verbessern, Beispiele gezielt verwenden.
+3. **Fakten & Unsicherheit** – Halluzinationen und Quellen unabhängig überprüfen.
+4. **Perspektiven & Grenzen** – Rollensimulationen kritisch einordnen; Datenschutz und Urheberrecht.
+5. **Strukturiert arbeiten** – wiederverwendbare Vorlagen entwickeln und testen.
+6. **KI-Projekt & Qualitätsprüfung** – ein konkretes Produkt erstellen, kontrollieren und Änderungen begründen.
+
+**Leistungsnachweis:** nachvollziehbarer Arbeitsprozess plus geprüftes Ergebnis; optionaler Vergleich verschiedener Promptstrategien. Nicht Promptlänge oder Fachwörter bewerten.
+
+### Was an den bisherigen 11 Levels fachlich aktualisiert werden sollte
+
+- **Level 6 – Chain of Thought:** „Denke Schritt für Schritt“ zwingt moderne Reasoning-Modelle nicht zuverlässig zu besserem Denken; überprüfbare Ergebnisse und Grenzen vermitteln.
+- **Level 8 – Meta-Prompting:** Die als richtig markierte Behauptung, KI kenne die optimalen Schlüsselwörter und Trainingsdaten anderer Modelle, ersetzen. KI kann Formulierungsvorschläge erstellen – testen bleibt nötig.
+- **Level 9 – Daten-Anker / RAG-Light:** „Verhindert Halluzinationen zu fast 100 %“ streichen. Mitgelieferte Quellen helfen, garantieren aber keine Korrektheit.
+- **Übrige Levels:** CLEAR, Few-Shot, Negative Prompting, Personas, Vorlagen und Qualitäts-Checks je nach Zielgruppe **vereinfachen, integrieren oder als Vertiefung behalten**. Selbstbewertung durch KI ersetzt keine unabhängige Prüfung.
+
+### Umsetzungsvorschlag
+
+1. Zuerst die **drei fachlichen Fehler** im bestehenden IB-PE korrigieren.
+2. **Sek-B-Pilot** mit vier Bausteinen und echten praktischen Aufgaben.
+3. **Allgemeiner Lernweg** mit sechs modularen Bausteinen und optionalen Vertiefungen.
+4. Mit Lernenden prüfen: Verständlichkeit, selbstständige Lösbarkeit, Zeitbedarf, tatsächlicher Transfer.
+
+**Leitlinie:** Zwei zielgruppengerechte Wege, **kein 11-Level-Pflichtprogramm für Sek B**, kein unnötiger Neubau; bestehende Seiten und Fortschritte bei einer späteren Umsetzung schützen.
+
 ## Didaktische Leitplanken
 
 - **Praxis vor Begriffswissen:** kurze, glaubwürdige Alltagsszenarien statt weiterer reiner Multiple-Choice-Sammlungen.
