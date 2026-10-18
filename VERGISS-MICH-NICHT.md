@@ -34,6 +34,54 @@ Mögliche Mini-Missionen:
 5. „Die KI liefert zwei widersprüchliche Antworten.“ → Behauptung prüfen, Quellen bewerten.
 6. „Ich muss ein Projekt abgeben.“ → geeignetes Dateiformat, Dateiname, Speicherort und Freigabe wählen.
 
+## 4. Scam Detective – digitale Betrugsversuche erkennen
+
+**Priorität:** sehr hoch · **Lernziel:** Verdächtige Nachrichten und Angebote erkennen, prüfen und sicher reagieren.
+
+- Gefälschte Paket-SMS, Phishing-Mails, manipulierte Links, QR-Code-Fallen und Fake-Shops.
+- **Mini-Mission:** Fünf realistisch nachgestellte Nachrichten beurteilen: *vertrauen, genauer prüfen oder melden?* Begründung und sichere nächste Handlung wählen.
+- **Sicherheit:** Nur fiktive Beispiele; keine echten schädlichen Links oder Passworteingaben.
+
+## 5. Data Detective – Daten und Diagramme hinterfragen
+
+**Priorität:** sehr hoch · **Lernziel:** Kleine Datensätze auswerten und irreführende Darstellungen erkennen.
+
+- Einfache Tabellen, Sortieren/Filtern, Formeln und Diagramme; Achsenausschnitte und Prozentangaben kritisch lesen.
+- **Mini-Mission:** Zwei Diagramme zeigen dieselben Zahlen, wirken aber widersprüchlich. Den Trick erkennen und ein faires Diagramm erstellen.
+- **Transfer:** Eine Aussage mit Daten belegen und ihre Grenzen nennen.
+
+## 6. Empfehlungsalgorithmen & Aufmerksamkeit
+
+**Priorität:** hoch · **Lernziel:** Verstehen, warum Feeds personalisiert werden und wie eigenes Verhalten Empfehlungen beeinflusst.
+
+- TikTok/YouTube/Instagram als Alltagsbeispiele: Empfehlungslogik, Interaktionen, Werbung und endloses Scrollen.
+- **Mini-Mission:** Ein simuliertes Feed-System mit verschiedenen Klicks/Likes füttern und Veränderungen beobachten.
+- **Reflexion:** Welche Daten werden genutzt? Was sehe ich nicht? Wie steuere ich meinen Medienkonsum?
+
+## 7. Automation Lab – Abläufe logisch denken
+
+**Priorität:** mittel bis hoch · **Lernziel:** Wiederkehrende Aufgaben als Regeln und Abläufe formulieren und testen.
+
+- Wenn-dann-Regeln, Reihenfolgen, Bedingungen und einfache Algorithmen; optional blockbasierte Programmierung.
+- **Mini-Mission:** Einen digitalen Alltagsablauf automatisieren (z. B. Dateien nach Typ sortieren) und Grenzfälle ausprobieren.
+- Keine vollständige Programmiersprache als Voraussetzung.
+
+## 8. Real or Fake? – digitale Medien prüfen
+
+**Priorität:** mittel bis hoch · **Lernziel:** Bilder, Videos und Quellen kritisch beurteilen und rechtmässig verwenden.
+
+- KI-Bilder, Deepfakes, Bildkontext und Manipulation; Urheberrecht, Bildquellen und Creative Commons.
+- **Mini-Mission:** Drei Bilder mit Kontext und Quelle vergleichen; eines für einen Vortrag rechtmässig auswählen und korrekt kennzeichnen.
+- Schnittstelle zu KI-Kompetenz (Abschnitt 2), aber Fokus auf **Medienprüfung und Nutzung**.
+
+## 9. Teamwork – gemeinsam digital arbeiten
+
+**Priorität:** mittel · **Lernziel:** Dokumente teilen, gemeinsam bearbeiten und Zugriffsrechte bewusst setzen.
+
+- Schulisches OneDrive/Teams: Teilen vs. Kopieren, Kommentar vs. Bearbeitung, Versionen und Zugriffsrechte.
+- **Mini-Mission:** Ein gemeinsames Dokument überarbeiten, eine versehentliche Änderung wiederherstellen und eine zu weit gefasste Freigabe korrigieren.
+- Ausschliesslich Testdateien und schulisch freigegebene Arbeitsumgebungen nutzen.
+
 ## Didaktische Leitplanken
 
 - **Praxis vor Begriffswissen:** kurze, glaubwürdige Alltagsszenarien statt weiterer reiner Multiple-Choice-Sammlungen.
@@ -44,6 +92,6 @@ Mögliche Mini-Missionen:
 
 ## Für später
 
-**Vorschlag:** Eine kleine Reihe **„Digital Survival“** mit zunächst 3 Pilotmissionen (Schulkonto/OneDrive, Datei wiederfinden, KI-Antwort prüfen). Erst mit echten Lernenden testen, danach über eine Erweiterung entscheiden.
+**Vorschlag:** Zunächst **3 Pilotmissionen** auswählen und mit echten Lernenden erproben. Bisherige Kandidaten: Schulkonto/OneDrive, Datei wiederfinden, KI-Antwort prüfen. **Neue starke Kandidaten:** Scam Detective und Data Detective. Die Reihenfolge ist offen; Umfang und Wirksamkeit vor einem Ausbau prüfen.
 
 **Wichtig:** Das ist eine Sammlung für die zukünftige Unterrichtsplanung, **keine negative Bewertung** der bestehenden IB2026-Module.
