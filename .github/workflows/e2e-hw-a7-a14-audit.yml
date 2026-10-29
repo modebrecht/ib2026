@@ -1,0 +1,100 @@
+name: HW A7-A14 acceptance audit - dev and render
+
+on:
+  push:
+    branches: [dev]
+    paths:
+      - .github/workflows/e2e-hw-a7-a14-audit.yml
+      - e2e/hw-a7-a14-boundaries.spec.js
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  statuses: write
+
+concurrency:
+  group: hw-a7-a14-audit
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    name: HW A7-A14 Chromium on ${{ matrix.branch }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        branch: [dev, render]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ matrix.branch }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Playwright and Chromium
+        run: |
+          npm init -y >/dev/null
+          npm install --no-save @playwright/test
+          npx playwright install --with-deps chromium
+      - name: Start local server
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 >/tmp/hw-a7-a14.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:4173/hw/A14.html >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/hw-a7-a14.log
+          exit 1
+      - name: Browser smoke A7-A14 (PDF, controls, autosave)
+        id: smoke
+        env:
+          BASE_URL: http://127.0.0.1:4173
+        run: |
+          npx playwright test e2e/hw-a1-a14.spec.js --grep 'A(7|8|9|10|11|12|13|14):' --browser=chromium --workers=1 --reporter=line,html
+      - name: Threshold and history boundary tests
+        id: boundaries
+        env:
+          BASE_URL: http://127.0.0.1:4173
+        run: |
+          npx playwright test e2e/hw-a7-a14-boundaries.spec.js --browser=chromium --workers=1 --reporter=line,html
+      - name: Score history and persistence
+        id: persistence
+        env:
+          BASE_URL: http://127.0.0.1:4173
+        run: |
+          npx playwright test e2e/hw-score-history-fast.spec.js e2e/hw-persistence-contract.spec.js --grep 'A(7|8|9|10|11|12|13|14)(:| )' --browser=chromium --workers=1 --reporter=line,html
+      - name: Publish branch QA result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH: ${{ matrix.branch }}
+          SMOKE: ${{ steps.smoke.outcome }}
+          BOUNDARY: ${{ steps.boundaries.outcome }}
+          PERSIST: ${{ steps.persistence.outcome }}
+          URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          sha="$(git rev-parse HEAD)"
+          if [ "$SMOKE" = success ] && [ "$BOUNDARY" = success ] && [ "$PERSIST" = success ]; then
+            state=success
+            description="HW A7-A14 Chromium smoke, PDF thresholds and persistence PASS"
+          else
+            state=failure
+            description="HW A7-A14 Chromium audit not fully passing"
+          fi
+          gh api -X POST "repos/$GITHUB_REPOSITORY/statuses/$sha" \
+            -f "state=$state" \
+            -f "context=HW A7-A14 Chromium ($BRANCH)" \
+            -f "description=$description" \
+            -f "target_url=$URL"
+      - name: Upload browser failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hw-a7-a14-${{ matrix.branch }}-${{ github.run_id }}
+          path: |
+            test-results/
+            playwright-report/
+          if-no-files-found: ignore
+          retention-days: 7
