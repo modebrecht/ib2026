@@ -201,7 +201,8 @@
   }
 
   function initSimpleQuest(opts) {
-    var dirty = false;
+    // Resumed unfinished attempts still count once when they finally complete.
+    var dirty = !!(opts.resumeDirty && opts.resumeDirty());
     var originalAnswer = opts.getAnswer();
     opts.setAnswer(function () { dirty = true; return originalAnswer.apply(this, arguments); });
     var originalFinish = opts.getFinish();
@@ -253,6 +254,7 @@
       getAnswer:function(){return answer},setAnswer:function(f){answer=f},
       getFinish:function(){return finishRound},setFinish:function(f){finishRound=f},
       score:function(){return score},total:function(){return TOTAL},pass:function(){return PASS},
+      resumeDirty:function(){return !finished && (index>0 || answered)},
       setReset:function(f){resetA14=f},restart:function(){clearTimer();startRound()}
     });
   }
