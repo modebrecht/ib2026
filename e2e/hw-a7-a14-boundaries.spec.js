@@ -65,11 +65,10 @@ async function assertPdfGate(page, unlocked, required) {
   const pdf=page.locator('#pdf');
   await expect(pdf).toHaveAttribute('title',unlocked?/PDF frei|PDF freigeschaltet/:new RegExp('PDF.*'+required));
   if(!unlocked){
-    const dialog=page.waitForEvent('dialog');
+    let message='';
+    page.once('dialog',async dialog=>{message=dialog.message();await dialog.dismiss();});
     await pdf.click();
-    const opened=await dialog;
-    expect(opened.message()).toMatch(/PDF|richtig|Bestwert/i);
-    await opened.dismiss();
+    expect(message).toMatch(/PDF|richtig|Bestwert/i);
   }
 }
 
@@ -131,8 +130,8 @@ test('A14 PDF boundary 9/14 locked, 10/14 unlocked and history preserved',async(
 test('A13 PDF is blocked before all three tasks are finished',async({page})=>{
   await open(page,'A13');
   await expect(page.locator('#pdf')).not.toHaveAttribute('data-unlocked','1');
-  const dialog=page.waitForEvent('dialog');
+  let message='';
+  page.once('dialog',async dialog=>{message=dialog.message();await dialog.dismiss();});
   await page.locator('#pdf').click();
-  expect((await dialog).message()).toMatch(/drei Aufträge/);
-  await (await dialog).dismiss();
+  expect(message).toMatch(/drei Aufträge/);
 });
