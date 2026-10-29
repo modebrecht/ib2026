@@ -437,10 +437,25 @@ test.describe('HW production smoke: A1-A14', () => {
     expect(persisted.history.bestScore).toBe(8);
     expect(persisted.history.passedEver).toBe(true);
     await page.reload({ waitUntil: 'domcontentloaded' });
+    await page.waitForFunction(() => window.__scoreHistoryPage === 'A12');
     await expect(page.locator('#score')).toContainText('8 / 12 richtig');
     await expect(page.locator('#choice_usb-c')).toHaveValue('charge');
     await expect(page.locator('#usbcNote')).toBeVisible();
+    await page.evaluate(() => {
+      const original = window.downloadTextWorksheetPDF;
+      window.downloadTextWorksheetPDF = function(config) {
+        window.__a12CapturedPdf = config;
+        return original(config);
+      };
+    });
     await downloadPdf(page, '#pdf', 'A12_Schnittstellen');
+    const pdf = await page.evaluate(() => window.__a12CapturedPdf);
+    expect(pdf.sections[0].fields).toHaveLength(12);
+    for (const field of pdf.sections[0].fields) {
+      expect(['Bild','Ton','Bild & Ton','Daten & Laden','Netzwerk','Netzstrom (230 V)']).toContain(field.value);
+    }
+    expect(pdf.sections[0].fields.filter(x => x.value === 'Daten & Laden').map(x => x.label).sort())
+      .toEqual(['Apple Lightning','Micro-USB','USB-A','USB-B','USB-C'].sort());
     expectNoPageErrors(errors);
   });
 
@@ -455,10 +470,14 @@ test.describe('HW production smoke: A1-A14', () => {
     await expect(page.locator('#score')).toContainText('7 / 12 richtig');
     await expect(page.locator('#pdf')).toHaveAttribute('title', 'PDF nach 8/12');
     await expect(page.locator('#pdfStatus')).toContainText('PDF nach 8/12');
-    const dialog = page.waitForEvent('dialog');
+    let alertText = '';
+    page.once('dialog', async dialog => {
+      alertText = dialog.message();
+      await dialog.dismiss();
+    });
     await page.locator('#pdf').click();
-    expect((await dialog).message()).toContain('8/12');
-    await (await dialog).dismiss();
+    expect(alertText).toContain('8/12');
+    page.once('dialog', async dialog => { await dialog.accept(); });
     await page.locator('#a12Repeat').click();
     await expect(page.locator('#score')).toContainText('0 / 12 richtig');
     await expect(page.locator('#usbcNote')).toBeHidden();
