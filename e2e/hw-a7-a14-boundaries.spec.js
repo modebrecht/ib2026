@@ -99,6 +99,20 @@ for(const t of [
   });
 }
 
+test('A8 current round may fail while PDF remains unlocked from previous best',async({page})=>{
+  await open(page,'A8');
+  expect(await roundCategories(page,'A8',3)).toBe(12);
+  await expect(page.locator('#resultEyebrow')).toHaveText('Bestanden');
+  await assertPdfGate(page,true,'12/15');
+  await page.evaluate(()=>startFullRound());
+  expect(await roundCategories(page,'A8',4)).toBe(11);
+  await expect(page.locator('#resultEyebrow')).toHaveText('Nicht bestanden');
+  await expect(page.locator('#resultText')).toContainText('PDF bleibt freigeschaltet');
+  await assertPdfGate(page,true,'12/15');
+  const h=await page.evaluate(()=>window.__getScoreHistory('',15));
+  expect([h.firstScore,h.secondScore,h.bestScore,h.passedEver]).toEqual([12,11,12,true]);
+});
+
 test('A11 PDF boundary 2/5 locked, 3/5 unlocked and history preserved',async({page})=>{
   await open(page,'A11');
   expect(await a11Round(page,3)).toBe(2);
