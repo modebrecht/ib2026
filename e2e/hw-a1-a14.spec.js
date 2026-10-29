@@ -405,25 +405,89 @@ test.describe('HW production smoke: A1-A14', () => {
     expectNoPageErrors(errors);
   });
 
-  test('A12: sorts all 12 interfaces correctly, persists and downloads PDF', async ({ page }) => {
+  test('A12: six clear categories, 12 interfaces, autosave and PDF from 8/12', async ({ page }) => {
     const errors = collectPageErrors(page);
     await openWorksheet(page, '/hw/A12.html');
-
     await expect(page).toHaveTitle(/A12: Schnittstellen sortieren/);
     const connectors = await page.evaluate(() => C.map(({ id, category }) => ({ id, category })));
     expect(connectors).toHaveLength(12);
+    expect(new Set(connectors.map(x => x.category))).toEqual(new Set(['video','audio','av','charge','network','power']));
+    expect(connectors.filter(x => ['usb-a','usb-b','usb-c','micro-usb','lightning'].includes(x.id)).every(x => x.category === 'charge')).toBe(true);
+    await expect(page.locator('#choice_usb-c option')).toHaveCount(7); // placeholder + six categories
+    await expect(page.locator('#usbcNote')).toBeHidden();
 
-    for (const connector of connectors) {
-      await page.locator(`#choice_${connector.id}`).selectOption(connector.category);
+    // Eight first-click correct assignments pass, even with four mistakes.
+    for (let i = 0; i < connectors.length; i++) {
+      const x = connectors[i];
+      const choice = i < 8 ? x.category : (x.category === 'audio' ? 'network' : 'audio');
+      await page.locator(`#choice_${x.id}`).selectOption(choice);
     }
-
     await expect(page.locator('#pct')).toHaveText('100% bearbeitet');
-    await page.waitForTimeout(250);
-    const saved = await page.evaluate(() => JSON.parse(localStorage.getItem(K) || '{}'));
-    for (const connector of connectors) {
-      expect(saved.choices?.[connector.id]).toBe(connector.category);
-    }
+    await expect(page.locator('#score')).toContainText('8 / 12 richtig');
+    await expect(page.locator('#result')).toBeVisible();
+    await expect(page.locator('#pdf')).toHaveAttribute('title', /PDF frei/);
+    await expect(page.locator('#usbcNote')).toBeVisible();
+    const persisted = await page.evaluate(() => ({
+      worksheet: JSON.parse(localStorage.getItem(K) || '{}'),
+      work: JSON.parse(localStorage.getItem('hw_score_work_A12') || '{}'),
+      history: window.__getScoreHistory('', C.length),
+    }));
+    expect(persisted.worksheet.version).toBe(4);
+    expect(persisted.work.version).toBe(2);
+    expect(persisted.history.bestScore).toBe(8);
+    expect(persisted.history.passedEver).toBe(true);
+    await page.reload({ waitUntil: 'domcontentloaded' });
+    await expect(page.locator('#score')).toContainText('8 / 12 richtig');
+    await expect(page.locator('#choice_usb-c')).toHaveValue('charge');
+    await expect(page.locator('#usbcNote')).toBeVisible();
     await downloadPdf(page, '#pdf', 'A12_Schnittstellen');
+    expectNoPageErrors(errors);
+  });
+
+  test('A12: 7/12 stays locked, repeat preserves completed attempt', async ({ page }) => {
+    const errors = collectPageErrors(page);
+    await openWorksheet(page, '/hw/A12.html');
+    const connectors = await page.evaluate(() => C.map(({ id, category }) => ({ id, category })));
+    for (let i = 0; i < connectors.length; i++) {
+      const x = connectors[i];
+      await page.locator(`#choice_${x.id}`).selectOption(i < 7 ? x.category : (x.category === 'audio' ? 'network' : 'audio'));
+    }
+    await expect(page.locator('#score')).toContainText('7 / 12 richtig');
+    await expect(page.locator('#pdf')).toHaveAttribute('title', 'PDF nach 8/12');
+    await expect(page.locator('#pdfStatus')).toContainText('PDF nach 8/12');
+    const dialog = page.waitForEvent('dialog');
+    await page.locator('#pdf').click();
+    expect((await dialog).message()).toContain('8/12');
+    await (await dialog).dismiss();
+    await page.locator('#a12Repeat').click();
+    await expect(page.locator('#score')).toContainText('0 / 12 richtig');
+    await expect(page.locator('#usbcNote')).toBeHidden();
+    expect(await page.evaluate(() => window.__getScoreHistory('', C.length).firstScore)).toBe(7);
+    expectNoPageErrors(errors);
+  });
+
+  test('A12: legacy saved USB categories migrate without losing progress', async ({ page }) => {
+    const errors = collectPageErrors(page);
+    await openWorksheet(page, '/hw/A12.html');
+    await page.evaluate(() => {
+      const choices = {'usb-a':'data','usb-b':'data','usb-c':'multi','micro-usb':'charge'};
+      const answeredIds = Object.keys(choices);
+      localStorage.setItem(K, JSON.stringify({version:3,choices}));
+      localStorage.setItem('hw_score_work_A12', JSON.stringify({version:1,active:true,choices,answeredIds,score:4}));
+    });
+    await page.reload({ waitUntil: 'domcontentloaded' });
+    await expect(page.locator('#score')).toContainText('4 / 12 richtig');
+    await expect(page.locator('#pct')).toHaveText('33% bearbeitet');
+    for (const id of ['usb-a','usb-b','usb-c','micro-usb']) {
+      await expect(page.locator(`#choice_${id}`)).toHaveValue('charge');
+      await expect(page.locator(`#choice_${id}`)).toBeDisabled();
+    }
+    await expect(page.locator('#usbcNote')).toBeVisible();
+    const work = await page.evaluate(() => JSON.parse(localStorage.getItem('hw_score_work_A12')));
+    expect(work.version).toBe(2);
+    expect(work.score).toBe(4);
+    expect(work.answeredIds).toHaveLength(4);
+    expect(Object.values(work.choices)).toEqual(['charge','charge','charge','charge']);
     expectNoPageErrors(errors);
   });
 
