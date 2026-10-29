@@ -8,6 +8,8 @@ on:
       - hw/A12.html
       - hw/assets/js/score-history.js
       - e2e/hw-a1-a14.spec.js
+      - hw/A8.html
+      - e2e/hw-a7-a14-boundaries.spec.js
       - e2e/hw-score-history-fast.spec.js
   workflow_dispatch:
 
@@ -84,6 +86,41 @@ jobs:
             -f "state=$qa_state" \
             -f "context=A12 Chromium ($QA_BRANCH)" \
             -f "description=$qa_description" \
+            -f "target_url=$QA_URL"
+
+      - name: Audit A7-A14 smoke tests
+        id: hw_smoke
+        env:
+          BASE_URL: http://127.0.0.1:4173
+        run: |
+          npx playwright test e2e/hw-a1-a14.spec.js --grep 'A(7|8|9|10|11|12|13|14):' --browser=chromium --workers=1 --reporter=line
+      - name: Audit A7-A14 PDF boundaries
+        id: hw_boundaries
+        env:
+          BASE_URL: http://127.0.0.1:4173
+        run: |
+          npx playwright test e2e/hw-a7-a14-boundaries.spec.js --browser=chromium --workers=1 --reporter=line
+      - name: Publish A7-A14 Chromium acceptance status
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          QA_BRANCH: ${{ matrix.branch }}
+          SMOKE_OUTCOME: ${{ steps.hw_smoke.outcome }}
+          BOUNDARY_OUTCOME: ${{ steps.hw_boundaries.outcome }}
+          QA_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          sha="$(git rev-parse HEAD)"
+          if [ "$SMOKE_OUTCOME" = success ] && [ "$BOUNDARY_OUTCOME" = success ]; then
+            state=success
+            description="A7-A14 smoke and PDF boundaries passed on $QA_BRANCH"
+          else
+            state=failure
+            description="A7-A14 smoke or PDF boundaries failed on $QA_BRANCH"
+          fi
+          gh api -X POST "repos/$GITHUB_REPOSITORY/statuses/$sha" \
+            -f "state=$state" \
+            -f "context=HW A7-A14 QA ($QA_BRANCH)" \
+            -f "description=$description" \
             -f "target_url=$QA_URL"
 
       - name: Upload failure evidence
