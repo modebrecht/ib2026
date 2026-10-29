@@ -1,0 +1,78 @@
+name: A12 Chromium QA - dev and render
+
+on:
+  push:
+    branches: [dev]
+    paths:
+      - .github/workflows/e2e-a12-branches.yml
+      - hw/A12.html
+      - hw/assets/js/score-history.js
+      - e2e/hw-a1-a14.spec.js
+      - e2e/hw-score-history-fast.spec.js
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: a12-browser-qa
+  cancel-in-progress: false
+
+jobs:
+  a12:
+    name: A12 browser contract on ${{ matrix.branch }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        branch: [dev, render]
+    steps:
+      - name: Checkout exact branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ matrix.branch }}
+          persist-credentials: false
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Playwright Chromium
+        run: |
+          npm init -y >/dev/null
+          npm install --no-save @playwright/test
+          npx playwright install --with-deps chromium
+
+      - name: Start local site
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 >/tmp/a12-http.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl --silent --fail http://127.0.0.1:4173/hw/A12.html >/dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          echo 'A12 local HTTP server did not start'
+          cat /tmp/a12-http.log
+          exit 1
+
+      - name: Run real A12 browser, PDF, autosave and history checks
+        env:
+          BASE_URL: http://127.0.0.1:4173
+        run: |
+          npx playwright test e2e/hw-a1-a14.spec.js e2e/hw-score-history-fast.spec.js e2e/hw-persistence-contract.spec.js \
+            --grep 'A12' --browser=chromium --workers=1 --reporter=line,html
+
+      - name: Upload failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a12-browser-${{ matrix.branch }}-${{ github.run_id }}
+          path: |
+            test-results/
+            playwright-report/
+            /tmp/a12-http.log
+          if-no-files-found: ignore
+          retention-days: 7
