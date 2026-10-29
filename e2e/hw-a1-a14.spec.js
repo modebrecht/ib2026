@@ -408,6 +408,7 @@ test.describe('HW production smoke: A1-A14', () => {
   test('A12: six clear categories, 12 interfaces, autosave and PDF from 8/12', async ({ page }) => {
     const errors = collectPageErrors(page);
     await openWorksheet(page, '/hw/A12.html');
+    await page.waitForFunction(() => window.__scoreHistoryPage === 'A12');
     await expect(page).toHaveTitle(/A12: Schnittstellen sortieren/);
     const connectors = await page.evaluate(() => C.map(({ id, category }) => ({ id, category })));
     expect(connectors).toHaveLength(12);
@@ -462,6 +463,7 @@ test.describe('HW production smoke: A1-A14', () => {
   test('A12: 7/12 stays locked, repeat preserves completed attempt', async ({ page }) => {
     const errors = collectPageErrors(page);
     await openWorksheet(page, '/hw/A12.html');
+    await page.waitForFunction(() => window.__scoreHistoryPage === 'A12');
     const connectors = await page.evaluate(() => C.map(({ id, category }) => ({ id, category })));
     for (let i = 0; i < connectors.length; i++) {
       const x = connectors[i];
@@ -488,6 +490,7 @@ test.describe('HW production smoke: A1-A14', () => {
   test('A12: historical 9/12 now counts as passed, without changing attempt scores', async ({ page }) => {
     const errors = collectPageErrors(page);
     await openWorksheet(page, '/hw/A12.html');
+    await page.waitForFunction(() => window.__scoreHistoryPage === 'A12');
     await page.evaluate(() => {
       localStorage.setItem('hw_score_history_A12', JSON.stringify({
         version: 1, firstScore: 9, secondScore: null, bestScore: 9,
@@ -509,6 +512,7 @@ test.describe('HW production smoke: A1-A14', () => {
   test('A12: legacy saved USB categories migrate without losing progress', async ({ page }) => {
     const errors = collectPageErrors(page);
     await openWorksheet(page, '/hw/A12.html');
+    await page.waitForFunction(() => window.__scoreHistoryPage === 'A12');
     await page.evaluate(() => {
       const choices = {'usb-a':'data','usb-b':'data','usb-c':'multi','micro-usb':'charge'};
       const answeredIds = Object.keys(choices);
