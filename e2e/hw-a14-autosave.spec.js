@@ -135,3 +135,26 @@ test('A14 rejects a corrupt partial queue but preserves legitimate best score',a
   expect(new Set(result.queue).size).toBe(14);
   await expect(page.locator('#pdf')).toHaveAttribute('title','PDF frei · Best 11/14');
 });
+
+test('A14 reset clears the active round but retains best score, PDF and completed attempt history',async({page})=>{
+  await openClean(page);
+  for(let i=0;i<14;i++){
+    const selected=await answerCurrent(page,true);
+    await advance(page,selected.index);
+  }
+  await expect(page.locator('#result')).toBeVisible();
+  const history=await page.evaluate(()=>window.__getScoreHistory('',14));
+  expect([history.bestScore,history.attempts,history.passedEver]).toEqual([14,1,true]);
+  await page.evaluate(()=>startRound());
+  const choice=await answerCurrent(page,false);
+  await advance(page,choice.index);
+  expect((await readState(page)).index).toBe(1);
+  page.once('dialog',dialog=>dialog.accept());
+  await page.evaluate(()=>resetA14());
+  const clean=await readState(page);
+  expect(clean).toMatchObject({index:0,score:0,answered:false,finished:false,bestScore:14});
+  expect(clean.wrongIds).toEqual([]);
+  await expect(page.locator('#pdf')).toHaveAttribute('title','PDF frei · Best 14/14');
+  const after=await page.evaluate(()=>window.__getScoreHistory('',14));
+  expect([after.bestScore,after.attempts,after.passedEver]).toEqual([14,1,true]);
+});
