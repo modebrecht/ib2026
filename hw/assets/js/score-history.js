@@ -379,51 +379,23 @@
 
   function initA12() {
     if (typeof C === 'undefined') return;
-    var PASS12 = typeof PASS_SCORE === 'number' ? PASS_SCORE : 8; // Same 8/12 threshold as A12 itself.
+    var PASS12 = C.length; // Preserve the existing 12/12 PDF requirement.
     var score12 = 0, answeredIds = [], choices = {}, active = true;
     var savedWork = null;
     try { savedWork = JSON.parse(localStorage.getItem(workKey()) || 'null'); } catch (_) {}
-    // The old three USB categories are now one. Keep existing work and attempt history.
-    // Old completed rounds retain their original score; only in-progress work is rescored.
-    function normalise12(value) {
-      return value === 'data' || value === 'multi' ? 'charge' :
-        Object.prototype.hasOwnProperty.call(LABEL, value) ? value : '';
-    }
-    function fromChoices(raw, rawIds) {
-      choices = {};
-      C.forEach(function(x){var v=normalise12(raw && raw[x.id]);if(v)choices[x.id]=v;});
-      answeredIds = Array.from(new Set((rawIds || []).filter(function(id){return C.some(function(x){return x.id===id && !!choices[id]})})));
-    }
-    if (!savedWork) {
-      // Some older A12 saves contain only the worksheet choices, not the score-work key.
-      try {
-        var legacy = JSON.parse(localStorage.getItem(K) || 'null');
-        if (legacy && legacy.choices) {
-          var ids = C.filter(function(x){return !!normalise12(legacy.choices[x.id])}).map(function(x){return x.id});
-          if (ids.length) {
-            fromChoices(legacy.choices, ids);
-            score12 = C.filter(function(x){return answeredIds.includes(x.id) && choices[x.id]===x.category}).length;
-            active = answeredIds.length !== C.length;
-            savedWork = {version:2};
-            // Register a completed legacy worksheet only when there is no attempt history.
-            if (!active && loadHistory('',C.length).attempts===0) record(score12,C.length,PASS12,'');
-          }
-        }
-      } catch (_) {}
-    } else {
-      fromChoices(savedWork.choices || {}, Array.isArray(savedWork.answeredIds) ? savedWork.answeredIds : []);
+    if (savedWork) {
+      score12 = Number(savedWork.score) || 0;
+      answeredIds = Array.isArray(savedWork.answeredIds) ? savedWork.answeredIds.filter(function(id){return C.some(function(x){return x.id===id})}) : [];
+      choices = savedWork.choices || {};
       active = savedWork.active !== false;
-      score12 = savedWork.version === 2 || !active ? Math.max(0, Math.min(C.length, Number(savedWork.score) || 0)) :
-        C.filter(function(x){return answeredIds.includes(x.id) && choices[x.id]===x.category}).length;
     }
     function save12() {
-      localStorage.setItem(workKey(), JSON.stringify({version:2,active:active,score:score12,answeredIds:answeredIds,choices:choices,lastScore:score12}));
-      localStorage.setItem(K, JSON.stringify({version:4,choices:choices,score:score12,answeredIds:answeredIds}));
+      localStorage.setItem(workKey(), JSON.stringify({version:1,active:active,score:score12,answeredIds:answeredIds,choices:choices,lastScore:score12}));
+      localStorage.setItem(K, JSON.stringify({version:3,choices:choices,score:score12,answeredIds:answeredIds}));
     }
     function applyCard(x, value) {
       var card = $('card_'+x.id), fb = $('fb_'+x.id), ok = value === x.category;
       if (!card || !fb) return;
-      if(x.id==='usb-c' && $('usbcNote')) $('usbcNote').classList.toggle('hidden',!ok);
       card.classList.remove('ok','bad');
       if (ok) { card.classList.add('ok'); fb.innerHTML='<i class="fa-solid fa-circle-check mr-1"></i> Richtig zugeordnet.'; fb.className='feedback text-emerald-600 dark:text-emerald-400'; }
       else { card.classList.add('bad'); fb.innerHTML='<i class="fa-solid fa-lightbulb mr-1"></i> Richtig wäre <strong>'+LABEL[x.category]+'</strong>.'; fb.className='feedback text-amber-600 dark:text-amber-400'; }
@@ -433,20 +405,19 @@
       $('pct').textContent = p+'% bearbeitet'; $('bar').style.width=p+'%'; $('score').innerHTML='<i class="fa-solid fa-bullseye text-onedrive-500"></i>'+score12+' / '+C.length+' richtig';
       var unlocked = h.bestScore !== null && h.bestScore >= PASS12;
       b.className = unlocked?'w-10 h-10 rounded-xl bg-emerald-600 text-white shadow-lg shadow-emerald-500/20':'w-10 h-10 rounded-xl bg-slate-200 text-slate-400 dark:bg-slate-800 dark:text-slate-600';
-      b.innerHTML=unlocked?'<i class="fa-solid fa-file-pdf"></i>':'<i class="fa-solid fa-lock"></i>'; b.title=unlocked?'PDF frei · Best '+h.bestScore+'/'+C.length:'PDF nach '+PASS12+'/'+C.length;
+      b.innerHTML=unlocked?'<i class="fa-solid fa-file-pdf"></i>':'<i class="fa-solid fa-lock"></i>'; b.title=unlocked?'PDF frei · Best '+h.bestScore+'/'+C.length:'PDF nach 12/12';
     }
     function showResult12(finalScore) {
       var result = $('result'); if (!result) return;
       result.classList.remove('hidden');
       var h2=result.querySelector('h2'); if(h2)h2.textContent=finalScore+' / '+C.length+' im ersten Klick richtig.';
-      var h=loadHistory('',C.length), passed=h.bestScore!==null && h.bestScore>=PASS12;
-      var p=result.querySelector('p'); if(p)p.textContent=passed?'Bestanden! Das PDF ist freigeschaltet.':'Noch nicht bestanden. Starte eine neue Runde und verbessere deinen Bestwert.';
-      var status=$('pdfStatus'); if(status){status.innerHTML=passed?'<i class="fa-solid fa-file-pdf"></i> PDF freigeschaltet · Best '+h.bestScore+'/'+C.length:'<i class="fa-solid fa-lock"></i> PDF nach '+PASS12+'/'+C.length+' · Best '+(h.bestScore==null?'–':h.bestScore)+'/'+C.length;}
+      var p=result.querySelector('p'); if(p)p.textContent=finalScore>=PASS12?'Perfekt zugeordnet. Das PDF ist freigeschaltet.':'Die falschen Zuordnungen wurden erklärt. Starte eine neue Runde und verbessere deinen Bestwert.';
+      var status=$('pdfStatus'),h=loadHistory('',C.length); if(status){status.innerHTML=h.bestScore>=PASS12?'<i class="fa-solid fa-file-pdf"></i> PDF freigeschaltet · Best '+h.bestScore+'/'+C.length:'<i class="fa-solid fa-lock"></i> PDF nach 12/12 · Best '+(h.bestScore==null?'–':h.bestScore)+'/'+C.length;}
       if(!document.getElementById('a12Repeat')){var btn=document.createElement('button');btn.id='a12Repeat';btn.type='button';btn.className='mt-5 px-5 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white/80 dark:bg-slate-900 font-black';btn.innerHTML='<i class="fa-solid fa-rotate-right mr-1"></i> Ganze Runde nochmals';btn.onclick=resetA12;result.appendChild(btn);}
       renderPanel('',C.length,false);
     }
     function start12() {
-      score12=0;answeredIds=[];choices={};active=true;$('result').classList.add('hidden');if($('usbcNote'))$('usbcNote').classList.add('hidden');
+      score12=0;answeredIds=[];choices={};active=true;$('result').classList.add('hidden');
       C.forEach(function(x){var e=$('choice_'+x.id);if(e){e.value='';e.disabled=false;}var card=$('card_'+x.id);if(card)card.classList.remove('ok','bad');var fb=$('fb_'+x.id);if(fb){fb.textContent='';fb.className='feedback';}});
       save12();update12();
     }
@@ -462,8 +433,8 @@
       });
     });
     resetA12=function(){if(!confirm('Aktuelle Sortierrunde neu starten? Deine Versuchshistorie bleibt erhalten.'))return;start12();renderPanel('',C.length,false)};
-    makePdf=function(){var h=loadHistory('',C.length);if(h.bestScore===null||h.bestScore<PASS12)return alert('PDF erst ab einem Bestwert von '+PASS12+'/'+C.length+'.');downloadTextWorksheetPDF({title:'A12 · Schnittstellen sortieren',filenamePrefix:'A12_Schnittstellen',sections:[{heading:'Sortierung',fields:C.map(function(x){return{label:x.name,value:LABEL[x.category]}})}]})};
-    if(!savedWork){start12();}else{save12();if(!active&&answeredIds.length===C.length){showResult12(score12);}else{update12();}}
+    makePdf=function(){var h=loadHistory('',C.length);if(h.bestScore===null||h.bestScore<PASS12)return alert('PDF erst ab einem Bestwert von 12/12.');downloadTextWorksheetPDF({title:'A12 · Schnittstellen sortieren',filenamePrefix:'A12_Schnittstellen',sections:[{heading:'Sortierung',fields:C.map(function(x){return{label:x.name,value:LABEL[x.category]}})}]})};
+    if(!savedWork){start12();}else if(!active&&answeredIds.length===C.length){showResult12(score12);}else{update12();}
     renderPanel('',C.length,false);
   }
 
