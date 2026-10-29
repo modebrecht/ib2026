@@ -9,6 +9,9 @@ on:
       - hw/assets/js/score-history.js
       - e2e/hw-a1-a14.spec.js
       - hw/A8.html
+      - hw/A14.html
+      - hw/assets/js/score-history.js
+      - e2e/hw-a14-autosave.spec.js
       - e2e/hw-a7-a14-boundaries.spec.js
       - e2e/hw-score-history-fast.spec.js
   workflow_dispatch:
@@ -100,6 +103,13 @@ jobs:
           BASE_URL: http://127.0.0.1:4173
         run: |
           npx playwright test e2e/hw-a7-a14-boundaries.spec.js --browser=chromium --workers=1 --reporter=line
+      - name: A14 autosave and reload Chromium regression
+        id: a14_autosave
+        env:
+          BASE_URL: http://127.0.0.1:4173
+        run: |
+          npx playwright test e2e/hw-a14-autosave.spec.js --browser=chromium --workers=1 --reporter=line
+
       - name: Publish A7-A14 Chromium acceptance status
         if: always()
         env:
@@ -107,15 +117,16 @@ jobs:
           QA_BRANCH: ${{ matrix.branch }}
           SMOKE_OUTCOME: ${{ steps.hw_smoke.outcome }}
           BOUNDARY_OUTCOME: ${{ steps.hw_boundaries.outcome }}
+          AUTOSAVE_OUTCOME: ${{ steps.a14_autosave.outcome }}
           QA_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           sha="$(git rev-parse HEAD)"
-          if [ "$SMOKE_OUTCOME" = success ] && [ "$BOUNDARY_OUTCOME" = success ]; then
+          if [ "$SMOKE_OUTCOME" = success ] && [ "$BOUNDARY_OUTCOME" = success ] && [ "$AUTOSAVE_OUTCOME" = success ]; then
             state=success
-            description="A7-A14 smoke and PDF boundaries passed on $QA_BRANCH"
+            description="A7-A14 smoke, PDF boundaries and A14 autosave passed on $QA_BRANCH"
           else
             state=failure
-            description="A7-A14 smoke or PDF boundaries failed on $QA_BRANCH"
+            description="A7-A14 smoke, PDF boundaries or A14 autosave failed on $QA_BRANCH"
           fi
           gh api -X POST "repos/$GITHUB_REPOSITORY/statuses/$sha" \
             -f "state=$state" \
