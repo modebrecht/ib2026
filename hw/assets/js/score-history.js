@@ -380,6 +380,13 @@
   function initA12() {
     if (typeof C === 'undefined') return;
     var PASS12 = typeof PASS_SCORE === 'number' ? PASS_SCORE : 8; // Same 8/12 threshold as A12 itself.
+    // A score earned before consolidation can now satisfy the 8/12 requirement.
+    // Keep original attempt scores unchanged; align only the historical pass flag.
+    var previous = loadHistory('', C.length);
+    if (previous.bestScore !== null && previous.bestScore >= PASS12 && !previous.passedEver) {
+      previous.passedEver = true;
+      saveHistory(previous, '');
+    }
     var score12 = 0, answeredIds = [], choices = {}, active = true;
     var savedWork = null;
     try { savedWork = JSON.parse(localStorage.getItem(workKey()) || 'null'); } catch (_) {}
