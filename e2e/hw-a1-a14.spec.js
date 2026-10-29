@@ -485,6 +485,27 @@ test.describe('HW production smoke: A1-A14', () => {
     expectNoPageErrors(errors);
   });
 
+  test('A12: historical 9/12 now counts as passed, without changing attempt scores', async ({ page }) => {
+    const errors = collectPageErrors(page);
+    await openWorksheet(page, '/hw/A12.html');
+    await page.evaluate(() => {
+      localStorage.setItem('hw_score_history_A12', JSON.stringify({
+        version: 1, firstScore: 9, secondScore: null, bestScore: 9,
+        attempts: 1, total: 12, passedEver: false, lastScore: 9,
+      }));
+    });
+    await page.reload({ waitUntil: 'domcontentloaded' });
+    await page.waitForFunction(() => window.__scoreHistoryPage === 'A12');
+    const history = await page.evaluate(() => window.__getScoreHistory('', 12));
+    expect(history.firstScore).toBe(9);
+    expect(history.bestScore).toBe(9);
+    expect(history.attempts).toBe(1);
+    expect(history.passedEver).toBe(true);
+    await expect(page.locator('#pdf')).toHaveAttribute('title', /PDF frei/);
+    await downloadPdf(page, '#pdf', 'A12_Schnittstellen');
+    expectNoPageErrors(errors);
+  });
+
   test('A12: legacy saved USB categories migrate without losing progress', async ({ page }) => {
     const errors = collectPageErrors(page);
     await openWorksheet(page, '/hw/A12.html');
