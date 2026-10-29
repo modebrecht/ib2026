@@ -13,6 +13,7 @@ on:
 
 permissions:
   contents: read
+  statuses: write
 
 concurrency:
   group: a12-browser-qa
@@ -59,11 +60,31 @@ jobs:
           exit 1
 
       - name: Run real A12 browser, PDF, autosave and history checks
+        id: browser
         env:
           BASE_URL: http://127.0.0.1:4173
         run: |
           npx playwright test e2e/hw-a1-a14.spec.js e2e/hw-score-history-fast.spec.js e2e/hw-persistence-contract.spec.js \
             --grep 'A12' --browser=chromium --workers=1 --reporter=line,html
+
+      - name: Publish verifiable QA status on tested branch commit
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          QA_BRANCH: ${{ matrix.branch }}
+          QA_OUTCOME: ${{ steps.browser.outcome }}
+          QA_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          tested_sha="$(git rev-parse HEAD)"
+          case "$QA_OUTCOME" in
+            success) qa_state=success; qa_description="A12 Playwright Chromium passed on $QA_BRANCH" ;;
+            *) qa_state=failure; qa_description="A12 Playwright Chromium failed or did not run on $QA_BRANCH" ;;
+          esac
+          gh api -X POST "repos/$GITHUB_REPOSITORY/statuses/$tested_sha" \
+            -f "state=$qa_state" \
+            -f "context=A12 Chromium ($QA_BRANCH)" \
+            -f "description=$qa_description" \
+            -f "target_url=$QA_URL"
 
       - name: Upload failure evidence
         if: failure()
