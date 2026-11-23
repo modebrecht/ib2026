@@ -17,7 +17,7 @@ test('Erzwelt entry requires a teacher code and explains A1–A14 review', async
   await expect(dialog).toBeVisible();
   await expect(dialog).toContainText('A1–A14 fertigstellen');
   await expect(dialog).toContainText('Bei der Lehrperson vorbeikommen');
-  await expect(dialog).toContainText('bis zum Semesterende');
+  await expect(dialog).toContainText('Abgabeschluss für die Fleissnote: 31.12.2026.');
   await expect(page.locator('#erzweltAccessLaunch')).toBeHidden();
   await page.locator('#erzweltAccessCode').fill('ungültiger code');
   await page.locator('#erzweltAccessForm button[type="submit"]').click();
