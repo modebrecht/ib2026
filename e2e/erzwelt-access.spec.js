@@ -23,7 +23,7 @@ test('Erzwelt entry requires a teacher code and explains A1–A14 review', async
   await page.locator('#erzweltAccessForm button[type="submit"]').click();
   await expect(page.locator('#erzweltAccessFeedback')).toContainText('Code nicht erkannt');
   await expect(page.locator('#erzweltAccessLaunch')).toBeHidden();
-  expect(await page.evaluate(() => localStorage.getItem('ib2026-erzwelt-approved-v1'))).not.toBe('true');
+  expect(await page.evaluate(() => sessionStorage.getItem('ib2026-erzwelt-approved-v1'))).not.toBe('true');
 });
 
 test('Correct teacher code enables the existing Erzwelt destination', async ({ page }) => {
@@ -35,5 +35,5 @@ test('Correct teacher code enables the existing Erzwelt destination', async ({ p
   const link = page.locator('#erzweltAccessLaunch');
   await expect(link).toBeVisible();
   await expect(link).toHaveAttribute('href', 'https://erzwelt.vercel.app/');
-  expect(await page.evaluate(() => localStorage.getItem('ib2026-erzwelt-approved-v1'))).toBe('true');
+  expect(await page.evaluate(() => sessionStorage.getItem('ib2026-erzwelt-approved-v1'))).toBe('true');
 });
