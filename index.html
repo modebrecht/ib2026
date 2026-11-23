@@ -578,84 +578,85 @@
     .hw-task-list .btn-link{width:auto;height:42px;padding:0 14px;border-radius:15px;gap:8px;font-size:calc(11px * var(--font-scale));font-weight:850;background:linear-gradient(135deg,#0078d4,#2563eb);box-shadow:0 9px 19px rgba(37,99,235,.20)}
     /* ERZWELT | Playful map-and-paper style matched to the real game palette.
        This block is strictly scoped to the Erzwelt tile and dialog. */
+    /* Erzwelt card: a miniature playable-world map, not decorative UI curves. */
     .hw-task-list .erzwelt-link {
       position: relative;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 10px;
       width: 100%;
-      min-height: 78px;
+      min-height: 88px;
       padding: 13px 16px;
-      isolation: isolate;
       overflow: hidden;
+      isolation: isolate;
       appearance: none;
       font: inherit;
       text-align: left;
-      color: #fff;
       cursor: pointer;
-      background:
-        radial-gradient(ellipse at 83% 16%, rgba(106,227,206,.38), transparent 40%),
-        repeating-radial-gradient(ellipse at 80% 150%, transparent 0 17px, rgba(178,249,235,.09) 18px 19px, transparent 20px 34px),
-        linear-gradient(120deg, #0a364b 0%, #17667b 65%, #208e99 100%);
-      border: 2px solid #d4a84c;
+      color: #fff;
+      background: #0b3648;
+      border: 2px solid #cda85b;
       border-radius: 18px;
-      box-shadow: 0 5px 0 rgba(88,69,30,.27), 0 11px 23px rgba(7,47,64,.18);
+      box-shadow: 0 4px 0 rgba(96,75,36,.23), 0 10px 22px rgba(7,47,64,.16);
       transition: transform .18s ease, box-shadow .18s ease;
     }
     .hw-task-list .erzwelt-link:hover {
       transform: translateY(-2px);
-      box-shadow: 0 7px 0 rgba(88,69,30,.27), 0 17px 30px rgba(7,47,64,.24);
+      box-shadow: 0 6px 0 rgba(96,75,36,.23), 0 14px 27px rgba(7,47,64,.23);
     }
+    /* Readable title on the left, the actual map scene on the right. */
     .hw-task-list .erzwelt-link::before {
       content: "";
       position: absolute;
       inset: 0;
-      z-index: 0;
+      z-index: 1;
       pointer-events: none;
       border-radius: inherit;
-      background:
-        radial-gradient(circle at 75% 26%, #ffe4a3 0 2px, transparent 3px),
-        radial-gradient(circle at 59% 78%, #d4fff5 0 2px, transparent 3px),
-        radial-gradient(circle at 94% 68%, #ffe4a3 0 2px, transparent 3px);
+      background: linear-gradient(90deg, #0b3648 0%, #0b3648 20%, rgba(11,54,72,.94) 38%, rgba(11,54,72,.20) 70%, transparent 100%);
+      opacity: 1;
+      transform: none;
     }
-    .hw-task-list .erzwelt-link::after {
-      content: "";
+    .hw-task-list .erzwelt-link::after { content: none; }
+    .hw-task-list .erzwelt-link > svg.erzwelt-tile-map {
       position: absolute;
-      right: 25px;
-      bottom: -54px;
-      width: 125px;
-      height: 120px;
+      display: block;
+      top: 0;
+      right: 0;
+      width: 72%;
+      height: 100%;
       z-index: 0;
-      opacity: .25;
       pointer-events: none;
-      border: 3px dashed #fff1bd;
-      border-radius: 50%;
-      background: none;
+      border-radius: 0 15px 15px 0;
     }
     .hw-task-list .erzwelt-link > .unterkachel-title {
       position: relative;
-      z-index: 1;
+      z-index: 2;
       width: auto;
       min-width: 0;
       flex: 1 1 auto;
     }
     .hw-task-list .erzwelt-link .task-number {
-      background: linear-gradient(135deg, #fbd069, #e5a430);
-      border: 2px solid #ffeaaf;
-      color: #543815;
-      box-shadow: 0 4px 0 rgba(76,48,12,.35);
+      color: #513814;
+      background: #f4bb48;
+      border: 2px solid #ffe1a0;
+      box-shadow: 0 3px 0 rgba(76,48,12,.32);
     }
     .hw-task-list .erzwelt-link .task-name {
       color: #fffaf0;
       font-family: "Baloo 2", "Trebuchet MS", sans-serif;
       font-weight: 800;
       letter-spacing: .02em;
-      border-left-color: rgba(255,232,166,.38) !important;
+      border-left-color: rgba(255,232,166,.40) !important;
+      text-shadow: 0 2px 4px rgba(0,0,0,.20);
     }
     .hw-task-list .erzwelt-link:focus-visible {
       outline: 3px solid #f8c354;
       outline-offset: 3px;
+    }
+    @media (max-width: 470px) {
+      .hw-task-list .erzwelt-link > svg.erzwelt-tile-map { width: 76%; }
+      .hw-task-list .erzwelt-link::before {
+        background: linear-gradient(90deg, #0b3648 0%, #0b3648 31%, rgba(11,54,72,.94) 46%, rgba(11,54,72,.15) 87%, transparent);
+      }
     }
 
     .erzwelt-access-dialog {
@@ -1411,6 +1412,59 @@
     </div>
 
               <button type="button" id="erzweltAccessButton" class="unterkachel task-card erzwelt-link" aria-haspopup="dialog" aria-controls="erzweltAccessDialog" aria-label="Erzwelt öffnen">
+                <!-- Miniature Erzwelt supply chain: mine -> factory -> ship. -->
+                <svg class="erzwelt-tile-map" viewBox="0 0 520 112" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <linearGradient id="ew-tile-water" x1="0" y1="0" x2="0" y2="1">
+                      <stop stop-color="#25869f"/>
+                      <stop offset="1" stop-color="#0c5b7c"/>
+                    </linearGradient>
+                    <linearGradient id="ew-tile-sand" x1="0" y1="0" x2="0" y2="1">
+                      <stop stop-color="#eee0b6"/>
+                      <stop offset="1" stop-color="#cbb17e"/>
+                    </linearGradient>
+                  </defs>
+                  <rect width="520" height="112" fill="url(#ew-tile-water)"/>
+                  <!-- Two real locations, not abstract decorative shapes. -->
+                  <path d="M30 10 67 0 117 9 159 4 192 23 197 49 172 72 145 79 117 98 73 94 45 77 17 44Z" fill="url(#ew-tile-sand)" stroke="#fff1c7" stroke-width="2"/>
+                  <path d="M263 5 300 16 334 7 378 17 399 39 383 69 349 81 310 72 277 79 253 53Z" fill="url(#ew-tile-sand)" stroke="#fff1c7" stroke-width="2"/>
+                  <path d="M70 23 105 14 149 22M281 33 322 26 365 39" stroke="#9b885c" stroke-width="1.5" fill="none" opacity=".4"/>
+                  <!-- Routed ore delivery: mine -> factory -> harbour. -->
+                  <path d="M151 46 259 42 340 55 420 78" fill="none" stroke="#fff8d9" stroke-width="2.7" stroke-linecap="round" stroke-dasharray="5 7"/>
+                  <circle cx="151" cy="46" r="4" fill="#f5b73d" stroke="#fff8d9" stroke-width="1.5"/>
+                  <circle cx="340" cy="55" r="4" fill="#f5b73d" stroke="#fff8d9" stroke-width="1.5"/>
+                  <!-- Mine on the first island. -->
+                  <g transform="translate(111 25)">
+                    <path d="M-28 24 -15 0 15 0 28 24 23 48-25 48Z" fill="#a87545" stroke="#594028" stroke-width="2"/>
+                    <path d="M-24 23 -13 2 13 2 24 23Z" fill="#f2c172" stroke="#664525" stroke-width="2"/>
+                    <path d="M-11 47V27Q-11 16 0 16Q11 16 11 27V47Z" fill="#3e3430"/>
+                    <path d="M-28 24H28M-14 2 0 23 14 2" stroke="#8b613b" stroke-width="2" fill="none"/>
+                    <rect x="-32" y="46" width="64" height="5" rx="2" fill="#715138"/>
+                    <rect x="22" y="36" width="12" height="9" fill="#d4a35f" stroke="#715138" stroke-width="1.5"/>
+                  </g>
+                  <!-- Factory on the second island. -->
+                  <g transform="translate(326 19)">
+                    <path d="M-30 17 -10 2 2 17 20 4 31 17V51H-30Z" fill="#c77c51" stroke="#754931" stroke-width="2"/>
+                    <rect x="17" y="-10" width="11" height="27" fill="#eac18a" stroke="#754931" stroke-width="2"/>
+                    <rect x="-23" y="26" width="12" height="12" fill="#ffe6a7"/>
+                    <rect x="-4" y="26" width="12" height="12" fill="#ffe6a7"/>
+                    <rect x="15" y="26" width="11" height="12" fill="#ffe6a7"/>
+                    <path d="M-33 51H33" stroke="#714631" stroke-width="4"/>
+                  </g>
+                  <!-- Ship crossing the sea. -->
+                  <g transform="translate(445 70)">
+                    <path d="M-34 4H36L22 22H-22Z" fill="#bd7348" stroke="#6a3e2c" stroke-width="2"/>
+                    <rect x="-11" y="-13" width="30" height="17" rx="2" fill="#f1dbad" stroke="#795740" stroke-width="1.5"/>
+                    <path d="M0-13V-26L22-13Z" fill="#fff1ca" stroke="#795740" stroke-width="1.5"/>
+                    <path d="M-30 27Q-16 31-3 27T26 27" fill="none" stroke="#bdf7e8" stroke-width="2.5"/>
+                  </g>
+                  <!-- A few ore markers on land make the supply chain explicit. -->
+                  <g fill="#bc8452" stroke="#fff0bc" stroke-width="1.2">
+                    <path d="m54 66 6-9 7 4 2 10-10 3Z"/>
+                    <path d="m176 35 5-6 7 4 1 8-8 2Z"/>
+                    <path d="m281 58 5-7 6 5-1 7-7 1Z"/>
+                  </g>
+                </svg>
                 <div class="unterkachel-title">
                   <span class="task-number" aria-hidden="true">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
