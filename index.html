@@ -2234,7 +2234,7 @@
         if (!button || !dialog || !form || !input || !feedback || !launch) return;
 
         function alreadyApproved() {
-          try { return localStorage.getItem(ACCESS_KEY) === 'true'; }
+          try { return sessionStorage.getItem(ACCESS_KEY) === 'true'; }
           catch (_) { return false; }
         }
         function showDialog() {
@@ -2277,7 +2277,7 @@
             input.select();
             return;
           }
-          try { localStorage.setItem(ACCESS_KEY, 'true'); } catch (_) {}
+          try { sessionStorage.setItem(ACCESS_KEY, 'true'); } catch (_) {}
           feedback.dataset.error = 'false';
           feedback.textContent = 'Freigeschaltet! Du kannst Erzwelt jetzt öffnen.';
           form.hidden = true;
