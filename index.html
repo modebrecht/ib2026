@@ -653,20 +653,6 @@
       letter-spacing: .02em;
       border-left-color: rgba(255,232,166,.38) !important;
     }
-    .hw-task-list .erzwelt-access-hint {
-      position: relative;
-      z-index: 1;
-      flex: 0 0 auto;
-      padding: 7px 11px;
-      color: #5c3e12;
-      font-size: calc(12px * var(--font-scale));
-      font-weight: 900;
-      white-space: nowrap;
-      border-radius: 99px;
-      border: 1px solid #ffe5a4;
-      background: linear-gradient(#ffdfa0, #f7bb4d);
-      box-shadow: 0 3px 0 rgba(101,65,15,.37);
-    }
     .hw-task-list .erzwelt-link:focus-visible {
       outline: 3px solid #f8c354;
       outline-offset: 3px;
@@ -899,7 +885,6 @@
       .erzwelt-dialog-heading h2 { font-size: calc(23px * var(--font-scale)); }
       .erzwelt-dialog-code-row { flex-direction: column; }
       .erzwelt-dialog-action { min-height: 44px; }
-      .hw-task-list .erzwelt-access-hint { font-size: calc(11px * var(--font-scale)); padding: 7px 9px; }
     }
     @media (max-height: 620px) { .erzwelt-stage { height: 152px; } }
     @media (prefers-reduced-motion: reduce) { .erzwelt-vessel { animation: none; } }
@@ -1425,7 +1410,7 @@
       </div>
     </div>
 
-              <button type="button" id="erzweltAccessButton" class="unterkachel task-card erzwelt-link" aria-haspopup="dialog" aria-controls="erzweltAccessDialog" aria-label="Erzwelt: Freigabe nach Abschluss A1 bis A14 und Zwischenkontrolle">
+              <button type="button" id="erzweltAccessButton" class="unterkachel task-card erzwelt-link" aria-haspopup="dialog" aria-controls="erzweltAccessDialog" aria-label="Erzwelt öffnen">
                 <div class="unterkachel-title">
                   <span class="task-number" aria-hidden="true">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -1437,7 +1422,6 @@
                   </span>
                   <span class="task-name">Erzwelt</span>
                 </div>
-                <span class="erzwelt-access-hint" aria-hidden="true">🔒 Freigabe</span>
               </button>
 
             </div>
