@@ -110,6 +110,19 @@
       .choice.correct .choice-tick{display:inline!important}
       .answer-line{background:#f2f8f3!important;color:#111!important;border:1px solid #8cad97}
     }
+
+    /* P1L password gate */
+    .p1l-gate{width:min(490px,calc(100% - 28px));margin:clamp(28px,8vh,88px) auto;padding:clamp(22px,5vw,34px);border-radius:22px;border:1px solid #3e6173;background:linear-gradient(150deg,#172d40,#101d31);box-shadow:0 20px 48px rgba(0,0,0,.22)}
+    .p1l-gate .p1l-overline{display:inline-block;color:var(--mint);font-size:.79rem;font-weight:850;letter-spacing:.11em;text-transform:uppercase}
+    .p1l-gate h1{font-size:clamp(1.55rem,5vw,2.15rem);margin:8px 0}
+    .p1l-gate p{color:#c6d7e7;margin:0 0 22px}
+    .p1l-gate label{display:block;margin-bottom:7px;font-weight:800}
+    .p1l-gate .p1l-input-row{display:flex;gap:9px;flex-wrap:wrap}
+    .p1l-gate input{min-width:165px;flex:1 1 180px;padding:11px 13px;border-radius:11px;border:1px solid #6f879b;background:#0d1b2c;color:#f5fbff}
+    .p1l-gate button{min-height:44px;padding:11px 16px;border:0;border-radius:11px;background:linear-gradient(135deg,#14b8a6,#38bdf8);color:#062233;font-weight:900}
+    .p1l-gate button:hover{filter:brightness(1.08)}
+    .p1l-gate .p1l-feedback{margin:10px 0 0;min-height:20px;color:#fecaca;font-weight:700;font-size:.91rem}
+    @media print{.p1l-gate{display:none!important}}
   </style>
 </head>
 <body>
@@ -117,7 +130,20 @@
     <div class="brand"><span class="brand-mark" aria-hidden="true">HW</span><span>Hardware &amp; EVA</span></div>
     <a href="../index.html">← Zur Kursübersicht</a>
   </header>
-  <main>
+  <section class="p1l-gate" id="p1lGate" aria-labelledby="p1lGateTitle">
+    <span class="p1l-overline">P1L · Hardware</span>
+    <h1 id="p1lGateTitle">Lösungsblatt</h1>
+    <p>Gib das Passwort ein, um die Lösungen zur Übungsprüfung P1 zu öffnen.</p>
+    <form id="p1lGateForm">
+      <label for="p1lPassword">Passwort</label>
+      <div class="p1l-input-row">
+        <input type="password" id="p1lPassword" name="password" autocomplete="off" required autofocus>
+        <button type="submit">Lösungen öffnen</button>
+      </div>
+    </form>
+    <p class="p1l-feedback" id="p1lGateFeedback" role="status" aria-live="polite"></p>
+  </section>
+  <main id="p1lSolutions" hidden>
     <section class="hero" aria-labelledby="pageTitle">
       <span class="eyebrow">P1 · HW</span>
       <h1 id="pageTitle">Lösungen</h1>
@@ -159,6 +185,53 @@
         section.innerHTML='<header class="sheet-head">'+sectionBadge+'<div><h2>'+esc(s.title)+'</h2><p>'+esc(s.lead)+'</p><span class="points">'+(s.bonus?'+':'')+s.points+' '+(s.points===1?'Punkt':'Punkte')+'</span></div></header>'+context+comparison+'<div class="question-list">'+s.questions.map(questionHTML).join('')+'</div>';
         root.appendChild(section);
         const a=document.createElement('a');a.href='#'+s.id;a.textContent=(hasOriginalChapterNumber?'':(s.bonus?'★ · ':index+1+' · '))+s.title;nav.appendChild(a);
+      });
+    })();
+  </script>
+
+  <script>
+    (function () {
+      'use strict';
+      const EXPECTED_SHA256 = '615051c1b669b13ff07246e9470ee6fd1a0c242a3948d4faa4eac2a735f87281';
+      const SESSION_KEY = 'ib2026-hw-p1l-unlocked-v1';
+      const gate = document.getElementById('p1lGate');
+      const solutions = document.getElementById('p1lSolutions');
+      const form = document.getElementById('p1lGateForm');
+      const password = document.getElementById('p1lPassword');
+      const feedback = document.getElementById('p1lGateFeedback');
+
+      function unlock() {
+        gate.hidden = true;
+        solutions.hidden = false;
+        try { sessionStorage.setItem(SESSION_KEY, '1'); } catch (_) {}
+        document.title = 'HW · P1L – Lösungen';
+      }
+
+      try {
+        if (sessionStorage.getItem(SESSION_KEY) === '1') {
+          unlock();
+          return;
+        }
+      } catch (_) {}
+
+      form.addEventListener('submit', async function (event) {
+        event.preventDefault();
+        feedback.textContent = '';
+        const attempt = password.value.trim();
+        try {
+          if (!window.crypto || !window.crypto.subtle) throw new Error('HTTPS required');
+          const digest = await window.crypto.subtle.digest('SHA-256', new TextEncoder().encode(attempt));
+          const computed = Array.from(new Uint8Array(digest), b => b.toString(16).padStart(2, '0')).join('');
+          if (computed === EXPECTED_SHA256) {
+            password.value = '';
+            unlock();
+          } else {
+            feedback.textContent = 'Passwort nicht korrekt.';
+            password.select();
+          }
+        } catch (_) {
+          feedback.textContent = 'Die Passwortprüfung benötigt eine HTTPS-Verbindung.';
+        }
       });
     })();
   </script>
