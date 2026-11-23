@@ -572,15 +572,156 @@
     .hw-task-list .unterkachel-title .task-number{display:inline-flex;width:54px;height:42px;border-radius:15px;align-items:center;justify-content:center;flex:0 0 auto;color:#fff;background:linear-gradient(135deg,#0078d4,#2563eb);border:0;box-shadow:0 9px 19px rgba(0,120,212,.22);font-size:calc(13px * var(--font-scale));font-weight:950;letter-spacing:-.02em}
     .hw-task-list .unterkachel-title .task-name{display:inline!important;width:auto!important;height:auto!important;min-width:0;border:0!important;border-left:1px solid var(--line)!important;background:transparent!important;box-shadow:none!important;border-radius:0!important;justify-content:flex-start!important;margin-left:13px;padding-left:14px;font-size:inherit!important;color:var(--text);white-space:normal}
     .hw-task-list .btn-link{width:auto;height:42px;padding:0 14px;border-radius:15px;gap:8px;font-size:calc(11px * var(--font-scale));font-weight:850;background:linear-gradient(135deg,#0078d4,#2563eb);box-shadow:0 9px 19px rgba(37,99,235,.20)}
+    /* The optional Erzwelt activity keeps its existing hardware-task card. */
     .hw-task-list .erzwelt-link {
       display: flex;
       align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      width: 100%;
+      font: inherit;
+      text-align: left;
       color: var(--text);
-      text-decoration: none;
+      background: linear-gradient(135deg, var(--card), var(--card-soft));
+      cursor: pointer;
+      appearance: none;
+    }
+    .hw-task-list .erzwelt-link > .unterkachel-title {
+      width: auto;
+      min-width: 0;
+      flex: 1 1 auto;
+    }
+    .hw-task-list .erzwelt-access-hint {
+      flex: 0 0 auto;
+      color: var(--muted);
+      font-size: calc(12px * var(--font-scale));
+      font-weight: 800;
+      white-space: nowrap;
     }
     .hw-task-list .erzwelt-link:focus-visible {
       outline: 2px solid var(--blue);
       outline-offset: 2px;
+    }
+    .erzwelt-access-dialog {
+      width: min(490px, calc(100vw - 28px));
+      max-height: calc(100dvh - 28px);
+      overflow-y: auto;
+      padding: 0;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: var(--card);
+      color: var(--text);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, .32);
+      font-family: inherit;
+    }
+    .erzwelt-access-dialog::backdrop {
+      background: rgba(15, 23, 42, .67);
+      backdrop-filter: blur(3px);
+    }
+    .erzwelt-access-dialog [hidden] { display: none !important; }
+    .erzwelt-dialog-inner { padding: 24px; }
+    .erzwelt-dialog-heading {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+    .erzwelt-dialog-heading h2 {
+      margin: 3px 0 0;
+      font-size: calc(23px * var(--font-scale));
+      line-height: 1.2;
+    }
+    .erzwelt-dialog-eyebrow {
+      color: var(--blue);
+      font-size: calc(11px * var(--font-scale));
+      font-weight: 850;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .erzwelt-dialog-close {
+      width: 34px;
+      height: 34px;
+      flex-shrink: 0;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: var(--card-soft);
+      color: var(--text);
+      font: inherit;
+      font-size: 22px;
+      cursor: pointer;
+    }
+    .erzwelt-dialog-summary,
+    .erzwelt-dialog-note {
+      margin: 0 0 16px;
+      color: var(--muted);
+      font-size: calc(13px * var(--font-scale));
+      line-height: 1.55;
+    }
+    .erzwelt-dialog-steps {
+      margin: 0 0 16px;
+      padding-left: 24px;
+      display: grid;
+      gap: 10px;
+      font-size: calc(13px * var(--font-scale));
+      line-height: 1.55;
+    }
+    .erzwelt-dialog-steps li::marker { color: var(--blue); font-weight: 800; }
+    .erzwelt-dialog-note {
+      padding: 12px 14px;
+      border: 1px solid rgba(37, 99, 235, .2);
+      background: var(--blue-soft);
+      color: var(--text);
+      border-radius: 12px;
+    }
+    .erzwelt-dialog-label {
+      display: block;
+      font-size: calc(13px * var(--font-scale));
+      font-weight: 750;
+      margin-bottom: 7px;
+    }
+    .erzwelt-dialog-code-row { display: flex; gap: 8px; }
+    .erzwelt-dialog-code {
+      flex: 1 1 auto;
+      min-width: 0;
+      min-height: 44px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 12px;
+      background: var(--card-soft);
+      color: var(--text);
+      font: inherit;
+      font-size: calc(15px * var(--font-scale));
+    }
+    .erzwelt-dialog-code:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+    .erzwelt-dialog-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 10px 16px;
+      border: 0;
+      border-radius: 10px;
+      background: var(--blue);
+      color: #fff;
+      font: inherit;
+      font-size: calc(13px * var(--font-scale));
+      font-weight: 800;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .erzwelt-dialog-action:hover { filter: brightness(.92); }
+    .erzwelt-dialog-feedback {
+      margin: 10px 0 0;
+      min-height: 19px;
+      color: var(--muted);
+      font-size: calc(12px * var(--font-scale));
+    }
+    .erzwelt-dialog-feedback[data-error="true"] { color: #c2410c; }
+    @media (max-width: 440px) {
+      .erzwelt-dialog-inner { padding: 18px; }
+      .erzwelt-dialog-code-row { flex-direction: column; }
+      .hw-task-list .erzwelt-access-hint { font-size: calc(11px * var(--font-scale)); }
     }
     .hw-task-list .task-card.task-done{border-color:rgba(16,185,129,.34);box-shadow:0 10px 26px rgba(16,185,129,.08)}
     .hw-task-list .task-card.task-done::before{opacity:1;animation:completionSweep .7s cubic-bezier(.2,.9,.2,1) both}
@@ -1104,7 +1245,7 @@
       </div>
     </div>
 
-              <a class="unterkachel task-card erzwelt-link" href="https://erzwelt.vercel.app/" target="_blank" rel="noopener" aria-label="Erzwelt in neuem Tab öffnen">
+              <button type="button" id="erzweltAccessButton" class="unterkachel task-card erzwelt-link" aria-haspopup="dialog" aria-controls="erzweltAccessDialog" aria-label="Erzwelt: Freigabe nach Abschluss A1 bis A14 und Zwischenkontrolle">
                 <div class="unterkachel-title">
                   <span class="task-number" aria-hidden="true">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -1116,7 +1257,8 @@
                   </span>
                   <span class="task-name">Erzwelt</span>
                 </div>
-              </a>
+                <span class="erzwelt-access-hint" aria-hidden="true">🔒 Freigabe</span>
+              </button>
 
             </div>
           </div>
@@ -1303,6 +1445,7 @@
                   <li><strong>1 Punkt</strong> = PDF im OneDrive-Ordner <strong>IB</strong></li>
                 <li><strong>100 % Genauigkeit</strong> = voller Zusatzpunkt; sonst anteilig</li>
                 <li>Verbessern erlaubt – <strong>nur das beste Resultat zählt</strong></li>
+                  <li><strong>Zwischenkontrolle nach A1–A14:</strong> Zeige die PDFs deiner Lehrperson. Die Fleissnote ist vorläufig; du darfst bis Semesterende weiter verbessern.</li>
                 </ul>
                 <div style="margin-top: 10px; padding-top: 9px; border-top: 1px solid rgba(37,99,235,.18); color: var(--muted); display: grid; gap: 2px;">
                   <div><strong style="color: var(--text);">Maximal 2 Punkte</strong> pro Aufgabe</div>
@@ -1612,6 +1755,35 @@
       </div>
     </footer>
   </main>
+    <!-- Optional Erzwelt access: the teacher checks the 14 submitted PDFs before giving out the code. -->
+    <dialog id="erzweltAccessDialog" class="erzwelt-access-dialog" aria-labelledby="erzweltAccessTitle" aria-describedby="erzweltAccessSummary">
+      <div class="erzwelt-dialog-inner">
+        <div class="erzwelt-dialog-heading">
+          <div>
+            <span class="erzwelt-dialog-eyebrow">Nach der Zwischenkontrolle</span>
+            <h2 id="erzweltAccessTitle">Erzwelt freischalten</h2>
+          </div>
+          <button type="button" class="erzwelt-dialog-close" id="erzweltAccessClose" aria-label="Schliessen">×</button>
+        </div>
+        <p class="erzwelt-dialog-summary" id="erzweltAccessSummary">Erzwelt ist eine freiwillige Zusatzaktivität nach dem Hardware-Kurs.</p>
+        <ol class="erzwelt-dialog-steps">
+          <li><strong>A1–A14 fertigstellen</strong> und die 14 PDFs im OneDrive-Ordner <strong>IB</strong> ablegen.</li>
+          <li><strong>Bei der Lehrperson vorbeikommen.</strong> Sie kontrolliert deine Abgaben und hält einen <strong>vorläufigen Stand der Fleissnote</strong> fest.</li>
+          <li><strong>Freigabecode erhalten</strong> und Erzwelt öffnen.</li>
+        </ol>
+        <p class="erzwelt-dialog-note">Die Fleissnote ist noch nicht definitiv. Du darfst die Aufgaben bis zum Semesterende weiter verbessern – das beste Resultat zählt.</p>
+        <form id="erzweltAccessForm">
+          <label class="erzwelt-dialog-label" for="erzweltAccessCode">Freigabecode der Lehrperson</label>
+          <div class="erzwelt-dialog-code-row">
+            <input id="erzweltAccessCode" class="erzwelt-dialog-code" type="password" autocomplete="off" spellcheck="false" required placeholder="Code eingeben" />
+            <button class="erzwelt-dialog-action" type="submit">Freischalten</button>
+          </div>
+        </form>
+        <p id="erzweltAccessFeedback" class="erzwelt-dialog-feedback" role="status" aria-live="polite"></p>
+        <a id="erzweltAccessLaunch" class="erzwelt-dialog-action" target="_blank" rel="noopener noreferrer" hidden>Erzwelt öffnen ↗</a>
+      </div>
+    </dialog>
+
 
   <script>
     const gearBtn = document.getElementById('gearBtn');
@@ -2043,6 +2215,77 @@
         if (!document.hidden) checkCompletionStatus();
       });
       window.addEventListener('focus', checkCompletionStatus);
+    </script>
+
+    <script>
+      // Student-side reminder gate only: PDF review and approval remain with the teacher.
+      // This gate does not protect the independently public Erzwelt destination.
+      (function () {
+        const ACCESS_KEY = 'ib2026-erzwelt-approved-v1';
+        const ACCESS_HASH = 'a16fcf80d05ae5ecce98f12d7e630f7bb127b76dc7e101523fbfa8496997a54f';
+        const ERZWELT_URL = 'https://erzwelt.vercel.app/';
+        const button = document.getElementById('erzweltAccessButton');
+        const dialog = document.getElementById('erzweltAccessDialog');
+        const close = document.getElementById('erzweltAccessClose');
+        const form = document.getElementById('erzweltAccessForm');
+        const input = document.getElementById('erzweltAccessCode');
+        const feedback = document.getElementById('erzweltAccessFeedback');
+        const launch = document.getElementById('erzweltAccessLaunch');
+        if (!button || !dialog || !form || !input || !feedback || !launch) return;
+
+        function alreadyApproved() {
+          try { return localStorage.getItem(ACCESS_KEY) === 'true'; }
+          catch (_) { return false; }
+        }
+        function showDialog() {
+          form.hidden = false;
+          launch.hidden = true;
+          launch.removeAttribute('href');
+          input.value = '';
+          feedback.textContent = '';
+          feedback.dataset.error = 'false';
+          if (typeof dialog.showModal === 'function') dialog.showModal();
+          else dialog.setAttribute('open', '');
+          input.focus();
+        }
+        button.addEventListener('click', function () {
+          if (alreadyApproved()) {
+            window.open(ERZWELT_URL, '_blank', 'noopener,noreferrer');
+          } else {
+            showDialog();
+          }
+        });
+        close.addEventListener('click', function () {
+          if (typeof dialog.close === 'function') dialog.close();
+          else dialog.removeAttribute('open');
+        });
+        form.addEventListener('submit', async function (event) {
+          event.preventDefault();
+          if (!window.crypto || !window.crypto.subtle) {
+            feedback.dataset.error = 'true';
+            feedback.textContent = 'Der Code kann in diesem Browser nicht geprüft werden.';
+            return;
+          }
+          const normalized = input.value.trim().replace(/\\s+/g, ' ').toLowerCase();
+          const bytes = new TextEncoder().encode(normalized);
+          const digest = await window.crypto.subtle.digest('SHA-256', bytes);
+          const actual = Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('');
+          if (actual !== ACCESS_HASH) {
+            feedback.dataset.error = 'true';
+            feedback.textContent = 'Code nicht erkannt. Frage deine Lehrperson nach der Freigabe.';
+            input.focus();
+            input.select();
+            return;
+          }
+          try { localStorage.setItem(ACCESS_KEY, 'true'); } catch (_) {}
+          feedback.dataset.error = 'false';
+          feedback.textContent = 'Freigeschaltet! Du kannst Erzwelt jetzt öffnen.';
+          form.hidden = true;
+          launch.href = ERZWELT_URL;
+          launch.hidden = false;
+          launch.focus();
+        });
+      })();
     </script>
 </body>
 </html>
