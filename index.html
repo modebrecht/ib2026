@@ -744,11 +744,9 @@
       line-height: 1.48;
     }
     .erzwelt-dialog-steps li {
-      display: grid;
-      grid-template-columns: 32px minmax(0, 1fr);
-      gap: 10px;
-      align-items: start;
-      padding: 11px 12px;
+      position: relative;
+      min-height: 54px;
+      padding: 11px 12px 11px 54px;
       border-radius: 12px;
       border: 1px solid rgba(155, 198, 215, .14);
       background: rgba(233, 245, 255, .045);
@@ -757,6 +755,9 @@
     }
     .erzwelt-dialog-steps li::before {
       content: counter(ore-step, decimal-leading-zero);
+      position: absolute;
+      left: 12px;
+      top: 11px;
       display: grid;
       place-items: center;
       width: 30px;
