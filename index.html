@@ -754,12 +754,6 @@
       justify-content: space-between;
       gap: 12px;
     }
-    .erzwelt-dialog-eyebrow {
-      color: #17677b;
-      letter-spacing: .12em;
-      font-size: calc(10px * var(--font-scale));
-      font-weight: 900;
-    }
     .erzwelt-dialog-heading h2 {
       margin: 6px 0 5px;
       font-family: "Baloo 2", "Trebuchet MS", sans-serif;
@@ -784,12 +778,6 @@
       cursor: pointer;
     }
     .erzwelt-dialog-close:hover { background: #ffe4a7; }
-    .erzwelt-dialog-summary {
-      margin: 5px 0 14px;
-      font-size: calc(13px * var(--font-scale));
-      font-weight: 750;
-      color: #726b59;
-    }
     .erzwelt-dialog-steps {
       display: grid;
       gap: 8px;
@@ -1948,7 +1936,7 @@
     </footer>
   </main>
     <!-- Optional Erzwelt access: the teacher checks the 14 submitted PDFs before giving out the code. -->
-    <dialog id="erzweltAccessDialog" class="erzwelt-access-dialog" aria-labelledby="erzweltAccessTitle" aria-describedby="erzweltAccessSummary">
+    <dialog id="erzweltAccessDialog" class="erzwelt-access-dialog" aria-labelledby="erzweltAccessTitle">
       <div class="erzwelt-dialog-inner">
         <div class="erzwelt-stage" aria-hidden="true">
           <svg class="erzwelt-map-scene" viewBox="0 0 620 250" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
@@ -2000,12 +1988,10 @@
         <div class="erzwelt-content">
           <div class="erzwelt-dialog-heading">
             <div>
-              <span class="erzwelt-dialog-eyebrow">DEIN SPIELPASS</span>
               <h2 id="erzweltAccessTitle">Erst den Kurs abschliessen.<br><span>Dann die Welt entdecken.</span></h2>
             </div>
             <button type="button" class="erzwelt-dialog-close" id="erzweltAccessClose" aria-label="Schliessen">×</button>
           </div>
-          <p class="erzwelt-dialog-summary" id="erzweltAccessSummary">Drei kleine Schritte bis zum Start:</p>
         <ol class="erzwelt-dialog-steps">
           <li>
             <span class="erzwelt-step-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h10l3 3v15H6z"/><path d="M16 3v4h3M9 11h7M9 15h7M9 19h5"/></svg></span>
