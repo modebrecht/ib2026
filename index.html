@@ -4,6 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Informatische Bildung | 2026</title>
+  <!-- Erzwelt display typography; falls back gracefully without the remote font. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
   <link rel="icon" href="favicon.ico" sizes="any" />
   <link rel="icon" href="favicon.png" type="image/png" sizes="256x256" />
   <style>
@@ -572,7 +576,8 @@
     .hw-task-list .unterkachel-title .task-number{display:inline-flex;width:54px;height:42px;border-radius:15px;align-items:center;justify-content:center;flex:0 0 auto;color:#fff;background:linear-gradient(135deg,#0078d4,#2563eb);border:0;box-shadow:0 9px 19px rgba(0,120,212,.22);font-size:calc(13px * var(--font-scale));font-weight:950;letter-spacing:-.02em}
     .hw-task-list .unterkachel-title .task-name{display:inline!important;width:auto!important;height:auto!important;min-width:0;border:0!important;border-left:1px solid var(--line)!important;background:transparent!important;box-shadow:none!important;border-radius:0!important;justify-content:flex-start!important;margin-left:13px;padding-left:14px;font-size:inherit!important;color:var(--text);white-space:normal}
     .hw-task-list .btn-link{width:auto;height:42px;padding:0 14px;border-radius:15px;gap:8px;font-size:calc(11px * var(--font-scale));font-weight:850;background:linear-gradient(135deg,#0078d4,#2563eb);box-shadow:0 9px 19px rgba(37,99,235,.20)}
-    /* Erzwelt: themed mine entrance. Scoped to this card/dialog only. */
+    /* ERZWELT | Playful map-and-paper style matched to the real game palette.
+       This block is strictly scoped to the Erzwelt tile and dialog. */
     .hw-task-list .erzwelt-link {
       position: relative;
       display: flex;
@@ -580,49 +585,53 @@
       justify-content: space-between;
       gap: 10px;
       width: 100%;
+      min-height: 78px;
+      padding: 13px 16px;
+      isolation: isolate;
+      overflow: hidden;
+      appearance: none;
       font: inherit;
       text-align: left;
-      color: #f3f8ff;
-      background:
-        radial-gradient(ellipse at 84% 20%, rgba(79, 209, 198, .27), transparent 48%),
-        radial-gradient(ellipse at 8% 110%, rgba(120, 97, 232, .22), transparent 55%),
-        linear-gradient(128deg, #12253b 0%, #20334d 58%, #183c48 100%);
-      border: 1px solid rgba(130, 220, 218, .35);
-      box-shadow: 0 11px 24px rgba(12, 29, 45, .22), inset 0 1px rgba(255,255,255,.10);
+      color: #fff;
       cursor: pointer;
-      appearance: none;
-      isolation: isolate;
+      background:
+        radial-gradient(ellipse at 83% 16%, rgba(106,227,206,.38), transparent 40%),
+        repeating-radial-gradient(ellipse at 80% 150%, transparent 0 17px, rgba(178,249,235,.09) 18px 19px, transparent 20px 34px),
+        linear-gradient(120deg, #0a364b 0%, #17667b 65%, #208e99 100%);
+      border: 2px solid #d4a84c;
+      border-radius: 18px;
+      box-shadow: 0 5px 0 rgba(88,69,30,.27), 0 11px 23px rgba(7,47,64,.18);
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+    .hw-task-list .erzwelt-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 7px 0 rgba(88,69,30,.27), 0 17px 30px rgba(7,47,64,.24);
     }
     .hw-task-list .erzwelt-link::before {
       content: "";
       position: absolute;
       inset: 0;
+      z-index: 0;
+      pointer-events: none;
       border-radius: inherit;
       background:
-        radial-gradient(circle at 65% 22%, #8df5e5 0 1px, transparent 2px),
-        radial-gradient(circle at 88% 74%, #b1c6ff 0 1px, transparent 2px),
-        radial-gradient(circle at 44% 78%, #a0e8ff 0 1px, transparent 2px);
-      opacity: .72;
-      pointer-events: none;
-      z-index: 0;
+        radial-gradient(circle at 75% 26%, #ffe4a3 0 2px, transparent 3px),
+        radial-gradient(circle at 59% 78%, #d4fff5 0 2px, transparent 3px),
+        radial-gradient(circle at 94% 68%, #ffe4a3 0 2px, transparent 3px);
     }
     .hw-task-list .erzwelt-link::after {
       content: "";
       position: absolute;
-      right: -15px;
-      top: -27px;
-      width: 112px;
-      height: 112px;
-      background: linear-gradient(145deg, rgba(104, 229, 209, .25), rgba(101, 134, 253, .05));
-      clip-path: polygon(50% 0, 90% 30%, 100% 70%, 51% 100%, 0 72%, 12% 23%);
-      filter: blur(1px);
-      opacity: .8;
-      pointer-events: none;
+      right: 25px;
+      bottom: -54px;
+      width: 125px;
+      height: 120px;
       z-index: 0;
-    }
-    .hw-task-list .erzwelt-link:hover {
-      border-color: rgba(157, 244, 221, .6);
-      box-shadow: 0 14px 30px rgba(12, 29, 45, .30), 0 0 0 1px rgba(111, 232, 210, .12);
+      opacity: .25;
+      pointer-events: none;
+      border: 3px dashed #fff1bd;
+      border-radius: 50%;
+      background: none;
     }
     .hw-task-list .erzwelt-link > .unterkachel-title {
       position: relative;
@@ -631,221 +640,280 @@
       min-width: 0;
       flex: 1 1 auto;
     }
-    .hw-task-list .erzwelt-link .task-name {
-      color: #f3fbff;
-      text-shadow: 0 1px 5px rgba(3, 12, 27, .35);
-    }
     .hw-task-list .erzwelt-link .task-number {
-      background: linear-gradient(135deg, #267a83, #6d56ab);
-      border-color: rgba(167, 244, 234, .38);
-      color: #f4fffd;
-      box-shadow: 0 5px 15px rgba(0, 12, 32, .25), inset 0 1px 0 rgba(255,255,255,.20);
+      background: linear-gradient(135deg, #fbd069, #e5a430);
+      border: 2px solid #ffeaaf;
+      color: #543815;
+      box-shadow: 0 4px 0 rgba(76,48,12,.35);
+    }
+    .hw-task-list .erzwelt-link .task-name {
+      color: #fffaf0;
+      font-family: "Baloo 2", "Trebuchet MS", sans-serif;
+      font-weight: 800;
+      letter-spacing: .02em;
+      border-left-color: rgba(255,232,166,.38) !important;
     }
     .hw-task-list .erzwelt-access-hint {
       position: relative;
       z-index: 1;
       flex: 0 0 auto;
-      color: #f7e1a4;
-      font-size: calc(12px * var(--font-scale));
-      font-weight: 800;
-      white-space: nowrap;
-      background: rgba(9, 26, 43, .52);
-      border: 1px solid rgba(241, 200, 117, .36);
-      border-radius: 999px;
       padding: 7px 11px;
+      color: #5c3e12;
+      font-size: calc(12px * var(--font-scale));
+      font-weight: 900;
+      white-space: nowrap;
+      border-radius: 99px;
+      border: 1px solid #ffe5a4;
+      background: linear-gradient(#ffdfa0, #f7bb4d);
+      box-shadow: 0 3px 0 rgba(101,65,15,.37);
     }
     .hw-task-list .erzwelt-link:focus-visible {
-      outline: 2px solid #a3f2e3;
-      outline-offset: 2px;
+      outline: 3px solid #f8c354;
+      outline-offset: 3px;
     }
 
     .erzwelt-access-dialog {
-      width: min(520px, calc(100vw - 28px));
-      max-height: min(720px, calc(100dvh - 24px));
-      overflow-y: auto;
+      width: min(590px, calc(100vw - 26px));
+      max-height: calc(100dvh - 26px);
+      box-sizing: border-box;
       padding: 0;
-      border: 1px solid rgba(132, 209, 203, .36);
-      border-radius: 22px;
-      background: #111d2e;
-      color: #eff7ff;
-      box-shadow: 0 30px 90px rgba(3, 10, 24, .60), 0 0 0 1px rgba(255,255,255,.05) inset;
-      font-family: inherit;
+      overflow-y: auto;
+      border: 3px solid #f8e8b6;
+      border-radius: 24px;
+      background: #fff9e9;
+      color: #2b2a29;
+      box-shadow: 0 0 0 5px rgba(11,54,72,.35), 0 25px 70px rgba(7,29,43,.48);
+      font-family: "Nunito", "Segoe UI", sans-serif;
+      line-height: 1.35;
     }
     .erzwelt-access-dialog::backdrop {
-      background: radial-gradient(circle at 50% 40%, rgba(13, 27, 43, .65), rgba(3, 8, 20, .87));
-      backdrop-filter: blur(5px);
+      background: radial-gradient(circle at 50% 50%, rgba(11,54,72,.72), rgba(4,18,32,.91));
+      backdrop-filter: blur(4px);
     }
     .erzwelt-access-dialog [hidden] { display: none !important; }
     .erzwelt-dialog-inner {
-      position: relative;
-      padding: 0 25px 24px;
-      background:
-        radial-gradient(ellipse at 100% 5%, rgba(57, 185, 170, .15), transparent 48%),
-        radial-gradient(ellipse at 0% 100%, rgba(104, 81, 200, .14), transparent 57%),
-        linear-gradient(180deg, #17283d, #111b2e 76%);
+      min-width: 0;
+      background: linear-gradient(180deg, #fff6e2, #fffaf0);
     }
-    .erzwelt-hero-art {
+    .erzwelt-stage {
       position: relative;
-      height: 117px;
-      margin: 0 -25px 16px;
+      height: 219px;
       overflow: hidden;
-      background: linear-gradient(180deg, #12273c, #18334a);
-      border-bottom: 1px solid rgba(125, 226, 209, .22);
+      background: #0b3648;
     }
-    .erzwelt-hero-art svg { display: block; width: 100%; height: 100%; }
+    .erzwelt-map-scene { display: block; width: 100%; height: 100%; }
+    .erzwelt-stage-shade {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(5,36,55,.92), rgba(9,54,73,.60) 39%, rgba(9,54,73,0) 76%);
+      pointer-events: none;
+    }
+    .erzwelt-stage-caption { position: absolute; left: 26px; bottom: 28px; color: white; }
+    .erzwelt-overline {
+      display: inline-flex;
+      padding: 5px 10px;
+      margin-bottom: 6px;
+      color: #533614;
+      background: #f6bd4b;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .08em;
+    }
+    .erzwelt-world-title {
+      font-family: "Baloo 2", "Trebuchet MS", sans-serif;
+      font-weight: 800;
+      font-size: 51px;
+      line-height: 1;
+      letter-spacing: -.04em;
+      text-shadow: 0 4px 0 #043246, 0 8px 18px rgba(0,0,0,.24);
+    }
+    .erzwelt-world-spark {
+      display: inline-block;
+      margin: 4px 0 0 8px;
+      font-size: 16px;
+      color: #ffda73;
+      vertical-align: top;
+    }
+    .erzwelt-world-subtitle {
+      display: block;
+      margin-top: 8px;
+      font-size: 14px;
+      font-weight: 850;
+      letter-spacing: .015em;
+      color: #f0fbff;
+    }
+    .erzwelt-vessel { transform-origin: 443px 195px; animation: erzwelt-boat-bob 3.2s ease-in-out infinite; }
+    @keyframes erzwelt-boat-bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+
+    .erzwelt-content { padding: 20px 25px 22px; }
     .erzwelt-dialog-heading {
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 10px;
-    }
-    .erzwelt-dialog-heading h2 {
-      margin: 3px 0 0;
-      font-size: calc(23px * var(--font-scale));
-      line-height: 1.2;
-      color: #fff;
-      letter-spacing: -.025em;
+      gap: 12px;
     }
     .erzwelt-dialog-eyebrow {
-      color: #8ce9d9;
-      font-size: calc(11px * var(--font-scale));
-      font-weight: 850;
-      letter-spacing: .11em;
-      text-transform: uppercase;
+      color: #17677b;
+      letter-spacing: .12em;
+      font-size: calc(10px * var(--font-scale));
+      font-weight: 900;
     }
+    .erzwelt-dialog-heading h2 {
+      margin: 6px 0 5px;
+      font-family: "Baloo 2", "Trebuchet MS", sans-serif;
+      font-weight: 800;
+      color: #273d43;
+      font-size: calc(26px * var(--font-scale));
+      line-height: 1.11;
+    }
+    .erzwelt-dialog-heading h2 span { color: #19777e; }
     .erzwelt-dialog-close {
-      width: 35px;
-      height: 35px;
-      flex-shrink: 0;
-      border-radius: 10px;
-      border: 1px solid rgba(156, 209, 213, .30);
-      background: rgba(255, 255, 255, .07);
-      color: #f2f8ff;
+      display: grid;
+      place-items: center;
+      min-width: 37px;
+      height: 37px;
+      padding: 0;
+      border: 2px solid #dfcba5;
+      border-radius: 11px;
+      background: #f5e9ce;
+      color: #725e43;
       font: inherit;
-      font-size: 22px;
+      font-size: 23px;
       cursor: pointer;
     }
-    .erzwelt-dialog-close:hover { background: rgba(255, 255, 255, .14); }
+    .erzwelt-dialog-close:hover { background: #ffe4a7; }
     .erzwelt-dialog-summary {
-      margin: 0 0 16px;
-      color: #c6d7e7;
+      margin: 5px 0 14px;
       font-size: calc(13px * var(--font-scale));
-      line-height: 1.55;
+      font-weight: 750;
+      color: #726b59;
     }
     .erzwelt-dialog-steps {
       display: grid;
       gap: 8px;
-      padding: 0;
       margin: 0 0 14px;
+      padding: 0;
       list-style: none;
-      counter-reset: ore-step;
-      font-size: calc(13px * var(--font-scale));
-      line-height: 1.48;
     }
     .erzwelt-dialog-steps li {
-      position: relative;
-      min-height: 54px;
-      padding: 11px 12px 11px 54px;
-      border-radius: 12px;
-      border: 1px solid rgba(155, 198, 215, .14);
-      background: rgba(233, 245, 255, .045);
-      color: #e3edf9;
-      counter-increment: ore-step;
+      display: grid;
+      grid-template-columns: 38px minmax(0, 1fr);
+      align-items: center;
+      gap: 10px;
+      padding: 10px 11px;
+      border: 1px solid #e5d9be;
+      border-radius: 13px;
+      background: #fffdf7;
+      box-shadow: 0 3px 0 #e4d5b6;
     }
-    .erzwelt-dialog-steps li::before {
-      content: counter(ore-step, decimal-leading-zero);
-      position: absolute;
-      left: 12px;
-      top: 11px;
+    .erzwelt-step-icon {
       display: grid;
       place-items: center;
-      width: 30px;
-      height: 30px;
-      border-radius: 9px;
-      background: linear-gradient(145deg, #1c7e84, #424985);
-      color: #eafffa;
-      font-size: 11px;
-      font-weight: 900;
-      box-shadow: inset 0 1px rgba(255,255,255,.16);
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(145deg, #247f89, #155a70);
+      color: #fff;
+      box-shadow: inset 0 1px rgba(255,255,255,.3), 0 3px 0 #0d4e61;
     }
-    .erzwelt-dialog-steps strong { color: #fff; }
+    .erzwelt-step-icon svg { width: 21px; height: 21px; }
+    .erzwelt-dialog-steps strong { display: block; font-size: calc(13.5px * var(--font-scale)); line-height: 1.2; color: #34342e; }
+    .erzwelt-dialog-steps li .erzwelt-step-copy { min-width: 0; }
+    .erzwelt-dialog-steps li .erzwelt-step-copy > span {
+      display: block;
+      margin-top: 3px;
+      font-size: calc(11.5px * var(--font-scale));
+      line-height: 1.35;
+      color: #6b665c;
+    }
     .erzwelt-dialog-note {
-      margin: 0 0 15px;
-      padding: 12px 14px;
-      background: linear-gradient(130deg, rgba(172, 120, 44, .17), rgba(103, 77, 57, .10));
-      border: 1px solid rgba(236, 186, 96, .40);
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 9px;
+      margin: 0 0 17px;
+      padding: 11px 12px;
+      border: 1px solid #e8b65a;
       border-radius: 12px;
-      color: #f8e6bd;
-      font-size: calc(12px * var(--font-scale));
-      line-height: 1.55;
+      background: linear-gradient(110deg, #fff1c7, #ffe2a0);
     }
-    .erzwelt-dialog-note strong { color: #ffe1a2; }
+    .erzwelt-note-icon {
+      display: grid;
+      place-items: center;
+      width: 27px;
+      height: 27px;
+      border-radius: 50%;
+      background: #d48f28;
+      color: white;
+    }
+    .erzwelt-note-icon svg { width: 18px; height: 18px; }
+    .erzwelt-dialog-note strong { display: block; color: #6c4410; font-size: calc(12px * var(--font-scale)); }
+    .erzwelt-dialog-note span { display: block; margin-top: 3px; color: #865f24; font-size: calc(11px * var(--font-scale)); }
     .erzwelt-dialog-label {
       display: block;
-      margin-bottom: 8px;
-      color: #e5f3fb;
-      font-size: calc(13px * var(--font-scale));
-      font-weight: 750;
+      margin-bottom: 7px;
+      color: #4b5e59;
+      font-size: calc(11px * var(--font-scale));
+      font-weight: 900;
+      letter-spacing: .08em;
     }
-    .erzwelt-dialog-code-row { display: flex; gap: 8px; }
+    .erzwelt-dialog-code-row { display: flex; gap: 9px; }
     .erzwelt-dialog-code {
-      flex: 1 1 auto;
       min-width: 0;
-      min-height: 44px;
-      border: 1px solid rgba(142, 190, 204, .38);
-      border-radius: 10px;
-      padding: 10px 12px;
-      background: #0d1a2b;
-      color: #f5fbff;
+      min-height: 46px;
+      flex: 1 1 auto;
+      box-sizing: border-box;
+      padding: 10px 13px;
+      border: 2px solid #d7c9aa;
+      border-radius: 12px;
+      background: #fffdf6;
+      color: #302b22;
       font: inherit;
-      font-size: calc(15px * var(--font-scale));
+      font-size: calc(14px * var(--font-scale));
     }
-    .erzwelt-dialog-code::placeholder { color: #a0b3c6; }
-    .erzwelt-dialog-code:focus-visible {
-      outline: 2px solid #8ce9d9;
-      outline-offset: 2px;
-    }
+    .erzwelt-dialog-code::placeholder { color: #766e5e; }
+    .erzwelt-dialog-code:focus-visible { outline: 2px solid #1b8c89; outline-offset: 2px; }
     .erzwelt-dialog-action {
       display: inline-flex;
-      align-items: center;
       justify-content: center;
-      min-height: 44px;
-      padding: 10px 16px;
-      border: 1px solid #f1c77d;
-      border-radius: 10px;
-      background: linear-gradient(145deg, #ffe2a0, #e7ad55);
-      color: #30210e;
+      align-items: center;
+      gap: 8px;
+      min-height: 46px;
+      padding: 9px 15px;
+      white-space: nowrap;
+      border: 2px solid #ca8b1e;
+      border-bottom-width: 4px;
+      border-radius: 12px;
+      background: linear-gradient(#f7c653, #efac2e);
+      color: #432d0d;
       font: inherit;
       font-size: calc(13px * var(--font-scale));
-      font-weight: 850;
+      font-weight: 900;
       text-decoration: none;
       cursor: pointer;
-      box-shadow: 0 5px 17px rgba(204, 141, 50, .20), inset 0 1px rgba(255,255,255,.55);
     }
     .erzwelt-dialog-action:hover { filter: brightness(1.07); }
-    #erzweltAccessLaunch {
-      margin-top: 8px;
-      background: linear-gradient(145deg, #a5f8dc, #56bcae);
-      border-color: #a7f3db;
-      color: #0e2e29;
-    }
+    .erzwelt-dialog-action:focus-visible { outline: 3px solid #1b8c89; outline-offset: 2px; }
+    #erzweltAccessLaunch { margin-top: 8px; background: linear-gradient(#8ce8cc, #49ac98); border-color: #147b68; color: #073b35; }
     .erzwelt-dialog-feedback {
-      min-height: 19px;
-      margin: 10px 0 0;
-      color: #bdcde0;
-      font-size: calc(12px * var(--font-scale));
+      min-height: 15px;
+      margin: 8px 0 0;
+      color: #746f62;
+      font-size: calc(11px * var(--font-scale));
     }
-    .erzwelt-dialog-feedback[data-error="true"] { color: #ffb6aa; }
-    @media (max-width: 440px) {
-      .erzwelt-dialog-inner { padding: 0 17px 18px; }
-      .erzwelt-hero-art { margin: 0 -17px 14px; height: 102px; }
+    .erzwelt-dialog-feedback[data-error="true"] { color: #a63e22; font-weight: 800; }
+    @media (max-width: 470px) {
+      .erzwelt-stage { height: 176px; }
+      .erzwelt-stage-caption { left: 18px; bottom: 20px; }
+      .erzwelt-world-title { font-size: 40px; }
+      .erzwelt-content { padding: 15px 17px 19px; }
+      .erzwelt-dialog-heading h2 { font-size: calc(23px * var(--font-scale)); }
       .erzwelt-dialog-code-row { flex-direction: column; }
+      .erzwelt-dialog-action { min-height: 44px; }
       .hw-task-list .erzwelt-access-hint { font-size: calc(11px * var(--font-scale)); padding: 7px 9px; }
     }
-    @media (prefers-reduced-motion: reduce) {
-      .hw-task-list .erzwelt-link { transition: none; }
-    }
+    @media (max-height: 620px) { .erzwelt-stage { height: 152px; } }
+    @media (prefers-reduced-motion: reduce) { .erzwelt-vessel { animation: none; } }
         .hw-task-list .task-card.task-done{border-color:rgba(16,185,129,.34);box-shadow:0 10px 26px rgba(16,185,129,.08)}
     .hw-task-list .task-card.task-done::before{opacity:1;animation:completionSweep .7s cubic-bezier(.2,.9,.2,1) both}
     .hw-task-list .task-card.task-done::after{background:rgba(16,185,129,.11)}
@@ -1881,62 +1949,90 @@
     <!-- Optional Erzwelt access: the teacher checks the 14 submitted PDFs before giving out the code. -->
     <dialog id="erzweltAccessDialog" class="erzwelt-access-dialog" aria-labelledby="erzweltAccessTitle" aria-describedby="erzweltAccessSummary">
       <div class="erzwelt-dialog-inner">
-        <div class="erzwelt-hero-art" aria-hidden="true">
-          <svg viewBox="0 0 520 118" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" role="presentation">
+        <div class="erzwelt-stage" aria-hidden="true">
+          <svg class="erzwelt-map-scene" viewBox="0 0 620 250" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
             <defs>
-              <linearGradient id="ore-sky" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#0e2036"/><stop offset="1" stop-color="#275067"/></linearGradient>
-              <linearGradient id="ore-crystal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#c4fff2"/><stop offset=".45" stop-color="#53d7c0"/><stop offset="1" stop-color="#426ac0"/></linearGradient>
-              <linearGradient id="ore-crystal2" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#c5bcff"/><stop offset="1" stop-color="#595aaf"/></linearGradient>
-              <radialGradient id="ore-glow"><stop stop-color="#5ce0ca" stop-opacity=".38"/><stop offset="1" stop-color="#5ce0ca" stop-opacity="0"/></radialGradient>
+              <linearGradient id="ew-sea" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#2387a0"/><stop offset="1" stop-color="#0b4968"/></linearGradient>
+              <pattern id="ew-waves" width="32" height="29" patternUnits="userSpaceOnUse"><path d="M-7 14 Q0 8 7 14 T21 14 T35 14" fill="none" stroke="#adf6e5" stroke-opacity=".16" stroke-width="1.3"/></pattern>
+              <filter id="ew-shadow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="#063a51" flood-opacity=".38"/></filter>
             </defs>
-            <rect width="520" height="118" fill="url(#ore-sky)"/>
-            <ellipse cx="268" cy="64" rx="170" ry="95" fill="url(#ore-glow)"/>
-            <path d="M0 15 37 26 76 4 118 23 157 -3 211 16 246 2 289 20 342 4 395 21 438 -1 480 18 520 6V0H0Z" fill="#091728" opacity=".85"/>
-            <path d="M0 69 26 57 57 76 83 53 112 79 135 62 158 93 198 76 229 98 272 78 314 98 347 67 376 88 414 61 448 75 488 50 520 68V118H0Z" fill="#173248"/>
-            <path d="M0 95 34 84 79 103 107 89 150 118H0ZM520 81 480 92 450 79 415 118H520Z" fill="#0b2033"/>
-            <g opacity=".72" fill="#c8f7ec"><circle cx="112" cy="30" r="1.5"/><circle cx="397" cy="36" r="1.8"/><circle cx="178" cy="50" r="1"/><circle cx="345" cy="18" r="1.2"/><circle cx="454" cy="48" r="1.2"/></g>
-            <g transform="translate(257 24)">
-              <path d="M0 0 35 23 29 72 0 90-33 70-37 23Z" fill="url(#ore-crystal)" stroke="#c7fff4" stroke-opacity=".68" stroke-width="1.4"/>
-              <path d="M0 0V90L-33 70-37 23Z" fill="#80f0e1" opacity=".23"/>
-              <path d="M0 0 35 23 0 40-37 23Z" fill="#d9fff9" opacity=".35"/>
-              <path d="M0 40 35 23 29 72 0 90Z" fill="#2c68b5" opacity=".25"/>
-              <path d="M0 0V90M-37 23 0 40 35 23" stroke="#edfffc" stroke-opacity=".3"/>
+            <rect width="620" height="250" fill="url(#ew-sea)"/><rect width="620" height="250" fill="url(#ew-waves)"/>
+            <path d="M263-20 303 15 349 1 381 22 384 50 353 60 345 91 304 101 291 125 265 109 258 68 244 37Z" fill="#d7be87" stroke="#fff0c3" stroke-width="4" filter="url(#ew-shadow)"/>
+            <path d="M435-14 467 19 519 10 558 47 546 85 575 114 548 151 514 142 502 175 465 156 456 114 430 100 417 63Z" fill="#e4ce99" stroke="#fff2c9" stroke-width="4" filter="url(#ew-shadow)"/>
+            <path d="M359 126 392 130 409 153 403 182 373 216 347 193 337 159Z" fill="#d4bd83" stroke="#f5e6be" stroke-width="4"/>
+            <path d="M554 190 590 182 623 218 608 259 568 247Z" fill="#d3bd85" stroke="#f3e3b4" stroke-width="3"/>
+            <path d="M349 67 Q417 15 500 64 T561 118" fill="none" stroke="#fff4c3" stroke-width="3.5" stroke-dasharray="4 10" stroke-linecap="round"/>
+            <path d="M379 176 Q466 220 544 139" fill="none" stroke="#fff4c3" stroke-width="3.5" stroke-dasharray="4 11" stroke-linecap="round"/>
+            <path d="M491 66 l-10-3 6-9M532 147 l3-11 10 4" fill="none" stroke="#fff4c3" stroke-width="3"/>
+            <g transform="translate(341 52)" filter="url(#ew-shadow)">
+              <rect x="-24" y="18" width="48" height="22" rx="5" fill="#7d5435" stroke="#4b3325" stroke-width="2"/>
+              <path d="M-19 18 -14 0 7-8 19 18" fill="#cc8d50" stroke="#5a3927" stroke-width="2"/>
+              <path d="M-14 0 7-8 19 18H-5Z" fill="#f2c77a"/>
+              <rect x="-8" y="21" width="16" height="19" rx="3" fill="#493e34"/>
+              <path d="M-18 15 18 15" stroke="#65452b" stroke-width="3"/>
+              <path d="M-26 41H27" stroke="#e8b669" stroke-width="3"/>
+              <path d="M-13 1 8 4" stroke="#fff0c0" stroke-opacity=".55" stroke-width="3"/>
             </g>
-            <g transform="translate(199 64) rotate(-14)">
-              <path d="M0 12 17 0 35 13 26 48 10 55-7 42Z" fill="url(#ore-crystal2)" stroke="#c9c5ff" stroke-opacity=".5"/>
-              <path d="M17 0 26 48 10 55Z" fill="#b2a5f2" opacity=".27"/>
+            <g transform="translate(513 102)" filter="url(#ew-shadow)">
+              <rect x="-29" y="0" width="56" height="36" rx="5" fill="#cc7f56" stroke="#73442e" stroke-width="2"/>
+              <path d="M-34 0 -17 -20 1 -6 19-22 29 0" fill="#f2bd79" stroke="#73442e" stroke-width="2"/>
+              <rect x="-21" y="12" width="10" height="11" fill="#ffe1a1"/>
+              <rect x="-4" y="12" width="10" height="11" fill="#ffe1a1"/>
+              <rect x="12" y="12" width="10" height="11" fill="#ffe1a1"/>
+              <rect x="20" y="-32" width="10" height="32" rx="2" fill="#e9c18a"/>
+              <path d="M25-36q-8-9 2-18" fill="none" stroke="#e5f4e2" stroke-width="4" stroke-linecap="round"/>
             </g>
-            <g transform="translate(322 58) rotate(14)">
-              <path d="M0 12 18 0 35 16 29 53 10 58-5 41Z" fill="url(#ore-crystal2)" stroke="#b4b8ff" stroke-opacity=".55"/>
-              <path d="M18 0 29 53 10 58Z" fill="#6e9cd6" opacity=".42"/>
+            <g class="erzwelt-vessel" transform="translate(443 195)" filter="url(#ew-shadow)">
+              <path d="M-35-6 35-6 19 12-19 12Z" fill="#d27c4b" stroke="#783f30" stroke-width="2"/>
+              <path d="M-6-7V-31H18L3-8Z" fill="#ffe4a3" stroke="#fff6de" stroke-width="1.5"/>
+              <path d="M-10 17Q0 21 10 17" fill="none" stroke="#c9fff4" stroke-width="3"/>
             </g>
-            <path d="M135 115 154 80 171 115M368 116 390 88 405 116" stroke="#5eb7af" stroke-opacity=".35" stroke-width="2" fill="none"/>
-            <path d="M0 113 Q134 101 260 113T520 111V118H0Z" fill="#0d1c2d"/>
+            <g fill="#c6f7e9"><circle cx="418" cy="39" r="2.4"/><circle cx="574" cy="63" r="2.7"/><circle cx="291" cy="178" r="2"/></g>
           </svg>
-        </div>
-        <div class="erzwelt-dialog-heading">
-          <div>
-            <span class="erzwelt-dialog-eyebrow">Nach der Zwischenkontrolle</span>
-            <h2 id="erzweltAccessTitle">Erzwelt freischalten</h2>
+          <div class="erzwelt-stage-shade"></div>
+          <div class="erzwelt-stage-caption">
+            <span class="erzwelt-overline">DAS NÄCHSTE KAPITEL</span>
+            <div class="erzwelt-world-title">ERZWELT<span class="erzwelt-world-spark">✦</span></div>
+            <span class="erzwelt-world-subtitle">Rohstoffe &amp; Lieferketten</span>
           </div>
-          <button type="button" class="erzwelt-dialog-close" id="erzweltAccessClose" aria-label="Schliessen">×</button>
         </div>
-        <p class="erzwelt-dialog-summary" id="erzweltAccessSummary">Erzwelt ist eine freiwillige Zusatzaktivität nach dem Hardware-Kurs.</p>
+        <div class="erzwelt-content">
+          <div class="erzwelt-dialog-heading">
+            <div>
+              <span class="erzwelt-dialog-eyebrow">DEIN SPIELPASS</span>
+              <h2 id="erzweltAccessTitle">Erst den Kurs abschliessen.<br><span>Dann die Welt entdecken.</span></h2>
+            </div>
+            <button type="button" class="erzwelt-dialog-close" id="erzweltAccessClose" aria-label="Schliessen">×</button>
+          </div>
+          <p class="erzwelt-dialog-summary" id="erzweltAccessSummary">Drei kleine Schritte bis zum Start:</p>
         <ol class="erzwelt-dialog-steps">
-          <li><strong>A1–A14 fertigstellen</strong> und die 14 PDFs im OneDrive-Ordner <strong>IB</strong> ablegen.</li>
-          <li><strong>Bei der Lehrperson vorbeikommen.</strong> Sie kontrolliert deine Abgaben und hält deinen <strong>aktuellen Punktestand für die Fleissnote</strong> fest.</li>
-          <li><strong>Freigabecode erhalten</strong> und Erzwelt öffnen.</li>
+          <li>
+            <span class="erzwelt-step-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h10l3 3v15H6z"/><path d="M16 3v4h3M9 11h7M9 15h7M9 19h5"/></svg></span>
+            <div class="erzwelt-step-copy"><strong>A1–A14 fertigstellen</strong><span>Alle 14 PDFs im OneDrive-Ordner <b>IB</b> abgeben.</span></div>
+          </li>
+          <li>
+            <span class="erzwelt-step-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m4 12 5 5L20 6"/></svg></span>
+            <div class="erzwelt-step-copy"><strong>Bei der Lehrperson vorbeikommen</strong><span>Abgaben prüfen und Punktestand festhalten lassen.</span></div>
+          </li>
+          <li>
+            <span class="erzwelt-step-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="m11 12 9-9 2 2-3 3 2 2-3 3-2-2-2 2"/></svg></span>
+            <div class="erzwelt-step-copy"><strong>Freigabecode erhalten</strong><span>Code eingeben und Erzwelt starten.</span></div>
+          </li>
         </ol>
-        <p class="erzwelt-dialog-note"><strong>Abgabeschluss für die Fleissnote: 31.12.2026.</strong> Bis dahin zählen neue und verbesserte PDF-Abgaben. Danach werden keine weiteren Abgaben oder Verbesserungen für die Fleissnote berücksichtigt.</p>
-        <form id="erzweltAccessForm">
-          <label class="erzwelt-dialog-label" for="erzweltAccessCode">Freigabecode der Lehrperson</label>
-          <div class="erzwelt-dialog-code-row">
-            <input id="erzweltAccessCode" class="erzwelt-dialog-code" type="password" autocomplete="off" spellcheck="false" required placeholder="Code eingeben" />
-            <button class="erzwelt-dialog-action" type="submit">Freischalten</button>
-          </div>
-        </form>
-        <p id="erzweltAccessFeedback" class="erzwelt-dialog-feedback" role="status" aria-live="polite"></p>
-        <a id="erzweltAccessLaunch" class="erzwelt-dialog-action" target="_blank" rel="noopener noreferrer" hidden>Erzwelt öffnen ↗</a>
+        <div class="erzwelt-dialog-note">
+          <div class="erzwelt-note-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+          <div><strong>Abgabeschluss für die Fleissnote: 31.12.2026.</strong><span>Bis dann kannst du PDFs verbessern. Danach zählen keine weiteren Abgaben.</span></div>
+        </div>
+          <form id="erzweltAccessForm">
+            <label class="erzwelt-dialog-label" for="erzweltAccessCode">DEIN FREIGABECODE</label>
+            <div class="erzwelt-dialog-code-row">
+              <input id="erzweltAccessCode" class="erzwelt-dialog-code" type="password" autocomplete="off" spellcheck="false" required placeholder="Code eingeben" />
+              <button class="erzwelt-dialog-action" type="submit">Freischalten <span aria-hidden="true">➜</span></button>
+            </div>
+          </form>
+          <p id="erzweltAccessFeedback" class="erzwelt-dialog-feedback" role="status" aria-live="polite">Den Code bekommst du nach der Kontrolle.</p>
+          <a id="erzweltAccessLaunch" class="erzwelt-dialog-action" target="_blank" rel="noopener noreferrer" hidden>Erzwelt öffnen <span aria-hidden="true">➜</span></a>
+        </div>
       </div>
     </dialog>
 
