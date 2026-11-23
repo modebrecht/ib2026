@@ -572,6 +572,16 @@
     .hw-task-list .unterkachel-title .task-number{display:inline-flex;width:54px;height:42px;border-radius:15px;align-items:center;justify-content:center;flex:0 0 auto;color:#fff;background:linear-gradient(135deg,#0078d4,#2563eb);border:0;box-shadow:0 9px 19px rgba(0,120,212,.22);font-size:calc(13px * var(--font-scale));font-weight:950;letter-spacing:-.02em}
     .hw-task-list .unterkachel-title .task-name{display:inline!important;width:auto!important;height:auto!important;min-width:0;border:0!important;border-left:1px solid var(--line)!important;background:transparent!important;box-shadow:none!important;border-radius:0!important;justify-content:flex-start!important;margin-left:13px;padding-left:14px;font-size:inherit!important;color:var(--text);white-space:normal}
     .hw-task-list .btn-link{width:auto;height:42px;padding:0 14px;border-radius:15px;gap:8px;font-size:calc(11px * var(--font-scale));font-weight:850;background:linear-gradient(135deg,#0078d4,#2563eb);box-shadow:0 9px 19px rgba(37,99,235,.20)}
+    .hw-task-list .erzwelt-link {
+      display: flex;
+      align-items: center;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .hw-task-list .erzwelt-link:focus-visible {
+      outline: 2px solid var(--blue);
+      outline-offset: 2px;
+    }
     .hw-task-list .task-card.task-done{border-color:rgba(16,185,129,.34);box-shadow:0 10px 26px rgba(16,185,129,.08)}
     .hw-task-list .task-card.task-done::before{opacity:1;animation:completionSweep .7s cubic-bezier(.2,.9,.2,1) both}
     .hw-task-list .task-card.task-done::after{background:rgba(16,185,129,.11)}
@@ -1094,6 +1104,19 @@
       </div>
     </div>
 
+              <a class="unterkachel task-card erzwelt-link" href="https://erzwelt.vercel.app/" target="_blank" rel="noopener" aria-label="Erzwelt in neuem Tab öffnen">
+                <div class="unterkachel-title">
+                  <span class="task-number" aria-hidden="true">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <g transform="rotate(-22 12 12)">
+                        <path d="M1.6 12.4C4.4 2.2 19.6 2.2 22.4 12.4 19.2 7.4 16 5.6 12 5.6 8 5.6 4.8 7.4 1.6 12.4Z" fill="currentColor"></path>
+                        <rect x="10.5" y="4.6" width="3" height="17.4" rx="1.5" fill="currentColor" opacity=".78"></rect>
+                      </g>
+                    </svg>
+                  </span>
+                  <span class="task-name">Erzwelt</span>
+                </div>
+              </a>
 
             </div>
           </div>
