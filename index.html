@@ -743,8 +743,9 @@
       letter-spacing: .015em;
       color: #f0fbff;
     }
-    .erzwelt-vessel { transform-origin: 443px 195px; animation: erzwelt-boat-bob 3.2s ease-in-out infinite; }
-    @keyframes erzwelt-boat-bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+    .erzwelt-vessel { animation: erzwelt-boat-bob 3.2s ease-in-out infinite; }
+    /* Independent translate keeps the SVG ship's map coordinates intact. */
+    @keyframes erzwelt-boat-bob { 0%,100% { translate: 0 0; } 50% { translate: 0 -4px; } }
 
     .erzwelt-content { padding: 20px 25px 22px; }
     .erzwelt-dialog-heading {
