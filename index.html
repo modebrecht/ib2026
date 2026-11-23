@@ -2266,7 +2266,7 @@
             feedback.textContent = 'Der Code kann in diesem Browser nicht geprüft werden.';
             return;
           }
-          const normalized = input.value.trim().replace(/\\s+/g, ' ').toLowerCase();
+          const normalized = input.value.trim().replace(/\s+/g, ' ').toLowerCase();
           const bytes = new TextEncoder().encode(normalized);
           const digest = await window.crypto.subtle.digest('SHA-256', bytes);
           const actual = Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('');
