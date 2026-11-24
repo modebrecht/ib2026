@@ -749,14 +749,6 @@
       color: #ffda73;
       vertical-align: top;
     }
-    .erzwelt-world-subtitle {
-      display: block;
-      margin-top: 8px;
-      font-size: 14px;
-      font-weight: 850;
-      letter-spacing: .015em;
-      color: #f0fbff;
-    }
     .erzwelt-vessel { animation: erzwelt-boat-bob 3.2s ease-in-out infinite; }
     /* Independent translate keeps the SVG ship's map coordinates intact. */
     @keyframes erzwelt-boat-bob { 0%,100% { translate: 0 0; } 50% { translate: 0 -4px; } }
@@ -830,28 +822,6 @@
       line-height: 1.35;
       color: #6b665c;
     }
-    .erzwelt-dialog-note {
-      display: grid;
-      grid-template-columns: 28px 1fr;
-      gap: 9px;
-      margin: 0 0 17px;
-      padding: 11px 12px;
-      border: 1px solid #e8b65a;
-      border-radius: 12px;
-      background: linear-gradient(110deg, #fff1c7, #ffe2a0);
-    }
-    .erzwelt-note-icon {
-      display: grid;
-      place-items: center;
-      width: 27px;
-      height: 27px;
-      border-radius: 50%;
-      background: #d48f28;
-      color: white;
-    }
-    .erzwelt-note-icon svg { width: 18px; height: 18px; }
-    .erzwelt-dialog-note strong { display: block; color: #6c4410; font-size: calc(12px * var(--font-scale)); }
-    .erzwelt-dialog-note span { display: block; margin-top: 3px; color: #865f24; font-size: calc(11px * var(--font-scale)); }
     .erzwelt-dialog-label {
       display: block;
       margin-bottom: 7px;
@@ -2059,7 +2029,6 @@
           <div class="erzwelt-stage-caption">
             <span class="erzwelt-overline">DAS NÄCHSTE KAPITEL</span>
             <div class="erzwelt-world-title">ERZWELT<span class="erzwelt-world-spark">✦</span></div>
-            <span class="erzwelt-world-subtitle">Rohstoffe &amp; Lieferketten</span>
           </div>
         </div>
         <div class="erzwelt-content">
@@ -2072,7 +2041,7 @@
         <ol class="erzwelt-dialog-steps">
           <li>
             <span class="erzwelt-step-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h10l3 3v15H6z"/><path d="M16 3v4h3M9 11h7M9 15h7M9 19h5"/></svg></span>
-            <div class="erzwelt-step-copy"><strong>A1–A14 fertigstellen</strong><span>Alle 14 PDFs im OneDrive-Ordner <b>IB</b> abgeben.</span></div>
+            <div class="erzwelt-step-copy"><strong>A1–A14 fertigstellen</strong><span>Alle 14 PDFs im OneDrive-Ordner <b>IB</b> abgeben.<br><b>Abgabeschluss für die Fleissnote: 31.12.2026.</b></span></div>
           </li>
           <li>
             <span class="erzwelt-step-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m4 12 5 5L20 6"/></svg></span>
@@ -2083,10 +2052,6 @@
             <div class="erzwelt-step-copy"><strong>Freigabecode erhalten</strong><span>Code eingeben und Erzwelt starten.</span></div>
           </li>
         </ol>
-        <div class="erzwelt-dialog-note">
-          <div class="erzwelt-note-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
-          <div><strong>Abgabeschluss für die Fleissnote: 31.12.2026.</strong><span>Bis dann kannst du PDFs verbessern. Danach zählen keine weiteren Abgaben.</span></div>
-        </div>
           <form id="erzweltAccessForm">
             <label class="erzwelt-dialog-label" for="erzweltAccessCode">DEIN FREIGABECODE</label>
             <div class="erzwelt-dialog-code-row">
