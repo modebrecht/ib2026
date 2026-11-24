@@ -189,9 +189,11 @@
     })();
   </script>
 
+  <script src="../access-gate.js"></script>
   <script>
     (function () {
       'use strict';
+      const ACCESS = window.IB2026AccessGate;
       const EXPECTED_SHA256 = '615051c1b669b13ff07246e9470ee6fd1a0c242a3948d4faa4eac2a735f87281';
       const SESSION_KEY = 'ib2026-hw-p1l-unlocked-v1';
       const gate = document.getElementById('p1lGate');
@@ -203,26 +205,21 @@
       function unlock() {
         gate.hidden = true;
         solutions.hidden = false;
-        try { sessionStorage.setItem(SESSION_KEY, '1'); } catch (_) {}
         document.title = 'HW · P1L – Lösungen';
       }
 
-      try {
-        if (sessionStorage.getItem(SESSION_KEY) === '1') {
-          unlock();
-          return;
-        }
-      } catch (_) {}
+      if (ACCESS && ACCESS.isUnlocked(SESSION_KEY)) {
+        unlock();
+        return;
+      }
 
       form.addEventListener('submit', async function (event) {
         event.preventDefault();
         feedback.textContent = '';
-        const attempt = password.value.trim();
         try {
-          if (!window.crypto || !window.crypto.subtle) throw new Error('HTTPS required');
-          const digest = await window.crypto.subtle.digest('SHA-256', new TextEncoder().encode(attempt));
-          const computed = Array.from(new Uint8Array(digest), b => b.toString(16).padStart(2, '0')).join('');
-          if (computed === EXPECTED_SHA256) {
+          if (!ACCESS) throw new Error('Shared access checker missing');
+          if (await ACCESS.verifyCode(password.value, EXPECTED_SHA256)) {
+            ACCESS.remember(SESSION_KEY);
             password.value = '';
             unlock();
           } else {
