@@ -1438,7 +1438,7 @@
       </div>
     </div>
     
-    <!-- Lösungsblatt zur Übungsprüfung: P1L, password gate on destination -->
+    <!-- Lösungsblatt P1L: shared IB2026 freigabe dialog, deep-link fallback stays protected -->
     <div class="unterkachel task-card">
       <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
         <div>
@@ -1446,7 +1446,7 @@
             <span class="task-number">P1L</span><span class="task-name">Lösungsblatt Übungsprüfung Hardware</span>
           </h4>
         </div>
-        <a href="hw/P1-loesungen.html" target="_blank" rel="noopener" class="btn-link" title="Lösungsblatt mit Passwort öffnen" aria-label="Lösungsblatt P1L mit Passwort in neuem Tab öffnen"><span class="btn-status-text">Öffnen ↗</span></a>
+        <button type="button" id="p1lAccessButton" class="btn-link" title="Lösungsblatt freigeben" aria-haspopup="dialog" aria-controls="p1lAccessDialog" aria-label="Lösungsblatt P1L freigeben"><span class="btn-status-text">Öffnen ↗</span></button>
       </div>
     </div>
 
@@ -2100,6 +2100,28 @@
       </div>
     </dialog>
 
+    <!-- Same access-dialog pattern as Erzwelt; shared verifier and session approval. -->
+    <dialog id="p1lAccessDialog" class="erzwelt-access-dialog" aria-labelledby="p1lAccessTitle">
+      <div class="erzwelt-dialog-inner">
+        <div class="erzwelt-content">
+          <div class="erzwelt-dialog-heading">
+            <div>
+              <h2 id="p1lAccessTitle">P1L – Lösungsblatt</h2>
+            </div>
+            <button type="button" class="erzwelt-dialog-close" id="p1lAccessClose" aria-label="Schliessen">×</button>
+          </div>
+          <p class="erzwelt-dialog-summary">Passwort eingeben, um die Lösungen zur Übungsprüfung zu öffnen.</p>
+          <form id="p1lAccessForm">
+            <label class="erzwelt-dialog-label" for="p1lAccessCode">Passwort</label>
+            <div class="erzwelt-dialog-code-row">
+              <input id="p1lAccessCode" class="erzwelt-dialog-code" type="password" autocomplete="off" required placeholder="Code eingeben">
+              <button class="erzwelt-dialog-action" type="submit">Öffnen</button>
+            </div>
+          </form>
+          <p id="p1lAccessFeedback" class="erzwelt-dialog-feedback" role="status" aria-live="polite"></p>
+        </div>
+      </div>
+    </dialog>
 
   <script>
     const gearBtn = document.getElementById('gearBtn');
@@ -2533,10 +2555,14 @@
       window.addEventListener('focus', checkCompletionStatus);
     </script>
 
+    <script src="access-gate.js"></script>
     <script>
-      // Student-side reminder gate only: PDF review and approval remain with the teacher.
-      // This gate does not protect the independently public Erzwelt destination.
+      // Shared approval logic: the existing Erzwelt dialog and the P1L solutions dialog.
       (function () {
+        'use strict';
+        const ACCESS = window.IB2026AccessGate;
+
+        // Erzwelt remains a teacher-approved reminder; the game URL itself is public.
         const ACCESS_KEY = 'ib2026-erzwelt-approved-v1';
         const ACCESS_HASH = 'a16fcf80d05ae5ecce98f12d7e630f7bb127b76dc7e101523fbfa8496997a54f';
         const ERZWELT_URL = 'https://erzwelt.vercel.app/';
@@ -2547,60 +2573,105 @@
         const input = document.getElementById('erzweltAccessCode');
         const feedback = document.getElementById('erzweltAccessFeedback');
         const launch = document.getElementById('erzweltAccessLaunch');
-        if (!button || !dialog || !form || !input || !feedback || !launch) return;
-
-        function alreadyApproved() {
-          try { return sessionStorage.getItem(ACCESS_KEY) === 'true'; }
-          catch (_) { return false; }
-        }
-        function showDialog() {
-          form.hidden = false;
-          launch.hidden = true;
-          launch.removeAttribute('href');
-          input.value = '';
-          feedback.textContent = '';
-          feedback.dataset.error = 'false';
-          if (typeof dialog.showModal === 'function') dialog.showModal();
-          else dialog.setAttribute('open', '');
-          input.focus();
-        }
-        button.addEventListener('click', function () {
-          if (alreadyApproved()) {
-            window.open(ERZWELT_URL, '_blank', 'noopener,noreferrer');
-          } else {
-            showDialog();
-          }
-        });
-        close.addEventListener('click', function () {
-          if (typeof dialog.close === 'function') dialog.close();
-          else dialog.removeAttribute('open');
-        });
-        form.addEventListener('submit', async function (event) {
-          event.preventDefault();
-          if (!window.crypto || !window.crypto.subtle) {
-            feedback.dataset.error = 'true';
-            feedback.textContent = 'Der Code kann in diesem Browser nicht geprüft werden.';
-            return;
-          }
-          const normalized = input.value.trim().replace(/\s+/g, ' ').toLowerCase();
-          const bytes = new TextEncoder().encode(normalized);
-          const digest = await window.crypto.subtle.digest('SHA-256', bytes);
-          const actual = Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('');
-          if (actual !== ACCESS_HASH) {
-            feedback.dataset.error = 'true';
-            feedback.textContent = 'Code nicht erkannt. Frage deine Lehrperson nach der Freigabe.';
+        if (button && dialog && close && form && input && feedback && launch) {
+          function showErzweltDialog() {
+            form.hidden = false;
+            launch.hidden = true;
+            launch.removeAttribute('href');
+            input.value = '';
+            feedback.textContent = '';
+            feedback.dataset.error = 'false';
+            if (typeof dialog.showModal === 'function') dialog.showModal();
+            else dialog.setAttribute('open', '');
             input.focus();
-            input.select();
-            return;
           }
-          try { sessionStorage.setItem(ACCESS_KEY, 'true'); } catch (_) {}
-          feedback.dataset.error = 'false';
-          feedback.textContent = 'Freigeschaltet! Du kannst Erzwelt jetzt öffnen.';
-          form.hidden = true;
-          launch.href = ERZWELT_URL;
-          launch.hidden = false;
-          launch.focus();
-        });
+
+          button.addEventListener('click', function () {
+            if (ACCESS && ACCESS.isUnlocked(ACCESS_KEY)) {
+              window.open(ERZWELT_URL, '_blank', 'noopener,noreferrer');
+            } else {
+              showErzweltDialog();
+            }
+          });
+          close.addEventListener('click', function () {
+            if (typeof dialog.close === 'function') dialog.close();
+            else dialog.removeAttribute('open');
+          });
+          form.addEventListener('submit', async function (event) {
+            event.preventDefault();
+            let approved;
+            try {
+              if (!ACCESS) throw new Error('Shared access checker missing');
+              approved = await ACCESS.verifyCode(input.value, ACCESS_HASH);
+            } catch (_) {
+              feedback.dataset.error = 'true';
+              feedback.textContent = 'Der Code kann in diesem Browser nicht geprüft werden.';
+              return;
+            }
+            if (!approved) {
+              feedback.dataset.error = 'true';
+              feedback.textContent = 'Code nicht erkannt. Frage deine Lehrperson nach der Freigabe.';
+              input.focus();
+              input.select();
+              return;
+            }
+            ACCESS.remember(ACCESS_KEY);
+            feedback.dataset.error = 'false';
+            feedback.textContent = 'Freigeschaltet! Du kannst Erzwelt jetzt öffnen.';
+            form.hidden = true;
+            launch.href = ERZWELT_URL;
+            launch.hidden = false;
+            launch.focus();
+          });
+        }
+
+        // P1L uses the exact same code verification and approval persistence.
+        const P1L_KEY = 'ib2026-hw-p1l-unlocked-v1';
+        const P1L_HASH = '615051c1b669b13ff07246e9470ee6fd1a0c242a3948d4faa4eac2a735f87281';
+        const P1L_URL = 'hw/P1-loesungen.html';
+        const pButton = document.getElementById('p1lAccessButton');
+        const pDialog = document.getElementById('p1lAccessDialog');
+        const pClose = document.getElementById('p1lAccessClose');
+        const pForm = document.getElementById('p1lAccessForm');
+        const pInput = document.getElementById('p1lAccessCode');
+        const pFeedback = document.getElementById('p1lAccessFeedback');
+        if (pButton && pDialog && pClose && pForm && pInput && pFeedback) {
+          pButton.addEventListener('click', function () {
+            if (ACCESS && ACCESS.isUnlocked(P1L_KEY)) {
+              window.location.assign(P1L_URL);
+              return;
+            }
+            pForm.reset();
+            pFeedback.textContent = '';
+            if (typeof pDialog.showModal === 'function') pDialog.showModal();
+            else pDialog.setAttribute('open', '');
+            pInput.focus();
+          });
+          pClose.addEventListener('click', function () {
+            if (typeof pDialog.close === 'function') pDialog.close();
+            else pDialog.removeAttribute('open');
+          });
+          pForm.addEventListener('submit', async function (event) {
+            event.preventDefault();
+            let approved;
+            try {
+              if (!ACCESS) throw new Error('Shared access checker missing');
+              approved = await ACCESS.verifyCode(pInput.value, P1L_HASH);
+            } catch (_) {
+              pFeedback.textContent = 'Der Code kann in diesem Browser nicht geprüft werden.';
+              return;
+            }
+            if (!approved) {
+              pFeedback.textContent = 'Passwort nicht korrekt.';
+              pInput.focus();
+              pInput.select();
+              return;
+            }
+            ACCESS.remember(P1L_KEY);
+            pInput.value = '';
+            window.location.assign(P1L_URL);
+          });
+        }
       })();
     </script>
 </body>
